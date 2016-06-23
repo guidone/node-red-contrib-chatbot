@@ -1,0 +1,71 @@
+<script type="text/javascript">
+  RED.nodes.registerType('telegrambot-listen',{
+    category: 'telegram',
+    color: '#a6bbcf',
+    defaults: {
+      name: {
+        value: ''
+      },
+      message: {
+        value: '',
+        validate: function(v) {
+          var ptype = $("#node-input-messageType").val() || this.payloadType;
+          if (ptype === 'json') {
+            try {
+              JSON.parse(v);
+              return true;
+            } catch(err) {
+              return false;
+            }
+          }
+          return true;
+        }
+      },
+      messageType: {
+        value: 'str'
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'envelope.png',
+    label: function() {
+      return this.name || 'telegrambot-listen';
+    },
+    oneditprepare: function() {
+      console.log('preparo edit');
+      if (this.payloadType == null) {
+        if (this.payload == "") {
+          this.payloadType = "date";
+        } else {
+          this.payloadType = "str";
+        }
+      } else if (this.payloadType === 'string' || this.payloadType === 'none') {
+        this.payloadType = "str";
+      }
+      $("#node-input-messageType").val(this.messageType);
+      $("#node-input-message").typedInput({
+        default: 'str',
+        typeField: $("#node-input-messageType"),
+        types: [ 'str', 'json']
+      });
+    }
+  });
+</script>
+
+
+<script type="text/x-red" data-template-name="telegrambot-listen">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-payload"><i class="fa fa-envelope"></i> <span>Listen to</span></label>
+        <input type="text" id="node-input-message" style="width:300px">
+        <input type="hidden" id="node-input-messageType">
+    </div>
+
+</script>
+
+<script type="text/x-red" data-help-name="telegrambot-listen">
+    <p>Listen to message</p>
+</script>

@@ -13,7 +13,8 @@
   ],
   "node-red": {
     "nodes": {
-      "telegrambot-message": "telegrambot-message.js"
+      "telegrambot-message": "telegrambot-message.js",
+      "telegrambot-listen": "telegrambot-listen.js"
     }
   },
   "maintainers": [
@@ -26,6 +27,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "fast-levenshtein": "^1.1.3",
+    "speakeasy-nlp": "^0.2.2",
     "underscore": "^1.8.3"
   }
 }
