@@ -1,0 +1,18 @@
+{
+  "name": "node-red-contrib-telegrambot-message",
+  "version": "0.1.0",
+  "description": "Send plain message to telegram bot",
+  "main": "telegrambot-message.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "maintainers": [
+    {
+      "name": "Guido Bellomo",
+      "email": "guido.bellomo@gmail.com",
+      "web": "http://javascript-jedi.com"
+    }
+  ],
+  "author": "",
+  "license": "ISC"
+}

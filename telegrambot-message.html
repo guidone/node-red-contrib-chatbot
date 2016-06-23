@@ -1,0 +1,35 @@
+<script type="text/javascript">
+  RED.nodes.registerType('telegrambot-message',{
+    category: 'telegram',
+    color: '#a6bbcf',
+    defaults: {
+      name: {
+        value: ''
+      },
+      message: {
+        value: ''
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'file.png',
+    label: function() {
+      return this.name || 'telegrambot-message';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="telegrambot-message">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-message"><i class="icon-envelope"></i> Message</label>
+        <input type="text" id="node-input-message" placeholder="Message">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="telegrambot-message">
+    <p>Send text message to telegram bot</p>
+</script>
