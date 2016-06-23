@@ -4,10 +4,7 @@ module.exports = function(RED) {
     var node = this;
     this.message = config.message;
     this.on('input', function(msg) {
-      console.log('msg.payload', msg.payload);
-      console.log('ndoe', this);
-      console.log('node.message', node.message);
-      msg.payload = msg.payload.content = node.message;
+      msg.payload.content = node.message;
       node.send(msg);
     });
   }
