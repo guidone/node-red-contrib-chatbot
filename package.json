@@ -12,6 +12,11 @@
       "url": "https://github.com/guidone/node-red-contrib-telegrambot-message.git"
     }
   ],
+  "node-red": {
+    "nodes": {
+      "telegrambot-message": "telegrambot-message.js"
+    }
+  },
   "maintainers": [
     {
       "name": "Guido Bellomo",
