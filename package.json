@@ -14,7 +14,9 @@
   "node-red": {
     "nodes": {
       "telegrambot-message": "telegrambot-message.js",
-      "telegrambot-listen": "telegrambot-listen.js"
+      "telegrambot-listen": "telegrambot-listen.js",
+      "chatbot-parse": "chatbot-parse.js",
+      "chatbot-dispatch": "chatbot-dispatch.js"
     }
   },
   "maintainers": [

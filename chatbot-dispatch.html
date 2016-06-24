@@ -1,0 +1,29 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-dispatch', {
+    category: 'ChatBot',
+    color: '#a6bbcf',
+    defaults: {
+      name: {
+        value: ''
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'envelope.png',
+    label: function() {
+      return this.name || 'chatbot-dispatch';
+    }
+  });
+</script>
+
+
+<script type="text/x-red" data-template-name="chatbot-dispatch">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-dispatch">
+    <p>Dispatch</p>
+</script>

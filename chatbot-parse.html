@@ -1,0 +1,45 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-parse', {
+    category: 'ChatBot',
+    color: '#a6bbcf',
+    defaults: {
+      parseType: {
+        value: 'string'
+      },
+      parseVariable: {
+        value: 'string'
+      }
+    },
+    inputs: 1,
+    outputs: 2,
+    icon: 'envelope.png',
+    label: function() {
+      return this.name || 'chatbot-parse';
+    }
+  });
+</script>
+
+
+<script type="text/x-red" data-template-name="chatbot-parse">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Variable</label>
+        <select id="node-input-parseType">
+          <option value="string">String</option>
+          <option value="email">Email</option>
+          <option value="number-integer">Integer number</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Variable</label>
+        <input type="text" id="node-input-parseVariable" placeholder="Store into variable name">
+    </div>
+
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-parse">
+    <p>Parse the input</p>
+</script>

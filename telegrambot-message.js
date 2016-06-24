@@ -23,9 +23,23 @@ module.exports = function(RED) {
       return value;
     };
 
+    var handler = function(msg) {
+      //msg._event = n.event;
+      //node.receive(msg);
+
+      console.log('passo da qua dovrei relayare');
+
+      node.send([null, msg]);
+
+    };
+    RED.events.on('node:' + config.id, handler);
+
+
     this.on('input', function(msg) {
       var message = node.message;
       var tokens = message.match(/\{\{([A-Za-z0-9\-]*?)\}\}/g);
+      var chatId = msg.payload.chatId;
+      var messageId = msg.payload.messageId;
 
       if (tokens != null && tokens.length !== 0) {
         tokens = _(tokens).map(function(token) {
@@ -42,10 +56,16 @@ module.exports = function(RED) {
 
       msg.payload = {
         type: 'message',
-        content: message
+        content: message,
+        chatId: chatId,
+        messageId: messageId
       };
 
-      node.send(msg);
+      node.send([msg, null]);
+    });
+
+    this.on('close',function() {
+      RED.events.removeListener('node:' + config.id, handler);
     });
   }
   RED.nodes.registerType('telegrambot-message', TelegramSendMessage);
