@@ -10,7 +10,7 @@ module.exports = function(RED) {
       return word.toLowerCase();
     });
     var exactWords = ['yes', 'no', 'on', 'off'];
-
+console.log('cerco di macciare');
     // scan the words, all must be present
     return _(words).all(function(word) {
       if (_.contains(exactWords, word)) {
@@ -24,7 +24,7 @@ module.exports = function(RED) {
     });
   }
 
-  function TelegramListen(config) {
+  function ChatBotListen(config) {
     RED.nodes.createNode(this, config);
     var node = this;
     this.message = config.message;
@@ -48,11 +48,7 @@ module.exports = function(RED) {
         jumpNode.send([null, msg]);
       }*/
 
-
-
-      console.log('---- messageType ' + messageType);
       if (messageType == 'str') {
-        console.log('confronto', msg.payload);
         if (msg.payload != null && msg.payload.content == message) {
           node.send(msg);
         }
@@ -70,7 +66,7 @@ module.exports = function(RED) {
           return;
         }
         // analize sentence
-        var analysis = speak.classify(msg.payload);
+        var analysis = speak.classify(msg.payload.content);
 
         //console.log('parseggio', words);
         //console.log('analisys', analysis);
@@ -86,6 +82,6 @@ module.exports = function(RED) {
 
     });
   }
-  RED.nodes.registerType('telegrambot-listen', TelegramListen);
+  RED.nodes.registerType('chatbot-listen', ChatBotListen);
 
 };

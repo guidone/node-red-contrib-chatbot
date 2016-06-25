@@ -1,6 +1,6 @@
 <script type="text/javascript">
-  RED.nodes.registerType('telegrambot-message',{
-    category: 'telegram',
+  RED.nodes.registerType('chatbot-message', {
+    category: 'ChatBot',
     color: '#a6bbcf',
     defaults: {
       name: {
@@ -8,18 +8,21 @@
       },
       message: {
         value: ''
+      },
+      answer: {
+        value: false
       }
     },
     inputs: 1,
     outputs: 2,
-    icon: 'envelope.png',
+    icon: 'chatbot-message.png',
     label: function() {
-      return this.name || 'telegram message';
+      return this.name || 'chatbot-message';
     }
   });
 </script>
 
-<script type="text/x-red" data-template-name="telegrambot-message">
+<script type="text/x-red" data-template-name="chatbot-message">
     <div class="form-row">
         <label for="node-input-name"><i class="icon-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
@@ -28,9 +31,13 @@
         <label for="node-input-message"><i class="icon-envelope"></i> Message</label>
         <textarea id="node-input-message" placeholder="Message" style="width:100%;"></textarea>
     </div>
+    <div class="form-row">
+        <label for="node-input-answer"><i class="icon-envelope"></i> Answer to previous</label>
+        <input type="checkbox" value="true" id="node-input-answer">
+    </div>
 </script>
 
-<script type="text/x-red" data-help-name="telegrambot-message">
+<script type="text/x-red" data-help-name="chatbot-message">
     <p>Send text message to telegram bot</p>
 </script>
 

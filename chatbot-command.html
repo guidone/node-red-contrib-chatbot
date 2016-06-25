@@ -1,0 +1,41 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-command', {
+    category: 'ChatBot',
+    color: '#a6bbcf',
+    defaults: {
+      name: {
+        value: ''
+      },
+      command: {
+        value: ''
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'chatbot-command.png',
+    label: function() {
+      var command = this.command;
+      if (command != null && command.length > 0) {
+        if (command[0] != '/') {
+          command = '/' + command;
+        }
+        return command;
+      } else {
+        return 'chatbot-command';
+      }
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-command">
+    <div class="form-row">
+        <label for="node-input-command"><i class="icon-tag"></i> Command</label>
+        <input type="text" id="node-input-command" placeholder="Command">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-command">
+    <p>Listen for Telegram command</p>
+</script>
+
+

@@ -3,6 +3,9 @@
     category: 'ChatBot',
     color: '#a6bbcf',
     defaults: {
+      name: {
+        vallue: ''
+      },
       parseType: {
         value: 'string'
       },
@@ -12,7 +15,7 @@
     },
     inputs: 1,
     outputs: 2,
-    icon: 'envelope.png',
+    icon: 'chatbot-parse.png',
     label: function() {
       return this.name || 'chatbot-parse';
     }

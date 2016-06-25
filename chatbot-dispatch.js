@@ -1,5 +1,8 @@
 var _ = require('underscore');
 
+// [ ] include a way for startover
+// [ ] docs
+
 module.exports = function(RED) {
 
   function ChatBotDispatch(config) {
@@ -10,10 +13,19 @@ module.exports = function(RED) {
 
     this.on('input', function(msg) {
 
-      var nodeId = '1999dbc1.8befb4';
-      RED.events.emit('node:' + nodeId,msg);
-
-      //node.send(msg);
+      var context = node.context();
+      var currentConversationNode = context.flow.get('currentConversationNode');
+      console.log('currentConversationNode', currentConversationNode);
+      if (currentConversationNode != null) {
+        console.log('send to node', currentConversationNode);
+        // void the current conversation
+        context.flow.set('currentConversationNode', null)
+        // emit message
+        RED.events.emit('node:' + currentConversationNode, msg);
+      } else {
+        console.log('dispatch pass through');
+        node.send(msg);
+      }
 
     });
   }

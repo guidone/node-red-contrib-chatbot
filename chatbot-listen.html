@@ -1,7 +1,7 @@
 <script type="text/javascript">
-  console.log('passa di qua coglione');
-  RED.nodes.registerType('telegrambot-listen',{
-    category: 'telegram',
+
+  RED.nodes.registerType('chatbot-listen',{
+    category: 'ChatBot',
     color: '#a6bbcf',
     defaults: {
       name: {
@@ -28,9 +28,9 @@
     },
     inputs: 1,
     outputs: 1,
-    icon: 'envelope.png',
+    icon: 'chatbot-listen.png',
     label: function() {
-      return this.name || 'telegrambot-listen';
+      return this.name || 'chatbot-listen';
     },
     oneditprepare: function() {
       console.log('preparo edit');
@@ -54,7 +54,7 @@
 </script>
 
 
-<script type="text/x-red" data-template-name="telegrambot-listen">
+<script type="text/x-red" data-template-name="chatbot-listen">
     <div class="form-row">
         <label for="node-input-name"><i class="icon-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
@@ -67,6 +67,6 @@
 
 </script>
 
-<script type="text/x-red" data-help-name="telegrambot-listen">
+<script type="text/x-red" data-help-name="chatbot-listen">
     <p>Listen to message</p>
 </script>
