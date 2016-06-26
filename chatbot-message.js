@@ -9,18 +9,63 @@ module.exports = function(RED) {
     this.message = config.message;
     this.answer = config.answer;
 
-    var getTokenValue = function(token) {
+    // extract subtokens from a object value
+    var extractObjectKeys = function(value, subtokens) {
+
+      var result = value;
+      var currentValue = value;
+
+      if (_.isArray(subtokens) && !_.isEmpty(subtokens)) {
+        _(subtokens).each(function(subtoken) {
+          if (_.isObject(currentValue) && currentValue[subtoken] != null) {
+            currentValue = currentValue[subtoken];
+          }
+        });
+        result = currentValue;
+      }
+
+      return result;
+    };
+
+    var getTokenValue = function(token, msg) {
       var value = null;
       var context = node.context();
-      if (!_.isEmpty(context.get(token))) {
-        value = context.get(token);
-      } else if (!_.isEmpty(context.flow.get(token))) {
-        value = context.flow.get(token);
-      } else if (!_.isEmpty(context.global.get(token))) {
-        value = context.global.get(token);
+      var subtokens = token.split('.');
+      var variable = subtokens[0];
+
+      if (!_.isEmpty(context.get(variable))) {
+        value = context.get(variable);
+      } else if (!_.isEmpty(context.flow.get(variable))) {
+        value = context.flow.get(variable);
+      } else if (!_.isEmpty(context.global.get(variable))) {
+        value = context.global.get(variable);
+      } else if (!_.isEmpty(msg[variable])) {
+        value = msg[variable];
       }
+
+      // access sub tokens
+      if (subtokens.length > 0) {
+        value = extractObjectKeys(value, subtokens.slice(1));
+      }
+
       return value;
     };
+
+    var replaceTokens = function(message, tokens, msg) {
+
+      if (tokens != null && tokens.length !== 0) {
+        // replace all tokens
+        _(tokens).each(function(token) {
+          var value = getTokenValue(token, msg);
+          // todo make regexp
+          message = message.replace('{{' + token + '}}', value);
+        });
+
+      }
+
+      return message;
+    };
+
 
     // relay message
     var handler = function(msg) {
@@ -32,23 +77,19 @@ module.exports = function(RED) {
     this.on('input', function(msg) {
       var message = node.message;
       var context = node.context();
-      var tokens = message.match(/\{\{([A-Za-z0-9\-]*?)\}\}/g);
       var chatId = msg.payload.chatId;
       var messageId = msg.payload.messageId;
       var answer = node.answer;
 
-      if (tokens != null && tokens.length !== 0) {
-        tokens = _(tokens).map(function(token) {
+      var tokens = message.match(/\{\{([A-Za-z0-9\-\.]*?)\}\}/g);
+      if (tokens != null && tokens.length != 0) {
+        tokens = _(tokens).map(function (token) {
           return token.replace('{{', '').replace('}}', '');
         });
-        // replace all tokens
-        _(tokens).each(function(token) {
-          var value = getTokenValue(token);
-          // todo make regexp
-          message = message.replace('{{' + token + '}}', value);
-        });
-
       }
+
+      message = replaceTokens(message, tokens, msg);
+
       // check if this node has some wirings in the follow up pin, in that case
       // the next message should be redirected here
       if (!_.isEmpty(node.wires[1])) {

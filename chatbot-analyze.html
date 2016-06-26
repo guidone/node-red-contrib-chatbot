@@ -1,0 +1,37 @@
+<script type="text/javascript">
+
+  RED.nodes.registerType('chatbot-analyze',{
+    category: 'ChatBot',
+    color: '#a6bbcf',
+    defaults: {
+      name: {
+        value: ''
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'Analyze',
+    icon: 'chatbot-analyze.png',
+    label: function() {
+      return 'Analyze';
+    }
+  });
+</script>
+
+
+<script type="text/x-red" data-template-name="chatbot-analyze">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-payload"><i class="fa fa-envelope"></i> <span>Listen to</span></label>
+        <input type="text" id="node-input-message" style="width:300px">
+        <input type="hidden" id="node-input-messageType">
+    </div>
+
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-analyze">
+    <p>Analyze message</p>
+</script>

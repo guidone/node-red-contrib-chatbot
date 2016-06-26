@@ -8,7 +8,6 @@ module.exports = function(RED) {
     return matched != null ? matched[0] : null;
   };
 
-
   function ChatBotParse(config) {
     RED.nodes.createNode(this, config);
     var node = this;
@@ -29,6 +28,11 @@ module.exports = function(RED) {
           break;
         case 'email':
           parsedValue = extractEmail(msg.payload.content);
+          break;
+        case 'location':
+          if (_.isObject(msg.payload.content) && msg.payload.content.latitude && msg.payload.content.longitude) {
+            parsedValue = msg.payload.content;
+          }
           break;
       }
 

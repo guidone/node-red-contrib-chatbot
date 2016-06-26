@@ -1,0 +1,31 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-image', {
+    category: 'ChatBot',
+    color: '#a6bbcf',
+    defaults: {
+      name: {
+        value: ''
+      }
+    },
+    inputs: 1,
+    outputs: 2,
+    icon: 'chatbot-image.png',
+    paletteLabel: 'Image',
+    label: function() {
+      return this.name || 'Image';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-image">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-image">
+    <p>Send image message to telegram bot</p>
+</script>
+
+

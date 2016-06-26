@@ -17,7 +17,9 @@
       "chatbot-listen": "chatbot-listen.js",
       "chatbot-parse": "chatbot-parse.js",
       "chatbot-dispatch": "chatbot-dispatch.js",
-      "chatbot-command": "chatbot-command.js"
+      "chatbot-command": "chatbot-command.js",
+      "chatbot-image": "chatbot-image.js",
+      "chatbot-analyze": "chatbot-analyze.js"
     }
   },
   "maintainers": [
@@ -31,6 +33,7 @@
   "license": "ISC",
   "dependencies": {
     "fast-levenshtein": "^1.1.3",
+    "languagedetect": "^1.1.1",
     "speakeasy-nlp": "^0.2.2",
     "underscore": "^1.8.3"
   }
