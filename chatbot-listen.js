@@ -34,7 +34,7 @@ module.exports = function(RED) {
       var messageType = node.messageType;
 
       // exit if not string
-      if (_.isString(msg.payload.content)) {
+      if (!_.isString(msg.payload.content)) {
         return;
       }
 
