@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-telegrambot-message",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Send plain message to telegram bot",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
