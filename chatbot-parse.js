@@ -39,7 +39,10 @@ module.exports = function(RED) {
       // if parsing ok, then pass through and set variable in context flow
       if (parsedValue != null) {
         context.flow.set(parseVariable, parsedValue);
-        node.send([{payload: parsedValue}, null]);
+        node.send([{
+          payload: parsedValue,
+          originalMessage: msg.originalMessage
+        }, null]);
       } else {
         node.send([null, msg]);
       }
