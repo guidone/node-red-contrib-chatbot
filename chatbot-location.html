@@ -1,0 +1,45 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-location', {
+    category: 'ChatBot',
+    color: '#a6bbcf',
+    defaults: {
+      name: {
+        value: ''
+      },
+      latitude: {
+        value: ''
+      },
+      longitude: {
+        value: false
+      }
+    },
+    inputs: 1,
+    outputs: 2,
+    paletteLabel: 'Location',
+    icon: 'chatbot-location.png',
+    label: function() {
+      return this.name || 'Location';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-location">
+  <div class="form-row">
+      <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row">
+      <label for="node-input-name"><i class="icon-tag"></i> Latitude</label>
+      <input type="text" id="node-input-latitude" placeholder="Latitude">
+  </div>
+  <div class="form-row">
+      <label for="node-input-name"><i class="icon-tag"></i> Longitude</label>
+      <input type="text" id="node-input-longitude" placeholder="Longitude">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-location">
+    <p>Send location message</p>
+</script>
+
+

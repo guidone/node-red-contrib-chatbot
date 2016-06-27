@@ -3,25 +3,18 @@
     category: 'ChatBot',
     color: '#a6bbcf',
     defaults: {
-      name: {
-        value: ''
-      }
     },
     inputs: 1,
     outputs: 1,
-    icon: 'envelope.png',
+    icon: 'chatbot-dispatch.png',
     label: function() {
-      return this.name || 'chatbot-dispatch';
+      return 'Dispatch';
     }
   });
 </script>
 
 
 <script type="text/x-red" data-template-name="chatbot-dispatch">
-    <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
-    </div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-dispatch">

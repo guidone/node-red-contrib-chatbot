@@ -19,7 +19,9 @@
       "chatbot-dispatch": "chatbot-dispatch.js",
       "chatbot-command": "chatbot-command.js",
       "chatbot-image": "chatbot-image.js",
-      "chatbot-analyze": "chatbot-analyze.js"
+      "chatbot-analyze": "chatbot-analyze.js",
+      "chatbot-location": "chatbot-location.js",
+      "chatbot-ask": "chatbot-ask.js"
     }
   },
   "maintainers": [

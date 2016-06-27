@@ -17,7 +17,7 @@ module.exports = function(RED) {
       var currentConversationNode = context.flow.get('currentConversationNode');
       if (currentConversationNode != null) {
         // void the current conversation
-        context.flow.set('currentConversationNode', null)
+        context.flow.set('currentConversationNode', null);
         // emit message
         RED.events.emit('node:' + currentConversationNode, msg);
       } else {
