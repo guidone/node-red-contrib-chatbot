@@ -26,43 +26,46 @@ module.exports = function(RED) {
   function ChatBotListen(config) {
     RED.nodes.createNode(this, config);
     var node = this;
-    this.message = config.message;
-    this.messageType = config.messageType;
+    this.sentences = config.sentences;
 
     this.on('input', function(msg) {
-      var message = node.message;
-      var messageType = node.messageType;
+      var sentences = node.sentences;
 
       // exit if not string
       if (!_.isString(msg.payload.content)) {
         return;
       }
 
-      if (messageType == 'str') {
-        if (msg.payload != null && msg.payload.content == message) {
-          node.send(msg);
-        }
-      } else {
-        // check if valid json
-        var words = null;
-        try {
-          words = JSON.parse(message);
-        } catch(err) {
-          node.error('Error parsing list of words. Only valid JSON like ["word1","word2"], remember to use " and not \'.');
-        }
-        // check if array
-        if (!_.isArray(words)) {
-          node.error('List of words must be an array. Something like ["word1","word2"], remember to use " and not \'.');
-          return;
-        }
-        // analize sentence
-        var analysis = speak.classify(msg.payload.content);
+      // see if one of the rules matches
+      var matched = _(sentences).any(function(sentence) {
+        if (sentence.type == 'str') {
+          if (msg.payload.content == sentence.value) {
+            return true;
+          }
+        } else {
+          // check if valid json
+          var words = null;
 
-        // send message if the sentence is matched, otherwise stop here
-        if (matchSentence(analysis, words)) {
-          node.send(msg);
+          try {
+            words = JSON.parse(sentence.value);
+          } catch(err) {
+            node.error('Error parsing list of words. Only valid JSON like ["word1","word2"], remember to use " and not \'.');
+          }
+          // check if array
+          if (!_.isArray(words)) {
+            node.error('List of words must be an array. Something like ["word1","word2"], remember to use " and not \'.');
+            return;
+          }
+          // analize sentence
+          var analysis = speak.classify(msg.payload.content);
+          // send message if the sentence is matched, otherwise stop here
+          
+          return matchSentence(analysis, words);
         }
-
+      });
+      // pass through the message if any of the above matched
+      if (matched) {
+        node.send(msg);
       }
 
     });

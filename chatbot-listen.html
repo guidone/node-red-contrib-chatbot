@@ -7,62 +7,113 @@
       name: {
         value: ''
       },
-      message: {
-        value: '',
-        validate: function(v) {
-          var ptype = $("#node-input-messageType").val() || this.payloadType;
-          if (ptype === 'json') {
-            try {
-              JSON.parse(v);
-              return true;
-            } catch(err) {
-              return false;
+      sentences: {
+        value: [],
+        validate: function(sentences) {
+          var valid = true;
+          var idx;
+          // if null do nothing
+          if (sentences == null) {
+            return false;
+          }
+          // check for valid json
+          for(idx = 0; idx < sentences.length; idx++) {
+            var sentence = sentences[idx];
+            if (sentence.type == 'json') {
+              try {
+                JSON.parse(sentence.value);
+              } catch(err) {
+                valid = false;
+              }
             }
           }
-          return true;
+          return valid;
         }
-      },
-      messageType: {
-        value: 'str'
       }
     },
     inputs: 1,
     outputs: 1,
     icon: 'chatbot-listen.png',
+    paletteLabel: 'Listen',
     label: function() {
       return this.name || 'chatbot-listen';
     },
-    oneditprepare: function() {
-      if (this.payloadType == null) {
-        if (this.payload == "") {
-          this.payloadType = "date";
-        } else {
-          this.payloadType = "str";
-        }
-      } else if (this.payloadType === 'string' || this.payloadType === 'none') {
-        this.payloadType = "str";
+    oneditsave: function() {
+      var domSentences = $("#node-input-sentences-container").editableList('items');
+      var node = this;
+      var idx;
+      // init
+      node.sentences = [];
+      // move rules
+      for(idx = 0; idx < domSentences.length; idx++) {
+        var selector = domSentences[idx].find('input');
+        node.sentences.push(
+          {
+            type: selector.typedInput('type'),
+            value: selector.typedInput('value')
+          }
+        );
       }
-      $("#node-input-messageType").val(this.messageType);
-      $("#node-input-message").typedInput({
-        default: 'str',
-        typeField: $("#node-input-messageType"),
-        types: [ 'str', 'json']
-      });
+    },
+
+    oneditprepare: function() {
+      function resizeRule(rule) {
+      }
+
+      $('#node-input-sentences-container')
+        .css('min-height','300px').css('min-width','450px')
+        .editableList({
+          addItem: function(container, i, sentence) {
+            var value = typeof answer == 'object' ? '' : {type: 'str', value: ''};
+            var row = $('<div/>').appendTo(container);
+            var selector = $('<input/>', {
+                style: 'width:250px',
+                class: 'node-input-rule-property-name',
+                type: 'text'
+              })
+              .appendTo(row)
+              .typedInput({
+                default: 'str',
+                typeField: $("#node-input-messageType"),
+                types: ['str', 'json']
+              });
+
+            selector.typedInput('value', sentence.value);
+            selector.typedInput('type', sentence.type);
+
+            var newWidth = $("#node-input-sentences-container").width();
+            resizeRule(container);
+          },
+          resizeItem: resizeRule,
+          removable: true,
+          sortable: true
+        });
+
+
+      var sentences = this.sentences || [];
+      // populate the control
+      var idx;
+      for (idx = 0; idx < sentences.length; idx++) {
+        var sentence = sentences[idx];
+        $("#node-input-sentences-container").editableList('addItem', sentence);
+      }
+
     }
   });
 </script>
 
 
 <script type="text/x-red" data-template-name="chatbot-listen">
-    <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
-    </div>
-    <div class="form-row">
-        <label for="node-input-payload"><i class="fa fa-envelope"></i> <span>Listen to</span></label>
-        <input type="text" id="node-input-message" style="width:300px">
-        <input type="hidden" id="node-input-messageType">
-    </div>
+  <div class="form-row">
+    <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row" style="margin-bottom:0;">
+    <label><i class="fa fa-list"></i> <span>Answers</span></label>
+  </div>
+  <div class="form-row node-input-sentences-container-row">
+    <ol id="node-input-sentences-container"></ol>
+  </div>
 
 </script>
 

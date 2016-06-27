@@ -77,9 +77,18 @@ module.exports = function(RED) {
     this.on('input', function(msg) {
       var message = node.message;
       var context = node.context();
-      var chatId = msg.payload.chatId;
-      var messageId = msg.payload.messageId;
+      var originalMessage = msg.originalMessage;
+      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
+      var messageId = msg.payload.messageId || (originalMessage && originalMessage.message_id);
       var answer = node.answer;
+
+      if (!_.isEmpty(node.message)) {
+        message = node.message;
+      } else if (_.isString(msg.payload) && !_.isEmpty(msg.payload)) {
+        message = msg.payload;
+      } else {
+        node.error('Empty message');
+      }
 
       var tokens = message.match(/\{\{([A-Za-z0-9\-\.]*?)\}\}/g);
       if (tokens != null && tokens.length != 0) {
