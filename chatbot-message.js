@@ -111,7 +111,8 @@ module.exports = function(RED) {
         type: 'message',
         content: message,
         chatId: chatId,
-        messageId: messageId
+        messageId: messageId,
+        inbound: false
       };
       // reply flag
       if (answer) {

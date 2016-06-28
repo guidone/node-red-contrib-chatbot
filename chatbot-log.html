@@ -1,0 +1,20 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-log', {
+    category: 'ChatBot',
+    color: '#a6bbcf',
+    defaults: {
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'chatbot-log.png',
+    paletteLabel: 'Log',
+    label: function() {
+      return 'Log';
+    }
+  });
+</script>
+
+
+<script type="text/x-red" data-help-name="chatbot-parse">
+    <p>Log the message</p>
+</script>

@@ -14,10 +14,13 @@
       },
       track: {
         value: false
+      },
+      outputs: {
+        value: 1
       }
     },
     inputs: 1,
-    outputs: 2,
+    outputs: 1,
     paletteLabel: 'Message',
     icon: 'chatbot-message.png',
     label: function() {
@@ -26,6 +29,9 @@
     oneditsave: function() {
       var track = $('#node-input-track').is(':checked');
       this.outputs = track ? 2 : 1;
+    },
+    onpaletteadd: function() {
+      console.log('this', this);
     }
   });
 </script>

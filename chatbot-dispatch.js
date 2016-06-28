@@ -14,6 +14,16 @@ module.exports = function(RED) {
     this.on('input', function(msg) {
 
       var context = node.context();
+
+      // store in flow data of user
+      if (msg.originalMessage != null) {
+        context.flow.set('messageId', msg.originalMessage.message_id);
+        context.flow.set('firstName', msg.originalMessage.from.first_name);
+        context.flow.set('lastName', msg.originalMessage.from.last_name);
+      }
+      // mark the message as inbound
+      msg.payload.inbound = true;
+
       var currentConversationNode = context.flow.get('currentConversationNode');
       if (currentConversationNode != null) {
         // void the current conversation
