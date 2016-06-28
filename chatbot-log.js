@@ -28,6 +28,9 @@ module.exports = function(RED) {
           case 'message':
             logString = msg.payload.content;
             break;
+          case 'location':
+            logString = 'latitude: ' + msg.payload.content.latitude + ' longitude: ' + msg.payload.content.latitude;
+            break;
         }
         // sends out
         if (logString != null) {

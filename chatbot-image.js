@@ -34,7 +34,8 @@ module.exports = function(RED) {
         type: 'photo',
         content: msg.payload,
         chatId: chatId,
-        messageId: messageId
+        messageId: messageId,
+        inbound: false
       };
 
       node.send([msg, null]);

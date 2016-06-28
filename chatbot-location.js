@@ -14,7 +14,7 @@ module.exports = function(RED) {
       node.send([null, msg]);
     };
     RED.events.on('node:' + config.id, handler);
-    
+
     this.on('input', function(msg) {
 
       var context = node.context();
@@ -36,7 +36,8 @@ module.exports = function(RED) {
           longitude: longitude
         },
         chatId: chatId,
-        messageId: messageId
+        messageId: messageId,
+        inbound: false
       };
 
       node.send([msg, null]);

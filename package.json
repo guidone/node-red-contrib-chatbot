@@ -22,7 +22,8 @@
       "chatbot-analyze": "chatbot-analyze.js",
       "chatbot-location": "chatbot-location.js",
       "chatbot-ask": "chatbot-ask.js",
-      "chatbot-log": "chatbot-log.js"
+      "chatbot-log": "chatbot-log.js",
+      "chatbot-telegram-receive": "chatbot-telegram-receive.js"
     }
   },
   "maintainers": [
@@ -38,6 +39,7 @@
     "fast-levenshtein": "^1.1.3",
     "languagedetect": "^1.1.1",
     "moment": "^2.13.0",
+    "node-telegram-bot-api": "^0.23.3",
     "speakeasy-nlp": "^0.2.2",
     "underscore": "^1.8.3"
   }

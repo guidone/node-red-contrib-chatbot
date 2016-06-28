@@ -1,0 +1,117 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-telegram-node', {
+    category: 'config',
+    defaults: {
+      botname: { value: "fooBot", required: true },
+      usernames: { value: "[]", required: false },
+      chatids: { value: "[]", required: false }
+    },
+    credentials: {
+      token: { type: "text" }
+    },
+    label: function () {
+      return this.botname;
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-telegram-node">
+    <div class="form-row">
+        <label for="node-config-input-botname"><i class="icon-bookmark"></i> Bot-Name</label>
+        <input type="text" id="node-config-input-botname">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-token"><i class="icon-tag"></i> Token</label>
+        <input type="text" id="node-config-input-token">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-usernames"><i class="icon-user"></i> Users</label>
+        <input type="text" id="node-config-input-usernames">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-chatids"><i class="icon-comment"></i> ChatIds</label>
+        <input type="text" id="node-config-input-chatids">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-telegram-node">
+    <p>config</p>
+</script>
+
+
+
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-telegram-receive', {
+    category: 'ChatBot',
+    color: '#a6bbcf',
+    defaults: {
+      name: { value: "" },
+      bot: { value:"", type: 'chatbot-telegram-node', required: true }
+    },
+    inputs: 0,
+    outputs: 2,
+    icon: "feed.png",
+    paletteLabel: 'Telegram Receiver',
+    label: function () {
+      return "Telegram Receiver";
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-telegram-receive">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-bot"><i class="icon-bookmark"></i> Bot</label>
+        <input type="text" id="node-input-bot" placeholder="Bot">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-telegram-receive">
+    <p>rec</p>
+</script>
+
+
+
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-telegram-send', {
+    category: 'ChatBot',
+    color: '#a6bbcf',
+    defaults: {
+      name: {
+        value: ''
+      },
+      bot: {
+        value: "",
+        type: 'chatbot-telegram-node',
+        required: true
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: "feed.png",
+    paletteLabel: 'Telegram Sender',
+    label: function () {
+      return "Telegram Sender";
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-telegram-send">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-bot"><i class="icon-bookmark"></i> Bot</label>
+        <input type="text" id="node-input-bot" placeholder="Bot">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-telegram-send">
+    <p>send</p>
+</script>
+
+
