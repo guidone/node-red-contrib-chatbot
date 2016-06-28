@@ -16,7 +16,6 @@
       "chatbot-message": "chatbot-message.js",
       "chatbot-listen": "chatbot-listen.js",
       "chatbot-parse": "chatbot-parse.js",
-      "chatbot-dispatch": "chatbot-dispatch.js",
       "chatbot-command": "chatbot-command.js",
       "chatbot-image": "chatbot-image.js",
       "chatbot-analyze": "chatbot-analyze.js",

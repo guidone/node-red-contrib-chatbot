@@ -18,8 +18,9 @@ module.exports = function(RED) {
     this.on('input', function(msg) {
 
       var context = node.context();
-      var chatId = msg.payload.chatId;
-      var messageId = msg.payload.messageId;
+      var originalMessage = msg.originalMessage;
+      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
+      var messageId = msg.payload.messageId || (originalMessage && originalMessage.message_id);
       var latitude = node.latitude;
       var longitude = node.longitude;
 

@@ -105,26 +105,82 @@ module.exports = function(RED) {
 
     var messageDetails;
     if (botMsg.text) {
-      messageDetails = { chatId: botMsg.chat.id, messageId: botMsg.message_id, type: 'message', content: botMsg.text };
+      messageDetails = {
+        chatId: botMsg.chat.id,
+        messageId: botMsg.message_id,
+        type: 'message',
+        content: botMsg.text
+      };
     } else if (botMsg.photo) {
-      messageDetails = { chatId: botMsg.chat.id, messageId: botMsg.message_id, type: 'photo', content: botMsg.photo[0].file_id, caption: botMsg.caption, date: botMsg.date };
+      messageDetails = {
+        chatId: botMsg.chat.id,
+        messageId: botMsg.message_id,
+        type: 'photo',
+        content: botMsg.photo[0].file_id,
+        caption: botMsg.caption,
+        date: botMsg.date
+      };
     } else if (botMsg.audio) {
-      messageDetails = { chatId: botMsg.chat.id, messageId: botMsg.message_id, type: 'audio', content: botMsg.audio.file_id, caption: botMsg.caption, date: botMsg.date };
+      messageDetails = {
+        chatId: botMsg.chat.id,
+        messageId: botMsg.message_id,
+        type: 'audio',
+        content: botMsg.audio.file_id,
+        caption: botMsg.caption,
+        date: botMsg.date
+      };
     } else if (botMsg.document) {
-      messageDetails = { chatId: botMsg.chat.id, messageId: botMsg.message_id, type: 'document', content: botMsg.document.file_id, caption: botMsg.caption, date: botMsg.date };
+      messageDetails = {
+        chatId: botMsg.chat.id,
+        messageId: botMsg.message_id,
+        type: 'document',
+        content: botMsg.document.file_id,
+        caption: botMsg.caption,
+        date: botMsg.date
+      };
     } else if (botMsg.sticker) {
-      messageDetails = { chatId: botMsg.chat.id, messageId: botMsg.message_id, type: 'sticker', content: botMsg.sticker.file_id };
+      messageDetails = {
+        chatId: botMsg.chat.id,
+        messageId: botMsg.message_id,
+        type: 'sticker',
+        content: botMsg.sticker.file_id
+      };
     } else if (botMsg.video) {
-      messageDetails = { chatId: botMsg.chat.id, messageId: botMsg.message_id, type: 'video', content: botMsg.video.file_id, caption: botMsg.caption, date: botMsg.date };
+      messageDetails = {
+        chatId: botMsg.chat.id,
+        messageId: botMsg.message_id,
+        type: 'video',
+        content: botMsg.video.file_id,
+        caption: botMsg.caption,
+        date: botMsg.date
+      };
     } else if (botMsg.voice) {
-      messageDetails = { chatId: botMsg.chat.id, messageId: botMsg.message_id, type: 'voice', content: botMsg.voice.file_id, caption: botMsg.caption, date: botMsg.date };
+      messageDetails = {
+        chatId: botMsg.chat.id,
+        messageId: botMsg.message_id,
+        type: 'voice',
+        content: botMsg.voice.file_id,
+        caption: botMsg.caption,
+        date: botMsg.date
+      };
     } else if (botMsg.location) {
-      messageDetails = { chatId: botMsg.chat.id, messageId: botMsg.message_id, type: 'location', content: botMsg.location };
+      messageDetails = {
+        chatId: botMsg.chat.id,
+        messageId: botMsg.message_id,
+        type: 'location',
+        content: botMsg.location
+      };
     } else if (botMsg.contact) {
-      messageDetails = { chatId: botMsg.chat.id, messageId: botMsg.message_id, type: 'contact', content: botMsg.contact };
-    } else {
-      // unknown type --> no output
+      messageDetails = {
+        chatId: botMsg.chat.id,
+        messageId: botMsg.message_id,
+        type: 'contact',
+        content: botMsg.contact
+      };
     }
+
+    // mark the message as inbound
+    messageDetails.inbound = true;
 
     return messageDetails;
   }
@@ -146,14 +202,30 @@ module.exports = function(RED) {
         node.telegramBot.on('message', function(botMsg) {
           var username = botMsg.from.username;
           var chatid = botMsg.chat.id;
+          var context = node.context();
+          var currentConversationNode = context.flow.get('currentConversationNode');
+          // store some data in context
+          context.flow.set('messageId', botMsg.message_id);
+          context.flow.set('firstName', botMsg.from.first_name);
+          context.flow.set('lastName', botMsg.from.last_name);
+          // decode the message
           var messageDetails = getMessageDetails(botMsg);
           if (messageDetails) {
-            var msg = { payload: messageDetails, originalMessage: botMsg };
+            var msg = {
+              payload: messageDetails,
+              originalMessage: botMsg
+            };
 
-            if (node.config.isAuthorized(chatid, username)) {
+            // if a conversation is going on, go straight to the conversation node, otherwise if authorized
+            // then first pin, if not second pin
+            if (currentConversationNode != null) {
+              // void the current conversation
+              context.flow.set('currentConversationNode', null);
+              // emit message
+              RED.events.emit('node:' + currentConversationNode, msg);
+            } else if (node.config.isAuthorized(chatid, username)) {
               node.send([msg, null]);
             } else {
-              // node.warn("Unauthorized incoming call from " + username);
               node.send([null, msg]);
             }
           }
@@ -190,104 +262,103 @@ module.exports = function(RED) {
 
     this.on('input', function (msg) {
 
-      if (msg.payload) {
-        if (msg.payload.content) {
-          if (msg.payload.chatId) {
-            if (msg.payload.type) {
-
-              var chatId = msg.payload.chatId;
-              var type = msg.payload.type;
-
-              switch (type) {
-                case 'message':
-
-                  // the maximum message size is 4096 so we must split the message into smaller chunks.
-                  var chunkSize = 4000;
-                  var message = msg.payload.content;
-
-                  var done = false;
-                  do {
-                    var messageToSend;
-                    if (message.length > chunkSize) {
-                      messageToSend = message.substr(0, chunkSize);
-                      message = message.substr(chunkSize);
-                    } else {
-                      messageToSend = message;
-                      done = true;
-                    }
-
-                    node.telegramBot.sendMessage(chatId, messageToSend, msg.payload.options).then(function (sent) {
-                      msg.payload.sentMessageId = sent.message_id;
-                      node.send(msg);
-                    });
-
-                  } while (!done)
-
-
-                  break;
-                case 'photo':
-                  node.telegramBot.sendPhoto(chatId, msg.payload.content, msg.payload.options).then(function (sent) {
-                    msg.payload.sentMessageId = sent.message_id;
-                    node.send(msg);
-                  });
-                  break;
-                case 'audio':
-                  node.telegramBot.sendAudio(chatId, msg.payload.content, msg.payload.options).then(function (sent) {
-                    msg.payload.sentMessageId = sent.message_id;
-                    node.send(msg);
-                  });
-                  break;
-                case 'document':
-                  node.telegramBot.sendDocument(chatId, msg.payload.content, msg.payload.options).then(function (sent) {
-                    msg.payload.sentMessageId = sent.message_id;
-                    node.send(msg);
-                  });
-                  break;
-                case 'sticker':
-                  node.telegramBot.sendSticker(chatId, msg.payload.content, msg.payload.options).then(function (sent) {
-                    msg.payload.sentMessageId = sent.message_id;
-                    node.send(msg);
-                  });
-                  break;
-                case 'video':
-                  node.telegramBot.sendVideo(chatId, msg.payload.content, msg.payload.options).then(function (sent) {
-                    msg.payload.sentMessageId = sent.message_id;
-                    node.send(msg);
-                  });
-                  break;
-                case 'voice':
-                  node.telegramBot.sendVoice(chatId, msg.payload.content, msg.payload.options).then(function (sent) {
-                    msg.payload.sentMessageId = sent.message_id;
-                    node.send(msg);
-                  });
-                  break;
-                case 'location':
-                  node.telegramBot.sendLocation(chatId, msg.payload.content.latitude, msg.payload.content.longitude, msg.payload.options).then(function (sent) {
-                    msg.payload.sentMessageId = sent.message_id;
-                    node.send(msg);
-                  });
-                  break;
-                default:
-                // unknown type nothing to send.
-              }
-
-            } else {
-              node.warn("msg.payload.type is empty");
-            }
-          } else {
-            node.warn("msg.payload.chatId is empty");
-          }
-        } else {
-          node.warn("msg.payload.content is empty");
-        }
-      } else {
+      if (msg.payload == null) {
         node.warn("msg.payload is empty");
+        return;
       }
+      if (msg.payload.content == null) {
+        node.warn("msg.payload.content is empty");
+        return;
+      }
+      if (msg.payload.chatId == null) {
+        node.warn("msg.payload.chatId is empty");
+        return;
+      }
+      if (msg.payload.type == null) {
+        node.warn("msg.payload.type is empty");
+        return;
+      }
+
+      var chatId = msg.payload.chatId;
+      var type = msg.payload.type;
+
+      switch (type) {
+        case 'message':
+
+          // the maximum message size is 4096 so we must split the message into smaller chunks.
+          var chunkSize = 4000;
+          var message = msg.payload.content;
+
+          var done = false;
+          do {
+            var messageToSend;
+            if (message.length > chunkSize) {
+              messageToSend = message.substr(0, chunkSize);
+              message = message.substr(chunkSize);
+            } else {
+              messageToSend = message;
+              done = true;
+            }
+
+            node.telegramBot.sendMessage(chatId, messageToSend, msg.payload.options).then(function (sent) {
+              msg.payload.sentMessageId = sent.message_id;
+              node.send(msg);
+            });
+
+          } while (!done)
+
+
+          break;
+        case 'photo':
+          node.telegramBot.sendPhoto(chatId, msg.payload.content, msg.payload.options).then(function (sent) {
+            msg.payload.sentMessageId = sent.message_id;
+            node.send(msg);
+          });
+          break;
+        case 'audio':
+          node.telegramBot.sendAudio(chatId, msg.payload.content, msg.payload.options).then(function (sent) {
+            msg.payload.sentMessageId = sent.message_id;
+            node.send(msg);
+          });
+          break;
+        case 'document':
+          node.telegramBot.sendDocument(chatId, msg.payload.content, msg.payload.options).then(function (sent) {
+            msg.payload.sentMessageId = sent.message_id;
+            node.send(msg);
+          });
+          break;
+        case 'sticker':
+          node.telegramBot.sendSticker(chatId, msg.payload.content, msg.payload.options).then(function (sent) {
+            msg.payload.sentMessageId = sent.message_id;
+            node.send(msg);
+          });
+          break;
+        case 'video':
+          node.telegramBot.sendVideo(chatId, msg.payload.content, msg.payload.options).then(function (sent) {
+            msg.payload.sentMessageId = sent.message_id;
+            node.send(msg);
+          });
+          break;
+        case 'voice':
+          node.telegramBot.sendVoice(chatId, msg.payload.content, msg.payload.options).then(function (sent) {
+            msg.payload.sentMessageId = sent.message_id;
+            node.send(msg);
+          });
+          break;
+        case 'location':
+          node.telegramBot.sendLocation(chatId, msg.payload.content.latitude, msg.payload.content.longitude, msg.payload.options).then(function (sent) {
+            msg.payload.sentMessageId = sent.message_id;
+            node.send(msg);
+          });
+          break;
+        default:
+          // unknown type, do nothing
+      }
+
+
     });
   }
   RED.nodes.registerType('chatbot-telegram-send', TelegramOutNode);
-
-
 
 
 };

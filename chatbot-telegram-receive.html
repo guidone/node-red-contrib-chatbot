@@ -45,8 +45,11 @@
     category: 'ChatBot',
     color: '#a6bbcf',
     defaults: {
-      name: { value: "" },
-      bot: { value:"", type: 'chatbot-telegram-node', required: true }
+      bot: {
+        value: '',
+        type: 'chatbot-telegram-node',
+        required: true
+      }
     },
     inputs: 0,
     outputs: 2,
@@ -59,18 +62,14 @@
 </script>
 
 <script type="text/x-red" data-template-name="chatbot-telegram-receive">
-    <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
-    </div>
-    <div class="form-row">
-        <label for="node-input-bot"><i class="icon-bookmark"></i> Bot</label>
-        <input type="text" id="node-input-bot" placeholder="Bot">
-    </div>
+  <div class="form-row">
+      <label for="node-input-bot"><i class="icon-bookmark"></i> Telegram Bot</label>
+      <input type="text" id="node-input-bot" placeholder="Bot">
+  </div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-telegram-receive">
-    <p>rec</p>
+    <p>Receive a message (text, audio, video, image, etc) from a Telegram bot.</p>
 </script>
 
 
