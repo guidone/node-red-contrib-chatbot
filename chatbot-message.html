@@ -11,6 +11,9 @@
       },
       answer: {
         value: false
+      },
+      track: {
+        value: false
       }
     },
     inputs: 1,
@@ -19,23 +22,35 @@
     icon: 'chatbot-message.png',
     label: function() {
       return this.name || 'Message';
+    },
+    oneditsave: function() {
+      var track = $('#node-input-track').is(':checked');
+      this.outputs = track ? 2 : 1;
     }
   });
 </script>
 
 <script type="text/x-red" data-template-name="chatbot-message">
-    <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
-    </div>
-    <div class="form-row">
-        <label for="node-input-message"><i class="icon-envelope"></i> Message</label>
-        <textarea id="node-input-message" placeholder="Message" style="width:100%;"></textarea>
-    </div>
-    <div class="form-row">
-        <label for="node-input-answer"><i class="icon-envelope"></i> Answer to previous</label>
-        <input type="checkbox" value="true" id="node-input-answer">
-    </div>
+<div class="form-row">
+  <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+  <input type="text" id="node-input-name" placeholder="Name">
+</div>
+<div class="form-row">
+  <label for="node-input-message"><i class="icon-envelope"></i> Message</label>
+  <textarea id="node-input-message" placeholder="Message" style="width:100%;"></textarea>
+</div>
+<div class="form-row">
+  <label for="node-input-answer"><i class="icon-envelope"></i> Answer</label>
+  <input type="checkbox" value="true" id="node-input-answer">
+  <span style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;">Quote the previous message.</span>
+</div>
+<div class="form-row">
+  <label for="node-input-track"><i class="icon-envelope"></i> Track</label>
+  <input type="checkbox" value="true" id="node-input-track">
+  <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;">Track response of the user, check this to show an additional pin for this block, the next
+  input from the user will be considered a reply to this message and routed to the second pin.
+  </div>
+</div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-message">

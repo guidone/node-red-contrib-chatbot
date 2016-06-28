@@ -8,6 +8,7 @@ module.exports = function(RED) {
 
     this.message = config.message;
     this.answer = config.answer;
+    this.track = config.track;
 
     // extract subtokens from a object value
     var extractObjectKeys = function(value, subtokens) {
@@ -76,6 +77,7 @@ module.exports = function(RED) {
 
     this.on('input', function(msg) {
       var message = node.message;
+      var track = node.track;
       var context = node.context();
       var originalMessage = msg.originalMessage;
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
@@ -118,7 +120,7 @@ module.exports = function(RED) {
         };
       }
 
-      node.send([msg, null]);
+      node.send(track ? [msg, null] : msg);
     });
 
     // cleanup on close
@@ -128,5 +130,4 @@ module.exports = function(RED) {
   }
 
   RED.nodes.registerType('chatbot-message', ChatBotMessage);
-
 };
