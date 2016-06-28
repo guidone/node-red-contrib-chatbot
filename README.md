@@ -1,5 +1,4 @@
-# node-red-contrib-telegrambot-message
-Send message node for Telegram Bot for Node Red
+# node-red-contrib-chatbot
+Build a full featured chat bot with Node Red and Telegram
 
-
-
+*under construction*
