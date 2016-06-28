@@ -1,14 +1,14 @@
 {
-  "name": "node-red-contrib-telegrambot-message",
+  "name": "node-red-contrib-chatbot",
   "version": "0.2.4",
-  "description": "Send plain message to telegram bot",
+  "description": "Chat bot for Node Red and Telegram",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repositories": [
     {
       "type": "git",
-      "url": "https://github.com/guidone/node-red-contrib-telegrambot-message.git"
+      "url": "https://github.com/guidone/node-red-contrib-chatbot.git"
     }
   ],
   "node-red": {
