@@ -1,7 +1,7 @@
 <script type="text/javascript">
   RED.nodes.registerType('chatbot-parse', {
     category: 'ChatBot',
-    color: '#a6bbcf',
+    color: '#FFCC66',
     defaults: {
       name: {
         vallue: ''
@@ -23,14 +23,13 @@
   });
 </script>
 
-
 <script type="text/x-red" data-template-name="chatbot-parse">
     <div class="form-row">
         <label for="node-input-name"><i class="icon-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
     <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Variable</label>
+        <label for="node-input-name"><i class="icon-cog"></i> Variable</label>
         <select id="node-input-parseType">
           <option value="string">String</option>
           <option value="email">Email</option>
@@ -39,12 +38,27 @@
         </select>
     </div>
     <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Variable</label>
+        <label for="node-input-name"><i class="icon-bookmark"></i> Variable</label>
         <input type="text" id="node-input-parseVariable" placeholder="Store into variable name">
+        <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+        The parsed value will be store in the <code>context.flow.&lt;variable-name&gt;</code>
+        </div>
     </div>
 
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-parse">
-    <p>Parse the input</p>
+  <p>Parse the payload by type (string, number, email, location, etc) and store the value in the context flow and
+    pass through the output pin
+  </p>
+  <p>
+    Available parse type are:
+    <ul>
+    <li><b>string:</b> any payload of type string will be accepted</li>
+    <li><b>email:</b> parse a valid email</li>
+    <li><b>integer:</b> parse a valid integer number</li>
+    <li><b>location:</b> extract the location from a <code>location</code> chat message, payload (and the
+    value stored in the variable) will be <code>{latitude: xxxx, longitude: yyyy}</code></li>
+    </ul>
+  </p>
 </script>

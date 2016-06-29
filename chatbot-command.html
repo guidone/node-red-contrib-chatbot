@@ -1,13 +1,13 @@
 <script type="text/javascript">
   RED.nodes.registerType('chatbot-command', {
     category: 'ChatBot',
-    color: '#a6bbcf',
+    color: '#FFCC66',
     defaults: {
       name: {
         value: ''
       },
       command: {
-        value: ''
+        value: '/'
       }
     },
     inputs: 1,
@@ -29,14 +29,23 @@
 </script>
 
 <script type="text/x-red" data-template-name="chatbot-command">
-    <div class="form-row">
-        <label for="node-input-command"><i class="icon-tag"></i> Command</label>
-        <input type="text" id="node-input-command" placeholder="Command">
+  <div class="form-row">
+    <label for="node-input-command"><i class="icon-tag"></i> Command</label>
+    <input type="text" id="node-input-command" placeholder="Command">
+    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+      The command to listen to, should start with <code>/</code>
     </div>
+  </div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-command">
-    <p>Listen for Telegram command</p>
+  <p>
+  Listen for Telegram command like <code>/my-command</code>, pass through the payload to the output only if the
+  message content equals the command.
+  </p>
+  <p>
+  In Telegram are available shortcuts for commands (can be defined in <code>@BotFather</code>).
+  </p>
 </script>
 
 

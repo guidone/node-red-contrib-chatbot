@@ -1,16 +1,20 @@
 <script type="text/javascript">
   RED.nodes.registerType('chatbot-location', {
     category: 'ChatBot',
-    color: '#a6bbcf',
+    color: '#FFCC66',
     defaults: {
       name: {
         value: ''
       },
       latitude: {
-        value: ''
+        value: '',
+        required: true,
+        validate: RED.validators.number()
       },
       longitude: {
-        value: false
+        value: false,
+        required: true,
+        validate: RED.validators.number()
       }
     },
     inputs: 1,
@@ -29,17 +33,15 @@
       <input type="text" id="node-input-name" placeholder="Name">
   </div>
   <div class="form-row">
-      <label for="node-input-name"><i class="icon-tag"></i> Latitude</label>
-      <input type="text" id="node-input-latitude" placeholder="Latitude">
-  </div>
-  <div class="form-row">
-      <label for="node-input-name"><i class="icon-tag"></i> Longitude</label>
-      <input type="text" id="node-input-longitude" placeholder="Longitude">
+      <label for="node-input-name"><i class="icon-map-marker"></i> Latitude</label>
+      <input type="text" id="node-input-latitude" placeholder="Latitude" style="width: 30%;">
+      <input type="text" id="node-input-longitude" placeholder="Longitude" style="width: 30%;">
   </div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-location">
-    <p>Send location message</p>
+    <p>Sends location message with latitude and longitude coordinates, on the chat client that will be rendered with
+    a map.</p>
 </script>
 
 

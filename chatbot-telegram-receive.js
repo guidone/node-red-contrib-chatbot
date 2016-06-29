@@ -205,6 +205,7 @@ module.exports = function(RED) {
           var context = node.context();
           var currentConversationNode = context.flow.get('currentConversationNode');
           // store some data in context
+          context.flow.set('chatId', chatid);
           context.flow.set('messageId', botMsg.message_id);
           context.flow.set('firstName', botMsg.from.first_name);
           context.flow.set('lastName', botMsg.from.last_name);
