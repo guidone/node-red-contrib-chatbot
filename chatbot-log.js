@@ -1,5 +1,6 @@
 var _ = require('underscore');
 var moment = require('moment');
+var ChatContext = require('./lib/chat-context.js');
 
 module.exports = function(RED) {
 
@@ -10,9 +11,12 @@ module.exports = function(RED) {
     this.on('input', function(msg) {
 
       var context = node.context();
-      var firstName = context.flow.get('firstName');
-      var lastName = context.flow.get('lastName');
+      var originalMessage = msg.originalMessage;
+      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
       var inbound = msg.payload != null && msg.payload.inbound === true;
+      var chatContext = context.flow.get('chat:' + chatId) || ChatContext(chatId);
+      var firstName = chatContext.get('firstName');
+      var lastName = chatContext.get('lastName');
 
       var name = [];
       if (firstName != null ) {
@@ -26,7 +30,7 @@ module.exports = function(RED) {
         var logString = null;
         switch(msg.payload.type) {
           case 'message':
-            logString = msg.payload.content;
+            logString = msg.payload.content.replace(/\n/g, '');
             break;
           case 'location':
             logString = 'latitude: ' + msg.payload.content.latitude + ' longitude: ' + msg.payload.content.latitude;
@@ -35,9 +39,10 @@ module.exports = function(RED) {
         // sends out
         if (logString != null) {
           node.send({
-            payload: (inbound ? '> ' : '< ')
-              + (!_.isEmpty(name) ? '[' + name.join(' ') + '] ' : '')
-              + moment().toString() + ' - ' + logString
+            payload: chatId + ' '
+            + (!_.isEmpty(name) ? '[' + name.join(' ') + '] ' : '')
+            + (inbound ? '> ' : '< ')
+            + moment().toString() + ' - ' + logString
           });
         }
       }

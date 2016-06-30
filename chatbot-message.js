@@ -1,4 +1,5 @@
 var _ = require('underscore');
+var ChatContext = require('./lib/chat-context.js');
 
 module.exports = function(RED) {
 
@@ -31,10 +32,15 @@ module.exports = function(RED) {
     var getTokenValue = function(token, msg) {
       var value = null;
       var context = node.context();
+      var originalMessage = msg.originalMessage;
+      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
       var subtokens = token.split('.');
       var variable = subtokens[0];
+      var chatContext = context.flow.get('chat:' + chatId) || ChatContext(chatId);
 
-      if (!_.isEmpty(context.get(variable))) {
+      if (!_.isEmpty(chatContext.get(variable))) {
+        value = chatContext.get(variable);
+      } else if (!_.isEmpty(context.get(variable))) {
         value = context.get(variable);
       } else if (!_.isEmpty(context.flow.get(variable))) {
         value = context.flow.get(variable);
@@ -82,6 +88,9 @@ module.exports = function(RED) {
       var originalMessage = msg.originalMessage;
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
       var messageId = msg.payload.messageId || (originalMessage && originalMessage.message_id);
+      // todo export
+      var chatContext = context.flow.get('chat:' + chatId) || ChatContext(chatId);
+
       var answer = node.answer;
 
       if (!_.isEmpty(node.message)) {
@@ -104,7 +113,8 @@ module.exports = function(RED) {
       // check if this node has some wirings in the follow up pin, in that case
       // the next message should be redirected here
       if (!_.isEmpty(node.wires[1])) {
-        context.flow.set('currentConversationNode', node.id);
+        chatContext.set('currentConversationNode', node.id);
+        chatContext.set('currentConversationNode_at', moment());
       }
       // send out the message
       msg.payload = {

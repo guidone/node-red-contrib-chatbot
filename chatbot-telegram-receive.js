@@ -1,5 +1,8 @@
 var _ = require('underscore');
 var telegramBot = require('node-telegram-bot-api');
+var moment = require('moment');
+var ChatContext = require('./lib/chat-context.js');
+
 
 module.exports = function(RED) {
 
@@ -18,9 +21,9 @@ module.exports = function(RED) {
       this.usernames = n.usernames.split(',');
     }
 
-    this.chatids = [];
-    if (n.chatids) {
-      this.chatids = n.chatids.split(',').map(function (item) {
+    this.chatIds = [];
+    if (n.chatIds) {
+      this.chatIds = n.chatIds.split(',').map(function (item) {
         return parseInt(item, 10);
       });
     }
@@ -60,13 +63,13 @@ module.exports = function(RED) {
       return isAuthorized;
     }
 
-    this.isAuthorizedChat = function (chatid) {
+    this.isAuthorizedChat = function (chatId) {
       var isAuthorized = false;
-      var length = self.chatids.length;
+      var length = self.chatIds.length;
       if (length > 0) {
         for (var i = 0; i < length; i++) {
-          var id = self.chatids[i];
-          if (id == chatid) {
+          var id = self.chatIds[i];
+          if (id == chatId) {
             isAuthorized = true;
             break;
           }
@@ -76,16 +79,16 @@ module.exports = function(RED) {
       return isAuthorized;
     }
 
-    this.isAuthorized = function (chatid, user) {
+    this.isAuthorized = function (chatId, user) {
       var isAuthorizedUser = self.isAuthorizedUser(user);
-      var isAuthorizedChatId = self.isAuthorizedChat(chatid);
+      var isAuthorizedChatId = self.isAuthorizedChat(chatId);
 
       var isAuthorized = false;
 
       if (isAuthorizedUser || isAuthorizedChatId) {
         isAuthorized = true;
       } else {
-        if (self.chatids.length == 0 && self.usernames.length == 0) {
+        if (self.chatIds.length == 0 && self.usernames.length == 0) {
           isAuthorized = true;
         }
       }
@@ -103,16 +106,16 @@ module.exports = function(RED) {
   // creates the message details object from the original message
   function getMessageDetails(botMsg) {
 
-    var messageDetails;
+    var payload;
     if (botMsg.text) {
-      messageDetails = {
+      payload = {
         chatId: botMsg.chat.id,
         messageId: botMsg.message_id,
         type: 'message',
         content: botMsg.text
       };
     } else if (botMsg.photo) {
-      messageDetails = {
+      payload = {
         chatId: botMsg.chat.id,
         messageId: botMsg.message_id,
         type: 'photo',
@@ -121,7 +124,7 @@ module.exports = function(RED) {
         date: botMsg.date
       };
     } else if (botMsg.audio) {
-      messageDetails = {
+      payload = {
         chatId: botMsg.chat.id,
         messageId: botMsg.message_id,
         type: 'audio',
@@ -130,7 +133,7 @@ module.exports = function(RED) {
         date: botMsg.date
       };
     } else if (botMsg.document) {
-      messageDetails = {
+      payload = {
         chatId: botMsg.chat.id,
         messageId: botMsg.message_id,
         type: 'document',
@@ -139,14 +142,14 @@ module.exports = function(RED) {
         date: botMsg.date
       };
     } else if (botMsg.sticker) {
-      messageDetails = {
+      payload = {
         chatId: botMsg.chat.id,
         messageId: botMsg.message_id,
         type: 'sticker',
         content: botMsg.sticker.file_id
       };
     } else if (botMsg.video) {
-      messageDetails = {
+      payload = {
         chatId: botMsg.chat.id,
         messageId: botMsg.message_id,
         type: 'video',
@@ -155,7 +158,7 @@ module.exports = function(RED) {
         date: botMsg.date
       };
     } else if (botMsg.voice) {
-      messageDetails = {
+      payload = {
         chatId: botMsg.chat.id,
         messageId: botMsg.message_id,
         type: 'voice',
@@ -164,14 +167,14 @@ module.exports = function(RED) {
         date: botMsg.date
       };
     } else if (botMsg.location) {
-      messageDetails = {
+      payload = {
         chatId: botMsg.chat.id,
         messageId: botMsg.message_id,
         type: 'location',
         content: botMsg.location
       };
     } else if (botMsg.contact) {
-      messageDetails = {
+      payload = {
         chatId: botMsg.chat.id,
         messageId: botMsg.message_id,
         type: 'contact',
@@ -180,9 +183,9 @@ module.exports = function(RED) {
     }
 
     // mark the message as inbound
-    messageDetails.inbound = true;
+    payload.inbound = true;
 
-    return messageDetails;
+    return payload;
   }
 
 
@@ -200,31 +203,56 @@ module.exports = function(RED) {
         this.status({ fill: "green", shape: "ring", text: "connected" });
 
         node.telegramBot.on('message', function(botMsg) {
-          var username = botMsg.from.username;
-          var chatid = botMsg.chat.id;
+          var username = botMsg.from.first_name + ' ' + botMsg.from.last_name;
+          var chatId = botMsg.chat.id;
+          var userId = botMsg.from.id;
           var context = node.context();
-          var currentConversationNode = context.flow.get('currentConversationNode');
-          // store some data in context
-          context.flow.set('chatId', chatid);
-          context.flow.set('messageId', botMsg.message_id);
-          context.flow.set('firstName', botMsg.from.first_name);
-          context.flow.set('lastName', botMsg.from.last_name);
+
+          // create list of users if not present
+          var chatBotUsers = context.flow.get('chatBotUsers');
+          if (chatBotUsers == null) {
+            chatBotUsers = {};
+            context.flow.set('chatBotUsers', chatBotUsers);
+          }
+
+          // store the user
+          chatBotUsers[chatId] = {
+            chatId: chatId,
+            username: username,
+            timestamp: moment()
+          };
+
+          // get or create chat id
+          var chatContext = context.flow.get('chat:' + chatId);
+          if (chatContext == null) {
+            chatContext = ChatContext(chatId);
+            context.flow.set('chat:' + chatId, chatContext);
+          }
+
+          // store some information
+          chatContext.set('chatId', chatId);
+          chatContext.set('messageId', botMsg.message_id);
+          chatContext.set('userId', userId);
+          chatContext.set('firstName', botMsg.from.first_name);
+          chatContext.set('lastName', botMsg.from.last_name);
+
           // decode the message
-          var messageDetails = getMessageDetails(botMsg);
-          if (messageDetails) {
+          var payload = getMessageDetails(botMsg);
+          if (payload) {
             var msg = {
-              payload: messageDetails,
+              payload: payload,
               originalMessage: botMsg
             };
 
+            var currentConversationNode = chatContext.get('currentConversationNode');
             // if a conversation is going on, go straight to the conversation node, otherwise if authorized
             // then first pin, if not second pin
             if (currentConversationNode != null) {
               // void the current conversation
-              context.flow.set('currentConversationNode', null);
-              // emit message
+              chatContext.set('currentConversationNode', null);
+              // emit message directly the node where the conversation stopped
               RED.events.emit('node:' + currentConversationNode, msg);
-            } else if (node.config.isAuthorized(chatid, username)) {
+            } else if (node.config.isAuthorized(chatId, username)) {
               node.send([msg, null]);
             } else {
               node.send([null, msg]);
