@@ -1,0 +1,45 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-conversation', {
+    category: 'ChatBot',
+    color: '#FFCC66',
+    defaults: {
+      name: {
+        value: ''
+      },
+      chatId: {
+        value: ''
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'Conversation',
+    icon: 'chatbot-conversation.png',
+    label: function() {
+      return 'Conversation';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-conversation">
+  <div class="form-row">
+      <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row">
+      <label for="node-input-name"><i class="icon-tag"></i> ChatId</label>
+      <input type="text" id="node-input-chatId" placeholder="Chat id">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-conversation">
+  <p>
+  Start a Telegram conversation, for example to send a message to a user in response of a Node Red event, for example
+  a http call, chain this node to a Message node (or Image, Location, etc).
+  </p>
+  <p>
+  The <code>chatId</code> is needed to initiate the conversation (you can grab the chatId from the logs or a debug node),
+  the <code>chatId</code> is persisted for the same user (even if he quits the bot and re-enter).
+  </p>
+</script>
+
+
