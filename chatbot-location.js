@@ -1,4 +1,6 @@
 var _ = require('underscore');
+var moment = require('moment');
+var ChatContext = require('./lib/chat-context.js');
 
 module.exports = function(RED) {
 
@@ -21,13 +23,15 @@ module.exports = function(RED) {
       var originalMessage = msg.originalMessage;
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
       var messageId = msg.payload.messageId || (originalMessage && originalMessage.message_id);
+      var chatContext = context.flow.get('chat:' + chatId) || ChatContext(chatId);
       var latitude = node.latitude;
       var longitude = node.longitude;
 
       // check if this node has some wirings in the follow up pin, in that case
       // the next message should be redirected here
       if (!_.isEmpty(node.wires[1])) {
-        context.flow.set('currentConversationNode', node.id);
+        chatContext.set('currentConversationNode', node.id);
+        chatContext.set('currentConversationNode_at', moment());
       }
       // send out the message
       msg.payload = {
