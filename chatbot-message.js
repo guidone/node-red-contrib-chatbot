@@ -89,7 +89,6 @@ module.exports = function(RED) {
       var originalMessage = msg.originalMessage;
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
       var messageId = msg.payload.messageId || (originalMessage && originalMessage.message_id);
-      // todo export
       var chatContext = context.flow.get('chat:' + chatId) || ChatContext(chatId);
 
       var answer = node.answer;

@@ -1,4 +1,6 @@
 var _ = require('underscore');
+var ChatContext = require('./lib/chat-context.js');
+var moment = require('moment');
 
 module.exports = function(RED) {
 
@@ -19,8 +21,8 @@ module.exports = function(RED) {
       var chatId = msg.payload.chatId;
       var messageId = msg.payload.messageId;
       var answers = node.answers;
-
-
+      var chatContext = context.flow.get('chat:' + chatId) || ChatContext(chatId);
+      
       // prepare array for answers
       var messageAnswers = _(answers).map(function(answer) {
         return [answer];
@@ -29,7 +31,8 @@ module.exports = function(RED) {
       // check if this node has some wirings in the follow up pin, in that case
       // the next message should be redirected here
       if (!_.isEmpty(node.wires[1])) {
-        context.flow.set('currentConversationNode', node.id);
+        chatContext.set('currentConversationNode', node.id);
+        chatContext.set('currentConversationNode_at', moment());
       }
 
       // send out the message
