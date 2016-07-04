@@ -23,6 +23,7 @@
       "chatbot-ask": "chatbot-ask.js",
       "chatbot-log": "chatbot-log.js",
       "chatbot-conversation": "chatbot-conversation.js",
+      "chatbot-waiting": "chatbot-waiting.js",
       "chatbot-telegram-receive": "chatbot-telegram-receive.js"
     }
   },

@@ -295,10 +295,6 @@ module.exports = function(RED) {
         node.warn("msg.payload is empty");
         return;
       }
-      if (msg.payload.content == null) {
-        node.warn("msg.payload.content is empty");
-        return;
-      }
       if (msg.payload.chatId == null) {
         node.warn("msg.payload.chatId is empty");
         return;
@@ -311,6 +307,12 @@ module.exports = function(RED) {
       var chatId = msg.payload.chatId;
       var type = msg.payload.type;
 
+      /*if (msg.payload.content == null) {
+        node.warn("msg.payload.content is empty");
+        return;
+      }*/
+
+      
       switch (type) {
         case 'message':
 
@@ -334,7 +336,7 @@ module.exports = function(RED) {
               node.send(msg);
             });
 
-          } while (!done)
+          } while (!done);
 
 
           break;
@@ -380,6 +382,14 @@ module.exports = function(RED) {
             node.send(msg);
           });
           break;
+        case 'action':
+          node.telegramBot.sendChatAction(chatId, msg.payload.waitingType != null ? msg.payload.waitingType : 'typing')
+            .then(function (sent) {
+              msg.payload.sentMessageId = sent.message_id;
+              node.send(msg);
+            });
+          break;
+
         default:
           // unknown type, do nothing
       }

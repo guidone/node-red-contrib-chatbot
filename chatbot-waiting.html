@@ -1,0 +1,44 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-waiting', {
+    category: 'ChatBot',
+    color: '#FFCC66',
+    defaults: {
+      waitingType: {
+        value: ''
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'chatbot-waiting.png',
+    paletteLabel: 'Waiting',
+    label: function() {
+      return 'Waiting...';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-waiting">
+    <div class="form-row">
+        <label for="node-input-type"><i class="icon-cog"></i> Type</label>
+        <select id="node-input-waitingType">
+          <option value="">Default</option>
+          <option value="typing">Typing</option>
+          <option value="upload_photo">Uploading a photo</option>
+          <option value="record_video">Recording video</option>
+          <option value="upload_video">Uploading a video</option>
+          <option value="record_audio">Recording audio</option>
+          <option value="upload_audio">Uploading audio</option>
+          <option value="upload_document">Uploading document</option>
+          <option value="find_location">Finding location</option>
+        </select>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-waiting">
+  <p>
+    Set the waiting status on the chat client (somehting like <em>your_bot is typing...</em>)
+  </p>
+  <p>
+    Different type of wait are available: typing, recording a video, uploading a video etc.
+  </p>
+</script>
