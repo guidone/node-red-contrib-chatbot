@@ -1,5 +1,6 @@
 var _ = require('underscore');
 var ChatContext = require('./lib/chat-context.js');
+var moment = require('moment');
 
 module.exports = function(RED) {
 
