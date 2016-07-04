@@ -2,6 +2,9 @@ var _ = require('underscore');
 
 module.exports = function(RED) {
 
+  var yesWords = ['yes', 'on', 'true', 'yeah', 'ya', 'si'];
+  var noWords = ['no', 'off', 'false', 'nei', 'nein'];
+
   var extractEmail = function(sentence) {
     var re = /(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/;
     var matched = sentence.match(re);
@@ -32,6 +35,13 @@ module.exports = function(RED) {
         case 'location':
           if (_.isObject(msg.payload.content) && msg.payload.content.latitude && msg.payload.content.longitude) {
             parsedValue = msg.payload.content;
+          }
+          break;
+        case 'boolean':
+          if (_.isString(msg.payload.content) && _(yesWords).contains(msg.payload.content.toLowerCase())) {
+            parsedValue = true;
+          } else if (_.isString(msg.payload.content) && _(noWords).contains(msg.payload.content.toLowerCase())) {
+            parsedValue = false;
           }
           break;
       }
