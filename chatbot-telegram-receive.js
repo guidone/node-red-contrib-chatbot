@@ -201,6 +201,7 @@ module.exports = function(RED) {
           chatContext.set('firstName', botMsg.from.first_name);
           chatContext.set('lastName', botMsg.from.last_name);
           chatContext.set('authorized', isAuthorized);
+          chatContext.set('transport', 'telegram');
 
           // decode the message
           var payload = getMessageDetails(botMsg);
