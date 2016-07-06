@@ -167,7 +167,7 @@ module.exports = function(RED) {
         this.status({ fill: "green", shape: "ring", text: "connected" });
 
         node.telegramBot.on('message', function(botMsg) {
-          var username = botMsg.from.first_name + ' ' + botMsg.from.last_name;
+          var username = !_.isEmpty(botMsg.from.username) ? botMsg.from.username : null;
           var chatId = botMsg.chat.id;
           var userId = botMsg.from.id;
           var context = node.context();
@@ -180,18 +180,21 @@ module.exports = function(RED) {
             context.flow.set('chatBotUsers', chatBotUsers);
           }
 
-          // store the user
-          chatBotUsers[chatId] = {
-            chatId: chatId,
-            username: username,
-            timestamp: moment()
-          };
-
           // get or create chat id
           var chatContext = context.flow.get('chat:' + chatId);
           if (chatContext == null) {
             chatContext = ChatContext(chatId);
             context.flow.set('chat:' + chatId, chatContext);
+          }
+
+          // store the user
+          if (!_.isEmpty(username)) {
+            chatBotUsers[chatId] = {
+              chatId: chatId,
+              username: username,
+              timestamp: moment()
+            };
+            chatContext.set('username', username);
           }
 
           // store some information
@@ -202,6 +205,7 @@ module.exports = function(RED) {
           chatContext.set('lastName', botMsg.from.last_name);
           chatContext.set('authorized', isAuthorized);
           chatContext.set('transport', 'telegram');
+
 
           // decode the message
           var payload = getMessageDetails(botMsg);
