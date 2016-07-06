@@ -6,10 +6,6 @@ var ChatContext = require('./lib/chat-context.js');
 
 module.exports = function(RED) {
 
-  // --------------------------------------------------------------------------------------------
-  // The configuration node
-  // holds the token
-  // and establishes the connection to the telegram bot
   function TelegramBotNode(n) {
     RED.nodes.createNode(this, n);
 
@@ -18,15 +14,15 @@ module.exports = function(RED) {
 
     this.usernames = [];
     if (n.usernames) {
-      this.usernames = n.usernames.split(',');
+
+      this.usernames = _(n.usernames.split(',')).chain()
+        .map(function(userId) {
+          return userId.match(/^[0-9]*?$/) ? parseInt(userId, 10) : null
+        })
+        .compact()
+        .value();
     }
 
-    this.chatIds = [];
-    if (n.chatIds) {
-      this.chatIds = n.chatIds.split(',').map(function (item) {
-        return parseInt(item, 10);
-      });
-    }
 
     if (this.credentials) {
       this.token = this.credentials.token;
@@ -42,7 +38,6 @@ module.exports = function(RED) {
 
     this.on('close', function (done) {
 
-      // Workaround as the underlying bot api does not offer a stop function.
       if (self.telegramBot._polling) {
         self.telegramBot._polling.abort = true;
         self.telegramBot._polling.lastRequest.cancel('Closing node.');
@@ -53,52 +48,22 @@ module.exports = function(RED) {
     });
 
     this.isAuthorizedUser = function (user) {
-      var isAuthorized = false;
+      // always authorized if no usernames
       if (self.usernames.length > 0) {
-        if (self.usernames.indexOf(user) >= 0) {
-          isAuthorized = true;
-        }
+        return self.usernames.indexOf(user) >= 0;
       }
-
-      return isAuthorized;
-    }
-
-    this.isAuthorizedChat = function (chatId) {
-      var isAuthorized = false;
-      var length = self.chatIds.length;
-      if (length > 0) {
-        for (var i = 0; i < length; i++) {
-          var id = self.chatIds[i];
-          if (id == chatId) {
-            isAuthorized = true;
-            break;
-          }
-        }
-      }
-
-      return isAuthorized;
-    }
+      return true;
+    };
 
     this.isAuthorized = function (chatId, user) {
-      var isAuthorizedUser = self.isAuthorizedUser(user);
-      var isAuthorizedChatId = self.isAuthorizedChat(chatId);
-
-      var isAuthorized = false;
-
-      if (isAuthorizedUser || isAuthorizedChatId) {
-        isAuthorized = true;
-      } else {
-        if (self.chatIds.length == 0 && self.usernames.length == 0) {
-          isAuthorized = true;
-        }
-      }
-
-      return isAuthorized;
+      return self.isAuthorizedUser(user);
     }
   }
-  RED.nodes.registerType("chatbot-telegram-node", TelegramBotNode, {
+  RED.nodes.registerType('chatbot-telegram-node', TelegramBotNode, {
     credentials: {
-      token: { type: "text" }
+      token: {
+        type: 'text'
+      }
     }
   });
 
@@ -252,7 +217,7 @@ module.exports = function(RED) {
               chatContext.set('currentConversationNode', null);
               // emit message directly the node where the conversation stopped
               RED.events.emit('node:' + currentConversationNode, msg);
-            } else if (node.config.isAuthorized(chatId, username)) {
+            } else if (node.config.isAuthorized(chatId, userId)) {
               node.send([msg, null]);
             } else {
               node.send([null, msg]);
