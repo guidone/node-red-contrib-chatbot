@@ -19,6 +19,12 @@ Build a full featured chat bot with Node Red and Telegram
 ## Tracking answers
 tbd
 
+## Examples
+Some examples
+### Collect Email
+![Example Collect Email](./docs/images/example-collect-email.png)
+An example on parsing user input
+
 ## Credits
 tbd
 
