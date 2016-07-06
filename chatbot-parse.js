@@ -24,7 +24,7 @@ module.exports = function(RED) {
       var context = node.context();
 
       var parsedValue = null;
-console.log('msg', msg);
+
       if (_.isObject(msg.payload)) {
         switch (parseType) {
           case 'string':
