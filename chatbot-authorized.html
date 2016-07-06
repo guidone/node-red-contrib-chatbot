@@ -1,0 +1,24 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-authorized', {
+    category: 'ChatBot',
+    color: '#FFCC66',
+    defaults: {
+    },
+    inputs: 1,
+    outputs: 2,
+    paletteLabel: 'Authorized',
+    icon: 'chatbot-authorized.png',
+    label: function() {
+      return 'Authorized?';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-authorized">
+  <p>
+  Check if the current chat is authorized, in that case the message will be forwarded to the first output, otherwise
+  the second output.
+  </p>
+</script>
+
+

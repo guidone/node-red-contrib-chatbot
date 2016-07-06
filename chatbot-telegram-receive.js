@@ -153,7 +153,6 @@ module.exports = function(RED) {
     return payload;
   }
 
-
   function TelegramInNode(config) {
     RED.nodes.createNode(this, config);
     var node = this;
@@ -172,6 +171,7 @@ module.exports = function(RED) {
           var chatId = botMsg.chat.id;
           var userId = botMsg.from.id;
           var context = node.context();
+          var isAuthorized = node.config.isAuthorized(chatId, userId);
 
           // create list of users if not present
           var chatBotUsers = context.flow.get('chatBotUsers');
@@ -200,6 +200,7 @@ module.exports = function(RED) {
           chatContext.set('userId', userId);
           chatContext.set('firstName', botMsg.from.first_name);
           chatContext.set('lastName', botMsg.from.last_name);
+          chatContext.set('authorized', isAuthorized);
 
           // decode the message
           var payload = getMessageDetails(botMsg);
@@ -217,10 +218,8 @@ module.exports = function(RED) {
               chatContext.set('currentConversationNode', null);
               // emit message directly the node where the conversation stopped
               RED.events.emit('node:' + currentConversationNode, msg);
-            } else if (node.config.isAuthorized(chatId, userId)) {
-              node.send([msg, null]);
             } else {
-              node.send([null, msg]);
+              node.send(msg);
             }
           }
         });

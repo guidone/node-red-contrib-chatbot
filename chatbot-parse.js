@@ -24,26 +24,33 @@ module.exports = function(RED) {
       var context = node.context();
 
       var parsedValue = null;
-
-      switch(parseType) {
-        case 'string':
-          parsedValue = msg.payload.content;
-          break;
-        case 'email':
-          parsedValue = extractEmail(msg.payload.content);
-          break;
-        case 'location':
-          if (_.isObject(msg.payload.content) && msg.payload.content.latitude && msg.payload.content.longitude) {
+console.log('msg', msg);
+      if (_.isObject(msg.payload)) {
+        switch (parseType) {
+          case 'string':
             parsedValue = msg.payload.content;
-          }
-          break;
-        case 'boolean':
-          if (_.isString(msg.payload.content) && _(yesWords).contains(msg.payload.content.toLowerCase())) {
-            parsedValue = true;
-          } else if (_.isString(msg.payload.content) && _(noWords).contains(msg.payload.content.toLowerCase())) {
-            parsedValue = false;
-          }
-          break;
+            break;
+          case 'email':
+            parsedValue = extractEmail(msg.payload.content);
+            break;
+          case 'location':
+            if (_.isObject(msg.payload.content) && msg.payload.content.latitude && msg.payload.content.longitude) {
+              parsedValue = msg.payload.content;
+            }
+            break;
+          case 'boolean':
+            if (_.isString(msg.payload.content) && _(yesWords).contains(msg.payload.content.toLowerCase())) {
+              parsedValue = true;
+            } else if (_.isString(msg.payload.content) && _(noWords).contains(msg.payload.content.toLowerCase())) {
+              parsedValue = false;
+            }
+            break;
+          case 'contact':
+            if (_.isObject(msg.payload.content) && msg.payload.content.phone_number != null) {
+              parsedValue = msg.payload.content.phone_number;
+            }
+            break;
+        }
       }
 
       // if parsing ok, then pass through and set variable in context flow
