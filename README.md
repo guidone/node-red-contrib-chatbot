@@ -20,10 +20,23 @@ Build a full featured chat bot with Node Red and Telegram
 tbd
 
 ## Examples
-Some examples
+Here are some examples connecting the ChatBot blocks
+
 ### Collect Email
 ![Example Collect Email](./docs/images/example-collect-email.png)
-An example on parsing user input
+This is an example of how to parse the user input. The first *Email* block after the receiver just show a prompt message, note that this block tracks the user answer, that means that next message from the user will start from here and will be re-routed to the second output to the *Parse Email* block.
+If a valid email is found then the parsed value will be routed to the first output otherwise the second.
+The parsed email is available as payload or can be stored in the flow context,  for example in the `email` variable.
+The **Show Email** is just a simple message block that uses templating to show variables store in flow context (or global): `Your email is {{email}}`
+### Log Chats
+tbd
+### Send Email
+tbd
+### Send a Location
+tbd
+### Buttons
+tbd
+
 
 ## Credits
 tbd
