@@ -20,6 +20,7 @@ module.exports = function(RED) {
     this.on('input', function(msg) {
 
       var context = node.context();
+      var originalMessage = msg.originalMessage;
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
       var messageId = msg.payload.messageId || (originalMessage && originalMessage.message_id);
       var answers = node.answers;
