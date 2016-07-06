@@ -1,0 +1,61 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-request', {
+    category: 'ChatBot',
+    color: '#FFCC66',
+    defaults: {
+      name: {
+        value: ''
+      },
+      message: {
+        value: ''
+      },
+      requestType: {
+        value: 'location'
+      },
+      buttonLabel: {
+        value: ''
+      }
+    },
+    inputs: 1,
+    outputs: 2,
+    paletteLabel: 'Request',
+    icon: 'chatbot-request.png',
+    label: function() {
+      return this.name || 'Request';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-request">
+  <div class="form-row">
+      <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row">
+      <label for="node-input-type"><i class="icon-cog"></i> Type</label>
+      <select id="node-input-requestType">
+        <option value="location">Request user location</option>
+        <option value="phone-number">Request user's phone number</option>
+      </select>
+  </div>
+  <div class="form-row">
+    <label for="node-input-message"><i class="icon-envelope"></i> Message</label>
+    <textarea id="node-input-message" placeholder="Message" style="width:93%;height:200px;"></textarea>
+    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+      Message to send with the request, template tags available like <code>{{firstName}}</code>, etc
+    </div>
+  </div>
+  <div class="form-row">
+    <label for="node-input-buttonLabel"><i class="icon-tag"></i> Label</label>
+    <input type="text" id="node-input-buttonLabel" placeholder="Button label">
+    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;">
+      Optional label for the request button
+    </div>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-request">
+    <p>Request the user some special data like position or phone number.</p>
+</script>
+
+

@@ -5,11 +5,12 @@ var MessageTemplate = require('./lib/message-template.js');
 
 module.exports = function(RED) {
 
-  function ChatBotAsk(config) {
+  function ChatBotRequest(config) {
     RED.nodes.createNode(this, config);
     var node = this;
-    this.answers = config.answers;
     this.message = config.message;
+    this.buttonLabel = config.buttonLabel;
+    this.requestType = config.requestType;
 
     // relay message
     var handler = function(msg) {
@@ -22,21 +23,34 @@ module.exports = function(RED) {
       var context = node.context();
       var chatId = msg.payload.chatId;
       var messageId = msg.payload.messageId;
-      var answers = node.answers;
       var message = node.message;
-      var template = MessageTemplate(msg, node);
+      var requestType = node.requestType;
+      var buttonLabel = node.buttonLabel;
       var chatContext = context.flow.get('chat:' + chatId) || ChatContext(chatId);
-
-      // prepare array for answers
-      var messageAnswers = _(answers).map(function(answer) {
-        return [answer];
-      });
+      var template = MessageTemplate(msg, node);
 
       // check if this node has some wirings in the follow up pin, in that case
       // the next message should be redirected here
       if (!_.isEmpty(node.wires[1])) {
         chatContext.set('currentConversationNode', node.id);
         chatContext.set('currentConversationNode_at', moment());
+      }
+
+      var keyboard = null;
+      if (requestType === 'location') {
+        keyboard = [
+          [{
+            text: !_.isEmpty(buttonLabel) ? buttonLabel : 'Send your position',
+            request_location: true
+          }]
+        ];
+      } else if (requestType === 'phone-number') {
+        keyboard = [
+          [{
+            text: !_.isEmpty(buttonLabel) ? buttonLabel : 'Send your phone number',
+            request_contact: true
+          }]
+        ];
       }
 
       // send out the message
@@ -47,7 +61,7 @@ module.exports = function(RED) {
         messageId: messageId,
         options: {
           reply_markup: JSON.stringify({
-            keyboard: messageAnswers,
+            keyboard: keyboard,
             'resize_keyboard': true,
             'one_time_keyboard': true
           })
@@ -63,6 +77,6 @@ module.exports = function(RED) {
     });
   }
 
-  RED.nodes.registerType('chatbot-ask', ChatBotAsk);
+  RED.nodes.registerType('chatbot-request', ChatBotRequest);
 
 };

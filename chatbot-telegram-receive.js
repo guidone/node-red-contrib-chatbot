@@ -312,7 +312,7 @@ module.exports = function(RED) {
         return;
       }*/
 
-      
+
       switch (type) {
         case 'message':
 
@@ -389,6 +389,7 @@ module.exports = function(RED) {
               node.send(msg);
             });
           break;
+
 
         default:
           // unknown type, do nothing
