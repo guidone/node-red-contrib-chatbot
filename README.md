@@ -1,8 +1,6 @@
 # node-red-contrib-chatbot
 Build a full featured chat bot with Node Red and Telegram
 
-/under construction/
-
 ## Available nodes
 * **Message**: sends a text message from the chat bot, supports templating (variable like `{{firstName}}`, etc), tracking of response and quoting a previous comment
 * **Waiting**: sets the waiting status on the chat client (something like _your_chatbot is typing_ )
@@ -20,27 +18,29 @@ Build a full featured chat bot with Node Red and Telegram
 tbd
 
 ## Variable Contexts
-**Node Red** has two variable context /global/ and /flow/, the first is available everywhere in the app, the second just in the executed flow.
+**Node Red** has two variable context *global* and *flow*, the first is available everywhere in the app, the second just in the executed flow.
 
- **Node-red-contrib-chatbot** adds the /chat/ context where is possible to store infomation related to the specific user. The Receiver stores here some information like chatId, username, authorized, etc.
+ **Node-red-contrib-chatbot** adds the *chat* context where is possible to store information related to the specific user. The Receiver stores here some information like *chatId*, *username*, *authorized*, etc.
 
-To get the chat context in a function node
+To get the chat context in a function node:
 
-`var chatId = msg.originalMessage.chat.id `
-`var chat = context.flow.get('chat:' + chatId);`
-`console.log(chat.get('authorized')); // is the user authorized`
-`chat.set('my_stuff', 'remember that');`
+```
+var chatId = msg.originalMessage.chat.id 
+var chat = context.flow.get('chat:' + chatId);
+console.log(chat.get('authorized')); // is the user authorized
+chat.set('my_stuff', 'remember that');
+```
 
 ## Examples
 Here are some examples connecting the ChatBot blocks
 
 ### Basic Send Message
-The first node `/hi` listen the incoming messages for the string "/hi", if it finds it pass through the outpin otherwise nothing.
+The first node `/hi` listen the incoming messages for the string *"/hi"*, if it finds it pass through the outpin otherwise nothing.
 
 The second node `Hi!` simply outputs a message using the templating `Hi {{username}}!`, the message node just prepares the payload for the message, the node `Telegram Sender` actually sends out the message.
 
-The node `Telegram Receiver` sets up some variables in the chat context flow: /firstName/, /lastName/, /chatId/, /username/, /transport/, /messageId/.
-/Note/: username is only available in Telegram if it's specified in the chat settings.
+The node `Telegram Receiver` sets up some variables in the chat context flow: *firstName*, *lastName*, *chatId* , *username*, *transport*, *messageId*.
+*Note*: username is only available in Telegram if it's specified in the chat settings.
 
 ### Collect Email
 ![Example Collect Email](./docs/images/example-collect-email.png)
@@ -63,6 +63,9 @@ tbd
 ### Buttons
 tbd
 
+## Roadmap
+* Facebook Sender & Receiver
+* Improve interface of listen node
 
 ## Credits
 tbd
