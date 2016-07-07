@@ -22,6 +22,14 @@ tbd
 ## Examples
 Here are some examples connecting the ChatBot blocks
 
+### Basic Send Message
+The first node `/hi` listen the incoming messages for the string "/hi", if it finds it pass through the outpin otherwise nothing.
+
+The second node `Hi!` simply outputs a message using the templating `Hi {{username}}!`, the message node just prepares the payload for the message, the node `Telegram Sender` actually sends out the message.
+
+The node `Telegram Receiver` sets up some variables in the chat context flow: /firstName/, /lastName/, /chatId/, /username/, /transport/, /messageId/.
+/Note/: username is only available in Telegram if it's specified in the chat settings.
+
 ### Collect Email
 ![Example Collect Email](./docs/images/example-collect-email.png)
 This is an example of how to parse the user input. The first **Email** block after the receiver just show a prompt message, note that this block tracks the user answer, that means that next message from the user will start from here and will be re-routed to the second output to the **Parse Email** block.
@@ -29,6 +37,8 @@ This is an example of how to parse the user input. The first **Email** block aft
 If a valid email is found then the parsed value will be routed to the first output otherwise the second. The parsed email is available as payload or can be stored in the flow context,  for example in the `email` variable.
 
 The **Show Email** is just a simple message block that uses templating to show variables store in flow context (or global): `Your email is {{email}}`
+### Authorized Users
+![Authorized Users](./docs/images/example-autorized-users.png)
 ### Log Chats
 tbd
 ### Send Email
