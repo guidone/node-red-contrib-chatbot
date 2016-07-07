@@ -19,6 +19,18 @@ Build a full featured chat bot with Node Red and Telegram
 ## Tracking answers
 tbd
 
+## Variable Contexts
+**Node Red** has two variable context /global/ and /flow/, the first is available everywhere in the app, the second just in the executed flow.
+
+ **Node-red-contrib-chatbot** adds the /chat/ context where is possible to store infomation related to the specific user. The Receiver stores here some information like chatId, username, authorized, etc.
+
+To get the chat context in a function node
+
+`var chatId = msg.originalMessage.chat.id `
+`var chat = context.flow.get('chat:' + chatId);`
+`console.log(chat.get('authorized')); // is the user authorized`
+`chat.set('my_stuff', 'remember that');`
+
 ## Examples
 Here are some examples connecting the ChatBot blocks
 
@@ -39,6 +51,9 @@ If a valid email is found then the parsed value will be routed to the first outp
 The **Show Email** is just a simple message block that uses templating to show variables store in flow context (or global): `Your email is {{email}}`
 ### Authorized Users
 ![Authorized Users](./docs/images/example-autorized-users.png)
+In the node `Telegram Receiver` it's possible to specify a comma seprated list of authorized users (either the userId or the username), for every inbound message the `authorized` boolean variable will be updated in the chat context.
+
+The node `Authorized?` sends the message through the first output is the user is authorized, otherwise the second output.
 ### Log Chats
 tbd
 ### Send Email
