@@ -49,7 +49,7 @@ module.exports = function(RED) {
 
     this.isAuthorized = function (username, userId) {
       if (self.usernames.length > 0) {
-        return self.usernames.indexOf(username) != -1 || self.usernames.indexOf(String(userId));
+        return self.usernames.indexOf(username) != -1 || self.usernames.indexOf(String(userId)) != -1;
       }
       return true;
     }
