@@ -1,4 +1,5 @@
 var _ = require('underscore');
+var ChatContext = require('../../lib/chat-context.js');
 
 module.exports = function() {
 
@@ -8,8 +9,19 @@ module.exports = function() {
   var _node = null;
   var _config = null;
   var _message = null;
+  var _flow = {};
 
   var RED = {
+
+    environment: {
+      chat: function(chatId, obj) {
+        var chatContext = ChatContext(chatId);
+        _flow['chat:' + chatId] = chatContext;
+        _(obj).map(function(value, key) {
+          chatContext.set(key, value);
+        });
+      }
+    },
 
     createMessage: function(payload) {
       var msg = {
@@ -37,11 +49,15 @@ module.exports = function() {
       config: function(config) {
         _config = config;
       },
-      message: function() {
-        return _message;
+      message: function(idx) {
+        if (_.isArray(_message)) {
+          return idx != null ? _message[idx] : _message[0];
+        } else {
+          return _message;
+        }
       },
-      get: function() {
-        return _node;
+      get: function(idx) {
+        return idx != null ? _node[idx] : _node;
       }
     },
 
@@ -66,11 +82,7 @@ module.exports = function() {
           }
         };
         node.send = function(msg) {
-          if (_.isArray(msg)) {
-            _message = msg[0];
-          } else {
-            _message = msg;
-          }
+          _message = msg;
         };
         node.error = function(msg) {
           console.log(msg);
@@ -78,8 +90,8 @@ module.exports = function() {
         node.context = function() {
           return {
             flow: {
-              get: function() {
-                return null;
+              get: function(key) {
+                return _flow[key];
               }
             }
           };
