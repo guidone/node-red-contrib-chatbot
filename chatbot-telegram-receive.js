@@ -166,7 +166,7 @@ module.exports = function(RED) {
           var chatId = botMsg.chat.id;
           var userId = botMsg.from.id;
           var context = node.context();
-          var isAuthorized = node.config.isAuthorized(chatId, userId);
+          var isAuthorized = node.config.isAuthorized(username, userId);
 
           // create list of users if not present
           var chatBotUsers = context.flow.get('chatBotUsers');
