@@ -17,7 +17,7 @@ module.exports = function(RED) {
 
       this.usernames = _(n.usernames.split(',')).chain()
         .map(function(userId) {
-          return userId.match(/^[0-9]*?$/) ? parseInt(userId, 10) : null
+          return userId.match(/^[a-zA-Z0-9_]+?$/) ? userId : null
         })
         .compact()
         .value();
@@ -47,16 +47,11 @@ module.exports = function(RED) {
       done();
     });
 
-    this.isAuthorizedUser = function (user) {
-      // always authorized if no usernames
+    this.isAuthorized = function (username, userId) {
       if (self.usernames.length > 0) {
-        return self.usernames.indexOf(user) >= 0;
+        return self.usernames.indexOf(username) != -1 || self.usernames.indexOf(String(userId));
       }
       return true;
-    };
-
-    this.isAuthorized = function (chatId, user) {
-      return self.isAuthorizedUser(user);
     }
   }
   RED.nodes.registerType('chatbot-telegram-node', TelegramBotNode, {
