@@ -1,6 +1,9 @@
 # node-red-contrib-chatbot
 Build a full featured chat bot with Node Red and Telegram
 
+## Getting started
+tbd
+
 ## Available nodes
 * **Message**: sends a text message from the chat bot, supports templating (variable like `{{firstName}}`, etc), tracking of response and quoting a previous comment
 * **Waiting**: sets the waiting status on the chat client (something like _your_chatbot is typing_ )
@@ -17,6 +20,7 @@ Build a full featured chat bot with Node Red and Telegram
 ## Tracking answers
 tbd
 
+
 ## Variable Contexts
 **Node Red** has two variable context *global* and *flow*, the first is available everywhere in the app, the second just in the executed flow.
 
@@ -28,6 +32,7 @@ To get the chat context in a function node:
 var chatId = msg.originalMessage.chat.id 
 var chat = context.flow.get('chat:' + chatId);
 console.log(chat.get('authorized')); // is the user authorized
+console.log(chat.get('username')); // guidone72
 chat.set('my_stuff', 'remember that');
 ```
 
@@ -35,6 +40,7 @@ chat.set('my_stuff', 'remember that');
 Here are some examples connecting the ChatBot blocks
 
 ### Basic Send Message
+![Example Message](./docs/images/example-messafe.png)
 The first node `/hi` listen the incoming messages for the string *"/hi"*, if it finds it pass through the outpin otherwise nothing.
 
 The second node `Hi!` simply outputs a message using the templating `Hi {{username}}!`, the message node just prepares the payload for the message, the node `Telegram Sender` actually sends out the message.
