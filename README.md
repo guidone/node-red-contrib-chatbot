@@ -60,8 +60,20 @@ The **Show Email** is just a simple message block that uses templating to show v
 In the node `Telegram Receiver` it's possible to specify a comma seprated list of authorized users (either the userId or the username), for every inbound message the `authorized` boolean variable will be updated in the chat context.
 
 The node `Authorized?` sends the message through the first output is the user is authorized, otherwise the second output.
+### Send Image
+![Authorized Users](./docs/images/example-image.png)
+This example respons to a command `/cam` in the chat sending an image.
+The first node `/cam` triggers an http request (for example to the URL of a web cam), then resulting payload is sent to the `Image` node which prepares the payload for the `Telegram Sender` node.
+The **/cam** command also triggers a waiting message *"Uploading a photo..."* while the image is downloaded.
 ### Log Chats
-tbd
+![Authorized Users](./docs/images/example-log.png)
+The Log node takes a message payload (inbound or outbound) and trasforms it in a string suitable to be appended to a log file.
+
+```
+196520947 [Guidone72] > Thu Jun 30 2016 18:46:31 GMT+0200 - /help
+196520947 [Guidone72] < Thu Jun 30 2016 18:46:31 GMT+0200 - Hi this the outbound message as answer
+```
+
 ### Send Email
 tbd
 ### Send a Location
