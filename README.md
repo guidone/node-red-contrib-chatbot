@@ -40,7 +40,7 @@ chat.set('my_stuff', 'remember that');
 Here are some examples connecting the ChatBot blocks
 
 ### Basic Send Message
-![Example Message](./docs/images/example-messafe.png)
+![Example Message](./docs/images/example-message.png)
 The first node `/hi` listen the incoming messages for the string *"/hi"*, if it finds it pass through the outpin otherwise nothing.
 
 The second node `Hi!` simply outputs a message using the templating `Hi {{username}}!`, the message node just prepares the payload for the message, the node `Telegram Sender` actually sends out the message.
