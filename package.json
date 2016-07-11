@@ -36,6 +36,7 @@
       "web": "http://javascript-jedi.com"
     }
   ],
+  "keywords": [ "node-red" ],
   "author": "Guido Bellomo <guido.bellomo@gmail.com>",
   "license": "ISC",
   "dependencies": {
