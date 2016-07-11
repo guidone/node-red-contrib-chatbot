@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-chatbot",
-  "version": "0.3.13",
+  "version": "0.3.14",
   "description": "Chat bot for Node Red and Telegram",
   "scripts": {
     "test": "mocha"
@@ -36,7 +36,9 @@
       "web": "http://javascript-jedi.com"
     }
   ],
-  "keywords": [ "node-red" ],
+  "keywords": [
+    "node-red"
+  ],
   "author": "Guido Bellomo <guido.bellomo@gmail.com>",
   "license": "ISC",
   "dependencies": {
