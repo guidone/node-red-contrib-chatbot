@@ -2,6 +2,8 @@ var _ = require('underscore');
 var SlackBot = require('slackbots');
 var moment = require('moment');
 var ChatContext = require('./lib/chat-context.js');
+var request = require('request').defaults({ encoding: null });
+var helpers = require('./lib/helpers/slack.js');
 
 
 module.exports = function(RED) {
@@ -23,16 +25,15 @@ module.exports = function(RED) {
         .value();
     }
 
-
     if (this.credentials) {
       this.token = this.credentials.token;
       if (this.token) {
         this.token = this.token.trim();
         if (!this.slackBot) {
-          //this.slackBot = new telegramBot(this.token, { polling: true });
-          //this.slackBot.setMaxListeners(0);
+          console.log('this.token', this.token);
+          // todo get token from config
           this.slackBot = new SlackBot({
-            token: 'xoxb-58004866961-sgwOiajRLDIeHspjoCEGH0VE', // Add a bot https://my.slack.com/services/new/bot and put the token
+            token: this.token, // Add a bot https://my.slack.com/services/new/bot and put the token
             name: 'My Bot'
           });
         }
@@ -66,26 +67,37 @@ module.exports = function(RED) {
     }
   });
 
-
   // creates the message details object from the original message
-  function getMessageDetails(botMsg) {
-
-    var payload;
-
-    if (botMsg.text != null) {
-      payload = {
-        chatId: botMsg.channel,
-        //messageId: botMsg.message_id,
-        type: 'message',
-        content: botMsg.text
+  function getMessageDetails(message, token) {
+    return new Promise(function (resolve, reject) {
+      if (message.subtype == 'file_share') {
+        // fetch image
+        helpers.downloadFile(message.file.url_private_download, token)
+          .then(function (buffer) {
+            // todo detect which kind of file
+            // resolve with an image type
+            resolve({
+              chatId: message.channel,
+              type: 'photo',
+              inbound: true,
+              content: buffer
+            });
+          })
+          .catch(function (error) {
+            reject(error);
+          });
+      } else if (message.text != null) {
+        resolve({
+          chatId: message.channel,
+          type: 'message',
+          inbound: true,
+          content: message.text
+        });
+      } else {
+        reject();
       }
-    }
 
-
-    // mark the message as inbound
-    payload.inbound = true;
-
-    return payload;
+    });
   }
 
   function SlackInNode(config) {
@@ -98,18 +110,20 @@ module.exports = function(RED) {
       this.status({ fill: "red", shape: "ring", text: "disconnected" });
 
       node.slackBot = this.config.slackBot;
+
+console.log('node.slackBot', node.slackBot.token);
       if (node.slackBot) {
-        this.status({ fill: "green", shape: "ring", text: "connected" });
+        this.status({fill: 'green', shape: 'ring', text: 'connected'});
 
         node.slackBot.on('message', function(botMsg) {
 
 
-          console.log('---- slack', botMsg);
+          console.log('---- inbound slack', botMsg); // todo remove
           if (botMsg.type !== 'message') {
             return;
           }
           // avoid message from the bot itself
-          if (botMsg.subtype ==='bot_message') {
+          if (botMsg.subtype === 'bot_message') {
             return;
           }
 
@@ -135,7 +149,7 @@ module.exports = function(RED) {
             context.flow.set('chat:' + channelId, chatContext);
           }
 
-          // store the user
+          // todo store the user
           /*if (!_.isEmpty(username)) {
             chatBotUsers[chatId] = {
               chatId: chatId,
@@ -155,30 +169,38 @@ module.exports = function(RED) {
           chatContext.set('transport', 'slack');
 
 
-          // decode the message
-          var payload = getMessageDetails(botMsg);
-          if (payload) {
-            var msg = {
-              payload: payload,
-              originalMessage: {
-                chat: {
-                  id: channelId
-                }
-              }
-            };
+          // decode the message, eventually download stuff
+          getMessageDetails(botMsg, node.slackBot.token)
+            .then(function(payload) {
 
-            var currentConversationNode = chatContext.get('currentConversationNode');
-            // if a conversation is going on, go straight to the conversation node, otherwise if authorized
-            // then first pin, if not second pin
-            if (currentConversationNode != null) {
-              // void the current conversation
-              chatContext.set('currentConversationNode', null);
-              // emit message directly the node where the conversation stopped
-              RED.events.emit('node:' + currentConversationNode, msg);
-            } else {
-              node.send(msg);
-            }
-          }
+              var msg = {
+                payload: payload,
+                originalMessage: {
+                  chat: {
+                    id: channelId
+                  }
+                }
+              };
+
+              var currentConversationNode = chatContext.get('currentConversationNode');
+              // if a conversation is going on, go straight to the conversation node, otherwise if authorized
+              // then first pin, if not second pin
+              if (currentConversationNode != null) {
+                // void the current conversation
+                chatContext.set('currentConversationNode', null);
+                // emit message directly the node where the conversation stopped
+                RED.events.emit('node:' + currentConversationNode, msg);
+              } else {
+                node.send(msg);
+              }
+
+
+            })
+            .catch(function(error) {
+              node.error(error);
+            });
+
+
         });
       } else {
         node.warn("no bot in config.");
@@ -226,6 +248,7 @@ module.exports = function(RED) {
 
       var channelId = msg.payload.chatId;
       var type = msg.payload.type;
+      var noop = function() {};
 
       /*if (msg.payload.content == null) {
        node.warn("msg.payload.content is empty");
@@ -235,15 +258,11 @@ module.exports = function(RED) {
 
       switch (type) {
         case 'message':
+          node.slackBot.postMessage(channelId, msg.payload.content, {}, noop);
+          break;
 
-          params = {};
-
-          console.log('mando stu cose');
-          node.slackBot.postMessage(channelId, msg.payload.content, params, function() {
-            console.log('fatto', arguments);
-          })
-
-
+        case 'photo':
+          // todo upload photo first
           break;
 
         default:
@@ -254,6 +273,5 @@ module.exports = function(RED) {
     });
   }
   RED.nodes.registerType('chatbot-slack-send', SlackOutNode);
-
 
 };
