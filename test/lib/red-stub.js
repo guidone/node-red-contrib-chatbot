@@ -58,6 +58,9 @@ module.exports = function() {
       },
       get: function(idx) {
         return idx != null ? _node[idx] : _node;
+      },
+      context: function() {
+        return _node.context();
       }
     },
 
@@ -92,6 +95,10 @@ module.exports = function() {
             flow: {
               get: function(key) {
                 return _flow[key];
+              },
+              set: function(key, value) {
+                _flow[key] = value;
+                return this;
               }
             }
           };

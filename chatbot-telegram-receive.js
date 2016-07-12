@@ -2,7 +2,7 @@ var _ = require('underscore');
 var telegramBot = require('node-telegram-bot-api');
 var moment = require('moment');
 var ChatContext = require('./lib/chat-context.js');
-
+var helpers = require('./lib/helpers/slack.js');
 
 module.exports = function(RED) {
 
@@ -62,90 +62,110 @@ module.exports = function(RED) {
     }
   });
 
-
   // creates the message details object from the original message
-  function getMessageDetails(botMsg) {
+  function getMessageDetails(botMsg, telegramBot) {
+    return new Promise(function(resolve, reject) {
 
-    var payload;
-    if (botMsg.text) {
-      payload = {
-        chatId: botMsg.chat.id,
-        messageId: botMsg.message_id,
-        type: 'message',
-        content: botMsg.text
-      };
-    } else if (botMsg.photo) {
-      payload = {
-        chatId: botMsg.chat.id,
-        messageId: botMsg.message_id,
-        type: 'photo',
-        content: botMsg.photo[0].file_id,
-        caption: botMsg.caption,
-        date: botMsg.date
-      };
-    } else if (botMsg.audio) {
-      payload = {
-        chatId: botMsg.chat.id,
-        messageId: botMsg.message_id,
-        type: 'audio',
-        content: botMsg.audio.file_id,
-        caption: botMsg.caption,
-        date: botMsg.date
-      };
-    } else if (botMsg.document) {
-      payload = {
-        chatId: botMsg.chat.id,
-        messageId: botMsg.message_id,
-        type: 'document',
-        content: botMsg.document.file_id,
-        caption: botMsg.caption,
-        date: botMsg.date
-      };
-    } else if (botMsg.sticker) {
-      payload = {
-        chatId: botMsg.chat.id,
-        messageId: botMsg.message_id,
-        type: 'sticker',
-        content: botMsg.sticker.file_id
-      };
-    } else if (botMsg.video) {
-      payload = {
-        chatId: botMsg.chat.id,
-        messageId: botMsg.message_id,
-        type: 'video',
-        content: botMsg.video.file_id,
-        caption: botMsg.caption,
-        date: botMsg.date
-      };
-    } else if (botMsg.voice) {
-      payload = {
-        chatId: botMsg.chat.id,
-        messageId: botMsg.message_id,
-        type: 'voice',
-        content: botMsg.voice.file_id,
-        caption: botMsg.caption,
-        date: botMsg.date
-      };
-    } else if (botMsg.location) {
-      payload = {
-        chatId: botMsg.chat.id,
-        messageId: botMsg.message_id,
-        type: 'location',
-        content: botMsg.location
-      };
-    } else if (botMsg.contact) {
-      payload = {
-        chatId: botMsg.chat.id,
-        messageId: botMsg.message_id,
-        type: 'contact',
-        content: botMsg.contact
-      };
-    }
+      if (botMsg.text) {
+        resolve({
+          chatId: botMsg.chat.id,
+          messageId: botMsg.message_id,
+          type: 'message',
+          content: botMsg.text,
+          date: moment.unix(botMsg.date),
+          inbound: true
+        });
+      } else if (botMsg.photo) {
+        telegramBot.getFileLink(botMsg.photo[botMsg.photo.length - 1].file_id)
+          .then(function(path) {
+            return helpers.downloadFile(path);
+          })
+          .then(function(buffer) {
+            resolve({
+              chatId: botMsg.chat.id,
+              messageId: botMsg.message_id,
+              type: 'photo',
+              content: buffer,
+              caption: botMsg.caption,
+              date: moment.unix(botMsg.date),
+              inbound: true
+            });
+          })
+          .catch(function(error) {
+            reject(error);
+          });
+      } else if (botMsg.audio) {
+        resolve({
+          chatId: botMsg.chat.id,
+          messageId: botMsg.message_id,
+          type: 'audio',
+          content: botMsg.audio.file_id,
+          caption: botMsg.caption,
+          date: moment.unix(botMsg.date),
+          inbound: true
+        });
+      } else if (botMsg.document) {
+        resolve({
+          chatId: botMsg.chat.id,
+          messageId: botMsg.message_id,
+          type: 'document',
+          content: botMsg.document.file_id,
+          caption: botMsg.caption,
+          date: moment.unix(botMsg.date),
+          inbound: true
+        });
+      } else if (botMsg.sticker) {
+        resolve({
+          chatId: botMsg.chat.id,
+          messageId: botMsg.message_id,
+          type: 'sticker',
+          content: botMsg.sticker.file_id,
+          date: moment.unix(botMsg.date),
+          inbound: true
+        });
+      } else if (botMsg.video) {
+        resolve({
+          chatId: botMsg.chat.id,
+          messageId: botMsg.message_id,
+          type: 'video',
+          content: botMsg.video.file_id,
+          caption: botMsg.caption,
+          date: moment.unix(botMsg.date),
+          inbound: true
+        });
+      } else if (botMsg.voice) {
+        resolve({
+          chatId: botMsg.chat.id,
+          messageId: botMsg.message_id,
+          type: 'voice',
+          content: botMsg.voice.file_id,
+          caption: botMsg.caption,
+          date: moment.unix(botMsg.date),
+          inbound: true
+        });
+      } else if (botMsg.location) {
+        resolve({
+          chatId: botMsg.chat.id,
+          messageId: botMsg.message_id,
+          type: 'location',
+          content: botMsg.location,
+          date: moment.unix(botMsg.date),
+          inbound: true
+        });
+      } else if (botMsg.contact) {
+        resolve({
+          chatId: botMsg.chat.id,
+          messageId: botMsg.message_id,
+          type: 'contact',
+          content: botMsg.contact,
+          date: moment.unix(botMsg.date),
+          inbound: true
+        });
+      } else {
+        reject('Unable to detect incoming Telegram message');
+      }
 
-    // mark the message as inbound
-    payload.inbound = true;
-
-    return payload;
+    });
   }
 
   function TelegramInNode(config) {
@@ -155,13 +175,17 @@ module.exports = function(RED) {
 
     this.config = RED.nodes.getNode(this.bot);
     if (this.config) {
-      this.status({ fill: "red", shape: "ring", text: "disconnected" });
+      this.status({fill: 'red', shape: 'ring', text: 'disconnected'});
 
       node.telegramBot = this.config.telegramBot;
       if (node.telegramBot) {
-        this.status({ fill: "green", shape: "ring", text: "connected" });
+        this.status({fill: 'green', shape: 'ring', text: 'connected'});
 
         node.telegramBot.on('message', function(botMsg) {
+
+          //console.log('-------');
+          //console.log(botMsg);
+          //console.log('-------');
           var username = !_.isEmpty(botMsg.from.username) ? botMsg.from.username : null;
           var chatId = botMsg.chat.id;
           var userId = botMsg.from.id;
@@ -203,25 +227,29 @@ module.exports = function(RED) {
 
 
           // decode the message
-          var payload = getMessageDetails(botMsg);
-          if (payload) {
-            var msg = {
-              payload: payload,
-              originalMessage: botMsg
-            };
+          getMessageDetails(botMsg, node.telegramBot)
+            .then(function(payload) {
+              var msg = {
+                payload: payload,
+                originalMessage: botMsg
+              };
 
-            var currentConversationNode = chatContext.get('currentConversationNode');
-            // if a conversation is going on, go straight to the conversation node, otherwise if authorized
-            // then first pin, if not second pin
-            if (currentConversationNode != null) {
-              // void the current conversation
-              chatContext.set('currentConversationNode', null);
-              // emit message directly the node where the conversation stopped
-              RED.events.emit('node:' + currentConversationNode, msg);
-            } else {
-              node.send(msg);
-            }
-          }
+              var currentConversationNode = chatContext.get('currentConversationNode');
+              // if a conversation is going on, go straight to the conversation node, otherwise if authorized
+              // then first pin, if not second pin
+              if (currentConversationNode != null) {
+                // void the current conversation
+                chatContext.set('currentConversationNode', null);
+                // emit message directly the node where the conversation stopped
+                RED.events.emit('node:' + currentConversationNode, msg);
+              } else {
+                node.send(msg);
+              }
+            })
+            .catch(function(error) {
+              node.error(error);
+            });
+
         });
       } else {
         node.warn("no bot in config.");

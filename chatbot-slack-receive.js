@@ -2,7 +2,6 @@ var _ = require('underscore');
 var SlackBot = require('slackbots');
 var moment = require('moment');
 var ChatContext = require('./lib/chat-context.js');
-var request = require('request').defaults({ encoding: null });
 var helpers = require('./lib/helpers/slack.js');
 
 
@@ -30,11 +29,9 @@ module.exports = function(RED) {
       if (this.token) {
         this.token = this.token.trim();
         if (!this.slackBot) {
-          console.log('this.token', this.token);
-          // todo get token from config
           this.slackBot = new SlackBot({
             token: this.token, // Add a bot https://my.slack.com/services/new/bot and put the token
-            name: 'My Bot'
+            name: 'My Bot' // todo get name from config
           });
         }
       }
@@ -91,12 +88,12 @@ module.exports = function(RED) {
           chatId: message.channel,
           type: 'message',
           inbound: true,
+          // todo add date
           content: message.text
         });
       } else {
-        reject();
+        reject('Unable to detect inbound message for Slack');
       }
-
     });
   }
 
@@ -107,11 +104,10 @@ module.exports = function(RED) {
 
     this.config = RED.nodes.getNode(this.bot);
     if (this.config) {
-      this.status({ fill: "red", shape: "ring", text: "disconnected" });
+      this.status({fill: 'red', shape: 'ring', text: 'disconnected'});
 
       node.slackBot = this.config.slackBot;
 
-console.log('node.slackBot', node.slackBot.token);
       if (node.slackBot) {
         this.status({fill: 'green', shape: 'ring', text: 'connected'});
 
@@ -199,8 +195,6 @@ console.log('node.slackBot', node.slackBot.token);
             .catch(function(error) {
               node.error(error);
             });
-
-
         });
       } else {
         node.warn("no bot in config.");
