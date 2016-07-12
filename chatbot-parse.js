@@ -45,6 +45,11 @@ module.exports = function(RED) {
               parsedValue = false;
             }
             break;
+          case 'photo':
+            if (msg.payload.content instanceof Buffer) {
+              parsedValue = msg.payload.content;
+            }
+            break;
           case 'contact':
             if (_.isObject(msg.payload.content) && msg.payload.content.phone_number != null) {
               parsedValue = msg.payload.content.phone_number;

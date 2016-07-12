@@ -4,7 +4,7 @@
     color: '#FFCC66',
     defaults: {
       name: {
-        vallue: ''
+        value: ''
       },
       parseType: {
         value: 'string'
@@ -29,7 +29,7 @@
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
     <div class="form-row">
-        <label for="node-input-name"><i class="icon-cog"></i> Variable</label>
+        <label for="node-input-name"><i class="icon-cog"></i> Type</label>
         <select id="node-input-parseType">
           <option value="string">String</option>
           <option value="email">Email</option>
@@ -37,6 +37,7 @@
           <option value="location">Location</option>
           <option value="contact">Contact</option>
           <option value="boolean">Yes or No</option>
+          <option value="photo">Photo</option>
         </select>
     </div>
     <div class="form-row">
@@ -62,6 +63,8 @@
     <li><b>location:</b> extract the location from a <code>location</code> chat message, payload (and the
     value stored in the variable) will be <code>{latitude: xxxx, longitude: yyyy}</code></li>
     <li><b>contact:</b> extract the phone number from a contact type message (a user that shares a contact)</li>
+    <li><b>photo:</b> extract the image from a chat message containing a picture, the resulting payload is suitable
+    to be sent to file node</li>
     </ul>
   </p>
 </script>

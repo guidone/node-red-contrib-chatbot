@@ -1,0 +1,122 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-slack-node', {
+    category: 'config',
+    defaults: {
+      botname: {
+        value: '',
+        required: true
+      },
+      usernames: {
+        value: '',
+        required: false
+      }
+    },
+    paletteName: 'Slack Bot',
+    credentials: {
+      token: {
+        type: 'text'
+      }
+    },
+    label: function () {
+      return this.botname;
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-slack-node">
+  <div class="form-row">
+    <label for="node-config-input-botname"><i class="icon-bookmark"></i> Bot-Name</label>
+    <input type="text" id="node-config-input-botname">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-token"><i class="icon-tag"></i> Token</label>
+    <input type="text" id="node-config-input-token">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-usernames"><i class="icon-user"></i> Users</label>
+    <input type="text" id="node-config-input-usernames">
+    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+      Comma separated list of userId or username authorized to use the chatBot
+    </div>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-slack-node">
+  <p>
+    Configure the Slack chat bot, create a new chat bot in Telegram using the <b>BotFather</b> then generate a new
+    token with <code>/token</code>.
+  </p>
+</script>
+
+
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-slack-receive', {
+    category: 'ChatBot',
+    color: '#FFCC66',
+    defaults: {
+      bot: {
+        value: '',
+        type: 'chatbot-slack-node',
+        required: true
+      }
+    },
+    inputs: 0,
+    outputs: 1,
+    icon: 'chatbot-receiver.png',
+    paletteLabel: 'Slack In',
+    label: function () {
+      return "Slack Receiver";
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-slack-receive">
+  <div class="form-row">
+      <label for="node-input-bot"><i class="icon-bookmark"></i> Bot</label>
+      <input type="text" id="node-input-bot" placeholder="Bot">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-slack-receive">
+    <p>Receive a message (text, audio, video, image, etc) from a Slack bot.</p>
+    <p>The message is stored in <code>msg.payload</code>, this node also stores in the context flow:
+    <code>username</code>, <code>firstName</code>, <code>lastName</code>, <code>chatId</code>, <code>authorized</code>,
+    <code>transport</code> and <code>messageId</code>.
+    </p>
+</script>
+
+
+
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-slack-send', {
+    category: 'ChatBot',
+    color: '#FFCC66',
+    defaults: {
+      bot: {
+        value: "",
+        type: 'chatbot-slack-node',
+        required: true
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'chatbot-sender.png',
+    paletteLabel: 'Slack Out',
+    label: function () {
+      return "Slack Sender";
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-slack-send">
+    <div class="form-row">
+        <label for="node-input-bot"><i class="icon-bookmark"></i> Bot</label>
+        <input type="text" id="node-input-bot" placeholder="Bot">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-slack-send">
+
+</script>
+
+
