@@ -10,15 +10,16 @@ module.exports = function() {
   var _config = null;
   var _message = null;
   var _flow = {};
+  var _chatContext = null;
 
   var RED = {
 
     environment: {
       chat: function(chatId, obj) {
-        var chatContext = ChatContext(chatId);
-        _flow['chat:' + chatId] = chatContext;
+        _chatContext = ChatContext(chatId);
+        _flow['chat:' + chatId] = _chatContext;
         _(obj).map(function(value, key) {
-          chatContext.set(key, value);
+          _chatContext.set(key, value);
         });
       }
     },
@@ -41,7 +42,7 @@ module.exports = function() {
 
     events: {
       on: function() {
-
+        // do nothing
       }
     },
 
@@ -100,13 +101,16 @@ module.exports = function() {
                 _flow[key] = value;
                 return this;
               }
+            },
+            chat: {
+              get: function(key) {
+                return _chatContext.get(key);
+              }
             }
           };
         };
         node.wires = [{}, null];
-
         _node = node;
-
       }
     }
 
