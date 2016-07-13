@@ -2,7 +2,28 @@
 Build a full featured chat bot with Node Red and Telegram
 
 ## Getting started
-tbd
+NodeRedContribuChatbot is a collection of nodes to be used with Node-RED.
+
+> Node-RED is a tool for wiring together hardware devices, APIs and online services in new and interesting ways.
+
+First of all install  [Node-RED](http://nodered.org/docs/getting-started/installation)
+
+```
+sudo npm install -g node-red
+```
+
+Then open  the user data directory `$HOME/.node-red` and install the package
+
+```
+cd $HOME/.node-red
+npm install node-red-contrib-chatbot
+```
+
+Then run
+
+```
+node-red
+```
 
 ## Available nodes
 * **Message**: sends a text message from the chat bot, supports templating (variable like `{{firstName}}`, etc), tracking of response and quoting a previous comment
