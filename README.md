@@ -25,6 +25,23 @@ Then run
 node-red
 ```
 
+The next step is to create a chat bot, I reccomend to use Telegram since the setup it's easier (Telegram allows polling to receive messages, so it's not necessary to create a https certificate).
+Use **@BotFather** to create a chat bot, [follow instructions here](https://core.telegram.org/bots#botfather) then copy you access **token**.
+
+Then open your **Node-RED** and add a `Telegram Receiver`, in the configuration panel
+
+![Telegram Receiver](./docs/images/example-telegram-receiver.png)
+
+Now add a `Message` node and connect to the  `Telegram Receiver`
+
+![Simple Message](./docs/images/example-simple-message.png)
+
+Finally add a `Telegram Sender` node, don't forget to select in the configuration panel the same bot of the `Telegram Receiver`, this should be the final layout
+
+![Example Simple](./docs/images/example-simple.png)
+
+Now you have a useful bot that answers *"Hi there!"* to any received message. We can do a lot better.
+
 ## Available nodes
 * **Message**: sends a text message from the chat bot, supports templating (variable like `{{firstName}}`, etc), tracking of response and quoting a previous comment
 * **Waiting**: sets the waiting status on the chat client (something like _your_chatbot is typing_ )
