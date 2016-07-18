@@ -12,6 +12,7 @@ module.exports = function(RED) {
     var node = this;
     this.filename = config.filename;
     this.name = config.name;
+    this.track = config.track;
     this.transports = ['telegram', 'slack'];
 
     // relay message
@@ -23,6 +24,7 @@ module.exports = function(RED) {
     this.on('input', function(msg) {
 
       var context = node.context();
+      var track = node.track;
       var path = node.filename;
       var name = node.name;
       var originalMessage = msg.originalMessage;
@@ -67,7 +69,8 @@ module.exports = function(RED) {
         inbound: false
       };
 
-      node.send([msg, null]);
+      // send out reply
+      node.send(track ? [msg, null] : msg);
     });
 
     // cleanup on close

@@ -8,22 +8,17 @@ module.exports = function(RED) {
   function ChatBotMessage(config) {
     RED.nodes.createNode(this, config);
     var node = this;
-
     this.message = config.message;
     this.answer = config.answer;
     this.track = config.track;
     this.transports = ['telegram', 'slack'];
-
-
-
 
     // relay message
     var handler = function(msg) {
       node.send([null, msg]);
     };
     RED.events.on('node:' + config.id, handler);
-
-
+    
     this.on('input', function(msg) {
       var message = node.message;
       var track = node.track;
