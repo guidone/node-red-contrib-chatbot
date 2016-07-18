@@ -5,7 +5,7 @@ var MessageBlock = require('../chatbot-message');
 
 describe('Chat message node', function() {
 
-  it('should send the message in the config', function() {
+  it('should send the message in the config (telegram)', function() {
     var msg = RED.createMessage();
     RED.node.config({
       message: 'i am the message',
@@ -19,7 +19,34 @@ describe('Chat message node', function() {
     assert.equal(RED.node.message().payload.inbound, false);
   });
 
-  it('should pass through the message if not in the config', function() {
+  it('should send the message in the config (slack)', function() {
+    var msg = RED.createMessage(null, 'slack');
+    RED.node.config({
+      message: 'i am the message',
+      track: false,
+      answer: false
+    });
+    MessageBlock(RED);
+    RED.node.get().emit('input', msg);
+    assert.equal(RED.node.message().payload.content, 'i am the message');
+    assert.equal(RED.node.message().payload.chatId, 42);
+    assert.equal(RED.node.message().payload.inbound, false);
+  });
+
+  it('should not send for an unknown platform', function() {
+    var msg = RED.createMessage(null, 'unknown');
+    RED.node.config({
+      message: 'i am the message',
+      track: false,
+      answer: false
+    });
+    MessageBlock(RED);
+    RED.node.get().emit('input', msg);
+    assert.isNull(RED.node.message());
+    assert.equal(RED.node.error(), 'This node is not available for transport: unknown');
+  });
+
+  it('should pass through the message if config message is empty', function() {
     var msg = RED.createMessage();
     RED.node.config({
       message: null,
@@ -46,6 +73,22 @@ describe('Chat message node', function() {
     assert.equal(RED.node.message().payload.chatId, 42);
     assert.equal(RED.node.message().payload.options.reply_to_message_id, 72);
   });
+
+  it('should send a message using template', function() {
+    var msg = RED.createMessage();
+    RED.node.config({
+      message: 'send message to {{name}} using template',
+      track: false,
+      answer: false
+    });
+    MessageBlock(RED);
+    RED.node.context().flow.set('name', 'Guidone');
+    RED.node.get().emit('input', msg);
+    assert.equal(RED.node.message().payload.content, 'send message to Guidone using template');
+    assert.equal(RED.node.message().payload.chatId, 42);
+  });
+
+
 
 
 });

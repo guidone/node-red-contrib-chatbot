@@ -1,8 +1,12 @@
 var _ = require('underscore');
-var SlackBot = require('slackbots');
+var WebClient = require('@slack/client').WebClient;
 var moment = require('moment');
 var ChatContext = require('./lib/chat-context.js');
 var helpers = require('./lib/helpers/slack.js');
+var fs = require('fs');
+var os = require('os');
+var RtmClient = require('@slack/client').RtmClient;
+var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
 
 
 module.exports = function(RED) {
@@ -29,23 +33,16 @@ module.exports = function(RED) {
       if (this.token) {
         this.token = this.token.trim();
         if (!this.slackBot) {
-          this.slackBot = new SlackBot({
-            token: this.token, // Add a bot https://my.slack.com/services/new/bot and put the token
-            name: 'My Bot' // todo get name from config
-          });
+          // add realtime wrapper
+          //this.rtm = new RtmClient(this.token, {logLevel: 'debug'});
+          this.rtm = new RtmClient(this.token);
+          this.rtm.start();
         }
       }
     }
 
-
     this.on('close', function (done) {
-      // todo close
-      /*if (self.telegramBot._polling) {
-        self.telegramBot._polling.abort = true;
-        self.telegramBot._polling.lastRequest.cancel('Closing node.');
-        self.telegramBot._polling = undefined;
-      }
-*/
+      self.rtm.disconnect();
       done();
     });
 
@@ -106,15 +103,19 @@ module.exports = function(RED) {
     if (this.config) {
       this.status({fill: 'red', shape: 'ring', text: 'disconnected'});
 
-      node.slackBot = this.config.slackBot;
+      //node.slackBot = this.config.slackBot;
+      node.rtm = this.config.rtm;
 
-      if (node.slackBot) {
+      if (node.rtm) {
         this.status({fill: 'green', shape: 'ring', text: 'connected'});
 
-        node.slackBot.on('message', function(botMsg) {
+        node.rtm.on(RTM_EVENTS.MESSAGE, function (botMsg) {
 
+          // mark the original message with the platform
+          botMsg.transport = 'slack';
 
           console.log('---- inbound slack', botMsg); // todo remove
+
           if (botMsg.type !== 'message') {
             return;
           }
@@ -122,6 +123,13 @@ module.exports = function(RED) {
           if (botMsg.subtype === 'bot_message') {
             return;
           }
+
+          // todo get this dinamically
+          if (botMsg.user === 'U1Q04RGU9') {
+            console.log('from myself exiting');
+            return;
+          }
+
 
           //var username = !_.isEmpty(botMsg.from.username) ? botMsg.from.username : null;
           var username = 'guidone'; // todo fix
@@ -156,7 +164,7 @@ module.exports = function(RED) {
           }*/
 
           // store some information
-          chatContext.set('channelId', channelId);
+          chatContext.set('chatId', channelId);
           //chatContext.set('messageId', botMsg.message_id);
           chatContext.set('userId', userId);
           //chatContext.set('firstName', botMsg.from.first_name);
@@ -164,14 +172,14 @@ module.exports = function(RED) {
           chatContext.set('authorized', isAuthorized);
           chatContext.set('transport', 'slack');
 
-
           // decode the message, eventually download stuff
-          getMessageDetails(botMsg, node.slackBot.token)
+          getMessageDetails(botMsg, node.rtm._token)
             .then(function(payload) {
 
               var msg = {
                 payload: payload,
                 originalMessage: {
+                  transport: 'slack',
                   chat: {
                     id: channelId
                   }
@@ -200,7 +208,7 @@ module.exports = function(RED) {
         node.warn("no bot in config.");
       }
     } else {
-      node.warn("no config.");
+      node.warn('Missing configuration in Slack Receiver');
     }
   }
   RED.nodes.registerType('chatbot-slack-receive', SlackInNode);
@@ -211,19 +219,88 @@ module.exports = function(RED) {
     var node = this;
     this.bot = config.bot;
 
+
     this.config = RED.nodes.getNode(this.bot);
     if (this.config) {
-      this.status({ fill: "red", shape: "ring", text: "disconnected" });
+      this.status({fill: 'red', shape: 'ring', text: 'disconnected'});
 
-      node.slackBot = this.config.slackBot;
-      if (node.slackBot) {
-        this.status({ fill: "green", shape: "ring", text: "connected" });
+      node.rtm = this.config.rtm;
+
+      if (node.rtm) {
+        this.status({fill: 'green', shape: 'ring', text: 'connected'});
       } else {
         node.warn("no bot in config.");
       }
     } else {
       node.warn("no config.");
     }
+
+    function prepareMessage(msg) {
+
+      return new Promise(function(resolve, reject) {
+
+        var type = msg.payload.type;
+        var rtm = node.rtm;
+        var slackAPI = new WebClient(rtm._token);
+
+        switch (type) {
+          case 'action':
+            rtm.sendTyping(msg.payload.chatId);
+            break;
+
+          case 'message':
+            rtm.sendMessage(msg.payload.content, msg.payload.chatId);
+            break;
+
+          case 'location':
+            // build link
+            var link = 'https://www.google.com/maps?f=q&q=' + msg.payload.content.latitude + ','
+              + msg.payload.content.longitude + '&z=16';
+            // send simple attachment
+            var attachments = [
+              {
+                'author_name': 'Position',
+                'title': link,
+                'title_link': link,
+                'color': '#7CD197'
+              }
+            ];
+            slackAPI.chat.postMessage(msg.payload.chatId, '', {attachments: attachments});
+            break;
+
+          case 'photo':
+
+            var filename = msg.payload.filename || 'tmp-image-file';
+            var image = msg.payload.content;
+            var tmpFile = os.tmpdir() + '/' + filename;
+
+            // write to filesystem to use stream
+            fs.writeFile(tmpFile, image, function(err) {
+              if (err) {
+                reject(err);
+              } else {
+                // upload and send
+                slackAPI.files.upload(
+                  filename,
+                  {
+                    file: fs.createReadStream(tmpFile),
+                    filetype: 'auto',
+                    channels: msg.payload.chatId
+                  }, function handleContentFileUpload(err, res) {
+                  }
+                );
+              }
+            }); // end writeFile
+            break;
+
+
+          default:
+            reject('Unable to prepare unknown message type');
+        }
+
+      });
+    }
+
 
     this.on('input', function (msg) {
 
@@ -241,7 +318,7 @@ module.exports = function(RED) {
       }
 
       var channelId = msg.payload.chatId;
-      var type = msg.payload.type;
+
       var noop = function() {};
 
       /*if (msg.payload.content == null) {
@@ -249,19 +326,13 @@ module.exports = function(RED) {
        return;
        }*/
 
+      prepareMessage(msg)
+        .then(function(obj) {
+          //node.slackBot.postMessage(channelId, obj.content, obj.params, noop);
+        });
 
-      switch (type) {
-        case 'message':
-          node.slackBot.postMessage(channelId, msg.payload.content, {}, noop);
-          break;
 
-        case 'photo':
-          // todo upload photo first
-          break;
 
-        default:
-        // unknown type, do nothing
-      }
 
 
     });

@@ -55,6 +55,7 @@ module.exports = function(RED) {
       }
 
       // send out the message
+      // todo move this format to telegram sender
       msg.payload = {
         type: 'message',
         content: template(message),

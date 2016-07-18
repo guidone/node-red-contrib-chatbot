@@ -1,6 +1,7 @@
 var _ = require('underscore');
 var ChatContext = require('./lib/chat-context.js');
 var moment = require('moment');
+var MessageTemplate = require('./lib/message-template.js');
 
 module.exports = function(RED) {
 
@@ -11,68 +12,9 @@ module.exports = function(RED) {
     this.message = config.message;
     this.answer = config.answer;
     this.track = config.track;
+    this.transports = ['telegram', 'slack'];
 
-    // extract subtokens from a object value
-    var extractObjectKeys = function(value, subtokens) {
 
-      var result = value;
-      var currentValue = value;
-
-      if (_.isArray(subtokens) && !_.isEmpty(subtokens)) {
-        _(subtokens).each(function(subtoken) {
-          if (_.isObject(currentValue) && currentValue[subtoken] != null) {
-            currentValue = currentValue[subtoken];
-          }
-        });
-        result = currentValue;
-      }
-
-      return result;
-    };
-
-    var getTokenValue = function(token, msg) {
-      var value = null;
-      var context = node.context();
-      var originalMessage = msg.originalMessage;
-      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
-      var subtokens = token.split('.');
-      var variable = subtokens[0];
-      var chatContext = context.flow.get('chat:' + chatId) || ChatContext(chatId);
-
-      if (!_.isEmpty(chatContext.get(variable))) {
-        value = chatContext.get(variable);
-      } else if (!_.isEmpty(context.get(variable))) {
-        value = context.get(variable);
-      } else if (!_.isEmpty(context.flow.get(variable))) {
-        value = context.flow.get(variable);
-      } else if (!_.isEmpty(context.global.get(variable))) {
-        value = context.global.get(variable);
-      } else if (!_.isEmpty(msg[variable])) {
-        value = msg[variable];
-      }
-
-      // access sub tokens
-      if (subtokens.length > 0) {
-        value = extractObjectKeys(value, subtokens.slice(1));
-      }
-
-      return value;
-    };
-
-    var replaceTokens = function(message, tokens, msg) {
-
-      if (tokens != null && tokens.length !== 0) {
-        // replace all tokens
-        _(tokens).each(function(token) {
-          var value = getTokenValue(token, msg);
-          // todo make regexp
-          message = message.replace('{{' + token + '}}', value);
-        });
-
-      }
-
-      return message;
-    };
 
 
     // relay message
@@ -85,13 +27,19 @@ module.exports = function(RED) {
     this.on('input', function(msg) {
       var message = node.message;
       var track = node.track;
+      var answer = node.answer;
       var context = node.context();
       var originalMessage = msg.originalMessage;
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
       var messageId = msg.payload.messageId || (originalMessage && originalMessage.message_id);
       var chatContext = context.flow.get('chat:' + chatId) || ChatContext(chatId);
+      var template = MessageTemplate(msg, node);
 
-      var answer = node.answer;
+      // check transport compatibility
+      if (!_.contains(node.transports, msg.originalMessage.transport)) {
+        node.error('This node is not available for transport: ' + msg.originalMessage.transport);
+        return;
+      }
 
       if (!_.isEmpty(node.message)) {
         message = node.message;
@@ -101,25 +49,16 @@ module.exports = function(RED) {
         node.error('Empty message');
       }
 
-      var tokens = message.match(/\{\{([A-Za-z0-9\-\.]*?)\}\}/g);
-      if (tokens != null && tokens.length != 0) {
-        tokens = _(tokens).map(function (token) {
-          return token.replace('{{', '').replace('}}', '');
-        });
-      }
-
-      message = replaceTokens(message, tokens, msg);
-
       // check if this node has some wirings in the follow up pin, in that case
       // the next message should be redirected here
       if (!_.isEmpty(node.wires[1])) {
         chatContext.set('currentConversationNode', node.id);
         chatContext.set('currentConversationNode_at', moment());
       }
-      // send out the message
+      // payload
       msg.payload = {
         type: 'message',
-        content: message,
+        content: template(message),
         chatId: chatId,
         messageId: messageId,
         inbound: false
@@ -130,7 +69,7 @@ module.exports = function(RED) {
           reply_to_message_id: messageId
         };
       }
-
+      // send out reply
       node.send(track ? [msg, null] : msg);
     });
 

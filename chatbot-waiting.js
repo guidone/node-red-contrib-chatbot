@@ -6,12 +6,24 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
     var node = this;
     this.waitingType = config.waitingType;
+    this.transports = ['telegram', 'slack'];
 
     this.on('input', function(msg) {
 
+      var node = this;
       var waitingType = this.waitingType;
       var originalMessage = msg.originalMessage;
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
+
+      // check transport compatibility
+      if (!_.contains(node.transports, msg.originalMessage.transport)) {
+        node.error('This node is not available for transport: ' + msg.originalMessage.transport);
+        return;
+      }
+      if (msg.originalMessage.transport === 'slack' && waitingType !== 'typing') {
+        node.error('Only \'typing\' is supported for slack transport');
+        return;
+      }
 
       var typing = {
         payload: {

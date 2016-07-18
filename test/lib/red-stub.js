@@ -11,6 +11,7 @@ module.exports = function() {
   var _message = null;
   var _flow = {};
   var _chatContext = null;
+  var _error = null;
 
   var RED = {
 
@@ -24,15 +25,16 @@ module.exports = function() {
       }
     },
 
-    createMessage: function(payload) {
+    createMessage: function(payload, transport) {
       var msg = {
         originalMessage: {
+          transport: transport != null ? transport : 'telegram',
           chat: {
             id: 42
           },
           message_id: 72
         },
-        payload: 'I am the original message'
+        payload: payload != null ? payload : 'I am the original message'
       };
       if (payload != null) {
         msg.payload = payload;
@@ -56,6 +58,9 @@ module.exports = function() {
         } else {
           return _message;
         }
+      },
+      error: function() {
+        return _error;
       },
       get: function(idx) {
         return idx != null ? _node[idx] : _node;
@@ -89,7 +94,7 @@ module.exports = function() {
           _message = msg;
         };
         node.error = function(msg) {
-          console.log(msg);
+          _error = msg;
         };
         node.context = function() {
           return {

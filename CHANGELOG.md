@@ -1,4 +1,6 @@
 # Node-Red-Contrib-ChatBot Changelog
+## 0.3.17
+* Add warnings if a node is not available for some platform
 ## 0.3.16
 * Improved UI for listen node
 * Some documentation for listen node

@@ -183,6 +183,9 @@ module.exports = function(RED) {
 
         node.telegramBot.on('message', function(botMsg) {
 
+          // mark the original message with the platform
+          botMsg.transport = 'telegram';
+
           //console.log('-------');
           //console.log(botMsg);
           //console.log('-------');
@@ -224,7 +227,6 @@ module.exports = function(RED) {
           chatContext.set('lastName', botMsg.from.last_name);
           chatContext.set('authorized', isAuthorized);
           chatContext.set('transport', 'telegram');
-
 
           // decode the message
           getMessageDetails(botMsg, node.telegramBot)

@@ -10,6 +10,7 @@ module.exports = function(RED) {
     var node = this;
     this.answers = config.answers;
     this.message = config.message;
+    this.available = ['telegram'];
 
     // relay message
     var handler = function(msg) {
@@ -28,6 +29,12 @@ module.exports = function(RED) {
       var template = MessageTemplate(msg, node);
       var chatContext = context.flow.get('chat:' + chatId) || ChatContext(chatId);
 
+      // check transport compatibility
+      if (!_.contains(node.transports, msg.originalMessage.transport)) {
+        node.error('This node is not available for transport: ' + msg.originalMessage.transport);
+        return;
+      }
+
       // prepare array for answers
       var messageAnswers = _(answers).map(function(answer) {
         return [answer];
@@ -40,8 +47,20 @@ module.exports = function(RED) {
         chatContext.set('currentConversationNode_at', moment());
       }
 
-      // send out the message
+
       msg.payload = {
+        type: 'buttons',
+        content: template(message),
+        chatId: chatId,
+        messageId: messageId,
+        buttons: node.answers
+      };
+
+
+
+      // send out the message
+      // todo MOVE THIS TO TELEGRAM sender
+      /*msg.payload = {
         type: 'message',
         content: template(message),
         chatId: chatId,
@@ -53,7 +72,7 @@ module.exports = function(RED) {
             'one_time_keyboard': true
           })
         }
-      };
+      };*/
 
       node.send([msg, null]);
     });

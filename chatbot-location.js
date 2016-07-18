@@ -10,6 +10,7 @@ module.exports = function(RED) {
 
     this.latitude = config.latitude;
     this.longitude = config.longitude;
+    this.transports = ['telegram', 'slack'];
 
     // relay message
     var handler = function(msg) {
