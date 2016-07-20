@@ -32,7 +32,7 @@ module.exports = function(RED) {
       this.token = this.credentials.token;
       if (this.token) {
         this.token = this.token.trim();
-        if (!this.slackBot) {
+        if (!this.rtm) {
           // add realtime wrapper
           //this.rtm = new RtmClient(this.token, {logLevel: 'debug'});
           this.rtm = new RtmClient(this.token);
@@ -69,6 +69,7 @@ module.exports = function(RED) {
         helpers.downloadFile(message.file.url_private_download, token)
           .then(function (buffer) {
             // todo detect which kind of file
+            // todo add date
             // resolve with an image type
             resolve({
               chatId: message.channel,

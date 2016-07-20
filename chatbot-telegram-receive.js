@@ -285,6 +285,12 @@ module.exports = function(RED) {
 
     this.on('input', function (msg) {
 
+      // check if the message is from telegram
+      if (msg.originalMessage != null && msg.originalMessage.transport !== 'telegram') {
+        // exit, it's not from telegram
+        return;
+      }
+
       if (msg.payload == null) {
         node.warn("msg.payload is empty");
         return;
@@ -325,63 +331,61 @@ module.exports = function(RED) {
               done = true;
             }
 
-            node.telegramBot.sendMessage(chatId, messageToSend, msg.payload.options).then(function (sent) {
-              msg.payload.sentMessageId = sent.message_id;
-              node.send(msg);
-            });
+            node.telegramBot.sendMessage(chatId, messageToSend, msg.payload.options)
+              .catch(node.error);
 
           } while (!done);
 
 
           break;
         case 'photo':
-          node.telegramBot.sendPhoto(chatId, msg.payload.content, msg.payload.options).then(function (sent) {
-            msg.payload.sentMessageId = sent.message_id;
-            node.send(msg);
-          });
+          node.telegramBot.sendPhoto(chatId, msg.payload.content, msg.payload.options)
+            .catch(node.error);
           break;
         case 'audio':
-          node.telegramBot.sendAudio(chatId, msg.payload.content, msg.payload.options).then(function (sent) {
-            msg.payload.sentMessageId = sent.message_id;
-            node.send(msg);
-          });
+          node.telegramBot.sendAudio(chatId, msg.payload.content, msg.payload.options)
+            .catch(node.error);
           break;
         case 'document':
-          node.telegramBot.sendDocument(chatId, msg.payload.content, msg.payload.options).then(function (sent) {
-            msg.payload.sentMessageId = sent.message_id;
-            node.send(msg);
-          });
+          node.telegramBot.sendDocument(chatId, msg.payload.content, msg.payload.options)
+            .catch(node.error);
           break;
         case 'sticker':
-          node.telegramBot.sendSticker(chatId, msg.payload.content, msg.payload.options).then(function (sent) {
-            msg.payload.sentMessageId = sent.message_id;
-            node.send(msg);
-          });
+          node.telegramBot.sendSticker(chatId, msg.payload.content, msg.payload.options)
+            .catch(node.error);
           break;
         case 'video':
-          node.telegramBot.sendVideo(chatId, msg.payload.content, msg.payload.options).then(function (sent) {
-            msg.payload.sentMessageId = sent.message_id;
-            node.send(msg);
-          });
+          node.telegramBot.sendVideo(chatId, msg.payload.content, msg.payload.options)
+            .catch(node.error);
           break;
         case 'voice':
-          node.telegramBot.sendVoice(chatId, msg.payload.content, msg.payload.options).then(function (sent) {
-            msg.payload.sentMessageId = sent.message_id;
-            node.send(msg);
-          });
+          node.telegramBot.sendVoice(chatId, msg.payload.content, msg.payload.options)
+            .catch(node.error);
           break;
         case 'location':
-          node.telegramBot.sendLocation(chatId, msg.payload.content.latitude, msg.payload.content.longitude, msg.payload.options).then(function (sent) {
-            msg.payload.sentMessageId = sent.message_id;
-            node.send(msg);
-          });
+          node.telegramBot.sendLocation(chatId, msg.payload.content.latitude, msg.payload.content.longitude, msg.payload.options)
+            .catch(node.error);
           break;
         case 'action':
           node.telegramBot.sendChatAction(chatId, msg.payload.waitingType != null ? msg.payload.waitingType : 'typing')
-            .then(function (sent) {
-              msg.payload.sentMessageId = sent.message_id;
-              node.send(msg);
-            });
+            .catch(node.error);
+          break;
+        case 'buttons':
+
+          var buttons = {
+            reply_markup: JSON.stringify({
+              keyboard: _(msg.payload.buttons).map(function(answer) {
+                return [answer];
+              }),
+              resize_keyboard: true,
+              one_time_keyboard: true
+            })
+          };
+
+          node.telegramBot.sendMessage(chatId, msg.payload.content, buttons)
+            .catch(node.error);
+
+
           break;
 
 

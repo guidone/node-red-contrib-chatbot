@@ -10,7 +10,7 @@ module.exports = function(RED) {
     var node = this;
     this.answers = config.answers;
     this.message = config.message;
-    this.available = ['telegram'];
+    this.transports = ['telegram', 'facebook'];
 
     // relay message
     var handler = function(msg) {
@@ -47,7 +47,6 @@ module.exports = function(RED) {
         chatContext.set('currentConversationNode_at', moment());
       }
 
-
       msg.payload = {
         type: 'buttons',
         content: template(message),
@@ -55,24 +54,6 @@ module.exports = function(RED) {
         messageId: messageId,
         buttons: node.answers
       };
-
-
-
-      // send out the message
-      // todo MOVE THIS TO TELEGRAM sender
-      /*msg.payload = {
-        type: 'message',
-        content: template(message),
-        chatId: chatId,
-        messageId: messageId,
-        options: {
-          reply_markup: JSON.stringify({
-            keyboard: messageAnswers,
-            'resize_keyboard': true,
-            'one_time_keyboard': true
-          })
-        }
-      };*/
 
       node.send([msg, null]);
     });

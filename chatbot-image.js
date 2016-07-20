@@ -13,7 +13,7 @@ module.exports = function(RED) {
     this.filename = config.filename;
     this.name = config.name;
     this.track = config.track;
-    this.transports = ['telegram', 'slack'];
+    this.transports = ['telegram', 'slack', 'facebook'];
 
     // relay message
     var handler = function(msg) {

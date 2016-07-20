@@ -11,8 +11,20 @@
         value: [],
         validate: function(sentences) {
           var valid = true;
-          var idx;
-          // todo validate
+          var idx, k;
+          var re = /\{\{([A-Za-z0-9])\}\}/;
+          var allowedTags = ['email', 'number'];
+          for(idx = 0; idx < sentences.length; idx++) {
+            if (typeof sentences[idx] === 'string') {
+              var tokens = sentences[idx].split(',');
+              for (k = 0; k < tokens.length; k++) {
+                var matched = tokens[k].match(/\{\{([A-Za-z0-9]*?)\}\}/);
+                if (matched != null && allowedTags.indexOf(matched[1]) == -1) {
+                  valid = false;
+                }
+              }
+            }
+          }
           return valid;
         }
       }
@@ -549,7 +561,7 @@
   <div class="form-row node-input-sentences-container-row">
     <ol id="node-input-sentences-container"></ol>
     <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;">
-      Use special tokens like <code>{{email}}</code> to extract special kind of data while interpreting the sentence,
+      Use special tokens like <code>{{email}}</code>, <code>{{number}}</code> to extract special kind of data while interpreting the sentence,
       these parse value will be available in the chat context.
     </div>
   </div>

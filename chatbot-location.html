@@ -12,9 +12,13 @@
         validate: RED.validators.number()
       },
       longitude: {
-        value: false,
+        value: '',
         required: true,
         validate: RED.validators.number()
+      },
+      place: {
+        value: '',
+        required: false
       }
     },
     inputs: 1,
@@ -28,20 +32,29 @@
 </script>
 
 <script type="text/x-red" data-template-name="chatbot-location">
-  <div class="form-row">
-      <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-      <input type="text" id="node-input-name" placeholder="Name">
+<div class="form-row">
+  <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+  <input type="text" id="node-input-name" placeholder="Name">
+</div>
+<div class="form-row">
+  <label for="node-input-name"><i class="icon-map-marker"></i> Latitude</label>
+  <input type="text" id="node-input-latitude" placeholder="Latitude" style="width: 30%;">
+  <input type="text" id="node-input-longitude" placeholder="Longitude" style="width: 30%;">
+</div>
+<div class="form-row">
+  <label for="node-input-place"><i class="icon-comment"></i> Place</label>
+  <input type="text" id="node-input-place" placeholder="Place">
+  <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+    Label next the map (for example the physical address <i>"corso Sempione, 12 Milano"</i>), only available for
+    transport <b>Facebook</b>
   </div>
-  <div class="form-row">
-      <label for="node-input-name"><i class="icon-map-marker"></i> Latitude</label>
-      <input type="text" id="node-input-latitude" placeholder="Latitude" style="width: 30%;">
-      <input type="text" id="node-input-longitude" placeholder="Longitude" style="width: 30%;">
-  </div>
+</div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-location">
-    <p>Sends location message with latitude and longitude coordinates, on the chat client that will be rendered with
-    a map.</p>
+  <p>
+  Sends location message with latitude and longitude coordinates, on the chat client that will be rendered with a map.
+  </p>
 </script>
 
 

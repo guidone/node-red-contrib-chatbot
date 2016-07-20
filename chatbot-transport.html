@@ -1,0 +1,32 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-transport', {
+    category: 'ChatBot',
+    color: '#FFCC66',
+    defaults: {
+    },
+    inputs: 1,
+    outputs: 3,
+    paletteLabel: 'Transport',
+    icon: 'chatbot-transport.png',
+    label: function() {
+      return 'Transport';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-transport">
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-transport">
+  <p>
+  Reroute message based on the type of transport: first output for <b>Telegram</b>, second output for <b>Facebook</b>
+  and third output for <b>Slack</b>.
+  </p>
+  <p>
+  Use this when the user experience include nodes that are not available for all the platform supported by the
+  chatbot: for example the node <code>Request</code> is supported only by <b>Telegram</b>, for <b>Facebook</b> it's
+  necessary to provide an alternate flow.
+  </p>
+</script>
+
+

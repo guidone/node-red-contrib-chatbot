@@ -10,6 +10,7 @@ module.exports = function(RED) {
 
     this.latitude = config.latitude;
     this.longitude = config.longitude;
+    this.place = config.place;
     this.transports = ['telegram', 'slack'];
 
     // relay message
@@ -27,6 +28,7 @@ module.exports = function(RED) {
       var chatContext = context.flow.get('chat:' + chatId) || ChatContext(chatId);
       var latitude = node.latitude;
       var longitude = node.longitude;
+      var place = node.place;
 
       // check if this node has some wirings in the follow up pin, in that case
       // the next message should be redirected here
@@ -41,6 +43,7 @@ module.exports = function(RED) {
           latitude: latitude,
           longitude: longitude
         },
+        place: place,
         chatId: chatId,
         messageId: messageId,
         inbound: false

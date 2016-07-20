@@ -15,10 +15,10 @@
     },
     inputs: 1,
     outputs: 2,
-    paletteLabel: 'Ask',
+    paletteLabel: 'Buttons',
     icon: 'chatbot-ask.png',
     label: function() {
-      return this.name || 'Ask';
+      return this.name || 'Buttons';
     },
     oneditsave: function() {
       var answers = $("#node-input-answers-container").editableList('items');
@@ -31,13 +31,9 @@
       }
     },
 
-
     oneditprepare: function() {
 
-      function resizeRule(rule) {
-
-      }
-
+      function resizeRule(rule) {}
       $('#node-input-answers-container').css('min-height','300px').css('min-width','450px').editableList({
         addItem: function(container, i, answer) {
 
@@ -80,17 +76,12 @@
         sortable: true
       });
 
-
       var answers = this.answers;
       var idx;
       for (idx = 0; idx < answers.length; idx++) {
         var answer = answers[idx];
         $("#node-input-answers-container").editableList('addItem', answer);
       }
-
-
-
-
     }
   });
 </script>

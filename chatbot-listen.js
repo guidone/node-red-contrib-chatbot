@@ -8,7 +8,7 @@ var debug = false;
 module.exports = function(RED) {
 
   var fixedWords = ['yes', 'no', 'on', 'off'];
-  var tokenVariables = ['{{email}}'];
+  var tokenVariables = ['{{email}}', '{{number}}'];
 
   function isFixedWord(word) {
     return _.contains(fixedWords, word);
@@ -45,7 +45,6 @@ module.exports = function(RED) {
     words = _(words).map(function(word) {
       return word.toLowerCase();
     });
-
 
     debug && console.log('tokens - ', sentence.tokens);
     debug && console.log('analysis - ', sentence);

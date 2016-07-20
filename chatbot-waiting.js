@@ -6,7 +6,7 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
     var node = this;
     this.waitingType = config.waitingType;
-    this.transports = ['telegram', 'slack'];
+    this.transports = ['telegram', 'slack', 'facebook'];
 
     this.on('input', function(msg) {
 
@@ -25,16 +25,14 @@ module.exports = function(RED) {
         return;
       }
 
-      var typing = {
-        payload: {
-          type: 'action',
-          waitingType: !_.isEmpty(waitingType) ? waitingType : 'typing',
-          chatId: chatId,
-          inbound: false
-        }
+      msg.payload = {
+        type: 'action',
+        waitingType: !_.isEmpty(waitingType) ? waitingType : 'typing',
+        chatId: chatId,
+        inbound: false
       };
 
-      node.send(typing);
+      node.send(msg);
     });
   }
   RED.nodes.registerType('chatbot-waiting', ChatBotWaiting);
