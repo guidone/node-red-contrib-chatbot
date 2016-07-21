@@ -165,7 +165,7 @@ After 5 minutes if inactivity from the user, the conversation is considered ende
 ### Send a Location
 Here is an example where the chatbot request the user location. The user can share his location with the "share" button in Telegram and Facebook or can insert manually the address, here is the flow
 
-![User Position](./docs/images/example-listen.png)
+![User Position](./docs/images/example-position.png)
 
 First is presented a message to the user asking to share his position, this message has the *tracking* option activated, the answer to this message will not start over the flow but will continue to the nodes attached to the second output.
 
