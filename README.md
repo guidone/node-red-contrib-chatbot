@@ -1,5 +1,5 @@
 # node-red-contrib-chatbot
-Build a full featured chat bot with Node Red and Telegram
+Visually build a full featured chat bot for **Telegram**, **Facebook Messenger** and **Slack** with Node-RED. -Almost- no coding skills required.
 
 ## Getting started
 NodeRedContribuChatbot is a collection of nodes to be used with Node-RED.
@@ -28,7 +28,7 @@ node-red
 The next step is to create a chat bot, I reccomend to use Telegram since the setup it's easier (Telegram allows polling to receive messages, so it's not necessary to create a https certificate).
 Use **@BotFather** to create a chat bot, [follow instructions here](https://core.telegram.org/bots#botfather) then copy you access **token**.
 
-Then open your **Node-RED** and add a `Telegram Receiver`, in the configuration panel
+Then open your **Node-RED** and add a `Telegram Receiver`, in the configuration panel, add a new bot and paste the **token**
 
 ![Telegram Receiver](./docs/images/example-telegram-receiver.png)
 
@@ -46,7 +46,8 @@ Now you have a useful bot that answers *"Hi there!"* to any received message. We
 * **Message**: sends a text message from the chat bot, supports templating (variable like `{{firstName}}`, etc), tracking of response and quoting a previous comment
 * **Waiting**: sets the waiting status on the chat client (something like _your_chatbot is typing_ )
 * **Command**: listen to a command type message (for example `/command1`, `/my-command`, etc)
-* **Image**: takes the `msg.payload` binary and sends out as image to the chat (for example connected to a http node or file node), can track response
+* **Image**: takes the `msg.payload` binary (or a local file) and sends out as image to the chat, can track response
+* **Audio**: takes the `msg.payload` binary (or a local file) and sends out as audio to the chat, can track response
 * **Request**: request special information from the chat client like the current location or the phone numbers (Telegram).
 * **Ask**: request information to the chat user using buttons using a predefined list (Telegram)
 * **Parse**: Parse the incoming message searching for some type of data (string, number, date, location, contact, etc)
@@ -112,8 +113,49 @@ The Log node takes a message payload (inbound or outbound) and trasforms it in a
 196520947 [Guidone72] < Thu Jun 30 2016 18:46:31 GMT+0200 - Hi this the outbound message as answer
 ```
 
-### Send Email
-tbd
+### Parse Sentences
+The `Listen Node` is able to detect and parse a set of simple sentence. For example suppose we would like to offer the the chatbot user the option to request our curriculum vitae and deliver that by email
+
+![Example Email](./docs/images/example-email.png)
+
+The first block listen to incoming message and verify that it matches a set of tokens, if it matches the message is routed to the first output, otherwise the second output.
+The `Listen Node` is configured in this way
+
+![Example Listen Node](./docs/images/example-listen.png)
+
+basically there are a set of tokens that must be present in the message in order to match. It' sufficient that one set tokens matches to have the message routed to the first output.
+The `Listen Node` also takes into account small changes to the word (using  levenshtein distance algorithm), for example, in that case
+
+```
+"send your cv to an_email@gmail.com" // ok
+"send your curriculum to an_email@gmail.com" // ok
+"send your curricula to an_email@gmail.com" // ok
+"send your curriculum" // no, missing email
+"send to an_email@gmail.com" // no, missing cv or curriculum token
+```
+
+There are some special tokes like {{email}} that matches any token that looks like and email and store it the chat context (in that case the key will be "email").
+
+A little bit of coding is required to prepare the payload for the email node
+
+```
+// get the chat context
+var chatId = msg.originalMessage.chat.id
+var chat = context.flow.get('chat:' + chatId);
+// email payload
+msg.to = chat.get('email');
+msg.payload = 'Hi, this is my curriculum vitae';
+msg.attachments = [
+  {
+   filename: 'my_cv.pdf',
+   path: '/my_cv.pdf'
+}];
+return msg;
+```
+
+The first output of the `Listen Node` is also connected to a confirmation message to be sent back to the user: `Sending curriculum to {{email}}`. Here the variable `{{email}}` is automatically replaced by the value present in the chat context.
+
+
 ### Send a Location
 tbd
 ### Buttons
