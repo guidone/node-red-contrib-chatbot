@@ -44,22 +44,18 @@ Finally add a `Telegram Sender` node, don't forget to select in the configuratio
 Now you have a useful bot that answers *"Hi there!"* to any received message. We can do a lot better.
 
 ## Available nodes
-* **Message**: sends a text message from the chat bot, supports templating (variable like `{{firstName}}`, etc), tracking of response and quoting a previous comment
-* **Waiting**: sets the waiting status on the chat client (something like _your_chatbot is typing_ )
-* **Command**: listen to a command type message (for example `/command1`, `/my-command`, etc)
-* **Image**: takes the `msg.payload` binary (or a local file) and sends out as image to the chat, can track response
-* **Audio**: takes the `msg.payload` binary (or a local file) and sends out as audio to the chat, can track response
-* **Request**: request special information from the chat client like the current location or the phone numbers (Telegram).
-* **Ask**: request information to the chat user using buttons using a predefined list (Telegram)
-* **Parse**: Parse the incoming message searching for some type of data (string, number, date, location, contact, etc)
-* **Log**: Convert a chat message (inbound or outbound) to a single line string suitable to be sent to a log file
-* **Location**: Send a location type message that will be shown with a map by the chat client (Telegram)
+* **Message**: sends a text message from the chat bot, supports templating (variable like `{{firstName}}`, etc), tracking of response and quoting a previous comment  [Telegram, Facebook, Slack]
+* **Waiting**: sets the waiting status on the chat client (something like _your_chatbot is typing_ ) [Telegram, Facebook, Slack]
+* **Command**: listen to a command type message (for example `/command1`, `/my-command`, etc) [All]
+* **Image**: takes the `msg.payload` binary (or a local file) and sends out as image to the chat, can track response [Telegram, Facebook, Slack]
+* **Audio**: takes the `msg.payload` binary (or a local file) and sends out as audio to the chat, can track response [Telegram, Facebook]
+* **Request**: request special information from the chat client like the current location or the phone numbers [Telegram].
+* **Buttons**: request information to the chat user using buttons using a predefined list [Telegram, Facebook]
+* **Parse**: Parse the incoming message searching for some type of data (string, number, date, location, contact, etc) [All]
+* **Log**: Convert a chat message (inbound or outbound) to a single line string suitable to be sent to a log file [All]
+* **Location**: Send a location type message that will be shown with a map by the chat client [Telegram, Facebook, Slack]
 * **Listen**:
 * **Analyze**:
-
-## Tracking answers
-tbd
-
 
 ## Variable Contexts
 **Node Red** has two variable context *global* and *flow*, the first is available everywhere in the app, the second just in the executed flow.
@@ -156,11 +152,26 @@ return msg;
 
 The first output of the `Listen Node` is also connected to a confirmation message to be sent back to the user: `Sending curriculum to {{email}}`. Here the variable `{{email}}` is automatically replaced by the value present in the chat context.
 
+### Tracking answers
+Complex chatbots may require to send some information to the user and then go on with the rest of the flow, in this example
+
+![Track Conversation](./docs/images/example-track.png)
+
+The user receive a message `"Please enter your email:"`, the first output goes to the sender node, the second output is linked to the rest of the flow.
+The next message from the same user will be automatically re-routed to the rest of the flow, continuing in this was the conversation. The Parse Node scan the message for the email and store it the chat context, the final message just show the captured value `"Your email is {{email}}"`.
+
+After 5 minutes if inactivity from the user, the conversation is considered ended and the next messages will be routed the the root of the flow.
 
 ### Send a Location
-tbd
-### Buttons
-tbd
+Here is an example where the chatbot request the user location. The user can share his location with the "share" button in Telegram and Facebook or can insert manually the address, here is the flow
+
+![User Position](./docs/images/example-listen.png)
+
+First is presented a message to the user asking to share his position, this message has the *tracking* option activated, the answer to this message will not start over the flow but will continue to the nodes attached to the second output.
+
+The answer of the user is then captured by the `Parse Node`, which parse the incoming message searching for a location-type message (an object containing latitude and longitude) and it's the result of the user sharing the position with the chat client ( *Telegram* or *Facebook* ). If it doesn't match the message is routed to the second output, (this happens when the user writes his location manually) to the Google Geolocation node.
+
+The final message just the coordinates `"Your position is {{location.latitude}}, {{location.longitude}}"`
 
 ## Roadmap
 * Slack Sender & Receiver
