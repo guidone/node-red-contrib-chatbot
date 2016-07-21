@@ -1,4 +1,4 @@
-<img src="./docs/logo/RedBot_logo.png" width="150" align="left">
+<img src="./docs/logo/RedBot_logo.png" width="250" align="left">
 With **RedBot** you can visually build a full featured chat bot for **Telegram**, **Facebook Messenger** and **Slack** with Node-RED. ~~Almost~~ no coding skills required.
 
 
