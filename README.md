@@ -1,5 +1,6 @@
-# node-red-contrib-chatbot
-Visually build a full featured chat bot for **Telegram**, **Facebook Messenger** and **Slack** with Node-RED. -Almost- no coding skills required.
+# RedBot
+<img src="./docs/logo/RedBot_logo.png" width="150" align="left">
+Visually build a full featured chat bot for **Telegram**, **Facebook Messenger** and **Slack** with Node-RED. ~~Almost~~ no coding skills required.
 
 ## Getting started
 NodeRedContribuChatbot is a collection of nodes to be used with Node-RED.
@@ -123,8 +124,8 @@ The `Listen Node` is configured in this way
 
 ![Example Listen Node](./docs/images/example-listen.png)
 
-basically there are a set of tokens that must be present in the message in order to match. It' sufficient that one set tokens matches to have the message routed to the first output.
-The `Listen Node` also takes into account small changes to the word (using  levenshtein distance algorithm), for example, in that case
+basically there are a set of tokens that must be present in the message in order to match. It' sufficient that one set of tokens matches to have the message routed to the first output.
+The `Listen Node` also takes into account small changes to the word (using  Levenshtein distance algorithm), for example, in that case
 
 ```
 "send your cv to an_email@gmail.com" // ok
