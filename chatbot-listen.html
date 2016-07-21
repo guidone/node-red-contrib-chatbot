@@ -13,7 +13,7 @@
           var valid = true;
           var idx, k;
           var re = /\{\{([A-Za-z0-9])\}\}/;
-          var allowedTags = ['email', 'number'];
+          var allowedTags = ['email', 'number', 'url'];
           for(idx = 0; idx < sentences.length; idx++) {
             if (typeof sentences[idx] === 'string') {
               var tokens = sentences[idx].split(',');
@@ -30,7 +30,7 @@
       }
     },
     inputs: 1,
-    outputs: 1,
+    outputs: 2,
     icon: 'chatbot-listen.png',
     paletteLabel: 'Listen',
     label: function() {

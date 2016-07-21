@@ -46,6 +46,7 @@ module.exports = function(RED) {
             }
             break;
           case 'photo':
+          case 'audio':
             if (msg.payload.content instanceof Buffer) {
               parsedValue = msg.payload.content;
             }

@@ -358,7 +358,7 @@ module.exports = function(RED) {
           node.telegramBot.sendVideo(chatId, msg.payload.content, msg.payload.options)
             .catch(node.error);
           break;
-        case 'voice':
+        case 'audio':
           node.telegramBot.sendVoice(chatId, msg.payload.content, msg.payload.options)
             .catch(node.error);
           break;

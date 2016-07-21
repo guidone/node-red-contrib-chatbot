@@ -381,6 +381,22 @@ module.exports = function(RED) {
             );
             break;
 
+          case 'audio':
+            console.log('mando audio');
+
+            var audio = msg.payload.content;
+            helpers.uploadBuffer({
+              recipient: msg.payload.chatId,
+              type: 'audio',
+              buffer: audio,
+              token: credentials.token,
+              filename: msg.payload.filename
+            }).catch(function(err) {
+              reject(err);
+            });
+            break;
+
+
           case 'photo':
             var image = msg.payload.content;
             helpers.uploadBuffer({

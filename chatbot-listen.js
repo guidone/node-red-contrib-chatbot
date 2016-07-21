@@ -8,7 +8,7 @@ var debug = false;
 module.exports = function(RED) {
 
   var fixedWords = ['yes', 'no', 'on', 'off'];
-  var tokenVariables = ['{{email}}', '{{number}}'];
+  var tokenVariables = ['{{email}}', '{{number}}', '{{url}}'];
 
   function isFixedWord(word) {
     return _.contains(fixedWords, word);
@@ -114,12 +114,9 @@ module.exports = function(RED) {
         return matchSentence(analysis, words, chatContext);
       });
       // pass through the message if any of the above matched
-      if (matched) {
-        node.send(msg);
-      }
-
+      node.send(matched ? [msg, null] : [null, msg]);
     });
   }
-  RED.nodes.registerType('chatbot-listen', ChatBotListen);
 
+  RED.nodes.registerType('chatbot-listen', ChatBotListen);
 };
