@@ -13,6 +13,7 @@ module.exports = function(RED) {
       var chatId = node.chatId;
       var context = node.context();
       var chatBotUsers = context.flow.get('chatBotUsers');
+      var transport = msg.originalMessage != null && msg.originalMessage.transport != null ? msg.originalMessage.transport : null;
 
       var id = null;
 
@@ -34,14 +35,14 @@ module.exports = function(RED) {
         chat: {
           id: id
         },
-        message_id: null
+        message_id: null,
+        transport: transport
       };
-      
+
       node.send(msg);
     });
 
   }
 
   RED.nodes.registerType('chatbot-conversation', ChatBotConversation);
-
 };

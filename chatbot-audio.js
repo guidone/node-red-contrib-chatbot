@@ -33,7 +33,7 @@ module.exports = function(RED) {
       var chatContext = context.flow.get('chat:' + chatId) || ChatContext(chatId);
 
       // check transport compatibility
-      if (!_.contains(node.transports, msg.originalMessage.transport)) {
+      if (msg.originalMessage.transport != null && !_.contains(node.transports, msg.originalMessage.transport)) {
         node.error('This node is not available for transport: ' + msg.originalMessage.transport);
         return;
       }
