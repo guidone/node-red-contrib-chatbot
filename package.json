@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-chatbot",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Chat bot for Node Red and Telegram",
   "scripts": {
     "test": "mocha",
