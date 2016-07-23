@@ -181,14 +181,20 @@ module.exports = function(RED) {
       if (node.telegramBot) {
         this.status({fill: 'green', shape: 'ring', text: 'connected'});
 
+        /*
+        todo implement inline
+        node.telegramBot.on('inline_query', function(botMsg) {
+          console.log('inline request', botMsg);
+        });*/
+        
         node.telegramBot.on('message', function(botMsg) {
 
           // mark the original message with the platform
           botMsg.transport = 'telegram';
 
-          //console.log('-------');
-          //console.log(botMsg);
-          //console.log('-------');
+          console.log('-------');
+          console.log(botMsg);
+          console.log('-------');
           var username = !_.isEmpty(botMsg.from.username) ? botMsg.from.username : null;
           var chatId = botMsg.chat.id;
           var userId = botMsg.from.id;
@@ -363,10 +369,6 @@ module.exports = function(RED) {
           node.telegramBot.sendPhoto(chatId, msg.payload.content, msg.payload.options)
             .catch(node.error);
           break;
-        case 'audio':
-          node.telegramBot.sendAudio(chatId, msg.payload.content, msg.payload.options)
-            .catch(node.error);
-          break;
         case 'document':
           node.telegramBot.sendDocument(chatId, msg.payload.content, msg.payload.options)
             .catch(node.error);
@@ -394,13 +396,23 @@ module.exports = function(RED) {
         case 'buttons':
 
           var buttons = {
+
             reply_markup: JSON.stringify({
+              inline_keyboard: [
+                [{ text: 'Some button text 1', url: 'http://javascript-jedi.com' }],
+                [{ text: 'Some button text 2', callback_data: '2' }],
+                [{ text: 'Some button text 3', switch_inline_query: '/where' }]
+              ]
+            })
+
+
+          /*reply_markup: JSON.stringify({
               keyboard: _(msg.payload.buttons).map(function(answer) {
                 return [answer];
               }),
               resize_keyboard: true,
               one_time_keyboard: true
-            })
+            })*/
           };
 
           node.telegramBot.sendMessage(chatId, msg.payload.content, buttons)
