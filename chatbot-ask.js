@@ -12,12 +12,6 @@ module.exports = function(RED) {
     this.message = config.message;
     this.transports = ['telegram', 'facebook'];
 
-    // relay message
-    var handler = function(msg) {
-      node.send([null, msg]);
-    };
-    RED.events.on('node:' + config.id, handler);
-
     this.on('input', function(msg) {
 
       var context = node.context();
@@ -40,13 +34,6 @@ module.exports = function(RED) {
         return [answer];
       });
 
-      // check if this node has some wirings in the follow up pin, in that case
-      // the next message should be redirected here
-      if (!_.isEmpty(node.wires[1])) {
-        chatContext.set('currentConversationNode', node.id);
-        chatContext.set('currentConversationNode_at', moment());
-      }
-
       msg.payload = {
         type: 'buttons',
         content: template(message),
@@ -55,13 +42,9 @@ module.exports = function(RED) {
         buttons: node.answers
       };
 
-      node.send([msg, null]);
+      node.send(msg);
     });
 
-    // cleanup on close
-    this.on('close',function() {
-      RED.events.removeListener('node:' + config.id, handler);
-    });
   }
 
   RED.nodes.registerType('chatbot-ask', ChatBotAsk);

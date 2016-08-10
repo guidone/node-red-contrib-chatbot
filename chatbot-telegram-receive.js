@@ -268,6 +268,7 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
     var node = this;
     this.bot = config.bot;
+    this.track = config.track;
 
     this.config = RED.nodes.getNode(this.bot);
     if (this.config) {
@@ -282,6 +283,18 @@ module.exports = function(RED) {
     } else {
       node.warn("no config.");
     }
+
+    // relay message
+    var handler = function(msg) {
+      console.log('riveco da salto');
+      node.send(msg);
+    };
+    RED.events.on('node:' + config.id, handler);
+
+    // cleanup on close
+    this.on('close',function() {
+      RED.events.removeListener('node:' + config.id, handler);
+    });
 
     this.on('input', function (msg) {
 
@@ -304,7 +317,10 @@ module.exports = function(RED) {
         return;
       }
 
-      var chatId = msg.payload.chatId;
+      var context = node.context();
+      var track = node.track;
+      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
+      var chatContext = context.flow.get('chat:' + chatId) || ChatContext(chatId);
       var type = msg.payload.type;
 
       /*if (msg.payload.content == null) {
@@ -312,6 +328,12 @@ module.exports = function(RED) {
         return;
       }*/
 
+      // check if this node has some wirings in the follow up pin, in that case
+      // the next message should be redirected here
+      if (track && !_.isEmpty(node.wires[0])) {
+        chatContext.set('currentConversationNode', node.id);
+        chatContext.set('currentConversationNode_at', moment());
+      }
 
       switch (type) {
         case 'message':
