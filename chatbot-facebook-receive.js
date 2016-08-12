@@ -276,7 +276,7 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
     var node = this;
     this.bot = config.bot;
-
+    this.track = config.track;
 
     this.config = RED.nodes.getNode(this.bot);
     if (this.config) {
@@ -382,8 +382,6 @@ module.exports = function(RED) {
             break;
 
           case 'audio':
-            console.log('mando audio');
-
             var audio = msg.payload.content;
             helpers.uploadBuffer({
               recipient: msg.payload.chatId,
@@ -395,7 +393,6 @@ module.exports = function(RED) {
               reject(err);
             });
             break;
-
 
           case 'photo':
             var image = msg.payload.content;
@@ -417,6 +414,16 @@ module.exports = function(RED) {
       });
     }
 
+    // relay message
+    var handler = function(msg) {
+      node.send(msg);
+    };
+    RED.events.on('node:' + config.id, handler);
+
+    // cleanup on close
+    this.on('close',function() {
+      RED.events.removeListener('node:' + config.id, handler);
+    });
 
     this.on('input', function (msg) {
 
@@ -441,13 +448,25 @@ module.exports = function(RED) {
 
       var channelId = msg.payload.chatId;
 
+
+      var context = node.context();
+      var track = node.track;
+      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
+      var chatContext = context.flow.get('chat:' + chatId) || ChatContext(chatId);
+
       /*if (msg.payload.content == null) {
        node.warn("msg.payload.content is empty");
        return;
        }*/
 
-      sendMessage(msg);
+      // check if this node has some wirings in the follow up pin, in that case
+      // the next message should be redirected here
+      if (track && !_.isEmpty(node.wires[0])) {
+        chatContext.set('currentConversationNode', node.id);
+        chatContext.set('currentConversationNode_at', moment());
+      }
 
+      sendMessage(msg);
     });
   }
   RED.nodes.registerType('chatbot-facebook-send', FacebookOutNode);

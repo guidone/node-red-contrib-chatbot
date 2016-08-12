@@ -286,7 +286,6 @@ module.exports = function(RED) {
 
     // relay message
     var handler = function(msg) {
-      console.log('riveco da salto');
       node.send(msg);
     };
     RED.events.on('node:' + config.id, handler);
