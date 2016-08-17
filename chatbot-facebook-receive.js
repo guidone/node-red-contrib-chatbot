@@ -1,5 +1,4 @@
 var _ = require('underscore');
-var WebClient = require('@slack/client').WebClient;
 var moment = require('moment');
 var ChatContext = require('./lib/chat-context.js');
 var helpers = require('./lib/helpers/facebook.js');
@@ -8,7 +7,7 @@ var os = require('os');
 var request = require('request').defaults({ encoding: null });
 var http = require('http');
 var Bot = require('messenger-bot');
-
+var DEBUG = true;
 
 module.exports = function(RED) {
 
@@ -200,8 +199,11 @@ module.exports = function(RED) {
           // mark the original message with the platform
           botMsg.transport = 'facebook';
 
-          console.log('---- inbound facebook', botMsg); // todo remove
-
+          if (DEBUG) {
+            console.log('-------');
+            console.log(botMsg);
+            console.log('-------');
+          }
 
           var userId = botMsg.sender.id;
           var chatId = botMsg.sender.id;
@@ -234,6 +236,7 @@ module.exports = function(RED) {
               chatContext.set('lastName', profile.last_name);
               chatContext.set('authorized', isAuthorized);
               chatContext.set('transport', 'facebook');
+              chatContext.set('message', botMsg.message.text);
 
               var msg = {
                 payload: payload,
