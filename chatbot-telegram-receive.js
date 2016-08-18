@@ -3,7 +3,7 @@ var telegramBot = require('node-telegram-bot-api');
 var moment = require('moment');
 var ChatContext = require('./lib/chat-context.js');
 var helpers = require('./lib/helpers/slack.js');
-var DEBUG = false;
+var DEBUG = true;
 
 module.exports = function(RED) {
 
@@ -250,6 +250,9 @@ module.exports = function(RED) {
               // if a conversation is going on, go straight to the conversation node, otherwise if authorized
               // then first pin, if not second pin
               if (currentConversationNode != null) {
+                if (DEBUG) {
+                  console.log('Proxying message to node:' + currentConversationNode);
+                }
                 // void the current conversation
                 chatContext.set('currentConversationNode', null);
                 // emit message directly the node where the conversation stopped
