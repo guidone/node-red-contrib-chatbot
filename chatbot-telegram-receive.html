@@ -78,11 +78,11 @@
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-telegram-receive">
-    <p>Receive a message (text, audio, video, image, etc) from a Telegram bot.</p>
-    <p>The message is stored in <code>msg.payload</code>, this node also stores in the context flow:
-    <code>username</code>, <code>firstName</code>, <code>lastName</code>, <code>chatId</code>, <code>authorized</code>,
-    <code>transport</code> and <code>messageId</code>.
-    </p>
+  <p>Receive a message (text, audio, video, image, etc) from a Telegram bot.</p>
+  <p>The message is stored in <code>msg.payload</code>, this node also stores in the context flow:
+  <code>username</code>, <code>firstName</code>, <code>lastName</code>, <code>chatId</code>, <code>authorized</code>,
+  <code>transport</code> and <code>messageId</code>.
+  </p>
 </script>
 
 
@@ -96,27 +96,47 @@
         value: "",
         type: 'chatbot-telegram-node',
         required: true
+      },
+      track: {
+        value: false
+      },
+      outputs: {
+        value: 0
       }
     },
     inputs: 1,
-    outputs: 1,
+    outputs: 0,
     icon: 'chatbot-sender.png',
     paletteLabel: 'Telegram Out',
     label: function () {
-      return "Telegram Sender";
+      return 'Telegram Sender';
+    },
+    oneditsave: function() {
+      var track = $('#node-input-track').is(':checked');
+      this.outputs = track ? 1 : 0;
     }
   });
 </script>
 
 <script type="text/x-red" data-template-name="chatbot-telegram-send">
-    <div class="form-row">
-        <label for="node-input-bot"><i class="icon-bookmark"></i> Bot</label>
-        <input type="text" id="node-input-bot" placeholder="Bot">
-    </div>
+<div class="form-row">
+  <label for="node-input-bot"><i class="icon-bookmark"></i> Bot</label>
+  <input type="text" id="node-input-bot" placeholder="Bot">
+</div>
+<div class="form-row">
+  <label for="node-input-track"><i class="icon-envelope"></i> Track</label>
+  <input type="checkbox" value="true" id="node-input-track">
+  <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+  Track response of the user for this message, any further answer will be redirect to the output pin.
+  </div>
+</div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-telegram-send">
-
+<p>
+  Send a message (text, audio, video, image, etc) from a Telegram bot. In order to create complex conversations, it
+  can track answers from the user using output pin.
+</p>
 </script>
 
 

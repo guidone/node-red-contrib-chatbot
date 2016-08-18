@@ -14,7 +14,7 @@
       }
     },
     inputs: 1,
-    outputs: 2,
+    outputs: 1,
     paletteLabel: 'Buttons',
     icon: 'chatbot-ask.png',
     label: function() {
@@ -93,13 +93,13 @@
   </div>
   <div class="form-row">
     <label for="node-input-message"><i class="icon-envelope"></i> Message</label>
-    <textarea id="node-input-message" placeholder="Message" style="width:93%;height:200px;"></textarea>
+    <textarea id="node-input-message" placeholder="Message" style="width:93%;height:100px;"></textarea>
     <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
       Message to send with the request, template tags available like <code>{{firstName}}</code>, etc
     </div>
   </div>
   <div class="form-row" style="margin-bottom:0;">
-    <label><i class="fa fa-list"></i> <span>Answers</span></label>
+    <label><i class="fa fa-list"></i> <span>Buttons</span></label>
   </div>
   <div class="form-row node-input-rule-container-row">
     <ol id="node-input-answers-container"></ol>

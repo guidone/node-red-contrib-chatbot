@@ -3,6 +3,7 @@ var telegramBot = require('node-telegram-bot-api');
 var moment = require('moment');
 var ChatContext = require('./lib/chat-context.js');
 var helpers = require('./lib/helpers/slack.js');
+var DEBUG = false;
 
 module.exports = function(RED) {
 
@@ -181,14 +182,22 @@ module.exports = function(RED) {
       if (node.telegramBot) {
         this.status({fill: 'green', shape: 'ring', text: 'connected'});
 
+        /*
+        todo implement inline
+        node.telegramBot.on('inline_query', function(botMsg) {
+          console.log('inline request', botMsg);
+        });*/
+
         node.telegramBot.on('message', function(botMsg) {
 
           // mark the original message with the platform
           botMsg.transport = 'telegram';
 
-          //console.log('-------');
-          //console.log(botMsg);
-          //console.log('-------');
+          if (DEBUG) {
+            console.log('-------');
+            console.log(botMsg);
+            console.log('-------');
+          }
           var username = !_.isEmpty(botMsg.from.username) ? botMsg.from.username : null;
           var chatId = botMsg.chat.id;
           var userId = botMsg.from.id;
@@ -227,6 +236,7 @@ module.exports = function(RED) {
           chatContext.set('lastName', botMsg.from.last_name);
           chatContext.set('authorized', isAuthorized);
           chatContext.set('transport', 'telegram');
+          chatContext.set('message', botMsg.text);
 
           // decode the message
           getMessageDetails(botMsg, node.telegramBot)
@@ -262,12 +272,11 @@ module.exports = function(RED) {
   }
   RED.nodes.registerType('chatbot-telegram-receive', TelegramInNode);
 
-
-
   function TelegramOutNode(config) {
     RED.nodes.createNode(this, config);
     var node = this;
     this.bot = config.bot;
+    this.track = config.track;
 
     this.config = RED.nodes.getNode(this.bot);
     if (this.config) {
@@ -282,6 +291,17 @@ module.exports = function(RED) {
     } else {
       node.warn("no config.");
     }
+
+    // relay message
+    var handler = function(msg) {
+      node.send(msg);
+    };
+    RED.events.on('node:' + config.id, handler);
+
+    // cleanup on close
+    this.on('close',function() {
+      RED.events.removeListener('node:' + config.id, handler);
+    });
 
     this.on('input', function (msg) {
 
@@ -304,7 +324,10 @@ module.exports = function(RED) {
         return;
       }
 
-      var chatId = msg.payload.chatId;
+      var context = node.context();
+      var track = node.track;
+      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
+      var chatContext = context.flow.get('chat:' + chatId) || ChatContext(chatId);
       var type = msg.payload.type;
 
       /*if (msg.payload.content == null) {
@@ -312,6 +335,12 @@ module.exports = function(RED) {
         return;
       }*/
 
+      // check if this node has some wirings in the follow up pin, in that case
+      // the next message should be redirected here
+      if (track && !_.isEmpty(node.wires[0])) {
+        chatContext.set('currentConversationNode', node.id);
+        chatContext.set('currentConversationNode_at', moment());
+      }
 
       switch (type) {
         case 'message':
@@ -342,10 +371,6 @@ module.exports = function(RED) {
           node.telegramBot.sendPhoto(chatId, msg.payload.content, msg.payload.options)
             .catch(node.error);
           break;
-        case 'audio':
-          node.telegramBot.sendAudio(chatId, msg.payload.content, msg.payload.options)
-            .catch(node.error);
-          break;
         case 'document':
           node.telegramBot.sendDocument(chatId, msg.payload.content, msg.payload.options)
             .catch(node.error);
@@ -371,9 +396,17 @@ module.exports = function(RED) {
             .catch(node.error);
           break;
         case 'buttons':
-
           var buttons = {
+            /*
+            this is for inline
             reply_markup: JSON.stringify({
+              inline_keyboard: [
+                [{ text: 'Some button text 1', url: 'http://javascript-jedi.com' }],
+                [{ text: 'Some button text 2', callback_data: '2' }],
+                [{ text: 'Some button text 3', switch_inline_query: '/where' }]
+              ]
+            })*/
+          reply_markup: JSON.stringify({
               keyboard: _(msg.payload.buttons).map(function(answer) {
                 return [answer];
               }),
@@ -384,10 +417,7 @@ module.exports = function(RED) {
 
           node.telegramBot.sendMessage(chatId, msg.payload.content, buttons)
             .catch(node.error);
-
-
           break;
-
 
         default:
           // unknown type, do nothing

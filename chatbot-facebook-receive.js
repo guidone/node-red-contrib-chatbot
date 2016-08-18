@@ -1,5 +1,4 @@
 var _ = require('underscore');
-var WebClient = require('@slack/client').WebClient;
 var moment = require('moment');
 var ChatContext = require('./lib/chat-context.js');
 var helpers = require('./lib/helpers/facebook.js');
@@ -8,7 +7,7 @@ var os = require('os');
 var request = require('request').defaults({ encoding: null });
 var http = require('http');
 var Bot = require('messenger-bot');
-
+var DEBUG = true;
 
 module.exports = function(RED) {
 
@@ -200,8 +199,11 @@ module.exports = function(RED) {
           // mark the original message with the platform
           botMsg.transport = 'facebook';
 
-          console.log('---- inbound facebook', botMsg); // todo remove
-
+          if (DEBUG) {
+            console.log('-------');
+            console.log(botMsg);
+            console.log('-------');
+          }
 
           var userId = botMsg.sender.id;
           var chatId = botMsg.sender.id;
@@ -234,6 +236,7 @@ module.exports = function(RED) {
               chatContext.set('lastName', profile.last_name);
               chatContext.set('authorized', isAuthorized);
               chatContext.set('transport', 'facebook');
+              chatContext.set('message', botMsg.message.text);
 
               var msg = {
                 payload: payload,
@@ -276,7 +279,7 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
     var node = this;
     this.bot = config.bot;
-
+    this.track = config.track;
 
     this.config = RED.nodes.getNode(this.bot);
     if (this.config) {
@@ -382,8 +385,6 @@ module.exports = function(RED) {
             break;
 
           case 'audio':
-            console.log('mando audio');
-
             var audio = msg.payload.content;
             helpers.uploadBuffer({
               recipient: msg.payload.chatId,
@@ -395,7 +396,6 @@ module.exports = function(RED) {
               reject(err);
             });
             break;
-
 
           case 'photo':
             var image = msg.payload.content;
@@ -417,6 +417,16 @@ module.exports = function(RED) {
       });
     }
 
+    // relay message
+    var handler = function(msg) {
+      node.send(msg);
+    };
+    RED.events.on('node:' + config.id, handler);
+
+    // cleanup on close
+    this.on('close',function() {
+      RED.events.removeListener('node:' + config.id, handler);
+    });
 
     this.on('input', function (msg) {
 
@@ -441,13 +451,25 @@ module.exports = function(RED) {
 
       var channelId = msg.payload.chatId;
 
+
+      var context = node.context();
+      var track = node.track;
+      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
+      var chatContext = context.flow.get('chat:' + chatId) || ChatContext(chatId);
+
       /*if (msg.payload.content == null) {
        node.warn("msg.payload.content is empty");
        return;
        }*/
 
-      sendMessage(msg);
+      // check if this node has some wirings in the follow up pin, in that case
+      // the next message should be redirected here
+      if (track && !_.isEmpty(node.wires[0])) {
+        chatContext.set('currentConversationNode', node.id);
+        chatContext.set('currentConversationNode_at', moment());
+      }
 
+      sendMessage(msg);
     });
   }
   RED.nodes.registerType('chatbot-facebook-send', FacebookOutNode);
