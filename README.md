@@ -136,22 +136,23 @@ return msg;
 The first output of the `Listen Node` is also connected to a confirmation message to be sent back to the user: `Sending resume to {{email}}`. Here the variable `{{email}}` is automatically replaced by the value present in the chat context.
 
 ### Tracking answers
-Complex chatbots may require to send some information to the user and then go on with the rest of the flow, in this example
+Complex chatbots may require to request some information to the user and then go on with the rest of the flow, in this example
 
 ![Track Conversation](./docs/images/example-track.png)
 
 The user receive a message `"Please enter your email:"`, note that the `Telegram Sender` node has an output, that means that the next message from the same user will be automatically re-routed to the rest of the flow connected to that output, continuing in this way the conversation. The `Parse Node` scan the message for the email and store it the chat context, the final message just show the captured value `"Your email is {{email}}"`.
 
 After 5 minutes if inactivity from the user, the conversation is considered ended and the next messages will be routed the the root of the flow.
+In order to enable the output pin `Telegram Sender` check the *track* option in the configuration panel.
 
 ### Send a Location
-Here is an example where the chatbot request the user location. The user can share his location with the "share" button in Telegram and Facebook or can insert manually the address, here is the flow
+Here is an example where the chatbot request the user location. The user can share his location with the *"share"* button in Telegram and Facebook or can insert manually the address, here is the flow
 
 ![User Position](./docs/images/example-position.png)
 
-First is presented a message to the user asking to share his position, this message has the *tracking* option activated, the answer to this message will not start over the flow but will continue to the nodes attached to the second output.
+First is presented a message to the user asking to share his position, this is connected to a `Telegram Sender`  with the *tracking* option activated, the answer to this message will not start over the flow but will continue to the nodes attached to this sender output.
 
-The answer of the user is then captured by the `Parse Node`, which parse the incoming message searching for a location-type message (an object containing latitude and longitude) and it's the result of the user sharing the position with the chat client ( *Telegram* or *Facebook* ). If it doesn't match the message is routed to the second output, (this happens when the user writes his location manually) to the Google Geolocation node.
+The answer of the user is then captured by the `Parse Node`, which parse the incoming message searching for a location-type message (an object containing latitude and longitude) and it's the result of the user sharing the position with the chat client ( *Telegram* or *Facebook* ). If it doesn't match the message is routed to the second output, (this happens when the user writes his location manually) to the **Google Geolocation** node.
 
 The final message just the coordinates `"Your position is {{location.latitude}}, {{location.longitude}}"`
 
@@ -181,6 +182,9 @@ In the template system some defaults variables are available using the *{{variab
 * **authorized** - boolean, whether the user is authorized or not
 * **transport** - the current transport, could be *telegram*, *facebook*, *slack*
 * **message** - the current message from the user in string format
+
+## Changelog
+- **0.5.2** - Breaking changes: moved the tracking option to the sender node, this will break previous flows where the tracking output was in the message node. If errors on saving the flow occurs after the upgrade, export the whole flow and import it again. Added debug node.
 
 ## Roadmap
 * Slack Sender & Receiver
