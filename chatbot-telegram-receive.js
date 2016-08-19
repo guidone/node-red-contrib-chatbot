@@ -3,7 +3,7 @@ var TelegramBot = require('node-telegram-bot-api');
 var moment = require('moment');
 var ChatContext = require('./lib/chat-context.js');
 var helpers = require('./lib/helpers/slack.js');
-var DEBUG = true;
+var DEBUG = false;
 
 module.exports = function(RED) {
 

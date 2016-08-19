@@ -7,7 +7,7 @@ var os = require('os');
 var request = require('request').defaults({ encoding: null });
 var http = require('http');
 var Bot = require('messenger-bot');
-var DEBUG = true;
+var DEBUG = false;
 
 module.exports = function(RED) {
 
