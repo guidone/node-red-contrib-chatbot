@@ -1,11 +1,9 @@
 <img src="./docs/logo/RedBot_logo.png" width="250" align="left">
 With **RedBot** you can visually build a full featured chat bot for **Telegram**, **Facebook Messenger** and **Slack** with Node-RED. ~~Almost~~ no coding skills required.
 
+> Node-RED is a tool for wiring together hardware devices, APIs and online services in new and interesting ways.
 
 ## Getting started
-NodeRedContribuChatbot is a collection of nodes to be used with Node-RED.
-
-> Node-RED is a tool for wiring together hardware devices, APIs and online services in new and interesting ways.
 
 First of all install  [Node-RED](http://nodered.org/docs/getting-started/installation)
 
@@ -26,7 +24,7 @@ Then run
 node-red
 ```
 
-The next step is to create a chat bot, I reccomend to use Telegram since the setup it's easier (Telegram allows polling to receive messages, so it's not necessary to create a https certificate).
+The next step is to create a chat bot, I reccomend to use **Telegram** since the setup it's easier ( **Telegram** allows polling to receive messages, so it's not necessary to create a https certificate).
 Use **@BotFather** to create a chat bot, [follow instructions here](https://core.telegram.org/bots#botfather) then copy you access **token**.
 
 Then open your **Node-RED** and add a `Telegram Receiver`, in the configuration panel, add a new bot and paste the **token**
@@ -54,23 +52,8 @@ Now you have a useful bot that answers *"Hi there!"* to any received message. We
 * **Parse**: Parse the incoming message searching for some type of data (string, number, date, location, contact, etc) [All]
 * **Log**: Convert a chat message (inbound or outbound) to a single line string suitable to be sent to a log file [All]
 * **Location**: Send a location type message that will be shown with a map by the chat client [Telegram, Facebook, Slack]
-* **Listen**:
-* **Analyze**:
-
-## Variable Contexts
-**Node Red** has two variable context *global* and *flow*, the first is available everywhere in the app, the second just in the executed flow.
-
- **Node-red-contrib-chatbot** adds the *chat* context where is possible to store information related to the specific user. The Receiver stores here some information like *chatId*, *username*, *authorized*, etc.
-
-To get the chat context in a function node:
-
-```
-var chatId = msg.originalMessage.chat.id
-var chat = context.flow.get('chat:' + chatId);
-console.log(chat.get('authorized')); // is the user authorized
-console.log(chat.get('username')); // guidone72
-chat.set('my_stuff', 'remember that');
-```
+* **Listen**: Listen for a set of tokens, it's a very simple way to match sentences [Telegram, Facebook, Slack]
+* **Debug**: Debug incoming messages and chat contexts (useful to get the `chatId` )
 
 ## Examples
 Here are some examples connecting the ChatBot blocks
@@ -86,7 +69,7 @@ The node `Telegram Receiver` sets up some variables in the chat context flow: *f
 
 ### Collect Email
 ![Example Collect Email](./docs/images/example-collect-email.png)
-This is an example of how to parse the user input. The first **Email** block after the receiver just show a prompt message, note that this block tracks the user answer, that means that next message from the user will start from here and will be re-routed to the second output to the **Parse Email** block.
+This is an example of how to parse the user input. The first **Email** block after the receiver just show a prompt message, note that the sender block tracks the user answer, that means that next message from the user will start from here and will be re-routed to the output to the `Telegram Sender` node.
 
 If a valid email is found then the parsed value will be routed to the first output otherwise the second. The parsed email is available as payload or can be stored in the flow context,  for example in the `email` variable.
 
@@ -131,7 +114,7 @@ The `Listen Node` also takes into account small changes to the word (using  Leve
 "send to an_email@gmail.com" // no, missing cv or curriculum token
 ```
 
-There are some special tokes like {{email}} that matches any token that looks like and email and store it the chat context (in that case the key will be "email").
+There are some special tokes like `{{email}}` that matches any token that looks like and email and store it the chat context (in that case the key will be "email").
 
 A little bit of coding is required to prepare the payload for the email node
 
@@ -150,15 +133,14 @@ msg.attachments = [
 return msg;
 ```
 
-The first output of the `Listen Node` is also connected to a confirmation message to be sent back to the user: `Sending curriculum to {{email}}`. Here the variable `{{email}}` is automatically replaced by the value present in the chat context.
+The first output of the `Listen Node` is also connected to a confirmation message to be sent back to the user: `Sending resume to {{email}}`. Here the variable `{{email}}` is automatically replaced by the value present in the chat context.
 
 ### Tracking answers
 Complex chatbots may require to send some information to the user and then go on with the rest of the flow, in this example
 
 ![Track Conversation](./docs/images/example-track.png)
 
-The user receive a message `"Please enter your email:"`, the first output goes to the sender node, the second output is linked to the rest of the flow.
-The next message from the same user will be automatically re-routed to the rest of the flow, continuing in this was the conversation. The Parse Node scan the message for the email and store it the chat context, the final message just show the captured value `"Your email is {{email}}"`.
+The user receive a message `"Please enter your email:"`, note that the `Telegram Sender` node has an output, that means that the next message from the same user will be automatically re-routed to the rest of the flow connected to that output, continuing in this way the conversation. The `Parse Node` scan the message for the email and store it the chat context, the final message just show the captured value `"Your email is {{email}}"`.
 
 After 5 minutes if inactivity from the user, the conversation is considered ended and the next messages will be routed the the root of the flow.
 
@@ -173,10 +155,39 @@ The answer of the user is then captured by the `Parse Node`, which parse the inc
 
 The final message just the coordinates `"Your position is {{location.latitude}}, {{location.longitude}}"`
 
+## Variable Contexts
+**Node Red** has two variable context *global* and *flow*, the first is available everywhere in the app, the second just in the executed flow.
+
+ **Node-red-contrib-chatbot** adds the *chat* context where is possible to store information related to the specific user. The Receiver stores here some information like *chatId*, *username*, *authorized*, etc.
+
+To get the chat context in a function node:
+
+```
+var chatId = msg.originalMessage.chat.id
+var chat = context.flow.get('chat:' + chatId);
+console.log(chat.get('authorized')); // is the user authorized
+console.log(chat.get('username')); // guidone72
+chat.set('my_stuff', 'remember that');
+```
+
+## Template Variables
+In the template system some defaults variables are available using the *{{variable}}* syntax
+
+* **chatId** - The chat id (same for a specific user)
+* **messageId** - The message id
+* **userId** - The user id
+* **firstName** - First name, when available (for example in Telegram must me specified in preferences)
+* **lastName** - Last name, when available (for example in Telegram must me specified in preferences)
+* **authorized** - boolean, whether the user is authorized or not
+* **transport** - the current transport, could be *telegram*, *facebook*, *slack*
+* **message** - the current message from the user in string format
+
 ## Roadmap
 * Slack Sender & Receiver
-* Facebook Sender & Receiver
-* Improve interface of listen node
+
+## Known Problems
+- There's no way to exit a current conversation
+* Slack Sender and Receiver are not complete yet
 
 ## Credits
 * Inspired by the Karl-Heinz Wind work [node-red-contrib-telegram](https://github.com/windkh/node-red-contrib-telegrambot)
@@ -184,19 +195,10 @@ The final message just the coordinates `"Your position is {{location.latitude}},
 
 ## The MIT License
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

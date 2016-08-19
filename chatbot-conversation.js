@@ -12,7 +12,6 @@ module.exports = function(RED) {
 
       var chatId = node.chatId;
       var context = node.context();
-      var chatBotUsers = context.flow.get('chatBotUsers');
       var transport = msg.originalMessage != null && msg.originalMessage.transport != null ? msg.originalMessage.transport : null;
 
       var id = null;
@@ -20,9 +19,6 @@ module.exports = function(RED) {
       // if valid chat id then use it, otherwise search as username
       if (chatId != null && chatId.match(/^[0-9]*$/)) {
         id = chatId;
-      } else {
-        var userObj = _(chatBotUsers).findWhere({username: chatId});
-        id = userObj != null ? userObj.chatId : null;
       }
 
       if (id == null) {

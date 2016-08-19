@@ -26,6 +26,7 @@
       "chatbot-request": "chatbot-request.js",
       "chatbot-log": "chatbot-log.js",
       "chatbot-conversation": "chatbot-conversation.js",
+      "chatbot-debug": "chatbot-debug.js",
       "chatbot-waiting": "chatbot-waiting.js",
       "chatbot-authorized": "chatbot-authorized.js",
       "chatbot-transport": "chatbot-transport.js",
@@ -48,6 +49,7 @@
   "license": "ISC",
   "dependencies": {
     "@slack/client": "^3.5.1",
+    "cli-color": "^1.1.0",
     "fast-levenshtein": "^1.1.3",
     "languagedetect": "^1.1.1",
     "messenger-bot": "^2.3.0",

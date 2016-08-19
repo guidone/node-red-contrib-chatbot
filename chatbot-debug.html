@@ -1,0 +1,29 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-debug', {
+    category: 'ChatBot',
+    color: '#FFCC66',
+    defaults: {
+    },
+    inputs: 1,
+    outputs: 0,
+    paletteLabel: 'Debug',
+    icon: 'chatbot-debug.png',
+    label: function() {
+      return 'Debug';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-debug">
+<div class="form-row">
+  Configuration panel is not available for this node
+</div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-debug">
+  <p>
+  Debug a chatbot message, this is useful for example to catch the chatId (needed to start a chat conversation)
+  </p>
+</script>
+
+
