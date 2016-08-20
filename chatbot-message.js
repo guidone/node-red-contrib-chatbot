@@ -8,11 +8,13 @@ module.exports = function(RED) {
     var node = this;
     this.message = config.message;
     this.answer = config.answer;
+    this.parse_mode = config.parse_mode;
     this.transports = ['telegram', 'slack', 'facebook'];
 
     this.on('input', function(msg) {
       var message = node.message;
       var answer = node.answer;
+      var parse_mode = node.parse_mode;
       var originalMessage = msg.originalMessage;
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
       var messageId = msg.payload.messageId || (originalMessage && originalMessage.message_id);
@@ -40,11 +42,15 @@ module.exports = function(RED) {
         messageId: messageId,
         inbound: false
       };
+
+      msg.payload.options = {};
+      // parse mode
+      if (!_.isEmpty(parse_mode)) {
+        msg.payload.options.parse_mode = parse_mode;
+      }
       // reply flag
       if (answer) {
-        msg.payload.options = {
-          reply_to_message_id: messageId
-        };
+        msg.payload.options.reply_to_message_id = messageId;
       }
       // send out reply
       node.send(msg);

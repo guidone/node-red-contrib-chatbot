@@ -184,7 +184,8 @@ In the template system some defaults variables are available using the *{{variab
 * **message** - the current message from the user in string format
 
 ## Changelog
-- **0.5.2** - Breaking changes: moved the tracking option to the sender node, this will break previous flows where the tracking output was in the message node. If errors on saving the flow occurs after the upgrade, export the whole flow and import it again. Added debug node.
+- **0.5.1** - Breaking changes: moved the tracking option to the sender node, this will break previous flows where the tracking output was in the message node. If errors on saving the flow occurs after the upgrade, export the whole flow and import it again. Added debug node.
+* **0.5.2** - Added markdown and html formatting to Telegram message node
 
 ## Roadmap
 * Slack Sender & Receiver

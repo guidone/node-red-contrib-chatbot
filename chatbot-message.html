@@ -14,6 +14,9 @@
       },
       track: {
         value: false
+      },
+      parse_mode: {
+        value: ''
       }
     },
     inputs: 1,
@@ -36,9 +39,20 @@
   <textarea id="node-input-message" placeholder="Message" style="width:93%;height:200px;"></textarea>
 </div>
 <div class="form-row">
-  <label for="node-input-answer"><i class="icon-envelope"></i> Answer</label>
+  <label for="node-input-answer"><i class="icon-share-alt"></i> Answer</label>
   <input type="checkbox" value="true" id="node-input-answer">
-  <span style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;">Quote the previous message.</span>
+  <span style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;">Quote the previous message <i>[Telegram]</i></span>
+</div>
+<div class="form-row">
+  <label for="node-input-parse_mode"><i class="icon-cog"></i> Parse</label>
+  <select id="node-input-parse_mode" placeholder="Select parse mode">
+    <option value="">None</option>
+    <option value="Markdown">Markdown</option>
+    <option value="HTML">HTML</option>
+  </select>
+  <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;">
+  Render the message with Markdown or HTML <i>[Telegram]</i>
+  </div>
 </div>
 </script>
 
