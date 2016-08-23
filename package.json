@@ -30,6 +30,7 @@
       "chatbot-waiting": "chatbot-waiting.js",
       "chatbot-authorized": "chatbot-authorized.js",
       "chatbot-transport": "chatbot-transport.js",
+      "chatbot-rivescript": "chatbot-rivescript.js",
       "chatbot-telegram-receive": "chatbot-telegram-receive.js",
       "chatbot-slack-receive": "chatbot-slack-receive.js",
       "chatbot-facebook-receive": "chatbot-facebook-receive.js"
@@ -56,6 +57,7 @@
     "moment": "^2.13.0",
     "node-telegram-bot-api": "^0.23.3",
     "request": "^2.73.0",
+    "rivescript": "^1.15.0",
     "sanitize-filename": "^1.6.0",
     "speakeasy-nlp": "^0.2.2",
     "underscore": "^1.8.3",
