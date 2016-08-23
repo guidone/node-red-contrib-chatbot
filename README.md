@@ -42,18 +42,19 @@ Finally add a `Telegram Sender` node, don't forget to select in the configuratio
 Now you have a useful bot that answers *"Hi there!"* to any received message. We can do a lot better.
 
 ## Available nodes
-* **Message**: sends a text message from the chat bot, supports templating (variable like `{{firstName}}`, etc), tracking of response and quoting a previous comment  [Telegram, Facebook, Slack]
-* **Waiting**: sets the waiting status on the chat client (something like _your_chatbot is typing_ ) [Telegram, Facebook, Slack]
+* **Message**: sends a text message from the chat bot, supports templating (variable like `{{firstName}}`, etc), tracking of response and quoting a previous comment  [All]
+* **Waiting**: sets the waiting status on the chat client (something like _your_chatbot is typing_ ) [All]
 * **Command**: listen to a command type message (for example `/command1`, `/my-command`, etc) [All]
-* **Image**: takes the `msg.payload` binary (or a local file) and sends out as image to the chat, can track response [Telegram, Facebook, Slack]
+* **Image**: takes the `msg.payload` binary (or a local file) and sends out as image to the chat, can track response [All]
 * **Audio**: takes the `msg.payload` binary (or a local file) and sends out as audio to the chat, can track response [Telegram, Facebook]
 * **Request**: request special information from the chat client like the current location or the phone numbers [Telegram].
 * **Buttons**: request information to the chat user using buttons using a predefined list [Telegram, Facebook]
 * **Parse**: Parse the incoming message searching for some type of data (string, number, date, location, contact, etc) [All]
 * **Log**: Convert a chat message (inbound or outbound) to a single line string suitable to be sent to a log file [All]
-* **Location**: Send a location type message that will be shown with a map by the chat client [Telegram, Facebook, Slack]
-* **Listen**: Listen for a set of tokens, it's a very simple way to match sentences [Telegram, Facebook, Slack]
-* **Debug**: Debug incoming messages and chat contexts (useful to get the `chatId` )
+* **Location**: Send a location type message that will be shown with a map by the chat client [All]
+* **Listen**: Listen for a set of tokens, it's a very simple way to match sentences [All]
+* **Debug**: Debug incoming messages and chat contexts (useful to get the `chatId` ) [All]
+* **RiveScript**: use [RiveScript.com](https://www.rivescript.com/) to elaborate answers [All]
 
 ## Examples
 Here are some examples connecting the ChatBot blocks
@@ -152,9 +153,33 @@ Here is an example where the chatbot request the user location. The user can sha
 
 First is presented a message to the user asking to share his position, this is connected to a `Telegram Sender`  with the *tracking* option activated, the answer to this message will not start over the flow but will continue to the nodes attached to this sender output.
 
-The answer of the user is then captured by the `Parse Node`, which parse the incoming message searching for a location-type message (an object containing latitude and longitude) and it's the result of the user sharing the position with the chat client ( *Telegram* or *Facebook* ). If it doesn't match the message is routed to the second output, (this happens when the user writes his location manually) to the **Google Geolocation** node.
+The answer of the user is then captured by the `Parse node`, which parse the incoming message searching for a location-type message (an object containing latitude and longitude) and it's the result of the user sharing the position with the chat client ( *Telegram* or *Facebook* ). If it doesn't match the message is routed to the second output, (this happens when the user writes his location manually) to the **Google Geolocation** node.
 
 The final message just the coordinates `"Your position is {{location.latitude}}, {{location.longitude}}"`
+
+### Using RiveScript
+[RiveScript](https://www.rivescript.com/) is a simple scripting language for chatbots with an easy to learn syntax.
+
+![RiveScript](./docs/images/example-rivescript.png)
+
+The most simple script
+```
+! version = 2.0
+
++ hello bot
+- Hello, human!
+```
+If the user input matches *"Hello bot"* it returns on the first output the string *"Hello, human!"*.
+If the `RiveScript node` doesn't match anything, it sends the error message to the second output.
+Read the [RiveScript tutorial](https://www.rivescript.com/docs/tutorial) for all language details.
+
+`RiveScript node` is able to read user input and store it in the chat context
+```
+! version = 2.0
+
++ my name is guido
+- <set name=<star>>ok, I'll remember your name as <get name>
+```
 
 ## Variable Contexts
 **Node Red** has two variable context *global* and *flow*, the first is available everywhere in the app, the second just in the executed flow.
@@ -186,6 +211,7 @@ In the template system some defaults variables are available using the *{{variab
 ## Changelog
 - **0.5.1** - Breaking changes: moved the tracking option to the sender node, this will break previous flows where the tracking output was in the message node. If errors on saving the flow occurs after the upgrade, export the whole flow and import it again. Added debug node.
 * **0.5.2** - Added markdown and html formatting to Telegram message node
+* **0.5.3** - Added RiveScript node
 
 ## Roadmap
 * Slack Sender & Receiver
