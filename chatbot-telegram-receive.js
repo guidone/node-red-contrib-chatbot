@@ -210,16 +210,19 @@ module.exports = function(RED) {
     }
 
     this.on('close', function (done) {
-      if (self.telegramBot._polling) {
-        self.telegramBot._polling.abort = true;
-        self.telegramBot._polling.lastRequest.cancel('Closing node.');
-        self.telegramBot._polling = undefined;
-        // todo remove telegram
-        this.telegramBot.off('message', self.handleMessage);
+      // stop polling only once
+      if (this.telegramBot != null && this.telegramBot._polling) {
+        self.telegramBot.off('message', self.handleMessage);
+        self.telegramBot.stopPolling()
+          .then(function() {
+            done();
+          });
+      } else {
+        done();
       }
-      done();
     });
-  }
+  } // end TelegramBotNode
+
   RED.nodes.registerType('chatbot-telegram-node', TelegramBotNode, {
     credentials: {
       token: {
