@@ -55,6 +55,7 @@ Now you have a useful bot that answers *"Hi there!"* to any received message. We
 * **Listen**: Listen for a set of tokens, it's a very simple way to match sentences [All]
 * **Debug**: Debug incoming messages and chat contexts (useful to get the `chatId` ) [All]
 * **RiveScript**: use [RiveScript.com](https://www.rivescript.com/) to elaborate answers [All]
+* **QRCode**: create a QR code image [All]
 
 ## Examples
 Here are some examples connecting the ChatBot blocks
@@ -209,9 +210,10 @@ In the template system some defaults variables are available using the *{{variab
 * **message** - the current message from the user in string format
 
 ## Changelog
-- **0.5.1** - Breaking changes: moved the tracking option to the sender node, this will break previous flows where the tracking output was in the message node. If errors on saving the flow occurs after the upgrade, export the whole flow and import it again. Added debug node.
-* **0.5.2** - Added markdown and html formatting to Telegram message node
+- **0.5.4** - Fixed exception on restarting flows. Added quad code node
 * **0.5.3** - Added RiveScript node
+* **0.5.2** - Added markdown and html formatting to Telegram message node
+- **0.5.1** - Breaking changes: moved the tracking option to the sender node, this will break previous flows where the tracking output was in the message node. If errors on saving the flow occurs after the upgrade, export the whole flow and import it again. Added debug node.
 
 ## Roadmap
 * Slack Sender & Receiver
