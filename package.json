@@ -6,12 +6,10 @@
     "test": "mocha",
     "tunnel": "ngrok http 127.0.0.1:3099"
   },
-  "repositories": [
-    {
-      "type": "git",
-      "url": "https://github.com/guidone/node-red-contrib-chatbot.git"
-    }
-  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/guidone/node-red-contrib-chatbot.git"
+  },
   "node-red": {
     "nodes": {
       "chatbot-message": "chatbot-message.js",
