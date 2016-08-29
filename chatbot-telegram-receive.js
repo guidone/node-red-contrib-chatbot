@@ -12,10 +12,10 @@ module.exports = function(RED) {
 
     var self = this;
     this.botname = n.botname;
+    this.polling = n.polling;
 
     this.usernames = [];
     if (n.usernames) {
-
       this.usernames = _(n.usernames.split(',')).chain()
         .map(function(userId) {
           return userId.match(/^[a-zA-Z0-9_]+?$/) ? userId : null
@@ -201,7 +201,12 @@ module.exports = function(RED) {
       if (this.token) {
         this.token = this.token.trim();
         if (!this.telegramBot) {
-          telegramBot = new TelegramBot(this.token, { polling: true });
+          telegramBot = new TelegramBot(this.token, {
+            polling: {
+              timeout: 10,
+              interval: !isNaN(parseInt(self.polling, 10)) ? parseInt(self.polling, 10) : 1000
+            }
+          });
           this.telegramBot = telegramBot;
           this.telegramBot.setMaxListeners(0);
           this.telegramBot.on('message', this.handleMessage);
@@ -215,6 +220,7 @@ module.exports = function(RED) {
         self.telegramBot.off('message', self.handleMessage);
         self.telegramBot.stopPolling()
           .then(function() {
+            self.telegramBot = null;
             done();
           });
       } else {
