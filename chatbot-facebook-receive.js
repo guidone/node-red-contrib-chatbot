@@ -138,6 +138,8 @@ module.exports = function(RED) {
           });
           console.warn('Running webhook on https://localhost:3099');
           console.warn('Verify token is: ' + this.verify_token);
+          console.warn('Key PEM: ' + this.key_pem);
+          console.warn('Cert PEM: ' + this.cert_pem);
           
           var options = {
             key  : fs.readFileSync(this.key_pem),
