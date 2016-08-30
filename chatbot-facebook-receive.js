@@ -138,8 +138,8 @@ module.exports = function(RED) {
             token: this.token,
             verify: this.verify_token,
             app_secret: this.app_secret,
-            key_pem = this.key_pem,
-            cert_pem = this.cert_pem
+            key_pem: this.key_pem,
+            cert_pem: this.cert_pem
           });
           console.warn('Running webhook on https://localhost:3099');
           console.warn('Verify token is: ' + this.verify_token);
@@ -245,7 +245,7 @@ module.exports = function(RED) {
           }
 
         } else {
-          reject('Unable to detect inbound message for Slack');
+          reject('Unable to detect inbound message for Facebook Messenger');
         }
 
 
@@ -290,7 +290,6 @@ module.exports = function(RED) {
     if (this.config) {
       this.status({fill: 'red', shape: 'ring', text: 'disconnected'});
 
-      //node.slackBot = this.config.slackBot;
       node.bot = this.config.bot;
 
       if (node.bot) {
@@ -308,7 +307,7 @@ module.exports = function(RED) {
         node.warn("no bot in config.");
       }
     } else {
-      node.warn('Missing configuration in Slack Receiver');
+      node.warn('Missing configuration in Facebook Messenger Receiver');
     }
   }
   RED.nodes.registerType('chatbot-facebook-receive', FacebookInNode);
