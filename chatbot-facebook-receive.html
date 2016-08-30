@@ -12,6 +12,14 @@
       },
       log: {
         value: null
+      },
+      key_pem: {
+        value: '',
+        required: true
+      },
+      cert_pem: {
+        value: '',
+        required: true
       }
     },
     paletteName: 'Facebook Bot',
@@ -23,6 +31,12 @@
         type: 'text'
       },
       app_secret: {
+        type: 'text'
+      },
+      key_pem: {
+        type: 'text'
+      },
+      cert_pem: {
         type: 'text'
       }
     },
@@ -58,6 +72,14 @@
       The verify token is an arbitrary string, must match the same string in the "Webhooks" section in the
       Facebook app
     </div>
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-key_pem"><i class="icon-tag"></i> Path Key PEM (SSL)</label>
+    <input type="text" id="node-config-input-key_pem" placeholder="Key PEM">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-cert_pem"><i class="icon-tag"></i> Path Cert PEM (SSL)</label>
+    <input type="text" id="node-config-input-cert_pem" placeholder="Cert PEM">
   </div>
   <div class="form-row">
     <label for="node-config-input-usernames"><i class="icon-user"></i> Users</label>
@@ -111,7 +133,7 @@
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-facebook-receive">
-    <p>Receive a message (text, audio, video, image, etc) from a Slack bot.</p>
+    <p>Receive a message (text, audio, video, image, etc) from a Facebook Messenger bot.</p>
     <p>The message is stored in <code>msg.payload</code>, this node also stores in the context flow:
     <code>username</code>, <code>firstName</code>, <code>lastName</code>, <code>chatId</code>, <code>authorized</code>,
     <code>transport</code> and <code>messageId</code>.
