@@ -123,7 +123,7 @@ module.exports = function(RED) {
       this.app_secret = this.credentials.app_secret;
       this.verify_token = this.credentials.verify_token;
       this.key_pem = this.credentials.key_pem;
-      this.cert_pem = this.credientals.cert_pem;
+      this.cert_pem = this.credentials.cert_pem;
       if (this.token) {
         this.token = this.token.trim();
 
