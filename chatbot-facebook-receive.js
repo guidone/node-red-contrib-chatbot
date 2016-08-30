@@ -122,6 +122,8 @@ module.exports = function(RED) {
       this.token = this.credentials.token;
       this.app_secret = this.credentials.app_secret;
       this.verify_token = this.credentials.verify_token;
+      this.key_pem = this.credentials.key_pem;
+      this.cert_pem = this.credientals.cert_pem;
       if (this.token) {
         this.token = this.token.trim();
 
@@ -130,14 +132,16 @@ module.exports = function(RED) {
           this.bot = new Bot({
             token: this.token,
             verify: this.verify_token,
-            app_secret: this.app_secret
+            app_secret: this.app_secret,
+            key_pem = this.key_pem,
+            cert_pem = this.cert_pem
           });
           console.warn('Running webhook on https://localhost:3099');
           console.warn('Verify token is: ' + this.verify_token);
           
           var options = {
-            key  : fs.readFileSync('/etc/letsencrypt/archive/lumeteu.com/privkey1.pem'),
-            cert : fs.readFileSync('/etc/letsencrypt/archive/lumeteu.com/fullchain1.pem')
+            key  : fs.readFileSync(this.key_pem),
+            cert : fs.readFileSync(this.cert_pem)
           };
 
           this.server = https.createServer(options,
@@ -261,6 +265,12 @@ module.exports = function(RED) {
         type: 'text'
       },
       verify_token: {
+        type: 'text'
+      },
+      key_pem: {
+        type: 'text'
+      },
+      cert_pem: {
         type: 'text'
       }
     }
