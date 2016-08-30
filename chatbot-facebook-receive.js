@@ -6,7 +6,7 @@ var helpers = require('./lib/helpers/facebook.js');
 var fs = require('fs');
 var os = require('os');
 var request = require('request').defaults({ encoding: null });
-var http = require('http');
+var https = require('https');
 var Bot = require('messenger-bot');
 var DEBUG = false;
 
@@ -137,9 +137,16 @@ module.exports = function(RED) {
             verify: this.verify_token,
             app_secret: this.app_secret
           });
-          console.warn('Running webhook on http://localhost:3099');
+          console.warn('Running webhook on https://localhost:3099');
           console.warn('Verify token is: ' + this.verify_token);
-          this.server = http.createServer(this.bot.middleware()).listen(3099);
+          
+          var options = {
+            key  : fs.readFileSync('/etc/letsencrypt/archive/lumeteu.com/privkey1.pem'),
+            cert : fs.readFileSync('/etc/letsencrypt/archive/lumeteu.com/fullchain1.pem')
+          };
+
+          this.server = https.createServer(options,
+          this.bot.middleware()).listen(3099);
 
           this.bot.on('message', this.handleMessage);
 
