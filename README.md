@@ -210,6 +210,8 @@ In the template system some defaults variables are available using the *{{variab
 * **message** - the current message from the user in string format
 
 ## Changelog
+* **0.5.7** - Sender nodes now can log to file
+* **0.5.6** - Telegram polling interval
 - **0.5.4** - Fixed exception on restarting flows. Added quad code node
 * **0.5.3** - Added RiveScript node
 * **0.5.2** - Added markdown and html formatting to Telegram message node
