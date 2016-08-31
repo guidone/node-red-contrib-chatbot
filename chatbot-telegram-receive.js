@@ -2,6 +2,7 @@ var _ = require('underscore');
 var TelegramBot = require('node-telegram-bot-api');
 var moment = require('moment');
 var ChatContext = require('./lib/chat-context.js');
+var ChatLog = require('./lib/chat-log.js');
 var helpers = require('./lib/helpers/slack.js');
 var DEBUG = false;
 
@@ -13,6 +14,7 @@ module.exports = function(RED) {
     var self = this;
     this.botname = n.botname;
     this.polling = n.polling;
+    this.log = n.log;
 
     this.usernames = [];
     if (n.usernames) {
@@ -174,10 +176,14 @@ module.exports = function(RED) {
       // decode the message
       self.getMessageDetails(botMsg)
         .then(function(payload) {
-          var msg = {
+          var chatLog = new ChatLog(chatContext);
+          return chatLog.log({
             payload: payload,
             originalMessage: botMsg
-          };
+          }, self.log)
+        })
+        .then(function(msg) {
+
           var currentConversationNode = chatContext.get('currentConversationNode');
           // if a conversation is going on, go straight to the conversation node, otherwise if authorized
           // then first pin, if not second pin
@@ -350,84 +356,90 @@ module.exports = function(RED) {
         chatContext.set('currentConversationNode_at', moment());
       }
 
-      switch (type) {
-        case 'message':
+      var chatLog = new ChatLog(chatContext);
 
-          // the maximum message size is 4096 so we must split the message into smaller chunks.
-          var chunkSize = 4000;
-          var message = msg.payload.content;
+      chatLog.log(msg, this.config.log)
+        .then(function() {
 
-          var done = false;
-          do {
-            var messageToSend;
-            if (message.length > chunkSize) {
-              messageToSend = message.substr(0, chunkSize);
-              message = message.substr(chunkSize);
-            } else {
-              messageToSend = message;
-              done = true;
-            }
+          switch (type) {
+            case 'message':
 
-            node.telegramBot.sendMessage(chatId, messageToSend, msg.payload.options)
-              .catch(node.error);
-          } while (!done);
-          break;
-        case 'photo':
-          node.telegramBot.sendPhoto(chatId, msg.payload.content, msg.payload.options)
-            .catch(node.error);
-          break;
-        case 'document':
-          node.telegramBot.sendDocument(chatId, msg.payload.content, msg.payload.options)
-            .catch(node.error);
-          break;
-        case 'sticker':
-          node.telegramBot.sendSticker(chatId, msg.payload.content, msg.payload.options)
-            .catch(node.error);
-          break;
-        case 'video':
-          node.telegramBot.sendVideo(chatId, msg.payload.content, msg.payload.options)
-            .catch(node.error);
-          break;
-        case 'audio':
-          node.telegramBot.sendVoice(chatId, msg.payload.content, msg.payload.options)
-            .catch(node.error);
-          break;
-        case 'location':
-          node.telegramBot.sendLocation(chatId, msg.payload.content.latitude, msg.payload.content.longitude, msg.payload.options)
-            .catch(node.error);
-          break;
-        case 'action':
-          node.telegramBot.sendChatAction(chatId, msg.payload.waitingType != null ? msg.payload.waitingType : 'typing')
-            .catch(node.error);
-          break;
-        case 'buttons':
-          var buttons = {
-            /*
-            this is for inline
-            reply_markup: JSON.stringify({
-              inline_keyboard: [
-                [{ text: 'Some button text 1', url: 'http://javascript-jedi.com' }],
-                [{ text: 'Some button text 2', callback_data: '2' }],
-                [{ text: 'Some button text 3', switch_inline_query: '/where' }]
-              ]
-            })*/
-          reply_markup: JSON.stringify({
-              keyboard: _(msg.payload.buttons).map(function(answer) {
-                return [answer];
-              }),
-              resize_keyboard: true,
-              one_time_keyboard: true
-            })
-          };
+              // the maximum message size is 4096 so we must split the message into smaller chunks.
+              var chunkSize = 4000;
+              var message = msg.payload.content;
 
-          node.telegramBot.sendMessage(chatId, msg.payload.content, buttons)
-            .catch(node.error);
-          break;
+              var done = false;
+              do {
+                var messageToSend;
+                if (message.length > chunkSize) {
+                  messageToSend = message.substr(0, chunkSize);
+                  message = message.substr(chunkSize);
+                } else {
+                  messageToSend = message;
+                  done = true;
+                }
 
-        default:
-          // unknown type, do nothing
-      }
+                node.telegramBot.sendMessage(chatId, messageToSend, msg.payload.options)
+                  .catch(node.error);
+              } while (!done);
+              break;
+            case 'photo':
+              node.telegramBot.sendPhoto(chatId, msg.payload.content, msg.payload.options)
+                .catch(node.error);
+              break;
+            case 'document':
+              node.telegramBot.sendDocument(chatId, msg.payload.content, msg.payload.options)
+                .catch(node.error);
+              break;
+            case 'sticker':
+              node.telegramBot.sendSticker(chatId, msg.payload.content, msg.payload.options)
+                .catch(node.error);
+              break;
+            case 'video':
+              node.telegramBot.sendVideo(chatId, msg.payload.content, msg.payload.options)
+                .catch(node.error);
+              break;
+            case 'audio':
+              node.telegramBot.sendVoice(chatId, msg.payload.content, msg.payload.options)
+                .catch(node.error);
+              break;
+            case 'location':
+              node.telegramBot.sendLocation(chatId, msg.payload.content.latitude, msg.payload.content.longitude, msg.payload.options)
+                .catch(node.error);
+              break;
+            case 'action':
+              node.telegramBot.sendChatAction(chatId, msg.payload.waitingType != null ? msg.payload.waitingType : 'typing')
+                .catch(node.error);
+              break;
+            case 'buttons':
+              var buttons = {
+                /*
+                 this is for inline
+                 reply_markup: JSON.stringify({
+                 inline_keyboard: [
+                 [{ text: 'Some button text 1', url: 'http://javascript-jedi.com' }],
+                 [{ text: 'Some button text 2', callback_data: '2' }],
+                 [{ text: 'Some button text 3', switch_inline_query: '/where' }]
+                 ]
+                 })*/
+                reply_markup: JSON.stringify({
+                  keyboard: _(msg.payload.buttons).map(function(answer) {
+                    return [answer];
+                  }),
+                  resize_keyboard: true,
+                  one_time_keyboard: true
+                })
+              };
 
+              node.telegramBot.sendMessage(chatId, msg.payload.content, buttons)
+                .catch(node.error);
+              break;
+
+            default:
+            // unknown type, do nothing
+          }
+
+        });
 
     });
   }
