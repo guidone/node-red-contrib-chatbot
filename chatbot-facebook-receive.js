@@ -137,8 +137,10 @@ module.exports = function(RED) {
             cert_pem: this.cert_pem
           });
           
-           var port = process.env.VCAP_APP_PORT || 3099;
+           var port = process.env.VCAP_APP_PORT || process.env.PORT || 3099;
           
+          console.warn('VCAP_APP_PORT:'+process.env.VCAP_APP_PORT);
+          console.warn('PORT:'+process.env.PORT);
           console.warn('Running webhook on https://localhost:'+port);
           console.warn('Verify token is: ' + this.verify_token);
           console.warn('Key PEM: ' + this.key_pem);
