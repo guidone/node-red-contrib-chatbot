@@ -4,7 +4,7 @@ var ChatContext = require('./lib/chat-context.js');
 var helpers = require('./lib/helpers/facebook.js');
 var fs = require('fs');
 var os = require('os');
-var request = require('request').defaults({ encoding: null });
+var request = require('request').defaults({ encoding: null });c
 var https = require('https');
 var Bot = require('messenger-bot');
 var DEBUG = false;
@@ -140,7 +140,7 @@ module.exports = function(RED) {
            var port = process.env.VCAP_APP_PORT || 3099;
           
           console.warn('VCAP_APP_PORT:'+process.env.VCAP_APP_PORT);
-          console.warn('process.env:'+process.env);
+          console.log(process.env);
           console.warn('Running webhook on https://localhost:'+port);
           console.warn('Verify token is: ' + this.verify_token);
           console.warn('Key PEM: ' + this.key_pem);
