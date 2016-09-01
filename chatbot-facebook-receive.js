@@ -147,7 +147,7 @@ module.exports = function(RED) {
           };
 
           this.server = https.createServer(options,
-          this.bot.middleware());
+          this.bot.middleware()).listen();
 
           this.bot.on('message', this.handleMessage);
 
