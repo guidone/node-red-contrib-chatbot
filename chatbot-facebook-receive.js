@@ -136,7 +136,7 @@ module.exports = function(RED) {
             key_pem: this.key_pem,
             cert_pem: this.cert_pem
           });
-          console.warn('Running webhook on https://localhost:443');
+          console.warn('Running webhook on https://localhost');
           console.warn('Verify token is: ' + this.verify_token);
           console.warn('Key PEM: ' + this.key_pem);
           console.warn('Cert PEM: ' + this.cert_pem);
@@ -147,7 +147,7 @@ module.exports = function(RED) {
           };
 
           this.server = https.createServer(options,
-          this.bot.middleware()).listen(443);
+          this.bot.middleware());
 
           this.bot.on('message', this.handleMessage);
 
