@@ -142,7 +142,7 @@ module.exports = function(RED) {
             cert_pem: this.cert_pem
           });
           
-          console.warn('Running webhook on https://localhost:3099'+process.env.VCAP_APP_PORT);
+          console.warn('Running webhook on https://localhost:3099');
           console.warn('Verify token is: ' + this.verify_token);
           console.warn('Key PEM: ' + this.key_pem);
           console.warn('Cert PEM: ' + this.cert_pem);
@@ -153,7 +153,7 @@ module.exports = function(RED) {
           };
 
           this.server = https.createServer(options,
-          this.bot.middleware()).listen(process.env.VCAP_APP_PORT);
+          this.bot.middleware()).listen(3099);
 
           this.bot.on('message', this.handleMessage);
 
