@@ -93,7 +93,12 @@ module.exports = function(RED) {
       var originalMessage = msg.originalMessage;
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
       var context = node.context();
-      var chatContext = context.flow.get('chat:' + chatId) || ChatContext(chatId);
+
+      var chatContext = context.flow.get('chat:' + chatId);
+      if (!chatContext) {
+        chatContext = ChatContext(chatId);
+        context.flow.set('chat:' + chatId, chatContext);
+      }
 
       // exit if not string
       if (!_.isString(msg.payload.content)) {
