@@ -157,10 +157,10 @@ module.exports = function(RED) {
 
       var context = self.context();
       // get or create chat id
-      var chatContext = context.flow.get('chat:' + chatId);
+      var chatContext = context.global.get('chat:' + chatId);
       if (chatContext == null) {
         chatContext = ChatContext(chatId);
-        context.flow.set('chat:' + chatId, chatContext);
+        context.global.set('chat:' + chatId, chatContext);
       }
 
       // store some information
@@ -341,17 +341,12 @@ module.exports = function(RED) {
       var context = node.context();
       var track = node.track;
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
-      var chatContext = context.flow.get('chat:' + chatId) || ChatContext(chatId);
+      var chatContext = context.global.get('chat:' + chatId);
       var type = msg.payload.type;
-
-      /*if (msg.payload.content == null) {
-        node.warn("msg.payload.content is empty");
-        return;
-      }*/
 
       // check if this node has some wirings in the follow up pin, in that case
       // the next message should be redirected here
-      if (track && !_.isEmpty(node.wires[0])) {
+      if (chatContext != null && track && !_.isEmpty(node.wires[0])) {
         chatContext.set('currentConversationNode', node.id);
         chatContext.set('currentConversationNode_at', moment());
       }
@@ -444,6 +439,5 @@ module.exports = function(RED) {
     });
   }
   RED.nodes.registerType('chatbot-telegram-send', TelegramOutNode);
-
 
 };

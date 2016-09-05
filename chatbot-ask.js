@@ -21,18 +21,12 @@ module.exports = function(RED) {
       var answers = node.answers;
       var message = node.message;
       var template = MessageTemplate(msg, node);
-      var chatContext = context.flow.get('chat:' + chatId) || ChatContext(chatId);
 
       // check transport compatibility
       if (!_.contains(node.transports, msg.originalMessage.transport)) {
         node.error('This node is not available for transport: ' + msg.originalMessage.transport);
         return;
       }
-
-      // prepare array for answers
-      var messageAnswers = _(answers).map(function(answer) {
-        return [answer];
-      });
 
       msg.payload = {
         type: 'buttons',

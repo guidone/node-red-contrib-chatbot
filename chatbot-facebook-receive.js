@@ -65,10 +65,10 @@ module.exports = function(RED) {
       var isAuthorized = true;
 
       // get or create chat id
-      var chatContext = context.flow.get('chat:' + chatId);
+      var chatContext = context.global.get('chat:' + chatId);
       if (chatContext == null) {
         chatContext = ChatContext(chatId);
-        context.flow.set('chat:' + chatId, chatContext);
+        context.global.set('chat:' + chatId, chatContext);
       }
 
       var payload = null;
@@ -475,16 +475,11 @@ module.exports = function(RED) {
       var context = node.context();
       var track = node.track;
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
-      var chatContext = context.flow.get('chat:' + chatId) || ChatContext(chatId);
-
-      /*if (msg.payload.content == null) {
-       node.warn("msg.payload.content is empty");
-       return;
-       }*/
+      var chatContext = context.global.get('chat:' + chatId);
 
       // check if this node has some wirings in the follow up pin, in that case
       // the next message should be redirected here
-      if (track && !_.isEmpty(node.wires[0])) {
+      if (chatContext != null && track && !_.isEmpty(node.wires[0])) {
         chatContext.set('currentConversationNode', node.id);
         chatContext.set('currentConversationNode_at', moment());
       }
@@ -492,9 +487,10 @@ module.exports = function(RED) {
       var chatLog = new ChatLog(chatContext);
 
       chatLog.log(msg, this.config.log)
-        .then(function() {
+        .then(function () {
           sendMessage(msg);
         });
+
     });
   }
   RED.nodes.registerType('chatbot-facebook-send', FacebookOutNode);
