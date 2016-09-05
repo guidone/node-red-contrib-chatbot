@@ -1,5 +1,3 @@
-var ChatContext = require('./lib/chat-context.js');
-
 module.exports = function(RED) {
 
   function ChatBotAuthorized(config) {
@@ -11,10 +9,10 @@ module.exports = function(RED) {
       var context = node.context();
       var originalMessage = msg.originalMessage;
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
-      var chatContext = context.flow.get('chat:' + chatId) || ChatContext(chatId);
+      var chatContext = context.global.get('chat:' + chatId);
 
       // check
-      if (chatContext.get('authorized')) {
+      if (chatContext != null && chatContext.get('authorized')) {
         node.send([msg, null]);
       } else {
         node.send([null, msg]);

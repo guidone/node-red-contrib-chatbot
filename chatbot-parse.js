@@ -22,6 +22,8 @@ module.exports = function(RED) {
       var parseType = this.parseType;
       var parseVariable = this.parseVariable;
       var context = node.context();
+      var chatId = msg.payload.chatId || (msg.originalMessage && msg.originalMessage.chat.id);
+      var chatContext = context.global.get('chat:' + chatId);
 
       var parsedValue = null;
 
@@ -61,7 +63,9 @@ module.exports = function(RED) {
 
       // if parsing ok, then pass through and set variable in context flow
       if (parsedValue != null) {
-        context.flow.set(parseVariable, parsedValue);
+        if (chatContext != null) {
+          chatContext.set(parseVariable, parsedValue);
+        }
         node.send([{
           payload: parsedValue,
           originalMessage: msg.originalMessage

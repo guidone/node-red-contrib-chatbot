@@ -148,10 +148,10 @@ module.exports = function(RED) {
           }*/
 
           // get or create chat id
-          var chatContext = context.flow.get('chat:' + channelId);
+          var chatContext = context.global.get('chat:' + channelId);
           if (chatContext == null) {
             chatContext = ChatContext(channelId);
-            context.flow.set('chat:' + channelId, chatContext);
+            context.global.set('chat:' + channelId, chatContext);
           }
 
           // todo store the user

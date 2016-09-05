@@ -17,8 +17,9 @@ describe('Chat parse node', function() {
     RED.node.get().emit('input', msg);
     assert.instanceOf(RED.node.message().payload, Buffer);
     assert.equal(RED.node.message().payload.toString(), 'image-bytecode');
-    assert.instanceOf(RED.node.context().flow.get('photo'), Buffer);
-    assert.equal(RED.node.context().flow.get('photo').toString(), 'image-bytecode');
+    var chat = RED.node.context().global.get('chat:' + msg.originalMessage.chat.id);
+    assert.instanceOf(chat.get('photo'), Buffer);
+    assert.equal(chat.get('photo').toString(), 'image-bytecode');
   });
 
   it('should parse an email into the payload', function() {
@@ -31,8 +32,9 @@ describe('Chat parse node', function() {
     });
     ParseBlock(RED);
     RED.node.get().emit('input', msg);
+    var chat = RED.node.context().global.get('chat:' + msg.originalMessage.chat.id);
     assert.equal(RED.node.message().payload, 'guido.bellomo@gmail.com');
-    assert.equal(RED.node.context().flow.get('email'), 'guido.bellomo@gmail.com');
+    assert.equal(chat.get('email'), 'guido.bellomo@gmail.com');
   });
 
   it('should not parse an invalid email into the payload', function() {

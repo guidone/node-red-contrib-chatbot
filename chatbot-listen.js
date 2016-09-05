@@ -93,12 +93,7 @@ module.exports = function(RED) {
       var originalMessage = msg.originalMessage;
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
       var context = node.context();
-
-      var chatContext = context.flow.get('chat:' + chatId);
-      if (!chatContext) {
-        chatContext = ChatContext(chatId);
-        context.flow.set('chat:' + chatId, chatContext);
-      }
+      var chatContext = context.global.get('chat:' + chatId);
 
       // exit if not string
       if (!_.isString(msg.payload.content)) {
@@ -107,17 +102,21 @@ module.exports = function(RED) {
       debug && console.log('Searching match for ', msg.payload.content);
 
       // see if one of the rules matches
-      var matched = _(sentences).any(function(sentence) {
+      var matched = null;
 
-        // check if valid json
-        var words = sentence.split(',');
+      // match
+      if (chatContext != null) {
+        matched = _(sentences).any(function (sentence) {
+          // check if valid json
+          var words = sentence.split(',');
+          debug && console.log('---- START analysis ' + msg.payload.content);
+          // analize sentence
+          var analysis = speak.classify(msg.payload.content);
+          // send message if the sentence is matched, otherwise stop here
+          return matchSentence(analysis, words, chatContext);
+        });
+      }
 
-        debug && console.log('---- START analysis ' + msg.payload.content);
-        // analize sentence
-        var analysis = speak.classify(msg.payload.content);
-        // send message if the sentence is matched, otherwise stop here
-        return matchSentence(analysis, words, chatContext);
-      });
       // pass through the message if any of the above matched
       node.send(matched ? [msg, null] : [null, msg]);
     });

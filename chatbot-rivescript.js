@@ -17,11 +17,16 @@ module.exports = function(RED) {
       var originalMessage = msg.originalMessage;
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
       var context = node.context();
-      var chatContext = context.flow.get('chat:' + chatId) || ChatContext(chatId);
+      var chatContext = context.global.get('chat:' + chatId);
       var content = msg.payload != null && msg.payload.content != null ? msg.payload.content : null;
 
       var bot = new RiveScript({utf8: true, debug: false});
-      bot.setUservars('local-user', chatContext.all());
+      if (chatContext != null) {
+        // anything that is not string printable
+        bot.setUservars('local-user', _(chatContext.all()).mapObject(function(value) {
+          return _.isString(value) || _.isNumber(value) || _.isArray(value) ? value : null;
+        }));
+      }
       bot.stream(script);
       bot.sortReplies();
       var reply = bot.reply('local-user', content);
@@ -30,9 +35,11 @@ module.exports = function(RED) {
         msg.payload = {content: reply};
         node.send([null, msg]);
       } else {
-        // set the vars back
-        var replyVars = bot.getUservars('local-user');
-        chatContext.set(_(replyVars).omit('topic', '__initialmatch__', '__history__', '__lastmatch__'));
+        if (chatContext != null) {
+          // set the vars back
+          var replyVars = bot.getUservars('local-user');
+          chatContext.set(_(replyVars).omit('topic', '__initialmatch__', '__history__', '__lastmatch__'));
+        }
         // payload
         msg.payload = reply;
         // send out reply
