@@ -22,7 +22,10 @@ module.exports = function(RED) {
 
       var bot = new RiveScript({utf8: true, debug: false});
       if (chatContext != null) {
-        bot.setUservars('local-user', chatContext.all());
+        // anything that is not string printable
+        bot.setUservars('local-user', _(chatContext.all()).mapObject(function(value) {
+          return _.isString(value) || _.isNumber(value) || _.isArray(value) ? value : null;
+        }));
       }
       bot.stream(script);
       bot.sortReplies();

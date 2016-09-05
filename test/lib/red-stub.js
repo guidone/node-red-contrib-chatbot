@@ -10,6 +10,7 @@ module.exports = function() {
   var _config = null;
   var _message = null;
   var _flow = {};
+  var _global = {};
   var _chatContext = null;
   var _error = null;
 
@@ -17,8 +18,6 @@ module.exports = function() {
 
     environment: {
       chat: function(chatId, obj) {
-        _chatContext = ChatContext(chatId);
-        _flow['chat:' + chatId] = _chatContext;
         _(obj).map(function(value, key) {
           _chatContext.set(key, value);
         });
@@ -26,16 +25,19 @@ module.exports = function() {
     },
 
     createMessage: function(payload, transport) {
+      var chatId = 42;
       var msg = {
         originalMessage: {
           transport: transport != null ? transport : 'telegram',
           chat: {
-            id: 42
+            id: chatId
           },
           message_id: 72
         },
         payload: payload != null ? payload : 'I am the original message'
       };
+      _chatContext = ChatContext(chatId);
+      _global['chat:' + chatId] = _chatContext;
       if (payload != null) {
         msg.payload = payload;
       }
@@ -104,6 +106,15 @@ module.exports = function() {
               },
               set: function(key, value) {
                 _flow[key] = value;
+                return this;
+              }
+            },
+            global: {
+              get: function(key) {
+                return _global[key];
+              },
+              set: function(key, value) {
+                _global[key] = value;
                 return this;
               }
             },
