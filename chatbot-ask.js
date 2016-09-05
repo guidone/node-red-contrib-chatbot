@@ -2,6 +2,7 @@ var _ = require('underscore');
 var ChatContext = require('./lib/chat-context.js');
 var moment = require('moment');
 var MessageTemplate = require('./lib/message-template.js');
+var emoji = require('node-emoji');
 
 module.exports = function(RED) {
 
@@ -30,7 +31,7 @@ module.exports = function(RED) {
 
       msg.payload = {
         type: 'buttons',
-        content: template(message),
+        content: emoji.emojify(template(message)),
         chatId: chatId,
         messageId: messageId,
         buttons: node.answers

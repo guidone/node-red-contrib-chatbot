@@ -31,5 +31,19 @@ describe('Chat request node', function() {
     assert.equal(RED.node.message().payload.options.reply_markup, '{"keyboard":[[{"text":"your phone","request_contact":true}]],"resize_keyboard":true,"one_time_keyboard":true}');
   });
 
+  it('should be a request phone with emojii', function() {
+    var msg = RED.createMessage();
+    RED.node.config({
+      message: 'i am the request :coffee:',
+      requestType: 'phone-number',
+      buttonLabel: 'your phone'
+    });
+    RequestBlock(RED);
+    RED.node.get().emit('input', msg);
+    assert.equal(RED.node.message().payload.content, 'i am the request ☕️');
+    assert.equal(RED.node.message().payload.options.reply_markup, '{"keyboard":[[{"text":"your phone","request_contact":true}]],"resize_keyboard":true,"one_time_keyboard":true}');
+  });
+
+
 });
 

@@ -1,6 +1,7 @@
 var _ = require('underscore');
 var moment = require('moment');
 var MessageTemplate = require('./lib/message-template.js');
+var emoji = require('node-emoji');
 
 module.exports = function(RED) {
 
@@ -49,7 +50,7 @@ module.exports = function(RED) {
       // todo restrict this node to telegram
       msg.payload = {
         type: 'message',
-        content: template(message),
+        content: emoji.emojify(template(message)),
         chatId: chatId,
         messageId: messageId,
         options: {

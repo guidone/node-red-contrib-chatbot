@@ -1,5 +1,6 @@
 var _ = require('underscore');
 var MessageTemplate = require('./lib/message-template.js');
+var emoji = require('node-emoji');
 
 module.exports = function(RED) {
 
@@ -37,7 +38,7 @@ module.exports = function(RED) {
       // payload
       msg.payload = {
         type: 'message',
-        content: template(message),
+        content: emoji.emojify(template(message)),
         chatId: chatId,
         messageId: messageId,
         inbound: false

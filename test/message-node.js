@@ -102,5 +102,17 @@ describe('Chat message node', function() {
     assert.equal(RED.node.message().payload.options.parse_mode, 'Markdown');
   });
 
+  it('should convert a emojii in unicode', function() {
+    var msg = RED.createMessage();
+    RED.node.config({
+      message: 'I :heart: :coffee:!',
+      track: false,
+      answer: false
+    });
+    MessageBlock(RED);
+    RED.node.get().emit('input', msg);
+    assert.equal(RED.node.message().payload.content, 'I ❤️ ☕️!');
+  });
+
 });
 
