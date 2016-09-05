@@ -7,8 +7,15 @@ var fs = require('fs');
 var os = require('os');
 var request = require('request').defaults({ encoding: null });
 var https = require('https');
+var http = require('http');
 var Bot = require('messenger-bot');
+var clc = require('cli-color');
+
 var DEBUG = false;
+var green = clc.greenBright;
+var white = clc.white;
+var red = clc.red;
+var grey = clc.blackBright;
 
 module.exports = function(RED) {
 
@@ -141,22 +148,37 @@ module.exports = function(RED) {
             key_pem: this.key_pem,
             cert_pem: this.cert_pem
           });
-          
-          console.warn('Running webhook on https://localhost:3099');
-          console.warn('Verify token is: ' + this.verify_token);
-          console.warn('Key PEM: ' + this.key_pem);
-          console.warn('Cert PEM: ' + this.cert_pem);
-          
-          var options = {
-            key  : fs.readFileSync(this.key_pem),
-            cert : fs.readFileSync(this.cert_pem)
-          };
 
-          this.server = https.createServer(options,
-          this.bot.middleware()).listen(3099);
+          console.log('');
+          console.log(grey('------ Facebook Webhook ----------------'));
+          if (this.key_pem != null && this.cert_pem) {
+            try {
+              var options = {
+                key: fs.readFileSync(this.key_pem),
+                cert: fs.readFileSync(this.cert_pem)
+              };
+            } catch(e) {
+              var message = 'Facebook receiver: error loading certificate files ('
+                + this.key_pem + ',' + this.cert_pem + ')';
+              console.log(red(message));
+              this.error(message);
+              return;
+            }
+            console.log(green('Using SSL: ') + white('yes'));
+            console.log(green('Webhook URL: ') + white('https://localhost:3099'));
+            console.log(green('Verify token is: ') + white(this.verify_token));
+            console.log(green('Key PEM: ') + white(this.key_pem));
+            console.log(green('Cert PEM: ') + white(this.cert_pem));
+            this.server = https.createServer(options, this.bot.middleware()).listen(3099);
+          } else {
+            console.log(green('Using SSL: ') + white('no'));
+            console.log(green('Webhook URL: ') + white('http://localhost:3099'));
+            console.log(green('Verify token is: ') + white(this.verify_token));
+            this.server = http.createServer(this.bot.middleware()).listen(3099);
+          }
+          console.log('');
 
           this.bot.on('message', this.handleMessage);
-
         }
       }
     }
