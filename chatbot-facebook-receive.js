@@ -6,7 +6,7 @@ var helpers = require('./lib/helpers/facebook.js');
 var fs = require('fs');
 var os = require('os');
 var request = require('request').defaults({ encoding: null });
-var http = require('http');
+var https = require('https');
 var Bot = require('messenger-bot');
 var DEBUG = false;
 
@@ -127,6 +127,8 @@ module.exports = function(RED) {
       this.token = this.credentials.token;
       this.app_secret = this.credentials.app_secret;
       this.verify_token = this.credentials.verify_token;
+      this.key_pem = this.credentials.key_pem;
+      this.cert_pem = this.credentials.cert_pem;
       if (this.token) {
         this.token = this.token.trim();
 
@@ -135,11 +137,23 @@ module.exports = function(RED) {
           this.bot = new Bot({
             token: this.token,
             verify: this.verify_token,
-            app_secret: this.app_secret
+            app_secret: this.app_secret,
+            key_pem: this.key_pem,
+            cert_pem: this.cert_pem
           });
-          console.warn('Running webhook on http://localhost:3099');
+          
+          console.warn('Running webhook on https://localhost:3099');
           console.warn('Verify token is: ' + this.verify_token);
-          this.server = http.createServer(this.bot.middleware()).listen(3099);
+          console.warn('Key PEM: ' + this.key_pem);
+          console.warn('Cert PEM: ' + this.cert_pem);
+          
+          var options = {
+            key  : fs.readFileSync(this.key_pem),
+            cert : fs.readFileSync(this.cert_pem)
+          };
+
+          this.server = https.createServer(options,
+          this.bot.middleware()).listen(3099);
 
           this.bot.on('message', this.handleMessage);
 
@@ -234,7 +248,7 @@ module.exports = function(RED) {
           }
 
         } else {
-          reject('Unable to detect inbound message for Slack');
+          reject('Unable to detect inbound message for Facebook Messenger');
         }
 
 
@@ -260,6 +274,12 @@ module.exports = function(RED) {
       },
       verify_token: {
         type: 'text'
+      },
+      key_pem: {
+        type: 'text'
+      },
+      cert_pem: {
+        type: 'text'
       }
     }
   });
@@ -273,7 +293,6 @@ module.exports = function(RED) {
     if (this.config) {
       this.status({fill: 'red', shape: 'ring', text: 'disconnected'});
 
-      //node.slackBot = this.config.slackBot;
       node.bot = this.config.bot;
 
       if (node.bot) {
@@ -291,7 +310,7 @@ module.exports = function(RED) {
         node.warn("no bot in config.");
       }
     } else {
-      node.warn('Missing configuration in Slack Receiver');
+      node.warn('Missing configuration in Facebook Messenger Receiver');
     }
   }
   RED.nodes.registerType('chatbot-facebook-receive', FacebookInNode);
