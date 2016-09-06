@@ -19,7 +19,6 @@ module.exports = function(RED) {
       var context = node.context();
       var chatContext = context.global.get('chat:' + chatId);
       var content = msg.payload != null && msg.payload.content != null ? msg.payload.content : null;
-
       var bot = new RiveScript({utf8: true, debug: false});
       if (chatContext != null) {
         // anything that is not string printable
@@ -30,9 +29,12 @@ module.exports = function(RED) {
       bot.stream(script);
       bot.sortReplies();
       var reply = bot.reply('local-user', content);
-
       if (reply.match(/^ERR:/)) {
-        msg.payload = {content: reply};
+        // clone the object, otherwise side effect
+        msg = {
+          originalMessage: originalMessage,
+          payload: {content: reply}
+        };
         node.send([null, msg]);
       } else {
         if (chatContext != null) {
@@ -45,7 +47,6 @@ module.exports = function(RED) {
         // send out reply
         node.send([msg, null]);
       }
-
     });
   }
 
