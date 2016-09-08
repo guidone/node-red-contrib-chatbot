@@ -8,6 +8,9 @@
       },
       chatId: {
         value: ''
+      },
+      transport: {
+        value: 'telegram'
       }
     },
     inputs: 1,
@@ -26,7 +29,15 @@
   <input type="text" id="node-input-name" placeholder="Name">
 </div>
 <div class="form-row">
-  <label for="node-input-name"><i class="icon-tag"></i> ChatId</label>
+  <label for="node-input-transport"><i class="icon-plane"></i> Transport</label>
+  <select id="node-input-transport">
+    <option value="facebook">Facebook Messenger</option>
+    <option value="slack">Slack</option>
+    <option value="telegram">Telegram</option>
+  </select>
+</div>
+<div class="form-row">
+  <label for="node-input-name"><i class="icon-user"></i> ChatId</label>
   <input type="text" id="node-input-chatId" placeholder="Chat id">
   <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;">
   The <code>chatId</code> is needed to initiate the conversation (you can grab the chatId from the logs or a debug node),

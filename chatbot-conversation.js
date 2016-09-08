@@ -7,12 +7,12 @@ module.exports = function(RED) {
     var node = this;
 
     this.chatId = config.chatId;
+    this.transport = config.transport;
 
     this.on('input', function(msg) {
 
       var chatId = node.chatId;
-      var transport = msg.originalMessage != null && msg.originalMessage.transport != null ? msg.originalMessage.transport : null;
-
+      var transport = node.transport;
       var id = null;
 
       // if valid chat id then use it, otherwise search as username

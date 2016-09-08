@@ -123,7 +123,7 @@ A little bit of coding is required to prepare the payload for the email node
 ```
 // get the chat context
 var chatId = msg.originalMessage.chat.id
-var chat = context.global.get('chat:' + chatId);
+var chat = context.flow.get('chat:' + chatId);
 // email payload
 msg.to = chat.get('email');
 msg.payload = 'Hi, this is my curriculum vitae';
@@ -191,7 +191,7 @@ To get the chat context in a function node:
 
 ```
 var chatId = msg.originalMessage.chat.id
-var chat = context.global.get('chat:' + chatId);
+var chat = context.flow.get('chat:' + chatId);
 console.log(chat.get('authorized')); // is the user authorized
 console.log(chat.get('username')); // guidone72
 chat.set('my_stuff', 'remember that');
@@ -210,12 +210,14 @@ In the template system some defaults variables are available using the *{{variab
 * **message** - the current message from the user in string format
 
 ## Changelog
+* **0.5.10** - In conversation node it's possible to select the transport
+* **0.5.9** - **[breaking changes]** chat context is now stored in global and available in sub flows, parse node now stores parsed data in chat context, fixed a side effect in Rivescript
 * **0.5.7** - Sender nodes now can log to file
 * **0.5.6** - Telegram polling interval
 - **0.5.4** - Fixed exception on restarting flows. Added quad code node
 * **0.5.3** - Added RiveScript node
 * **0.5.2** - Added markdown and html formatting to Telegram message node
-- **0.5.1** - Breaking changes: moved the tracking option to the sender node, this will break previous flows where the tracking output was in the message node. If errors on saving the flow occurs after the upgrade, export the whole flow and import it again. Added debug node.
+- **0.5.1** - **[breaking changes]**: moved the tracking option to the sender node, this will break previous flows where the tracking output was in the message node. If errors on saving the flow occurs after the upgrade, export the whole flow and import it again. Added debug node.
 
 ## Roadmap
 * Slack Sender & Receiver
