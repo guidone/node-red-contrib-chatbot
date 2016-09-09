@@ -12,6 +12,7 @@ module.exports = function() {
   var _flow = {};
   var _global = {};
   var _chatContext = null;
+  var _nodecontext = {};
   var _error = null;
 
   var RED = {
@@ -53,6 +54,9 @@ module.exports = function() {
     node: {
       config: function(config) {
         _config = config;
+      },
+      clear: function() {
+        _nodecontext = {};
       },
       message: function(idx) {
         if (_.isArray(_message)) {
@@ -122,6 +126,13 @@ module.exports = function() {
               get: function(key) {
                 return _chatContext.get(key);
               }
+            },
+            get: function(key) {
+              return _nodecontext[key];
+            },
+            set: function(key, value) {
+              _nodecontext[key] = value;
+              return this;
             }
           };
         };

@@ -19,16 +19,29 @@ module.exports = function(RED) {
       var context = node.context();
       var chatContext = context.global.get('chat:' + chatId);
       var content = msg.payload != null && msg.payload.content != null ? msg.payload.content : null;
-      var bot = new RiveScript({utf8: true, debug: false});
+      var bot = null;
+
+      // create and cache the rivescript bot for this node, on deploy it will be reloaded
+      if (context.get('rivebot') != null) {
+        bot = context.get('rivebot');
+      } else {
+        bot = new RiveScript({utf8: true, debug: false});
+        bot.stream(script);
+        bot.sortReplies();
+        context.set('rivebot', bot);
+      }
+
       if (chatContext != null) {
         // anything that is not string printable
-        bot.setUservars('local-user', _(chatContext.all()).mapObject(function(value) {
+        bot.setUservars(chatId, _(chatContext.all()).mapObject(function(value) {
           return _.isString(value) || _.isNumber(value) || _.isArray(value) ? value : null;
         }));
       }
-      bot.stream(script);
-      bot.sortReplies();
-      var reply = bot.reply('local-user', content);
+
+      // get a reply
+      var reply = bot.reply(chatId, content);
+
+
       if (reply.match(/^ERR:/)) {
         // clone the object, otherwise side effect
         msg = {
@@ -39,7 +52,7 @@ module.exports = function(RED) {
       } else {
         if (chatContext != null) {
           // set the vars back
-          var replyVars = bot.getUservars('local-user');
+          var replyVars = bot.getUservars(chatId);
           chatContext.set(_(replyVars).omit('topic', '__initialmatch__', '__history__', '__lastmatch__'));
         }
         // payload

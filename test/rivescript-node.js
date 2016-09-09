@@ -7,6 +7,7 @@ describe('Chat RiveScript node', function() {
 
   it('should answer to hello', function() {
     var msg = RED.createMessage({content: 'hello bot'});
+    RED.node.clear();
     RED.node.config({
       script: '! version = 2.0\n\n+ hello bot\n- Hello, human!'
     });
@@ -17,6 +18,7 @@ describe('Chat RiveScript node', function() {
 
   it('should not answer to useless sentence', function() {
     var msg = RED.createMessage({content: 'I have an headache'});
+    RED.node.clear();
     RED.node.config({
       script: '! version = 2.0\n\n+ hello bot\n- Hello, human!'
     });
@@ -28,6 +30,7 @@ describe('Chat RiveScript node', function() {
 
   it('should grab the name and store it', function() {
     var msg = RED.createMessage({content: 'my name is guido'});
+    RED.node.clear();
     RED.node.config({
       script: '! version = 2.0\n\n+ my name is *\n- <set name=<formal>>ok, I will ll remember your name as <get name>'
     });
@@ -40,6 +43,7 @@ describe('Chat RiveScript node', function() {
 
   it('should remember the user name', function() {
     var msg = RED.createMessage({content: 'what is my name?'});
+    RED.node.clear();
     RED.node.config({
       script: '! version = 2.0\n\n+ what is my name\n- your name is <get name>'
     });
@@ -49,6 +53,36 @@ describe('Chat RiveScript node', function() {
     assert.equal(RED.node.message().payload, 'your name is guido');
     assert.equal(RED.node.context().chat.get('name'), 'guido');
   });
+
+  it('should follow up the discussion', function() {
+    var msg = RED.createMessage({content: 'i have a dog!'});
+    RED.node.clear();
+    RED.node.config({
+      script: '! version = 2.0\n\n+ i have a dog\n- What color is it?\n\n'
+        + '+ (red|blue)\n% what color is it\n- That\'s a silly color for a dog!\n'
+    });
+    RED.environment.chat(msg.originalMessage.chat.id, {name: 'guido'});
+    RiveScriptBlock(RED);
+    RED.node.get().emit('input', msg);
+    assert.equal(RED.node.message().payload, 'What color is it?');
+    var followup = RED.createMessage({content: 'red'});
+    RED.node.get().emit('input', followup);
+    assert.equal(RED.node.message().payload, 'That\'s a silly color for a dog!');
+  });
+
+
+  /*
+   ! version = 2.0
+
+   + i have a dog
+   - What color is it?
+
+   + (red|blue)
+   % what color is it
+   - That's a silly color for a dog!
+
+   */
+
 
 });
 
