@@ -56,6 +56,7 @@ Now you have a useful bot that answers *"Hi there!"* to any received message. We
 * **Debug**: Debug incoming messages and chat contexts (useful to get the `chatId` ) [All]
 * **RiveScript**: use [RiveScript.com](https://www.rivescript.com/) to elaborate answers [All]
 * **QRCode**: create a QR code image [All]
+* **Language**: detect message language [All]
 
 ## Examples
 Here are some examples connecting the ChatBot blocks
@@ -210,6 +211,7 @@ In the template system some defaults variables are available using the *{{variab
 * **message** - the current message from the user in string format
 
 ## Changelog
+* **0.5.12** - added language node
 * **0.5.11** - cache Rivescript and enable follow up
 * **0.5.10** - In conversation node it's possible to select the transport
 * **0.5.9** - **[breaking changes]** chat context is now stored in global and available in sub flows, parse node now stores parsed data in chat context, fixed a side effect in Rivescript

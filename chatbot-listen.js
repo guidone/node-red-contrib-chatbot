@@ -1,9 +1,8 @@
 var speak = require("speakeasy-nlp");
 var levenshtein = require('fast-levenshtein');
-var ChatContext = require('./lib/chat-context.js');
 var _ = require('underscore');
 var regexps = require('./lib/helpers/regexps.js');
-var debug = false;
+var debug = true;
 
 module.exports = function(RED) {
 
