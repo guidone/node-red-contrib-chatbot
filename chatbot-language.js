@@ -18,7 +18,13 @@ module.exports = function(RED) {
 
       // exit if not string
       if (_.isString(msg.payload.content)) {
-        var matchLanguage = lngDetector.detect(msg.payload.content, 15);
+        // if it's a command, then don't care about the language
+        if (msg.payload.content.match(/^\/[A-Za-z0-9]*$/)) {
+          node.send([msg, null]);
+          return;
+        }
+        // match the language
+        var matchLanguage = lngDetector.detect(msg.payload.content, 10);
         // find position
         var position = -1;
         _(matchLanguage).each(function(duet, idx) {

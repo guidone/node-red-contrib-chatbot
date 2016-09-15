@@ -37,6 +37,22 @@ describe('Chat language node', function() {
     assert.equal(RED.node.message(0), null);
   });
 
+  it('should pass through commands', function() {
+    var msg = RED.createMessage({
+      content: '/help',
+      chatId: 42
+    });
+    RED.node.config({
+      language: 'italian',
+      mode: 'strict'
+    });
+    LanguageBlock(RED);
+    RED.node.get().emit('input', msg);
+    assert.equal(RED.node.message(0).payload.content, '/help');
+    assert.equal(RED.node.message(0).payload.chatId, 42);
+    assert.equal(RED.node.message(1), null);
+  });
+
   it('should detect english language', function() {
     var msg = RED.createMessage({
       content: 'how you doing?',

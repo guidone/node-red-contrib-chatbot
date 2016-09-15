@@ -2,7 +2,7 @@ var speak = require("speakeasy-nlp");
 var levenshtein = require('fast-levenshtein');
 var _ = require('underscore');
 var regexps = require('./lib/helpers/regexps.js');
-var debug = true;
+var debug = false;
 
 module.exports = function(RED) {
 
