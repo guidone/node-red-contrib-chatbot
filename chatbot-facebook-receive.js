@@ -8,10 +8,10 @@ var os = require('os');
 var request = require('request').defaults({ encoding: null });
 var https = require('https');
 var http = require('http');
-var Bot = require('messenger-bot');
+var Bot = require('./lib/messenger-bot');
 var clc = require('cli-color');
 
-var DEBUG = false;
+var DEBUG = true;
 var green = clc.greenBright;
 var white = clc.white;
 var red = clc.red;
@@ -61,7 +61,7 @@ module.exports = function(RED) {
       }
 
       // mark the original message with the platform
-      botMsg.transport = 'facebook';
+      botMsg = _.extend({}, botMsg, {transport: 'facebook'});
 
       var userId = botMsg.sender.id;
       var chatId = botMsg.sender.id;
@@ -134,49 +134,27 @@ module.exports = function(RED) {
       this.token = this.credentials.token;
       this.app_secret = this.credentials.app_secret;
       this.verify_token = this.credentials.verify_token;
-      this.key_pem = this.credentials.key_pem;
-      this.cert_pem = this.credentials.cert_pem;
+
       if (this.token) {
         this.token = this.token.trim();
 
         if (!this.bot) {
-          // todo move to config
+
           this.bot = new Bot({
             token: this.token,
             verify: this.verify_token,
-            app_secret: this.app_secret,
-            key_pem: this.key_pem,
-            cert_pem: this.cert_pem
+            app_secret: this.app_secret
           });
 
+          var uiPort = RED.settings.get('uiPort');
           console.log('');
           console.log(grey('------ Facebook Webhook ----------------'));
-          if (this.key_pem != null && this.cert_pem) {
-            try {
-              var options = {
-                key: fs.readFileSync(this.key_pem),
-                cert: fs.readFileSync(this.cert_pem)
-              };
-            } catch(e) {
-              var message = 'Facebook receiver: error loading certificate files ('
-                + this.key_pem + ',' + this.cert_pem + ')';
-              console.log(red(message));
-              this.error(message);
-              return;
-            }
-            console.log(green('Using SSL: ') + white('yes'));
-            console.log(green('Webhook URL: ') + white('https://localhost:3099'));
-            console.log(green('Verify token is: ') + white(this.verify_token));
-            console.log(green('Key PEM: ') + white(this.key_pem));
-            console.log(green('Cert PEM: ') + white(this.cert_pem));
-            this.server = https.createServer(options, this.bot.middleware()).listen(3099);
-          } else {
-            console.log(green('Using SSL: ') + white('no'));
-            console.log(green('Webhook URL: ') + white('http://localhost:3099'));
-            console.log(green('Verify token is: ') + white(this.verify_token));
-            this.server = http.createServer(this.bot.middleware()).listen(3099);
-          }
+          console.log(green('Webhook URL: ') + white('http://localhost' + (uiPort != '80' ? ':' + uiPort : '')
+              + '/redbot/facebook'));
+          console.log(green('Verify token is: ') + white(this.verify_token));
           console.log('');
+          // mount endpoints on local express
+          this.bot.expressMiddleware(RED.httpNode);
 
           this.bot.on('message', this.handleMessage);
         }
@@ -184,9 +162,16 @@ module.exports = function(RED) {
     }
 
     this.on('close', function (done) {
-      self.server.close(function() {
-        done();
+
+      var endpoints = ['/facebook', '/facebook/_status'];
+
+      // remove middleware for facebook callback
+      RED.httpNode._router.stack.forEach(function(route, i, routes) {
+        if (route.route && _.contains(endpoints, route.route.path)) {
+          routes.splice(i, 1);
+        }
       });
+      done();
     });
 
     this.isAuthorized = function (username, userId) {
@@ -248,11 +233,6 @@ module.exports = function(RED) {
 
               break;
             case 'location':
-
-              /*{ title: 'Guidone\'s Location',
-               url: 'https://www.facebook.com/l.php?u=https%3A%2F%2Fwww.bing.com%2Fmaps%2Fdefault.aspx%3Fv%3D2%26pc%3DFACEBK%26mid%3D8100%26where1%3D45.507150729138%252C%2B9.1766030741468%26FORM%3DFBKPL1%26mkt%3Den-US&h=BAQG9UHuj&s=1&enc=AZOkqQ-WuRDRw4-R3i3g-6jw_KoqbAhvPARjAP3qI7jHfAvK9UqmTJ0OufBOyiKi1JEYLpO05GWsfflesPUODV4DZr0ndofrwllgpzqT-VyiPw',
-               type: 'location',
-               payload: { coordinates: { lat: 45.507150729138, long: 9.1766030741468 } } }*/
 
               resolve({
                 chatId: chatId,
