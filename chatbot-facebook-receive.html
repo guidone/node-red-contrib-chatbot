@@ -12,14 +12,6 @@
       },
       log: {
         value: null
-      },
-      key_pem: {
-        value: '',
-        required: false
-      },
-      cert_pem: {
-        value: '',
-        required: false
       }
     },
     paletteName: 'Facebook Bot',
@@ -31,12 +23,6 @@
         type: 'text'
       },
       app_secret: {
-        type: 'text'
-      },
-      key_pem: {
-        type: 'text'
-      },
-      cert_pem: {
         type: 'text'
       }
     },
@@ -71,17 +57,6 @@
     <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
       The verify token is an arbitrary string, must match the same string in the "Webhooks" section in the
       Facebook app
-    </div>
-  </div>
-  <div class="form-row">
-    <label for="node-config-input-key_pem"><i class="icon-tag"></i> Path Key PEM (SSL)</label>
-    <input type="text" id="node-config-input-key_pem" placeholder="Key PEM">
-  </div>
-  <div class="form-row">
-    <label for="node-config-input-cert_pem"><i class="icon-tag"></i> Path Cert PEM (SSL)</label>
-    <input type="text" id="node-config-input-cert_pem" placeholder="Cert PEM">
-    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
-      Leave certificates blank to use locally with <strong>grok</strong>
     </div>
   </div>
   <div class="form-row">

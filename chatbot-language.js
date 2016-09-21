@@ -23,6 +23,11 @@ module.exports = function(RED) {
           node.send([msg, null]);
           return;
         }
+        // if it's shorter than 5 chars, make it through, it's hard to tell the language
+        if (msg.payload.content.length <= 5) {
+          node.send([msg, null]);
+          return;
+        }
         // match the language
         var matchLanguage = lngDetector.detect(msg.payload.content, 10);
         // find position
