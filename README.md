@@ -11,7 +11,7 @@ First of all install  [Node-RED](http://nodered.org/docs/getting-started/install
 sudo npm install -g node-red
 ```
 
-Then open  the user data directory `$HOME/.node-red` and install the package
+Then open  the user data directory  `$HOME/.node-red`  and install the package
 
 ```
 cd $HOME/.node-red
@@ -31,7 +31,7 @@ Then open your **Node-RED** and add a `Telegram Receiver`, in the configuration 
 
 ![Telegram Receiver](./docs/images/example-telegram-receiver.png)
 
-Now add a `Message` node and connect to the  `Telegram Receiver`
+Now add a  `Message`  node and connect to the  `Telegram Receiver`
 
 ![Simple Message](./docs/images/example-simple-message.png)
 
@@ -149,7 +149,7 @@ After 5 minutes if inactivity from the user, the conversation is considered ende
 In order to enable the output pin `Telegram Sender` check the *track* option in the configuration panel.
 
 ### Send a Location
-Here is an example where the chatbot request the user location. The user can share his location with the *"share"* button in Telegram and Facebook or can insert manually the address, here is the flow
+Here is an example where the chatbot request the user location. The user can share his location with the *"share"* button in **Telegram** and **Facebook** or can insert manually the address, here is the flow
 
 ![User Position](./docs/images/example-position.png)
 
@@ -211,6 +211,7 @@ In the template system some defaults variables are available using the *{{variab
 * **message** - the current message from the user in string format
 
 ## Changelog
+* **0.5.14** - **[breaking changes]** moved Facebook endpoint to the same address/port of Node-Red: http://localhost:1880/redbot/facebook (this allows to use it on Heroku for example)
 * **0.5.13** - added language node
 * **0.5.11** - cache Rivescript and enable follow up
 * **0.5.10** - In conversation node it's possible to select the transport
@@ -221,9 +222,6 @@ In the template system some defaults variables are available using the *{{variab
 * **0.5.3** - Added RiveScript node
 * **0.5.2** - Added markdown and html formatting to Telegram message node
 - **0.5.1** - **[breaking changes]**: moved the tracking option to the sender node, this will break previous flows where the tracking output was in the message node. If errors on saving the flow occurs after the upgrade, export the whole flow and import it again. Added debug node.
-
-## Roadmap
-* Slack Sender & Receiver
 
 ## Known Problems
 - There's no way to exit a current conversation
