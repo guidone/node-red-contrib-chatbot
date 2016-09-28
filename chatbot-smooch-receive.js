@@ -9,7 +9,7 @@ var ChatLog = require('./lib/chat-log');
 var helpers = require('./lib/smooch/helpers');
 var clc = require('cli-color');
 
-var DEBUG = true;
+var DEBUG = false;
 var green = clc.greenBright;
 var white = clc.white;
 var red = clc.red;

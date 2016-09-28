@@ -4,8 +4,7 @@
   "description": "REDBot a Chat bot for a full featured chat bot for Telegram**, Facebook Messenger and Slack. Almost no coding skills required",
   "scripts": {
     "test": "mocha",
-    "tunnel_facebook": "ngrok http 127.0.0.1:3099",
-    "tunnel_smooch": "ngrok http 127.0.0.1:3199"
+    "tunnel": "ngrok http 127.0.0.1:1880"
   },
   "repository": {
     "type": "git",
