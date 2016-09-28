@@ -203,8 +203,6 @@ module.exports = function(RED) {
             date: moment(botMsg.timestamp),
             inbound: true
           });
-
-          resolve(message.text);
           return;
         }
 

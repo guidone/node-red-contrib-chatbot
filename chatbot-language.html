@@ -1,7 +1,6 @@
 <script type="text/javascript">
-
   RED.nodes.registerType('chatbot-language',{
-    category: 'ChatBot',
+    category: 'RedBot Parsers',
     color: '#FFCC66',
     defaults: {
       language: {
@@ -21,10 +20,9 @@
   });
 </script>
 
-
 <script type="text/x-red" data-template-name="chatbot-language">
 <div class="form-row">
-  <label for="node-input-language"><i class="icon-education"></i> Language</label>
+  <label for="node-input-language"><i class="icon-flag"></i> Language</label>
   <select id="node-input-language" placeholder="Language to match">
     <option value="albanian">Albanian</option>
     <option value="arabic">Arabic</option>
@@ -81,7 +79,7 @@
   </select>
 </div>
 <div class="form-row">
-  <label for="node-input-mode"><i class="icon-stats"></i> Mode</label>
+  <label for="node-input-mode"><i class="icon-cog"></i> Mode</label>
   <select id="node-input-mode">
     <option value="strict">Strict</option>
     <option value="medium">Medium</option>

@@ -1,5 +1,5 @@
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-facebook-node', {
+  RED.nodes.registerType('chatbot-smooch-node', {
     category: 'config',
     defaults: {
       botname: {
@@ -14,15 +14,12 @@
         value: null
       }
     },
-    paletteName: 'Facebook Bot',
+    paletteName: 'Smooch Bot',
     credentials: {
-      token: {
+      keyId: {
         type: 'text'
       },
-      verify_token: {
-        type: 'text'
-      },
-      app_secret: {
+      secret: {
         type: 'text'
       }
     },
@@ -32,31 +29,23 @@
   });
 </script>
 
-<script type="text/x-red" data-template-name="chatbot-facebook-node">
+<script type="text/x-red" data-template-name="chatbot-smooch-node">
   <div class="form-row">
     <label for="node-config-input-botname"><i class="icon-bookmark"></i> Bot-Name</label>
     <input type="text" id="node-config-input-botname">
   </div>
   <div class="form-row">
-    <label for="node-config-input-token"><i class="icon-cog"></i> Token</label>
-    <input type="text" id="node-config-input-token" placeholder="Access Token">
+    <label for="node-config-input-keyId"><i class="icon-cog"></i> Key Id</label>
+    <input type="text" id="node-config-input-keyId" placeholder="Key Id">
     <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
-      The access token that is generated when the Facebook app is connected to a Facebook page
+      tbd
     </div>
   </div>
     <div class="form-row">
-    <label for="node-config-input-app_secret"><i class="icon-cog"></i> App Secret</label>
-    <input type="text" id="node-config-input-app_secret" placeholder="App secret">
+    <label for="node-config-input-secret"><i class="icon-cog"></i> App Secret</label>
+    <input type="text" id="node-config-input-secret" placeholder="Secret">
     <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
-      This is the app secret, find it in the "dashboard" section of the Facebook app
-    </div>
-  </div>
-  <div class="form-row">
-    <label for="node-config-input-verify_token"><i class="icon-random"></i> Verify</label>
-    <input type="text" id="node-config-input-verify_token" placeholder="Verify token">
-    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
-      The verify token is an arbitrary string, must match the same string in the "Webhooks" section in the
-      Facebook app
+      tbd
     </div>
   </div>
   <div class="form-row">
@@ -75,57 +64,56 @@
   </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-facebook-node">
+<script type="text/x-red" data-help-name="chatbot-smooch-node">
   <p>
-    Configure the Facebook chat bot
+    Configure the Smooch chat bot
   </p>
 </script>
 
 
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-facebook-receive', {
+  RED.nodes.registerType('chatbot-smooch-receive', {
     category: 'RedBot Platforms',
     color: '#FFCC66',
     defaults: {
       bot: {
         value: '',
-        type: 'chatbot-facebook-node',
+        type: 'chatbot-smooch-node',
         required: true
       }
     },
     inputs: 0,
     outputs: 1,
     icon: 'chatbot-receiver.png',
-    paletteLabel: 'Facebook In',
+    paletteLabel: 'Smooch In',
     label: function () {
-      return "Facebook Receiver";
+      return "Smooch Receiver";
     }
   });
 </script>
 
-<script type="text/x-red" data-template-name="chatbot-facebook-receive">
+<script type="text/x-red" data-template-name="chatbot-smooch-receive">
   <div class="form-row">
       <label for="node-input-bot"><i class="icon-bookmark"></i> Bot</label>
       <input type="text" id="node-input-bot" placeholder="Bot">
   </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-facebook-receive">
-    <p>Receive a message (text, audio, video, image, etc) from a Facebook Messenger bot.</p>
-    <p>The message is stored in <code>msg.payload</code>, this node also stores in the context flow:
-    <code>username</code>, <code>firstName</code>, <code>lastName</code>, <code>chatId</code>, <code>authorized</code>,
-    <code>transport</code> and <code>messageId</code>.
-    </p>
+<script type="text/x-red" data-help-name="chatbot-smooch-receive">
+<p>
+  Receive a message (text, image, etc) from a Smooch service. Smooch allows integrations with many platform including
+  a generic web widget.
+</p>
 </script>
 
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-facebook-send', {
+  RED.nodes.registerType('chatbot-smooch-send', {
     category: 'RedBot Platforms',
     color: '#FFCC66',
     defaults: {
       bot: {
         value: "",
-        type: 'chatbot-facebook-node',
+        type: 'chatbot-smooch-node',
         required: true
       },
       track: {
@@ -138,9 +126,9 @@
     inputs: 1,
     outputs: 0,
     icon: 'chatbot-sender.png',
-    paletteLabel: 'Facebook Out',
+    paletteLabel: 'Smooch Out',
     label: function () {
-      return "Facebook Sender";
+      return "Smooch Sender";
     },
     oneditsave: function() {
       var track = $('#node-input-track').is(':checked');
@@ -149,7 +137,7 @@
   });
 </script>
 
-<script type="text/x-red" data-template-name="chatbot-facebook-send">
+<script type="text/x-red" data-template-name="chatbot-smooch-send">
 <div class="form-row">
   <label for="node-input-bot"><i class="icon-bookmark"></i> Bot</label>
   <input type="text" id="node-input-bot" placeholder="Bot">
@@ -163,10 +151,9 @@
 </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-facebook-send">
+<script type="text/x-red" data-help-name="chatbot-smooch-send">
 <p>
-  Send a message (text, audio, video, image, etc) from a Facebook Messenger bot. In order to create complex conversations, it
-  can track answers from the user using output pin.
+  Smooch
 </p>
 </script>
 

@@ -1,6 +1,5 @@
 var _ = require('underscore');
 var RiveScript = require('rivescript');
-var ChatContext = require('./lib/chat-context.js');
 
 module.exports = function(RED) {
 
@@ -18,10 +17,18 @@ module.exports = function(RED) {
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
       var context = node.context();
       var chatContext = context.global.get('chat:' + chatId);
-      var content = msg.payload != null && msg.payload.content != null ? msg.payload.content : null;
-      var bot = null;
+
+      // exit if payload content is not string
+      var content = null;
+      if (msg.payload != null && msg.payload.content != null && _.isString(msg.payload.content)) {
+        content = msg.payload.content;
+      }
+      if (_.isEmpty(content)) {
+        return;
+      }
 
       // create and cache the rivescript bot for this node, on deploy it will be reloaded
+      var bot = null;
       if (context.get('rivebot') != null) {
         bot = context.get('rivebot');
       } else {

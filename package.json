@@ -4,7 +4,8 @@
   "description": "REDBot a Chat bot for a full featured chat bot for Telegram**, Facebook Messenger and Slack. Almost no coding skills required",
   "scripts": {
     "test": "mocha",
-    "tunnel": "ngrok http 127.0.0.1:3099"
+    "tunnel_facebook": "ngrok http 127.0.0.1:3099",
+    "tunnel_smooch": "ngrok http 127.0.0.1:3199"
   },
   "repository": {
     "type": "git",
@@ -33,7 +34,8 @@
       "chatbot-rivescript": "chatbot-rivescript.js",
       "chatbot-telegram-receive": "chatbot-telegram-receive.js",
       "chatbot-slack-receive": "chatbot-slack-receive.js",
-      "chatbot-facebook-receive": "chatbot-facebook-receive.js"
+      "chatbot-facebook-receive": "chatbot-facebook-receive.js",
+      "chatbot-smooch-receive": "chatbot-smooch-receive.js"
     }
   },
   "maintainers": [
@@ -62,6 +64,7 @@
     "request": "^2.73.0",
     "rivescript": "^1.15.0",
     "sanitize-filename": "^1.6.0",
+    "smooch-core": "^2.0.0",
     "speakeasy-nlp": "^0.2.2",
     "underscore": "^1.8.3",
     "underscore.string": "^3.3.4"

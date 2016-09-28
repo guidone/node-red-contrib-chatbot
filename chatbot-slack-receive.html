@@ -51,7 +51,7 @@
 
 <script type="text/javascript">
   RED.nodes.registerType('chatbot-slack-receive', {
-    category: 'ChatBot',
+    category: 'RedBot Platforms',
     color: '#FFCC66',
     defaults: {
       bot: {
@@ -85,15 +85,13 @@
     </p>
 </script>
 
-
-
 <script type="text/javascript">
   RED.nodes.registerType('chatbot-slack-send', {
-    category: 'ChatBot',
+    category: 'RedBot Platforms',
     color: '#FFCC66',
     defaults: {
       bot: {
-        value: "",
+        value: '',
         type: 'chatbot-slack-node',
         required: true
       }
@@ -103,7 +101,7 @@
     icon: 'chatbot-sender.png',
     paletteLabel: 'Slack Out',
     label: function () {
-      return "Slack Sender";
+      return 'Slack Sender';
     }
   });
 </script>
