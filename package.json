@@ -14,6 +14,7 @@
   "node-red": {
     "nodes": {
       "chatbot-message": "chatbot-message.js",
+      "chatbot-voice": "chatbot-voice.js",
       "chatbot-language": "chatbot-language.js",
       "chatbot-listen": "chatbot-listen.js",
       "chatbot-parse": "chatbot-parse.js",

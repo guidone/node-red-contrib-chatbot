@@ -1,0 +1,76 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-voice', {
+    category: 'ChatBot',
+    color: '#FFCC66',
+    defaults: {
+      name: {
+        value: ''
+      },
+      message: {
+        value: ''
+      },
+      language: {
+        value: 'en-us'
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'Voice',
+    icon: 'chatbot-voice.png',
+    label: function() {
+      return this.name || 'Voice';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-voice">
+<div class="form-row">
+  <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+  <input type="text" id="node-input-name" placeholder="Name">
+</div>
+<div class="form-row">
+  <label for="node-input-language"><i class="icon-volume-up"></i> Language</label>
+  <select id="node-input-language" placeholder="Voice language">
+    <option value="ca-es">Catalan</option>
+    <option value="zh-cn">Chinese (China)</option>
+    <option value="zh-hk">Chinese (Hong Kong)</option>
+    <option value="zh-tw">Chinese (Taiwan)</option>
+    <option value="da-dk">Danish</option>
+    <option value="nl-nl">Dutch</option>
+    <option value="en-au">English (Australia)</option>
+    <option value="en-ca">English (Canada)</option>
+    <option value="en-gb">English (Great Britain)</option>
+    <option value="en-in">English (India)</option>
+    <option value="en-us">English (United States)</option>
+    <option value="fi-fi">Finnish</option>
+    <option value="fr-ca">French (Canada)</option>
+    <option value="fr-fr">French (France)</option>
+    <option value="de-de">German</option>
+    <option value="it-it">Italian</option>
+    <option value="ja-jp">Japanese</option>
+    <option value="ko-kr">Korean</option>
+    <option value="nb-no">Norwegian</option>
+    <option value="pl-pl">Polish</option>
+    <option value="pt-br">Portuguese (Brazil)</option>
+    <option value="pt-pt">Portuguese (Portugal)</option>
+    <option value="ru-ru">Russian</option>
+    <option value="es-mx">Spanish (Mexico)</option>
+    <option value="es-es">Spanish (Spain)</option>
+    <option value="sv-se">Swedish (Sweden)</option>
+  </select>
+</div>
+<div class="form-row">
+  <label for="node-input-message"><i class="icon-envelope"></i> Message</label>
+  <textarea id="node-input-message" placeholder="Message" style="width:93%;height:200px;"></textarea>
+  <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;">
+    The audio mp3 is created with <a href="http://www.voicerss.org/" target="_blank">Voice RSS</a>. In demo mode
+    text length is limited to 100 chars (purchase an API Key to remove the limit).
+  </div>
+</div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-voice">
+  <p>Create MP3 from plain text <strong>[Telegram, Facebook, Slack, Smooch]</strong></p>
+</script>
+
+
