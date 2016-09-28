@@ -42,6 +42,8 @@ Finally add a `Telegram Sender` node, don't forget to select in the configuratio
 Now you have a useful bot that answers *"Hi there!"* to any received message. We can do a lot better.
 
 ## Available nodes
+
+### Object nodes
 * **Audio**: takes the `msg.payload` binary (or a local file) and sends out as audio to the chat, can track response
 * **Buttons**: request information to the chat user using buttons using a predefined list
 * **Debug**: Debug incoming messages and chat contexts (useful to get the `chatId`)
@@ -51,20 +53,12 @@ Now you have a useful bot that answers *"Hi there!"* to any received message. We
 * **Message**: sends a text message from the chat bot, supports templating (variable like `{{firstName}}`, etc), tracking of response and quoting a previous comment  [All]
 * **QRCode**: create a QR code image
 * **Request**: request special information from the chat client like the current location or the phone numbers
-* **Waiting**: sets the waiting status on the chat client (something like _your_chatbot is typing_ ) [All]
-
-* **Command**: listen to a command type message (for example `/command1`, `/my-command`, etc)
-* **Listen**: Listen for a set of tokens, it's a very simple way to match sentences
-* **Parse**: Parse the incoming message searching for some type of data (string, number, date, location, contact, etc)
-* **RiveScript**: use [RiveScript.com](https://www.rivescript.com/) to elaborate answers
-* **Language**: detect message language
-
-Not all nodes are available for every platform,
+* **Waiting**: sets the waiting status on the chat client (something like _your_chatbot is typing_ )
+* **Voice**: create an audio mp3 from text
 
 |              | Telegram | Facebook | Smooch | Slack |
 |--------------|----------|----------|--------|-------|
 | Audio        |     ✓    |     ✓    |    ✓   |   ✓   |
-| Authorized   |     ✓    |          |        |       |
 | Buttons      |     ✓    |          |    ✓   |       |
 | Conversation |     ✓    |          |        |       |
 | Debug        |     ✓    |     ✓    |    ✓   |   ✓   |
@@ -75,14 +69,26 @@ Not all nodes are available for every platform,
 | QR Code      |     ✓    |          |        |       |
 | Request      |     ✓    |          |        |       |
 | Waiting      |     ✓    |          |        |       |
+| Voice        |     ✓    |     ✓    |        |       |
+
+### Parsing and flow control nodes
+
+* **Authorize**: detect if the current chat user is authorized
+* **Command**: listen to a command type message (for example `/command1`, `/my-command`, etc)
+* **Listen**: listen for a set of tokens, it's a very simple way to match sentences
+* **Parse**: parse the incoming message searching for some type of data (string, number, date, location, contact, etc)
+* **RiveScript**: use [RiveScript.com](https://www.rivescript.com/) to elaborate answers
+* **Language**: detect message language
+
+|              | Telegram | Facebook | Smooch | Slack |
 |--------------|----------|----------|--------|-------|
+| Authorized   |     ✓    |          |        |       |
 | Command      |     ✓    |     ✓    |    ✓   |   ✓   |
 | Listen       |     ✓    |     ✓    |    ✓   |   ✓   |
 | Language     |     ✓    |     ✓    |    ✓   |   ✓   |
 | Parse        |     ✓    |     ✓    |    ✓   |   ✓   |
 | RiveScript   |     ✓    |     ✓    |    ✓   |   ✓   |
 | Transport     |     ✓    |     ✓    |    ✓   |   ✓   |
-
 
 ## Examples
 Here are some examples connecting the ChatBot blocks
