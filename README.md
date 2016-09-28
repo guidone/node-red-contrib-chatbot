@@ -64,31 +64,32 @@ Now you have a useful bot that answers *"Hi there!"* to any received message. We
 | Debug        |     ✓    |     ✓    |    ✓   |   ✓   |
 | Image        |     ✓    |     ✓    |    ✓   |       |
 | Log          |     ✓    |     ✓    |    ✓   |   ✓   |
-| Location     |     ✓    |          |        |       |
+| Location     |     ✓    |     ✓    |        |       |
 | Message      |     ✓    |     ✓    |    ✓   |   ✓   |
-| QR Code      |     ✓    |          |        |       |
+| QR Code      |     ✓    |     ✓    |    ✓   |   ✓   |
 | Request      |     ✓    |          |        |       |
-| Waiting      |     ✓    |          |        |       |
+| Waiting      |     ✓    |     ✓    |        |       |
 | Voice        |     ✓    |     ✓    |        |       |
 
 ### Parsing and flow control nodes
 
-* **Authorize**: detect if the current chat user is authorized
+* **Authorized**: detect if the current chat user is authorized
 * **Command**: listen to a command type message (for example `/command1`, `/my-command`, etc)
+* **Language**: detect message language
 * **Listen**: listen for a set of tokens, it's a very simple way to match sentences
 * **Parse**: parse the incoming message searching for some type of data (string, number, date, location, contact, etc)
 * **RiveScript**: use [RiveScript.com](https://www.rivescript.com/) to elaborate answers
-* **Language**: detect message language
+* **Transport**: filter by type of transport
 
 |              | Telegram | Facebook | Smooch | Slack |
 |--------------|----------|----------|--------|-------|
 | Authorized   |     ✓    |          |        |       |
 | Command      |     ✓    |     ✓    |    ✓   |   ✓   |
-| Listen       |     ✓    |     ✓    |    ✓   |   ✓   |
 | Language     |     ✓    |     ✓    |    ✓   |   ✓   |
+| Listen       |     ✓    |     ✓    |    ✓   |   ✓   |
 | Parse        |     ✓    |     ✓    |    ✓   |   ✓   |
 | RiveScript   |     ✓    |     ✓    |    ✓   |   ✓   |
-| Transport     |     ✓    |     ✓    |    ✓   |   ✓   |
+| Transport    |     ✓    |     ✓    |    ✓   |   ✓   |
 
 ## Examples
 Here are some examples connecting the ChatBot blocks

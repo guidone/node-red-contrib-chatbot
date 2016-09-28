@@ -284,22 +284,15 @@ module.exports = function(RED) {
             return bot.sendActions(msg.payload.chatId, msg.payload.content, msg.payload.actions);
             break;
 
-          case 'audio':
-            var audio = msg.payload.content;
-            helpers.uploadBuffer({
-              recipient: msg.payload.chatId,
-              type: 'audio',
-              buffer: audio,
-              token: credentials.token,
-              filename: msg.payload.filename
-            }).catch(function(err) {
-              reject(err);
-            });
-            break;
-
           case 'photo':
             var image = msg.payload.content;
-            bot.uploadImage(msg.payload.chatId, image, reportError);
+            bot.uploadBuffer(msg.payload.chatId, image)
+              .catch(function(err) {
+                reject(err);
+              })
+              .then(function() {
+                resolve();
+              });
             break;
 
           default:
@@ -344,7 +337,10 @@ module.exports = function(RED) {
 
       chatLog.log(msg, this.config.log)
         .then(function () {
-          sendMessage(msg);
+          return sendMessage(msg);
+        })
+        .catch(function(err) {
+          node.error(err);
         });
 
     });

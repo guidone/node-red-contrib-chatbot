@@ -9,7 +9,7 @@ module.exports = function(RED) {
     var node = this;
     this.message = config.message;
     this.language = config.language;
-    this.transports = ['telegram', 'slack', 'facebook', 'smooch'];
+    this.transports = ['telegram', 'facebook'];
 
     this.on('input', function(msg) {
       var message = node.message;
