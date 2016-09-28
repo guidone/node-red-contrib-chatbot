@@ -42,21 +42,47 @@ Finally add a `Telegram Sender` node, don't forget to select in the configuratio
 Now you have a useful bot that answers *"Hi there!"* to any received message. We can do a lot better.
 
 ## Available nodes
+* **Audio**: takes the `msg.payload` binary (or a local file) and sends out as audio to the chat, can track response
+* **Buttons**: request information to the chat user using buttons using a predefined list
+* **Debug**: Debug incoming messages and chat contexts (useful to get the `chatId`)
+* **Image**: takes the `msg.payload` binary (or a local file) and sends out as image to the chat, can track response
+* **Log**: Convert a chat message (inbound or outbound) to a single line string suitable to be sent to a log file
+* **Location**: Send a location type message that will be shown with a map by the chat client
 * **Message**: sends a text message from the chat bot, supports templating (variable like `{{firstName}}`, etc), tracking of response and quoting a previous comment  [All]
+* **QRCode**: create a QR code image
+* **Request**: request special information from the chat client like the current location or the phone numbers
 * **Waiting**: sets the waiting status on the chat client (something like _your_chatbot is typing_ ) [All]
-* **Command**: listen to a command type message (for example `/command1`, `/my-command`, etc) [All]
-* **Image**: takes the `msg.payload` binary (or a local file) and sends out as image to the chat, can track response [All]
-* **Audio**: takes the `msg.payload` binary (or a local file) and sends out as audio to the chat, can track response [Telegram, Facebook]
-* **Request**: request special information from the chat client like the current location or the phone numbers [Telegram].
-* **Buttons**: request information to the chat user using buttons using a predefined list [Telegram, Facebook]
-* **Parse**: Parse the incoming message searching for some type of data (string, number, date, location, contact, etc) [All]
-* **Log**: Convert a chat message (inbound or outbound) to a single line string suitable to be sent to a log file [All]
-* **Location**: Send a location type message that will be shown with a map by the chat client [All]
-* **Listen**: Listen for a set of tokens, it's a very simple way to match sentences [All]
-* **Debug**: Debug incoming messages and chat contexts (useful to get the `chatId` ) [All]
-* **RiveScript**: use [RiveScript.com](https://www.rivescript.com/) to elaborate answers [All]
-* **QRCode**: create a QR code image [All]
-* **Language**: detect message language [All]
+
+* **Command**: listen to a command type message (for example `/command1`, `/my-command`, etc)
+* **Listen**: Listen for a set of tokens, it's a very simple way to match sentences
+* **Parse**: Parse the incoming message searching for some type of data (string, number, date, location, contact, etc)
+* **RiveScript**: use [RiveScript.com](https://www.rivescript.com/) to elaborate answers
+* **Language**: detect message language
+
+Not all nodes are available for every platform,
+
+|              | Telegram | Facebook | Smooch | Slack |
+|--------------|----------|----------|--------|-------|
+| Audio        |     ✓    |     ✓    |    ✓   |   ✓   |
+| Authorized   |     ✓    |          |        |       |
+| Buttons      |     ✓    |          |    ✓   |       |
+| Conversation |     ✓    |          |        |       |
+| Debug        |     ✓    |     ✓    |    ✓   |   ✓   |
+| Image        |     ✓    |     ✓    |    ✓   |       |
+| Log          |     ✓    |     ✓    |    ✓   |   ✓   |
+| Location     |     ✓    |          |        |       |
+| Message      |     ✓    |     ✓    |    ✓   |   ✓   |
+| QR Code      |     ✓    |          |        |       |
+| Request      |     ✓    |          |        |       |
+| Waiting      |     ✓    |          |        |       |
+|--------------|----------|----------|--------|-------|
+| Command      |     ✓    |     ✓    |    ✓   |   ✓   |
+| Listen       |     ✓    |     ✓    |    ✓   |   ✓   |
+| Language     |     ✓    |     ✓    |    ✓   |   ✓   |
+| Parse        |     ✓    |     ✓    |    ✓   |   ✓   |
+| RiveScript   |     ✓    |     ✓    |    ✓   |   ✓   |
+| Transport     |     ✓    |     ✓    |    ✓   |   ✓   |
+
 
 ## Examples
 Here are some examples connecting the ChatBot blocks
