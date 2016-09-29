@@ -11,7 +11,7 @@ var http = require('http');
 var Bot = require('./lib/messenger-bot');
 var clc = require('cli-color');
 
-var DEBUG = true;
+var DEBUG = false;
 var green = clc.greenBright;
 var white = clc.white;
 var red = clc.red;
