@@ -37,6 +37,9 @@
 <div class="form-row">
   <label for="node-input-message"><i class="icon-envelope"></i> Message</label>
   <textarea id="node-input-message" placeholder="Message" style="width:93%;height:200px;"></textarea>
+  <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;">
+    Supports handlebars-like variables for chat context like {{firstName}}, {{lastName}}, etc. and emoticons (:smile:, etc.)
+  </div>
 </div>
 <div class="form-row">
   <label for="node-input-answer"><i class="icon-share-alt"></i> Answer</label>
@@ -57,7 +60,7 @@
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-message">
-<p>Plain text message with templating capabilities [Telegram, Facebook, Slack]</p>
+  <p>Plain text message with templating capabilities [Telegram, Facebook, Slack]</p>
 </script>
 
 

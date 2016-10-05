@@ -244,6 +244,8 @@ In the template system some defaults variables are available using the *{{variab
 * **message** - the current message from the user in string format
 
 ## Changelog
+* **0.6.3** - Cleanup
+* **0.6.2** - Added support for Smooch.io
 * **0.5.14** - **[breaking changes]** moved Facebook endpoint to the same address/port of Node-Red: http://localhost:1880/redbot/facebook (this allows to use it on Heroku for example)
 * **0.5.13** - added language node
 * **0.5.11** - cache Rivescript and enable follow up

@@ -56,7 +56,6 @@
     "cookie-parser": "^1.4.3",
     "fast-levenshtein": "^1.1.3",
     "languagedetect": "^1.1.1",
-    "messenger-bot": "^2.3.0",
     "moment": "^2.13.0",
     "node-emoji": "^1.3.1",
     "node-telegram-bot-api": "^0.23.3",

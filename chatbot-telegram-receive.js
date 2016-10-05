@@ -1,9 +1,9 @@
 var _ = require('underscore');
 var TelegramBot = require('node-telegram-bot-api');
 var moment = require('moment');
-var ChatContext = require('./lib/chat-context.js');
+var ChatContext = require('./lib/chat-context');
 var ChatLog = require('./lib/chat-log.js');
-var helpers = require('./lib/helpers/slack.js');
+var helpers = require('./lib/telegram/telegram');
 var DEBUG = false;
 
 module.exports = function(RED) {
@@ -358,25 +358,8 @@ module.exports = function(RED) {
 
           switch (type) {
             case 'message':
-
-              // the maximum message size is 4096 so we must split the message into smaller chunks.
-              var chunkSize = 4000;
-              var message = msg.payload.content;
-
-              var done = false;
-              do {
-                var messageToSend;
-                if (message.length > chunkSize) {
-                  messageToSend = message.substr(0, chunkSize);
-                  message = message.substr(chunkSize);
-                } else {
-                  messageToSend = message;
-                  done = true;
-                }
-
-                node.telegramBot.sendMessage(chatId, messageToSend, msg.payload.options)
-                  .catch(node.error);
-              } while (!done);
+              node.telegramBot.sendMessage(chatId, msg.payload.content, msg.payload.options)
+                .catch(node.error);
               break;
             case 'photo':
               node.telegramBot.sendPhoto(chatId, msg.payload.content, msg.payload.options)
@@ -405,6 +388,37 @@ module.exports = function(RED) {
             case 'action':
               node.telegramBot.sendChatAction(chatId, msg.payload.waitingType != null ? msg.payload.waitingType : 'typing')
                 .catch(node.error);
+              break;
+            case 'request':
+              var keyboard = null;
+              if (msg.payload.requestType === 'location') {
+                keyboard = [
+                  [{
+                    text: !_.isEmpty(msg.payload.buttonLabel) ? msg.payload.buttonLabel : 'Send your position',
+                    request_location: true
+                  }]
+                ];
+              } else if (msg.payload.requestType === 'phone-number') {
+                keyboard = [
+                  [{
+                    text: !_.isEmpty(msg.payload.buttonLabel) ? msg.payload.buttonLabel : 'Send your phone number',
+                    request_contact: true
+                  }]
+                ];
+              }
+              if (keyboard != null) {
+                node.telegramBot
+                  .sendMessage(chatId, msg.payload.content, {
+                    reply_markup: JSON.stringify({
+                      keyboard: keyboard,
+                      'resize_keyboard': true,
+                      'one_time_keyboard': true
+                    })
+                  })
+                  .catch(node.error);
+              } else {
+                node.error('Request type not supported');
+              }
               break;
             case 'buttons':
               var buttons = {

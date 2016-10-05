@@ -1,17 +1,18 @@
 var _ = require('underscore');
 var moment = require('moment');
-var ChatContext = require('./lib/chat-context.js');
-var ChatLog = require('./lib/chat-log.js');
-var helpers = require('./lib/helpers/facebook.js');
+var ChatContext = require('./lib/chat-context');
+var ChatLog = require('./lib/chat-log');
+var helpers = require('./lib/facebook/facebook');
+var utils = require('./lib/helpers/utils');
 var fs = require('fs');
 var os = require('os');
 var request = require('request').defaults({ encoding: null });
 var https = require('https');
 var http = require('http');
-var Bot = require('./lib/messenger-bot');
+var Bot = require('./lib/facebook/messenger-bot');
 var clc = require('cli-color');
 
-var DEBUG = false;
+var DEBUG = true;
 var green = clc.greenBright;
 var white = clc.white;
 var red = clc.red;
@@ -108,8 +109,6 @@ module.exports = function(RED) {
           }, self.log)
         })
         .then(function (msg) {
-
-
 
           var currentConversationNode = chatContext.get('currentConversationNode');
           // if a conversation is going on, go straight to the conversation node, otherwise if authorized
@@ -209,7 +208,6 @@ module.exports = function(RED) {
         if (_.isArray(message.attachments) && !_.isEmpty(message.attachments)) {
 
           var attachment = message.attachments[0];
-
           switch(attachment.type) {
             case 'image':
               // download the image into a buffer
@@ -227,37 +225,26 @@ module.exports = function(RED) {
                 .catch(function() {
                   reject('Unable to download ' + attachment.payload.url);
                 });
-
-
               break;
-            case 'location':
 
+            case 'location':
               resolve({
                 chatId: chatId,
                 messageId: messageId,
                 type: 'location',
                 content: {
-                  latitude: attachment.payload.cooordinates.lat,
-                  longitude: attachment.payload.cooordinates.long
+                  latitude: attachment.payload.coordinates.lat,
+                  longitude: attachment.payload.coordinates.long
                 },
                 date: moment(botMsg.timestamp),
                 inbound: true
               });
-
               break;
           }
 
         } else {
           reject('Unable to detect inbound message for Facebook Messenger');
         }
-
-
-        /*
-
-         { type: 'image',
-         payload: { url: 'https://scontent.xx.fbcdn.net/v/t34.0-12/13714319_10153570333851415_183484103_n.png?_nc_ad=z-m&oh=1fd1db8c6faec91c340b22f75a2eb025&oe=578EF45F' } }
-         */
-
 
       });
     }
@@ -365,6 +352,25 @@ module.exports = function(RED) {
               },
               url: 'https://graph.facebook.com/v2.6/me/messages?access_token=' + credentials.token
             }, reportError);
+            break;
+
+          case 'request':
+
+            // todo error if not location
+            // send
+            bot.sendMessage(
+              msg.payload.chatId,
+              {
+                text: msg.payload.content,
+                quick_replies: [
+                  {
+                    'content_type': 'location'
+                  }
+                ]
+              },
+              reportError
+            );
+
             break;
 
           case 'buttons':
@@ -476,17 +482,10 @@ module.exports = function(RED) {
         // exit, it's not from facebook
         return;
       }
-
-      if (msg.payload == null) {
-        node.warn("msg.payload is empty");
-        return;
-      }
-      if (msg.payload.chatId == null) {
-        node.warn("msg.payload.channelId is empty");
-        return;
-      }
-      if (msg.payload.type == null) {
-        node.warn("msg.payload.type is empty");
+      // check payload
+      var error = utils.hasValidPayload(msg);
+      if (error != null) {
+        node.error(error);
         return;
       }
 

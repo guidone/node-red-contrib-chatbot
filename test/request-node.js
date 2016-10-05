@@ -15,7 +15,8 @@ describe('Chat request node', function() {
     RequestBlock(RED);
     RED.node.get().emit('input', msg);
     assert.equal(RED.node.message().payload.content, 'i am the request');
-    assert.equal(RED.node.message().payload.options.reply_markup, '{"keyboard":[[{"text":"your position","request_location":true}]],"resize_keyboard":true,"one_time_keyboard":true}');
+    assert.equal(RED.node.message().payload.type, 'request');
+    assert.equal(RED.node.message().payload.requestType, 'location');
   });
 
   it('should be a request phone', function() {
@@ -28,7 +29,8 @@ describe('Chat request node', function() {
     RequestBlock(RED);
     RED.node.get().emit('input', msg);
     assert.equal(RED.node.message().payload.content, 'i am the request');
-    assert.equal(RED.node.message().payload.options.reply_markup, '{"keyboard":[[{"text":"your phone","request_contact":true}]],"resize_keyboard":true,"one_time_keyboard":true}');
+    assert.equal(RED.node.message().payload.type, 'request');
+    assert.equal(RED.node.message().payload.requestType, 'phone-number');
   });
 
   it('should be a request phone with emojii', function() {
@@ -41,7 +43,8 @@ describe('Chat request node', function() {
     RequestBlock(RED);
     RED.node.get().emit('input', msg);
     assert.equal(RED.node.message().payload.content, 'i am the request ☕️');
-    assert.equal(RED.node.message().payload.options.reply_markup, '{"keyboard":[[{"text":"your phone","request_contact":true}]],"resize_keyboard":true,"one_time_keyboard":true}');
+    assert.equal(RED.node.message().payload.type, 'request');
+    assert.equal(RED.node.message().payload.requestType, 'phone-number');
   });
 
 

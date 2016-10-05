@@ -1,5 +1,4 @@
 var _ = require('underscore');
-var moment = require('moment');
 var MessageTemplate = require('./lib/message-template.js');
 var emoji = require('node-emoji');
 
@@ -11,12 +10,7 @@ module.exports = function(RED) {
     this.message = config.message;
     this.buttonLabel = config.buttonLabel;
     this.requestType = config.requestType;
-
-    // relay message
-    var handler = function(msg) {
-      node.send([null, msg]);
-    };
-    RED.events.on('node:' + config.id, handler);
+    this.transports = ['telegram', 'facebook'];
 
     this.on('input', function(msg) {
 
@@ -28,47 +22,24 @@ module.exports = function(RED) {
       var buttonLabel = node.buttonLabel;
       var template = MessageTemplate(msg, node);
 
-      var keyboard = null;
-      if (requestType === 'location') {
-        keyboard = [
-          [{
-            text: !_.isEmpty(buttonLabel) ? buttonLabel : 'Send your position',
-            request_location: true
-          }]
-        ];
-      } else if (requestType === 'phone-number') {
-        keyboard = [
-          [{
-            text: !_.isEmpty(buttonLabel) ? buttonLabel : 'Send your phone number',
-            request_contact: true
-          }]
-        ];
+      // check transport compatibility
+      if (!_.contains(node.transports, msg.originalMessage.transport)) {
+        node.error('This node is not available for transport: ' + msg.originalMessage.transport);
+        return;
       }
 
-      // send out the message
-      // todo move this format to telegram sender
-      // todo restrict this node to telegram
       msg.payload = {
-        type: 'message',
-        content: emoji.emojify(template(message)),
+        type: 'request',
+        requestType: requestType,
+        label: buttonLabel,
         chatId: chatId,
         messageId: messageId,
-        options: {
-          reply_markup: JSON.stringify({
-            keyboard: keyboard,
-            'resize_keyboard': true,
-            'one_time_keyboard': true
-          })
-        }
+        content: emoji.emojify(template(message))
       };
 
-      node.send([msg, null]);
+      node.send(msg);
     });
 
-    // cleanup on close
-    this.on('close',function() {
-      RED.events.removeListener('node:' + config.id, handler);
-    });
   }
 
   RED.nodes.registerType('chatbot-request', ChatBotRequest);
