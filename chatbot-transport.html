@@ -3,18 +3,88 @@
     category: 'RedBot',
     color: '#FFCC66',
     defaults: {
+      rules: {
+        value: [{transport: 'telegram'}]
+      },
+      outputs: {
+        value: 1
+      }
     },
     inputs: 1,
-    outputs: 3,
+    outputs: 1,
     paletteLabel: 'Transport',
     icon: 'chatbot-transport.png',
     label: function() {
       return 'Transport';
+    },
+    oneditsave: function() {
+      var rules = $('#node-input-rule-container').editableList('items');
+      var node = this;
+      node.rules = [];
+      rules.each(function(i) {
+        var rule = $(this);
+        var transport = rule.find('select').val();
+        if (transport != null && transport != '') {
+          node.rules.push({transport: transport});
+        }
+      });
+      this.outputs = node.rules.length;
+    },
+    oneditprepare: function() {
+      var node = this;
+      $("#node-input-rule-container").css('min-height','250px').css('min-width','450px').editableList({
+        addItem: function (container, i, opt) {
+          var rule = opt;
+          var row = $('<div/>').appendTo(container);
+          var selectField = $('<select/>', {style:"width:200px; margin-left: 5px; text-align: center;"})
+            .attr('placeholder', 'Select transport')
+            .appendTo(row);
+          var platforms = ['telegram', 'facebook', 'slack', 'smooch'];
+          for (var idx = 0; idx < platforms.length; idx++) {
+            selectField.append($("<option></option>")
+              .val(platforms[idx])
+              .text(platforms[idx]));
+          }
+          if (rule.transport != null) {
+            selectField.val(rule.transport);
+          }
+          var finalspan = $('<span/>',{style:"float: right;margin-top: 6px;"}).appendTo(row);
+          finalspan.append('&nbsp;&#8594; <span class="node-input-rule-index">' + (i + 1) + '</span>');
+        },
+        removeItem: function(opt) {
+          var rules = $('#node-input-rule-container').editableList('items');
+          rules.each(function(i) {
+            $(this).find('.node-input-rule-index').html(i + 1);
+          });
+        },
+        sortItems: function() {
+          var rules = $('#node-input-rule-container').editableList('items');
+          rules.each(function(i) {
+            $(this).find('.node-input-rule-index').html(i + 1);
+          });
+        },
+        sortable: true,
+        removable: true
+      });
+
+      for (var i=0; i < node.rules.length; i++) {
+        var rule = this.rules[i];
+        $('#node-input-rule-container').editableList('addItem', rule);
+      }
+
+
     }
   });
 </script>
 
 <script type="text/x-red" data-template-name="chatbot-transport">
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Forward message:</label>
+  </div>
+  <div class="form-row node-input-rule-container-row">
+      <ol id="node-input-rule-container"></ol>
+  </div>
+
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-transport">

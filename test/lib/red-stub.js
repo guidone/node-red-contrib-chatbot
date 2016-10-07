@@ -17,6 +17,12 @@ module.exports = function() {
 
   var RED = {
 
+    util: {
+      cloneMessage: function(msg) {
+        return msg
+      }
+    },
+
     environment: {
       chat: function(chatId, obj) {
         _(obj).map(function(value, key) {
@@ -38,6 +44,7 @@ module.exports = function() {
         payload: payload != null ? payload : 'I am the original message'
       };
       _chatContext = ChatContext(chatId);
+      _chatContext.clear();
       _global['chat:' + chatId] = _chatContext;
       if (payload != null) {
         msg.payload = payload;

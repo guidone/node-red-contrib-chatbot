@@ -43,6 +43,9 @@ module.exports = function(RED) {
         bot.setUservars(chatId, _(chatContext.all()).mapObject(function(value) {
           return _.isString(value) || _.isNumber(value) || _.isArray(value) ? value : null;
         }));
+        if (!_.isEmpty(chatContext.get('intent'))) {
+          bot.setUservar(chatId, 'topic', chatContext.get('intent'));
+        }
       }
 
       // get a reply
@@ -61,6 +64,10 @@ module.exports = function(RED) {
           // set the vars back
           var replyVars = bot.getUservars(chatId);
           chatContext.set(_(replyVars).omit('topic', '__initialmatch__', '__history__', '__lastmatch__'));
+          // set back the intent (topic in RiveScript)
+          if (!_.isEmpty(replyVars.topic) && replyVars.topic != 'random') {
+            chatContext.set('intent', replyVars.topic);
+          }
         }
         // payload
         msg.payload = reply;

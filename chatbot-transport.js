@@ -4,25 +4,22 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
     var node = this;
 
+    node.rules = config.rules;
+
     this.on('input', function(msg) {
 
       var originalMessage = msg.originalMessage;
+      var rules = node.rules;
       // do nothing
-      if (originalMessage == null) {
+      if (originalMessage == null || rules.length == 0) {
         return;
       }
 
-      switch(originalMessage.transport) {
-        case 'telegram':
-          node.send([msg, null, null]);
-          break;
-        case 'facebook':
-          node.send([null, msg, null]);
-          break;
-        case 'slack':
-          node.send([null, null, msg]);
-          break;
-      }
+      var output = [];
+      rules.forEach(function(rule) {
+        output.push(originalMessage.transport == rule.transport ? msg : null);
+      });
+      node.send(output);
     });
   }
 

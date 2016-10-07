@@ -1,0 +1,82 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-context', {
+    category: 'RedBot',
+    color: '#FFCC66',
+    defaults: {
+      command: {
+        value: 'get'
+      },
+      fieldValue: {
+        value: ''
+      },
+      fieldType: {
+        value: 'str'
+      },
+      fieldName: {
+        value: '',
+        required: true
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'Context',
+    icon: 'chatbot-context.png',
+    label: function() {
+      return 'Context';
+    },
+    oneditprepare: function() {
+      $('#node-input-fieldValue').typedInput({
+        'default': 'str',
+        types: ['str','num','bool', 'json'],
+        typeField: $('#node-input-fieldType')
+      });
+      $('#node-input-command').change(function() {
+        if ($('#node-input-command').val() == 'set') {
+          $('.form-row-context-fieldValue').show();
+        } else {
+          $('.form-row-context-fieldValue').hide();
+        }
+      });
+    },
+    oneditsave: function() {
+      $("#node-input-template").val(this.editor.getValue());
+      delete this.editor;
+    },
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-context">
+<div class="form-row">
+  <label for="node-input-command"><i class="icon-cog"></i> Command</label>
+  <select id="node-input-command" placeholder="Language to match" style="width: 150px;">
+    <option value="get">Get</option>
+    <option value="set">Set</option>
+    <option value="delete">Delete</option>
+  </select>
+</div>
+<div class="form-row">
+  <label for="node-input-fieldName"><i class="icon-tag"></i> Variable</label>
+  <input type="text" id="node-input-fieldName" placeholder="Variable" style="width:250px;">
+</div>
+<div class="form-row form-row-context-fieldValue">
+  <label for="node-input-fieldValue"><i class="icon-pencil"></i> Value</label>
+  <input type="text" id="node-input-fieldValue" placeholder="" style="width:250px;">
+  <input type="hidden" id="node-input-fieldType">
+</div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-context">
+  <p>
+  Get, set or delete an element in the chat context.
+  </p>
+  <p>
+  The chat context is a volatile namespace for variables related to the current chat user, some variables are predefined
+  (like <i>firstName</i>, <i>lastName</i>, <i>intent</i>, <i>chatId</i>, etc).
+  </p>
+  <p>
+  Tipically this node is used to manually set the <i>intent</i> of the user before or after entering a
+  <code>RiveScript node</code>.
+  </p>
+</script>
+
+

@@ -90,6 +90,7 @@ Now you have a useful bot that answers *"Hi there!"* to any received message. We
 | Parse        |     ✓    |     ✓    |    ✓   |   ✓   |
 | RiveScript   |     ✓    |     ✓    |    ✓   |   ✓   |
 | Transport    |     ✓    |     ✓    |    ✓   |   ✓   |
+| Context      |     ✓    |     ✓    |    ✓   |   ✓   |
 
 ## Examples
 Here are some examples connecting the ChatBot blocks
@@ -244,6 +245,8 @@ In the template system some defaults variables are available using the *{{variab
 * **message** - the current message from the user in string format
 
 ## Changelog
+
+* **0.6.4** - Added chat context node, refactored transport node
 * **0.6.3** - Cleanup
 * **0.6.2** - Added support for Smooch.io
 * **0.5.14** - **[breaking changes]** moved Facebook endpoint to the same address/port of Node-Red: http://localhost:1880/redbot/facebook (this allows to use it on Heroku for example)
