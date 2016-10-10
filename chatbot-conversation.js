@@ -13,26 +13,20 @@ module.exports = function(RED) {
 
       var chatId = node.chatId;
       var transport = node.transport;
-      var id = null;
-
-      // if valid chat id then use it, otherwise search as username
-      if (chatId != null && chatId.match(/^[0-9]*$/)) {
-        id = chatId;
-      }
-
-      if (id == null) {
-        node.error('chatId is null or username was not found');
-        return;
-      }
 
       // ensure the original message is injected
       msg.originalMessage = {
         chat: {
-          id: id
+          id: chatId
         },
         message_id: null,
         transport: transport
       };
+
+      // fix chat id in payload if any
+      if (_.isObject(msg.payload) && msg.payload.chatId != null) {
+        msg.payload.chatId = chatId;
+      }
 
       node.send(msg);
     });

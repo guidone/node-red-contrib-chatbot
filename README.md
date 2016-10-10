@@ -157,8 +157,7 @@ A little bit of coding is required to prepare the payload for the email node
 
 ```
 // get the chat context
-var chatId = msg.originalMessage.chat.id
-var chat = context.flow.get('chat:' + chatId);
+var chat = msg.chat();
 // email payload
 msg.to = chat.get('email');
 msg.payload = 'Hi, this is my curriculum vitae';
@@ -225,8 +224,7 @@ Read the [RiveScript tutorial](https://www.rivescript.com/docs/tutorial) for all
 To get the chat context in a function node:
 
 ```
-var chatId = msg.originalMessage.chat.id
-var chat = context.flow.get('chat:' + chatId);
+var chat = msg.chat();
 console.log(chat.get('authorized')); // is the user authorized
 console.log(chat.get('username')); // guidone72
 chat.set('my_stuff', 'remember that');

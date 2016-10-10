@@ -179,7 +179,10 @@ module.exports = function(RED) {
           var chatLog = new ChatLog(chatContext);
           return chatLog.log({
             payload: payload,
-            originalMessage: botMsg
+            originalMessage: botMsg,
+            chat: function() {
+              return context.global.get('chat:' + chatId);
+            }
           }, self.log)
         })
         .then(function(msg) {

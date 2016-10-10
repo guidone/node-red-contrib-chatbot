@@ -87,6 +87,9 @@ module.exports = function(RED) {
               chat: {
                 id: chatId
               }
+            },
+            chat: function() {
+              return context.global.get('chat:' + chatId);
             }
           }, self.log)
         })
