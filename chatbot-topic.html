@@ -1,10 +1,10 @@
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-transport', {
+  RED.nodes.registerType('chatbot-topic', {
     category: 'RedBot Flow',
     color: '#FFCC66',
     defaults: {
       rules: {
-        value: [{transport: 'telegram'}]
+        value: [{topic: ''}]
       },
       outputs: {
         value: 1
@@ -12,10 +12,10 @@
     },
     inputs: 1,
     outputs: 1,
-    paletteLabel: 'Transport',
-    icon: 'chatbot-transport.png',
+    paletteLabel: 'Topic',
+    icon: 'chatbot-topic.png',
     label: function() {
-      return 'Transport';
+      return 'Topic';
     },
     oneditsave: function() {
       var rules = $('#node-input-rule-container').editableList('items');
@@ -23,9 +23,9 @@
       node.rules = [];
       rules.each(function(i) {
         var rule = $(this);
-        var transport = rule.find('select').val();
-        if (transport != null && transport != '') {
-          node.rules.push({transport: transport});
+        var topic = rule.find('input').val();
+        if (topic != null && topic != '') {
+          node.rules.push({topic: topic});
         }
       });
       this.outputs = node.rules.length;
@@ -36,17 +36,12 @@
         addItem: function (container, i, opt) {
           var rule = opt;
           var row = $('<div/>').appendTo(container);
-          var selectField = $('<select/>', {style:"width:200px; margin-left: 5px; text-align: center;"})
-            .attr('placeholder', 'Select transport')
+          var selectField = $('<input/>', {style:"width:80%; margin-left: 5px; text-align: left;"})
+            .attr('placeholder', 'Insert topic')
+            .attr('type', 'text')
             .appendTo(row);
-          var platforms = ['telegram', 'facebook', 'slack', 'smooch'];
-          for (var idx = 0; idx < platforms.length; idx++) {
-            selectField.append($("<option></option>")
-              .val(platforms[idx])
-              .text(platforms[idx]));
-          }
-          if (rule.transport != null) {
-            selectField.val(rule.transport);
+          if (rule.topic != null) {
+            selectField.val(rule.topic);
           }
           var finalspan = $('<span/>',{style:"float: right;margin-top: 6px;"}).appendTo(row);
           finalspan.append('&nbsp;&#8594; <span class="node-input-rule-index">' + (i + 1) + '</span>');
@@ -72,30 +67,33 @@
         $('#node-input-rule-container').editableList('addItem', rule);
       }
 
-
     }
   });
 </script>
 
-<script type="text/x-red" data-template-name="chatbot-transport">
+<script type="text/x-red" data-template-name="chatbot-topic">
   <div class="form-row">
-    <label for="node-input-name"><i class="fa fa-tag"></i> Forward message:</label>
+    <label for="node-input-name" style="width:100%;"><i class="fa fa-tag"></i> Forward message based on topic:</label>
   </div>
   <div class="form-row node-input-rule-container-row">
       <ol id="node-input-rule-container"></ol>
   </div>
-
+  <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;">
+    Insert the topic to match (or a comma delimited list of topics). Use <code>*</code> to catch all topics.
+  </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-transport">
+<script type="text/x-red" data-help-name="chatbot-topic">
   <p>
-  Reroute message based on the type of transport: first output for <b>Telegram</b>, second output for <b>Facebook</b>
-  and third output for <b>Slack</b>.
+  Control the flow based on the topic. Use the topic to restrict the working area of your chat bot parsers based on
+  the user intentions.
   </p>
   <p>
-  Use this when the user experience include nodes that are not available for all the platform supported by the
-  chatbot: for example the node <code>Request</code> is supported only by <b>Telegram</b>, for <b>Facebook</b> it's
-  necessary to provide an alternate flow.
+  Chat topic is stored in the chat context, use the <code>Context node</code> to change it or the
+  <code>{topic=my_topic}</code> directive in RiveScript.
+  </p>
+  <p>
+  The chat context could have more than one topic (in that case is an array of string).
   </p>
 </script>
 

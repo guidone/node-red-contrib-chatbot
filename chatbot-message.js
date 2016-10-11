@@ -1,5 +1,6 @@
 var _ = require('underscore');
-var MessageTemplate = require('./lib/message-template.js');
+var utils = require('./lib/helpers/utils');
+var MessageTemplate = require('./lib/message-template');
 var emoji = require('node-emoji');
 
 module.exports = function(RED) {
@@ -16,9 +17,8 @@ module.exports = function(RED) {
       var message = node.message;
       var answer = node.answer;
       var parse_mode = node.parse_mode;
-      var originalMessage = msg.originalMessage;
-      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
-      var messageId = msg.payload.messageId || (originalMessage && originalMessage.message_id);
+      var chatId = utils.getChatId(msg);
+      var messageId = utils.getMessageId(msg);
       var template = MessageTemplate(msg, node);
 
       // check transport compatibility

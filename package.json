@@ -14,6 +14,8 @@
     "nodes": {
       "chatbot-message": "chatbot-message.js",
       "chatbot-context": "chatbot-context.js",
+      "chatbot-topic": "chatbot-topic.js",
+      "chatbot-apiai": "chatbot-apiai.js",
       "chatbot-voice": "chatbot-voice.js",
       "chatbot-language": "chatbot-language.js",
       "chatbot-listen": "chatbot-listen.js",
@@ -53,6 +55,7 @@
   "license": "ISC",
   "dependencies": {
     "@slack/client": "^3.5.1",
+    "apiai": "^3.0.0",
     "cli-color": "^1.1.0",
     "cookie-parser": "^1.4.3",
     "fast-levenshtein": "^1.1.3",

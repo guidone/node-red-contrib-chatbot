@@ -89,7 +89,7 @@ It's also able to parse the sentence and store data to the chat context
 RiveScript can get/set variables in the chat context.
 </p>
 <p>
-You can use the chat context variable <em>intent</em> to scope some RiveScript triggers into topics
+You can use the chat context variable <em>topic</em> to scope some RiveScript triggers into topics
 <p>
 <pre>
 ! version = 2.0
@@ -100,8 +100,9 @@ You can use the chat context variable <em>intent</em> to scope some RiveScript t
 < topic
 </pre>
 <p>
-In this case the trigger <em>"*"</em> will be executed only if the intent is <em>name_ok</em> (it's possible to set the intent using
-a <code>Context node</code> or in <b>RiveScript</b> with <code>{topic=new_topic}</code>). Note that <b>RiveScript</b>'s
+In this case the trigger <em>"*"</em> will be executed only if the topic is <em>name_ok</em>
+(it's possible to set the intent using a <code>Context node</code> or in <b>RiveScript</b> with
+<code>{topic=new_topic}</code>). Note that <b>RiveScript</b>'s
 <em>topic</em> and <b>RedBot</b>'s <em>intent</em> are the same thing.
 </p>
 <p>

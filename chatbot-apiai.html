@@ -1,0 +1,204 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-apiai', {
+    category: 'RedBot Flow',
+    color: '#FFCC66',
+    defaults: {
+      apiai: {
+        value: '',
+        type: 'chatbot-apiai-token',
+        required: true
+      },
+      rules: {
+        value: []
+      },
+      name: {
+        value: ''
+      },
+      resetContexts: {
+        value: true
+      },
+      outputs: {
+        value: 1
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'Api.ai',
+    icon: 'chatbot-intent.png',
+    label: function() {
+      return this.name || 'Api.ai';
+    },
+    oneditsave: function() {
+      var rules = $('#node-input-rule-container').editableList('items');
+      var node = this;
+      node.rules = [];
+      rules.each(function(i) {
+        var rule = $(this);
+        if (rule.find('input').length !== 0) {
+          var topic = rule.find('input').val();
+          if (topic!= null && topic != '') {
+            node.rules.push({topic: topic});
+          }
+        }
+      });
+      this.outputs = node.rules.length + 1;
+    },
+    oneditprepare: function() {
+      var node = this;
+      $("#node-input-rule-container").css('min-height','250px').css('min-width','450px').editableList({
+        addItem: function (container, i, opt) {
+          var row = $('<div/>').appendTo(container);
+          var finalspan
+          if (i === 0) {
+            $('<span/>', {style: 'width:80%; margin-left: 5px; text-align: left;'})
+              .html('Wire this to a text message node')
+              .appendTo(row);
+            finalspan = $('<span/>', {style: 'float: right;margin-top:0px;'}).appendTo(row);
+            finalspan.append('&nbsp;&#8594; <span class="node-input-rule-index">' + (i + 1) + '</span>');
+          } else {
+            var rule = opt;
+            var selectField = $('<input/>', {style: 'width:80%; margin-left: 5px; text-align: left;'})
+              .attr('placeholder', 'Insert intent')
+              .attr('type', 'text')
+              .appendTo(row);
+            if (rule.topic != null) {
+              selectField.val(rule.topic);
+            }
+            finalspan = $('<span/>', {style: 'float: right;margin-top: 8px;'}).appendTo(row);
+            finalspan.append('&nbsp;&#8594; <span class="node-input-rule-index">' + (i + 1) + '</span>');
+          }
+        },
+        removeItem: function(opt) {
+          var rules = $('#node-input-rule-container').editableList('items');
+          rules.each(function(i) {
+            $(this).find('.node-input-rule-index').html(i + 1);
+          });
+        },
+        sortItems: function() {
+          var rules = $('#node-input-rule-container').editableList('items');
+          rules.each(function(i) {
+            $(this).find('.node-input-rule-index').html(i + 1);
+          });
+        },
+        sortable: true,
+        removable: true
+      });
+
+      $('#node-input-rule-container').editableList('addItem', {topic: null});
+      for (var i=0; i < node.rules.length; i++) {
+        var rule = this.rules[i];
+        $('#node-input-rule-container').editableList('addItem', rule);
+      }
+
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-apiai">
+  <div class="form-row">
+    <label for="node-input-bot"><i class="icon-bookmark"></i> Bot</label>
+    <input type="text" id="node-input-apiai" placeholder="Api.ai access token">
+  </div>
+  <div class="form-row">
+    <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row">
+    <label for="node-input-name" style="width:100%;"><i class="fa fa-tag"></i>
+    Process conversation and forward when the topic matches of:</label>
+  </div>
+  <div class="form-row node-input-rule-container-row">
+     <ol id="node-input-rule-container"></ol>
+  </div>
+  <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+  To match more contexts use a comma separated string (topic_1, topic_2). To match all context use <code>*</code>
+  </div>
+  <div class="form-row" style="margin-top:15px;">
+  <label for="node-input-track"><i class="icon-envelope"></i> Clear</label>
+  <input type="checkbox" value="true" id="node-input-resetContexts">
+  <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+  Clear
+  </div>
+</div>
+
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-apiai">
+  <p>
+  Use <b>Api.ai</b> NLP engine to parse user input. With Api.ai it's easy to parse sentences like <em>"I want to switch on the
+  lights of the living room"</em> and extract key variables.
+  </p>
+  <p>
+  Some <b>Api.ai</b> terminology:
+  </p>
+  <ul>
+  <li>
+  <b>Context</b>: have the same meaning of <b>topic</b> in <b>RedBot</b> (do not confuse with chat context in <b>RedBot</b>), the purpose
+  is to restrict the working area of the parsers based on a context of the sentence. For example the words <em>"the email is
+  an_email@gmail.com"</em> can trigger a particular action it the user is signing up with the chat bot (for example topic or
+  context "signup") and a different one if the user intention is to send an email to someone with the chat bot (for
+  example topic or context "send_message")
+  </li>
+  <li>
+  <b>Intent</b>: is a set of rules for parsing user's sentences and detect a set of entities in order to consider the sentence
+  complete. For example in the sentence <em>"I want to switch on the lights in the living room"</em>, the entities are
+  <em>Furniture</em> (lights), <em>OnOff</em> (on) and <em>Room</em> (living room). By setting these entities as mandatory
+  to consider the sentence complete, the Api.ai intent is able to parse them and ask question if the sentence is
+  missing some information (for example after <em>"I want to switch on the lights"</em> it could ask <em>"In which room?"</em>).
+  When the sentence is complete the Intent changes the context/topic, for example "switch_lights", in this way it's
+  possible to let <b>RedBot</b> takes action for this context.
+  </li>
+  <li>
+  <b>Entity</b>: are sets of objects of the same class. For example in a sentence like "I want to switch on the lights in the
+  living room" the entity Room can contain: living room, kitchen, lavatory, etc
+  </li>
+  </ul>
+  <p>
+  The <code>Api.ai node</code> works like a kind of loop: the first output is always connected to a message node, this
+  allows the <code>Api.ai node</code> to keep asking question to the user until all the intent requirements are met.
+  When the sentence is complete and <em>Api.ai</em> transitioned to a new topic (context) the message is forwarded to the proper
+  output based on the matched topic (just like the <code>Topic node</code>).
+  </p>
+</script>
+
+
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-apiai-token', {
+    category: 'config',
+    defaults: {
+      name: {
+        value: '',
+        required: true
+      }
+    },
+    paletteName: 'Api.ai Token',
+    credentials: {
+      token: {
+        type: 'text'
+      }
+    },
+    label: function () {
+      return this.name;
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-apiai-token">
+  <div class="form-row">
+    <label for="node-config-input-botname"><i class="icon-bookmark"></i> Name</label>
+    <input type="text" id="node-config-input-name">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-token"><i class="icon-tag"></i> Token</label>
+    <input type="text" id="node-config-input-token">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-apiai-token">
+  <p>
+    Insert the <b>Api.ai</b> client token. Find it under the <em>agent</em> configuration.
+  </p>
+</script>
+
+
+

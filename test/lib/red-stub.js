@@ -14,6 +14,7 @@ module.exports = function() {
   var _chatContext = null;
   var _nodecontext = {};
   var _error = null;
+  var _nodes = {};
 
   var RED = {
 
@@ -90,6 +91,14 @@ module.exports = function() {
         factory(_config);
       },
 
+      getNode: function(nodeId) {
+        return _nodes[nodeId];
+      },
+
+      setNode: function(nodeId, node) {
+        _nodes[nodeId] = node;
+      },
+
       createNode: function(node, config) {
 
         node.on = function(eventName, cb) {
@@ -132,6 +141,9 @@ module.exports = function() {
             chat: {
               get: function(key) {
                 return _chatContext.get(key);
+              },
+              set: function(key, value) {
+                _chatContext.set(key, value);
               }
             },
             get: function(key) {
