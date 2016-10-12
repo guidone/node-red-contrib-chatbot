@@ -18,7 +18,7 @@ module.exports = function(RED) {
     this.parseVariable = config.parseVariable;
 
     this.on('input', function(msg) {
-
+      msg = RED.util.cloneMessage(msg);
       var parseType = this.parseType;
       var parseVariable = this.parseVariable;
       var context = node.context();
@@ -66,10 +66,8 @@ module.exports = function(RED) {
         if (chatContext != null) {
           chatContext.set(parseVariable, parsedValue);
         }
-        node.send([{
-          payload: parsedValue,
-          originalMessage: msg.originalMessage
-        }, null]);
+        msg.payload = parsedValue;
+        node.send([msg, null]);
       } else {
         node.send([null, msg]);
       }
