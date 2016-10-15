@@ -26,4 +26,15 @@ describe('Chat command node', function() {
     assert.equal(RED.node.message(), null);
   });
 
+  it('should not answer for a message with /test even in a telegram group', function () {
+    var msg = RED.createMessage({content: '/test@guidone'});
+    RED.node.config({
+      command: 'test'
+    });
+    CommandBlock(RED);
+    RED.node.get().emit('input', msg);
+    assert.equal(RED.node.message().payload.content, '/test@guidone');
+    assert.equal(RED.node.message().originalMessage.chat.id, 42);
+  });
+
 });

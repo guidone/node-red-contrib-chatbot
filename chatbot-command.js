@@ -20,7 +20,7 @@ module.exports = function(RED) {
         match = '/' + match;
       }
       // check
-      if (msg.payload != null && msg.payload.content == match) {
+      if (msg.payload != null && msg.payload.content.replace(/(@.*?)$/, '') == match) {
         node.send(msg);
       }
     });
