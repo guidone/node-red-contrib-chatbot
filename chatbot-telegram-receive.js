@@ -4,7 +4,7 @@ var moment = require('moment');
 var ChatContext = require('./lib/chat-context');
 var ChatLog = require('./lib/chat-log.js');
 var helpers = require('./lib/telegram/telegram');
-var DEBUG = false;
+var DEBUG = true;
 
 module.exports = function(RED) {
 
@@ -139,6 +139,28 @@ module.exports = function(RED) {
       });
     };
 
+    this.handleCallback = function(botMsg) {
+      var chatId = botMsg.message.chat.id;
+      var alert = false;
+      var answer = null;
+      if (self.telegramBot.lastInlineButtons[chatId] != null) {
+        // find the button with the right value, takes the answer and alert if any
+        var button = _(self.telegramBot.lastInlineButtons[chatId]).findWhere({value: botMsg.data});
+        if (button != null) {
+          answer = button.answer;
+          alert = button.alert;
+        }
+        // do not remove from hash, the user could click again
+      }
+      // send answer back to client
+      self.telegramBot.answerCallbackQuery(botMsg.id, answer, alert)
+        .then(function() {
+          // send through the message as usual
+          botMsg.message.text = botMsg.data;
+          self.handleMessage(botMsg.message);
+        });
+    };
+
     this.handleMessage = function(botMsg) {
 
       var telegramBot = self.telegramBot;
@@ -219,6 +241,7 @@ module.exports = function(RED) {
           this.telegramBot = telegramBot;
           this.telegramBot.setMaxListeners(0);
           this.telegramBot.on('message', this.handleMessage);
+          this.telegramBot.on('callback_query', this.handleCallback);
         }
       }
     }
@@ -227,6 +250,7 @@ module.exports = function(RED) {
       // stop polling only once
       if (this.telegramBot != null && this.telegramBot._polling) {
         self.telegramBot.off('message', self.handleMessage);
+        self.telegramBot.off('callback_query', self.handleCallback);
         self.telegramBot.stopPolling()
           .then(function() {
             self.telegramBot = null;
@@ -342,6 +366,7 @@ module.exports = function(RED) {
       }
 
       var context = node.context();
+      var buttons = null;
       var track = node.track;
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
       var chatContext = context.global.get('chat:' + chatId);
@@ -365,8 +390,9 @@ module.exports = function(RED) {
                 .catch(node.error);
               break;
             case 'photo':
-              node.telegramBot.sendPhoto(chatId, msg.payload.content, msg.payload.options)
-                .catch(node.error);
+              node.telegramBot.sendPhoto(chatId, msg.payload.content, {
+                caption: msg.payload.caption
+              }).catch(node.error);
               break;
             case 'document':
               node.telegramBot.sendDocument(chatId, msg.payload.content, msg.payload.options)
@@ -423,28 +449,43 @@ module.exports = function(RED) {
                 node.error('Request type not supported');
               }
               break;
-            case 'buttons':
-              var buttons = {
-                /*
-                 this is for inline
-                 reply_markup: JSON.stringify({
-                 inline_keyboard: [
-                 [{ text: 'Some button text 1', url: 'http://javascript-jedi.com' }],
-                 [{ text: 'Some button text 2', callback_data: '2' }],
-                 [{ text: 'Some button text 3', switch_inline_query: '/where' }]
-                 ]
-                 })*/
+            case 'inline-buttons':
+              buttons = {
                 reply_markup: JSON.stringify({
-                  keyboard: _(msg.payload.buttons).map(function(answer) {
-                    return [answer];
+                  inline_keyboard: _(msg.payload.buttons).map(function(button) {
+                    return [{text: button.label, callback_data: button.value}];
+                  })
+                })
+              };
+              // store the last buttons
+              if (node.telegramBot.lastInlineButtons == null) {
+                node.telegramBot.lastInlineButtons = {};
+              }
+              node.telegramBot.lastInlineButtons[chatId] = msg.payload.buttons;
+              // finally send
+              node.telegramBot.sendMessage(chatId, msg.payload.content, buttons)
+                .catch(node.error);
+              break;
+            case 'buttons':
+              if (_.isEmpty(msg.payload.content)) {
+                node.error('Buttons node needs a non-empty message');
+                return;
+              }
+              buttons = {
+                reply_markup: JSON.stringify({
+                  keyboard: _(msg.payload.buttons).map(function(button) {
+                    return [button.value];
                   }),
                   resize_keyboard: true,
                   one_time_keyboard: true
                 })
               };
-
-              node.telegramBot.sendMessage(chatId, msg.payload.content, buttons)
-                .catch(node.error);
+              // finally send
+              node.telegramBot.sendMessage(
+                chatId,
+                msg.payload.content,
+                buttons
+              ).catch(node.error);
               break;
 
             default:
@@ -455,6 +496,6 @@ module.exports = function(RED) {
 
     });
   }
-  RED.nodes.registerType('chatbot-telegram-send', TelegramOutNode);
 
+  RED.nodes.registerType('chatbot-telegram-send', TelegramOutNode);
 };

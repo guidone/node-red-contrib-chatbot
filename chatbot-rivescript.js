@@ -44,7 +44,7 @@ module.exports = function(RED) {
           return _.isString(value) || _.isNumber(value) || _.isArray(value) ? value : null;
         }));
         if (!_.isEmpty(chatContext.get('intent'))) {
-          bot.setUservar(chatId, 'topic', chatContext.get('intent'));
+          bot.setUservar(chatId, 'topic', chatContext.get('topic'));
         }
       }
 
@@ -66,7 +66,7 @@ module.exports = function(RED) {
           chatContext.set(_(replyVars).omit('topic', '__initialmatch__', '__history__', '__lastmatch__'));
           // set back the intent (topic in RiveScript)
           if (!_.isEmpty(replyVars.topic) && replyVars.topic != 'random') {
-            chatContext.set('intent', replyVars.topic);
+            chatContext.set('topic', replyVars.topic);
           }
         }
         // payload

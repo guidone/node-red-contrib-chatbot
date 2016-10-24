@@ -10,6 +10,7 @@ module.exports = function(RED) {
     var node = this;
     this.filename = config.filename;
     this.name = config.name;
+    this.caption = config.caption;
     this.transports = ['telegram', 'slack', 'facebook', 'smooch'];
 
     this.on('input', function(msg) {
@@ -19,6 +20,7 @@ module.exports = function(RED) {
       var originalMessage = msg.originalMessage;
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
       var messageId = msg.payload.messageId || (originalMessage && originalMessage.message_id);
+      var content = null;
 
       // check transport compatibility
       if (!_.contains(node.transports, msg.originalMessage.transport)) {
@@ -26,10 +28,12 @@ module.exports = function(RED) {
         return;
       }
 
-      // todo make asynch here
-      var content = msg.payload;
       if (!_.isEmpty(path)) {
         content = fs.readFileSync(path);
+      } else if (msg.payload instanceof Buffer) {
+        content = msg.payload;
+      } else if (_.isObject(msg.payload) && msg.payload.image instanceof Buffer) {
+        content = msg.payload.image;
       }
 
       // get filename
@@ -40,11 +44,19 @@ module.exports = function(RED) {
         filename = sanitize(name);
       }
 
+      var caption = null;
+      if (!_.isEmpty(node.caption)) {
+        caption = node.caption;
+      } else if (_.isObject(msg.payload) && _.isString(msg.payload.caption) && !_.isEmpty(msg.payload.caption)) {
+        caption = msg.payload.caption;
+      }
+
       // send out the message
       msg.payload = {
         type: 'photo',
         content: content,
         filename: filename,
+        caption: caption,
         chatId: chatId,
         messageId: messageId,
         inbound: false

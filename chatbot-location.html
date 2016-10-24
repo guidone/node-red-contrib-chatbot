@@ -8,13 +8,15 @@
       },
       latitude: {
         value: '',
-        required: true,
-        validate: RED.validators.number()
+        validate: function(value) {
+          return value == null || $.trim(value) == '' || RED.validators.number()(value);
+        }
       },
       longitude: {
         value: '',
-        required: true,
-        validate: RED.validators.number()
+        validate: function(value) {
+          return value == null || $.trim(value) == '' || RED.validators.number()(value);
+        }
       },
       place: {
         value: '',

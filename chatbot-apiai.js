@@ -9,7 +9,6 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
     var node = this;
     node.rules = config.rules;
-    node.resetContexts = config.resetContexts;
     node.apiAiNodeId = config.apiai;
 
     this.processMessage = function(msg) {
@@ -19,7 +18,6 @@ module.exports = function(RED) {
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
       var chatContext = context.global.get('chat:' + chatId);
       var rules = node.rules;
-      var resetContexts = node.resetContexts;
       var outputsNumber = (_.isArray(rules) ? rules.length : 0) + 1;
       var output = null;
       var apiAiNode = RED.nodes.getNode(node.apiAiNodeId);
@@ -44,8 +42,7 @@ module.exports = function(RED) {
       // prepare request
       apiAi.textRequest(message, {
         sessionId: chatId,
-        contexts: outboundContexts,
-        resetContexts: resetContexts
+        contexts: outboundContexts
         // todo put timezone
         // todo put language
       }).on('response', function(response) {
@@ -105,8 +102,7 @@ module.exports = function(RED) {
   }
 
   RED.nodes.registerType('chatbot-apiai', ChatBotApiAi);
-
-
+  
   function ApiAiToken(n) {
     RED.nodes.createNode(this, n);
     var self = this;

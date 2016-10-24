@@ -1,0 +1,160 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-inline-buttons', {
+    category: 'RedBot',
+    color: '#FFCC66',
+    defaults: {
+      name: {
+        value: ''
+      },
+      answers: {
+        value: [],
+        validate: function(answers) {
+          var valid = true;
+          var idx;
+          for(idx = 0; idx < answers.length; idx++) {
+            if ($.trim(answers[idx].value) == '' && $.trim(answers[idx].label) == '') {
+              valid = false;
+            }
+          }
+          return valid;
+        }
+      },
+      message: {
+        value: ''
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'Inline Buttons',
+    icon: 'chatbot-ask.png',
+    label: function() {
+      return this.name || 'Inline Buttons';
+    },
+    oneditsave: function() {
+      var answers = $("#node-input-answers-container").editableList('items');
+      var node = this;
+      node.answers = [];
+
+      var idx;
+      for(idx = 0; idx < answers.length; idx++) {
+        var answer = {
+          value: answers[idx].find('input[name=button-value]').val(),
+          label: answers[idx].find('input[name=button-label]').val(),
+          answer: answers[idx].find('input[name=button-answer]').val(),
+          alert: answers[idx].find('input[name=button-alert]').is(':checked')
+        };
+        if ($.trim(answer.answer) == '') {
+          answer.answer = null;
+        }
+        if ($.trim(answer.value) != '' && $.trim(answer.label) == '') {
+          answer.label = answer.value;
+        }
+        if ($.trim(answer.label) != '' && $.trim(answer.value) == '') {
+          answer.value = answer.laebl;
+        }
+        node.answers.push(answer);
+      }
+    },
+
+    oneditprepare: function() {
+
+      function resizeRule(rule) {}
+      $('#node-input-answers-container').css('min-height','300px').css('min-width','450px').editableList({
+        addItem: function(container, i, item) {
+          //answer = typeof answer == 'object' ? a : answer;
+          var label = item.label != null ? item.label : '';
+          var value = item.value != null ? item.value : '';
+          var answer = item.answer != null ? item.answer : '';
+
+          var row1 = $('<div/>').appendTo(container);
+          var row2 = $('<div/>').css('marginTop','5px').appendTo(container);
+          var row3 = $('<div/>').css('marginTop','5px').appendTo(container);
+          $('<input class="node-input-rule-type" type="text" name="button-label" value="' + label + '" placeholder="Button label"/>')
+            .css({
+              width: '45%'
+            })
+            .appendTo(row1);
+          $('<input class="node-input-rule-type" type="text" name="button-value" value="' + value + '" placeholder="Button value"/>')
+            .css({
+              width: '45%',
+              marginLeft: '2%'
+            })
+            .appendTo(row1);
+          $('<input class="node-input-rule-type" type="text" name="button-answer" value="' + answer + '" placeholder="Button feedback"/>')
+            .css({
+              width: '92%'
+            })
+            .appendTo(row2);
+          $('<input type="checkbox" name="button-alert" value="on"/>')
+            .css({
+              width: 'auto',
+              marginRight: '10px',
+              marginBottom: '5px'
+            })
+            .prop('checked', item.alert)
+            .appendTo(row3);
+          $('<span>Alert</span>').appendTo(row3);
+          resizeRule(container);
+        },
+        resizeItem: resizeRule,
+        removable: true,
+        sortable: true
+      });
+
+      var answers = this.answers;
+      var idx;
+      for (idx = 0; idx < answers.length; idx++) {
+        var answer = answers[idx];
+        $("#node-input-answers-container").editableList('addItem', answer);
+      }
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-inline-buttons">
+<div class="form-row">
+  <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+  <input type="text" id="node-input-name" placeholder="Name">
+</div>
+<div class="form-row">
+  <label for="node-input-message"><i class="icon-envelope"></i> Message</label>
+  <textarea id="node-input-message" placeholder="Message" style="width:93%;height:100px;"></textarea>
+  <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;">
+    Supports handlebars-like variables for chat context like {{firstName}}, {{lastName}}, etc. and emoticons (:smile:, etc.)
+  </div>
+</div>
+<div class="form-row" style="margin-bottom:0;">
+  <label><i class="fa fa-list"></i> <span>Buttons</span></label>
+</div>
+<div class="form-row node-input-rule-container-row">
+  <ol id="node-input-answers-container"></ol>
+</div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-inline-buttons">
+<p>Present quick alternatives to the users through inline buttons and show feedback <em>[Telegram]</em>.</p>
+<p>The button can be passed through the payload by the upstream node:</p>
+<br/>
+<pre>
+msg.payload = {
+  message: 'The message with the buttons',
+  buttons: [
+    {
+      value: 'text 1',
+      label: 'label of the button 1',
+      answer: 'this is the answer',
+      alert: true
+    },
+    {
+      value: 'text 2',
+      label: 'another label',
+      answer: 'this is the answer 2',
+      alert: false
+    }
+  ]
+}
+return msg;
+</pre>
+</script>
+
+

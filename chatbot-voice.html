@@ -70,7 +70,13 @@
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-voice">
-  <p>Create MP3 from plain text <strong>[Telegram, Facebook, Slack, Smooch]</strong></p>
+<p>Create MP3 from plain text <em>[Telegram, Facebook, Slack, Smooch]</em></p>.
+<p>The text message can be passed through the payload by the upstream node:</p>
+<br/>
+<pre>
+msg.payload = 'I am a message to be converted in audio file';
+return msg;
+</pre>
 </script>
 
 

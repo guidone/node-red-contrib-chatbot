@@ -29,7 +29,9 @@ module.exports = function(RED) {
 
       if (!_.isEmpty(node.message)) {
         message = node.message;
-      } else if ((_.isString(msg.payload) && !_.isEmpty(msg.payload)) || _.isNumber(msg.payload)) {
+      } else if (_.isString(msg.payload) && !_.isEmpty(msg.payload)) {
+        message = msg.payload;
+      } else if (_.isNumber()) {
         message = String(msg.payload);
       } else {
         node.error('Empty message');

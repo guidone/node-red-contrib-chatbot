@@ -1,5 +1,5 @@
 var _ = require('underscore');
-var moment = require('moment');
+var utils = require('./lib/helpers/utils');
 
 module.exports = function(RED) {
 
@@ -13,13 +13,16 @@ module.exports = function(RED) {
 
     this.on('input', function(msg) {
 
-      var originalMessage = msg.originalMessage;
-      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
-      var messageId = msg.payload.messageId || (originalMessage && originalMessage.message_id);
-
+      var chatId = utils.getChatId(msg);
+      var messageId = utils.getMessageId(msg);
       var latitude = node.latitude;
       var longitude = node.longitude;
       var place = node.place;
+
+      if (_.isObject(msg.payload) && _.isNumber(msg.payload.latitude) && _.isNumber(msg.payload.longitude)) {
+        latitude = msg.payload.latitude;
+        longitude = msg.payload.longitude;
+      }
 
       // send out the message
       msg.payload = {

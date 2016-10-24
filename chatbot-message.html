@@ -60,7 +60,13 @@
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-message">
-  <p>Plain text message with templating capabilities [Telegram, Facebook, Slack]</p>
+<p>Plain text message with templating capabilities <em>[Telegram, Facebook, Smooch, Slack]</em></p>
+<p>The text message can be passed through the payload by the upstream node:</p>
+<br/>
+<pre>
+msg.payload = 'I am a message';
+return msg;
+</pre>
 </script>
 
 
