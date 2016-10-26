@@ -91,6 +91,8 @@ Now you have a useful bot that answers *"Hi there!"* to any received message. We
 | RiveScript   |     ✓    |     ✓    |    ✓   |   ✓   |
 | Transport    |     ✓    |     ✓    |    ✓   |   ✓   |
 | Context      |     ✓    |     ✓    |    ✓   |   ✓   |
+| Api.ai          |     ✓    |     ✓    |    ✓   |   ✓   |
+| Topic           |     ✓    |     ✓    |    ✓   |   ✓   |
 
 ## Examples
 Here are some examples connecting the ChatBot blocks
@@ -116,11 +118,13 @@ The **Show Email** is just a simple message block that uses templating to show v
 In the node `Telegram Receiver` it's possible to specify a comma seprated list of authorized users (either the userId or the username), for every inbound message the `authorized` boolean variable will be updated in the chat context.
 
 The node `Authorized?` sends the message through the first output is the user is authorized, otherwise the second output.
+
 ### Send Image
 ![Authorized Users](./docs/images/example-image.png)
 This example respons to a command `/cam` in the chat sending an image.
 The first node `/cam` triggers an http request (for example to the URL of a web cam), then resulting payload is sent to the `Image` node which prepares the payload for the `Telegram Sender` node.
 The **/cam** command also triggers a waiting message *"Uploading a photo..."* while the image is downloaded.
+
 ### Log Chats
 ![Authorized Users](./docs/images/example-log.png)
 The Log node takes a message payload (inbound or outbound) and trasforms it in a string suitable to be appended to a log file.
@@ -131,7 +135,8 @@ The Log node takes a message payload (inbound or outbound) and trasforms it in a
 ```
 
 ### Parse Sentences
-The `Listen Node` is able to detect and parse a set of simple sentence. For example suppose we would like to offer the the chatbot user the option to request our curriculum vitae and deliver that by email
+The `Listen Node` is able to detect and parse a set of simple sentence with a very simple keyword detection algorithm.
+For example suppose we would like to offer the the chatbot user the option to request our curriculum vitae and deliver that by email
 
 ![Example Email](./docs/images/example-email.png)
 
@@ -192,7 +197,7 @@ The answer of the user is then captured by the `Parse node`, which parse the inc
 
 The final message just the coordinates `"Your position is {{location.latitude}}, {{location.longitude}}"`
 
-### Using RiveScript
+### RiveScript parser
 [RiveScript](https://www.rivescript.com/) is a simple scripting language for chatbots with an easy to learn syntax.
 
 ![RiveScript](./docs/images/example-rivescript.png)
@@ -215,11 +220,40 @@ Read the [RiveScript tutorial](https://www.rivescript.com/docs/tutorial) for all
 + my name is guido
 - <set name=<star>>ok, I'll remember your name as <get name>
 ```
+`RiveScript node` its also able to deal with topics. Topics are a way to restrict parsers context based on the user intention, for example the same the user question *"what to do next?"* could have different answers based on the user topic, for example
+```
+! version = 2.0
 
-## Variable Contexts
++ what to do next
+- Please register, what is your email?
+
++ *
+% please register what is your email
++ <set email=<star>><topic=registered>Thank your <get firstName>
+
+> topic registered
+  + what to do next
+  - Time to buy a ticket...
+< topic
+```
+
+### Api.ai
+Api.ai has a powerful NLP and it's possible to exploit it through the **API.ai** node.
+With **Api.ai** it's easy to parse sentences like *"I want to switch on the lights of the living room"* and extract key variables.
+
+- **Context:** have the same meaning of **topic** in **RedBot** (do not confuse with chat context in **RedBot** ), the purpose is to restrict the working area of the parsers based on a context of the sentence. For example the words *"the email is an_email@gmail.com"* can trigger a particular action it the user is signing up with the chat bot (for example topic or context *"signup"* ) and a different one if the user intention is to send an email to someone with the chat bot (for example topic or context *"send_message"*)
+* **Intent:** is a set of rules for parsing user's sentences and detect a set of entities in order to consider the sentence complete. For example in the sentence *"I want to switch on the lights in the living room"*, the entities are *Furniture* (lights), *OnOff* (on) and *Room* (living room).
+By setting these entities as mandatory to consider the sentence complete, the **Api.ai** intent is able to parse them and ask further questions if the sentence is missing some informations (for example after *"I want to switch on the lights"* it could ask *"In which room?"*).
+When the sentence is complete the Intent changes the context/topic, for example to *"switch_lights"*, in this way it's possible to let  **RedBot** takes action for this context.
+ * **Entity:** are sets of objects of the same class. For example in a sentence like *"I want to switch on the lights in the living room"* the entity **Room** can contain: living room, kitchen, lavatory, etc
+
+The `Api.ai node` works like a kind of loop: the first output is always connected to a message node, this allows the `Api.ai node`  to keep asking question to the user until all the intent requirements are met.
+When the sentence is complete and **Api.ai** has moved  to a new topic (context in **Api.ai** ) the message is forwarded to the proper output based on the matched topic (just like the `Topic node` ).
+
+## Chat Context
 **Node Red** has two variable context *global* and *flow*, the first is available everywhere in the app, the second just in the executed flow.
 
- **Node-red-contrib-chatbot** adds the *chat* context where is possible to store information related to the specific user. The Receiver stores here some information like *chatId*, *username*, *authorized*, etc.
+ **Node-red-contrib-chatbot** adds the *chat* context where is possible to store information related to the specific user. The Receiver store here some default information like *chatId*, *username*, *authorized*, *firstName*, *lastName*, etc.
 
 To get the chat context in a function node:
 
@@ -230,7 +264,7 @@ console.log(chat.get('username')); // guidone72
 chat.set('my_stuff', 'remember that');
 ```
 
-## Template Variables
+### Template Variables
 In the template system some defaults variables are available using the *{{variable}}* syntax
 
 * **chatId** - The chat id (same for a specific user)
@@ -242,8 +276,64 @@ In the template system some defaults variables are available using the *{{variab
 * **transport** - the current transport, could be *telegram*, *facebook*, *slack*
 * **message** - the current message from the user in string format
 
+## Advanced
+### Prepare messages in upstream nodes
+`Text node` supports basic *Handlebars* -like templates, sometimes this is not enough and a proper message needs to be prepared in an upstream node.
+Every message node (Text, Image, etc) accepts  strings, images, etc. as input, preparing a message in an upstream node it's very simple, for example:
+
+![Prepare text in upstream node](./docs/images/example-programmatically-text.png)
+
+The `Function node` looks like
+```
+console.log(msg);
+var chat = msg.chat();
+msg.payload = 'This is a special message ' + chat.get('firstName');
+```
+This only works if the message parameter is left blank.
+
+It's important to understand how RedBot keeps track of the current conversation, in the above node the console log will looks like
+
+```
+{
+  originalMessage: {
+    ...
+  },
+  payload: {
+    type: 'text',
+    ...
+  }
+}
+```
+
+This is how **Node-RED** works: for every incoming event a message (the *msg* object) is generated and it's sent across the flow based on the wiring.
+The **payload** key contains the real content of the message (could be a incoming text message or a buffer for an image, etc) while the **originalMessage** contains the tracking of the conversation.
+
+Inside a **Function node** you're free to modify the payload of a message and everything will still work as long as the originalMessage is kept intact and passed through the next node.
+
+For every message node it's possible to prepare the message in the upstream node, for an image for example
+
+![Prepare text in upstream node](./docs/images/example-programmatically-image.png)
+
+Here the `File node` puts the loaded file into the payload as a Buffer (keeping the rest of the *msg* object intact), the Image node reads it and prepare the proper payload for the sender node.
+
+Generally every message node (like Text, Image, etc) should be wired to a sender.
+
+**So the key concept is that every node in Node-RED should preserve the msg object, change its payload as needed and passed through the next node.**
+
+ Keep in mind that if a Function node make some changes to a *msg* object **and has a sibling** (another node is connected to the same upstream node), the message node must be cloned
+
+```
+var cloned = RED.util.cloneMessage(msg);
+cloned.payload = 'My payload';
+return cloned;
+```
+
+The reason is that **Node-RED** is asynchronous and single threaded, the *msg* object sent to the sibling nodes is the very same instance.
+It's not possible to tell which node will be executed first, so if the first executed node changes the *msg* object , the second one will receive a different payload causing unwanted side effects very difficult to track down.
+
 ## Changelog
 
+* **0.6.5** - Added topic node, fixed command node in multi chat, added Api.ai node, minor fixes
 * **0.6.4** - Added chat context node, refactored transport node
 * **0.6.3** - Cleanup
 * **0.6.2** - Added support for Smooch.io

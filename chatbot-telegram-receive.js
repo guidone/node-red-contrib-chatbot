@@ -176,7 +176,7 @@ module.exports = function(RED) {
       var chatId = botMsg.chat.id;
       var userId = botMsg.from.id;
       var isAuthorized = self.isAuthorized(username, userId);
-
+console.log('FFFFF:',self.context);
       var context = self.context();
       // get or create chat id
       var chatContext = context.global.get('chat:' + chatId);
