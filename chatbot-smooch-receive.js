@@ -59,10 +59,14 @@ module.exports = function(RED) {
       var isAuthorized = true;
 
       // get or create chat id
-      var chatContext = context.global.get('chat:' + chatId);
-      if (chatContext == null) {
-        chatContext = ChatContext(chatId);
-        context.global.set('chat:' + chatId, chatContext);
+      if (context.global != null) {
+        var chatContext = context.global.get('chat:' + chatId);
+        if (chatContext == null) {
+          chatContext = ChatContext(chatId);
+          context.global.set('chat:' + chatId, chatContext);
+        }
+      } else {
+        self.error('Unable to find context().global in Node-RED ');
       }
 
       // decode the message, eventually download stuff

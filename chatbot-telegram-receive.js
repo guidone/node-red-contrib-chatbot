@@ -4,7 +4,7 @@ var moment = require('moment');
 var ChatContext = require('./lib/chat-context');
 var ChatLog = require('./lib/chat-log.js');
 var helpers = require('./lib/telegram/telegram');
-var DEBUG = true;
+var DEBUG = false;
 
 module.exports = function(RED) {
 
@@ -176,13 +176,17 @@ module.exports = function(RED) {
       var chatId = botMsg.chat.id;
       var userId = botMsg.from.id;
       var isAuthorized = self.isAuthorized(username, userId);
-console.log('FFFFF:',self.context);
+
       var context = self.context();
-      // get or create chat id
-      var chatContext = context.global.get('chat:' + chatId);
-      if (chatContext == null) {
-        chatContext = ChatContext(chatId);
-        context.global.set('chat:' + chatId, chatContext);
+      // get or create chat id,
+      if (context.global != null) {
+        var chatContext = context.global.get('chat:' + chatId);
+        if (chatContext == null) {
+          chatContext = ChatContext(chatId);
+          context.global.set('chat:' + chatId, chatContext);
+        }
+      } else {
+        self.error('Unable to find context().global in Node-RED ');
       }
 
       // store some information

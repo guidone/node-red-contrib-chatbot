@@ -115,7 +115,6 @@ module.exports = function(RED) {
           // mark the original message with the platform
           botMsg.transport = 'slack';
 
-          console.log('---- inbound slack', botMsg); // todo remove
 
           if (botMsg.type !== 'message') {
             return;
@@ -133,25 +132,22 @@ module.exports = function(RED) {
 
 
           //var username = !_.isEmpty(botMsg.from.username) ? botMsg.from.username : null;
-          var username = 'guidone'; // todo fix
+          var username = ''; // todo fix
           var channelId = botMsg.channel;
           var userId = botMsg.user;
           var context = node.context();
           //var isAuthorized = node.config.isAuthorized(username, userId);
-          var isAuthorized = true;
-
-          // create list of users if not present
-          /*var chatBotUsers = context.flow.get('chatBotUsers');
-          if (chatBotUsers == null) {
-            chatBotUsers = {};
-            context.flow.set('chatBotUsers', chatBotUsers);
-          }*/
+          var isAuthorized = true; // fix is authorized
 
           // get or create chat id
-          var chatContext = context.global.get('chat:' + channelId);
-          if (chatContext == null) {
-            chatContext = ChatContext(channelId);
-            context.global.set('chat:' + channelId, chatContext);
+          if (context.global != null) {
+            var chatContext = context.global.get('chat:' + channelId);
+            if (chatContext == null) {
+              chatContext = ChatContext(channelId);
+              context.global.set('chat:' + channelId, chatContext);
+            }
+          } else {
+            self.error('Unable to find context().global in Node-RED ');
           }
 
           // todo store the user

@@ -12,7 +12,7 @@ var http = require('http');
 var Bot = require('./lib/facebook/messenger-bot');
 var clc = require('cli-color');
 
-var DEBUG = true;
+var DEBUG = false;
 var green = clc.greenBright;
 var white = clc.white;
 var red = clc.red;
@@ -73,10 +73,14 @@ module.exports = function(RED) {
       var isAuthorized = true;
 
       // get or create chat id
-      var chatContext = context.global.get('chat:' + chatId);
-      if (chatContext == null) {
-        chatContext = ChatContext(chatId);
-        context.global.set('chat:' + chatId, chatContext);
+      if (context.global != null) {
+        var chatContext = context.global.get('chat:' + chatId);
+        if (chatContext == null) {
+          chatContext = ChatContext(chatId);
+          context.global.set('chat:' + chatId, chatContext);
+        }
+      } else {
+        self.error('Unable to find context().global in Node-RED');
       }
 
       var payload = null;
