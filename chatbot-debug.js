@@ -15,7 +15,7 @@ module.exports = function(RED) {
 
     this.on('input', function(msg) {
 
-      var context = node.context();
+      var context = node.context(); context.global = context.global || context;
       var transport = msg.originalMessage != null && msg.originalMessage.transport != null ? msg.originalMessage.transport : null;
 
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);

@@ -10,7 +10,7 @@ module.exports = function(RED) {
 
     this.on('input', function(msg) {
       var command = node.command;
-      var context = node.context();
+      var context = node.context(); context.global = context.global || context;
       var chatId = utils.getChatId(msg);
       var chatContext = context.global.get('chat:' + chatId);
 

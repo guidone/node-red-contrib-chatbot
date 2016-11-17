@@ -135,7 +135,7 @@ module.exports = function(RED) {
           var username = ''; // todo fix
           var channelId = botMsg.channel;
           var userId = botMsg.user;
-          var context = node.context();
+          var context = node.context(); context.global = context.global || context;
           //var isAuthorized = node.config.isAuthorized(username, userId);
           var isAuthorized = true; // fix is authorized
 

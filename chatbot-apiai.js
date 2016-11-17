@@ -13,7 +13,7 @@ module.exports = function(RED) {
 
     this.processMessage = function(msg) {
       msg = RED.util.cloneMessage(msg);
-      var context = node.context();
+      var context = node.context(); context.global = context.global || context;
       var originalMessage = msg.originalMessage;
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
       var chatContext = context.global.get('chat:' + chatId);
