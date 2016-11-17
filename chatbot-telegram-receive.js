@@ -177,7 +177,7 @@ module.exports = function(RED) {
       var userId = botMsg.from.id;
       var isAuthorized = self.isAuthorized(username, userId);
 
-      var context = self.context();
+      var context = self.context(); context.global = context.global || context;
       // get or create chat id,
       if (context.global != null) {
         var chatContext = context.global.get('chat:' + chatId);
@@ -369,7 +369,7 @@ module.exports = function(RED) {
         return;
       }
 
-      var context = node.context();
+      var context = node.context(); context.global = context.global || context;
       var buttons = null;
       var track = node.track;
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);

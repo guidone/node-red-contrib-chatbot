@@ -67,7 +67,7 @@ module.exports = function(RED) {
       var userId = botMsg.sender.id;
       var chatId = botMsg.sender.id;
       var messageId = botMsg.message.mid;
-      var context = self.context();
+      var context = self.context(); context.global = context.global || context;
       // todo fix this
       //var isAuthorized = node.config.isAuthorized(username, userId);
       var isAuthorized = true;
@@ -497,7 +497,7 @@ module.exports = function(RED) {
       }
 
       var channelId = msg.payload.chatId;
-      var context = node.context();
+      var context = node.context(); context.global = context.global || context;
       var track = node.track;
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
       var chatContext = context.global.get('chat:' + chatId);
