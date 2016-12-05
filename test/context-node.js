@@ -35,7 +35,7 @@ describe('Chat context node', function() {
     RED.node.get().emit('input', msg);
     assert.equal(RED.node.message().payload.content, 'I am a useless message');
     assert.equal(RED.node.message().originalMessage.chat.id, 42);
-    assert.equal(RED.node.context().chat.get('chatId'), undefined);
+    assert.equal(msg.chat().get('chatId'), undefined);
   });
 
   it('should set a context value string', function () {
@@ -54,7 +54,7 @@ describe('Chat context node', function() {
     RED.node.get().emit('input', msg);
     assert.equal(RED.node.message().payload.content, 'I am a useless message');
     assert.equal(RED.node.message().originalMessage.chat.id, 42);
-    assert.equal(RED.node.context().chat.get('myValue'), 'I am a string value');
+    assert.equal(msg.chat().get('myValue'), 'I am a string value');
   });
 
   it('should set a context number string', function () {
@@ -73,7 +73,7 @@ describe('Chat context node', function() {
     RED.node.get().emit('input', msg);
     assert.equal(RED.node.message().payload.content, 'I am a useless message');
     assert.equal(RED.node.message().originalMessage.chat.id, 42);
-    assert.equal(RED.node.context().chat.get('myValue'), 4242);
+    assert.equal(msg.chat().get('myValue'), 4242);
   });
 
   it('should set a context boolean string', function () {
@@ -92,7 +92,7 @@ describe('Chat context node', function() {
     RED.node.get().emit('input', msg);
     assert.equal(RED.node.message().payload.content, 'I am a useless message');
     assert.equal(RED.node.message().originalMessage.chat.id, 42);
-    assert.equal(RED.node.context().chat.get('myValue'), true);
+    assert.equal(msg.chat().get('myValue'), true);
   });
 
   it('should set a context json string', function () {
@@ -111,8 +111,8 @@ describe('Chat context node', function() {
     RED.node.get().emit('input', msg);
     assert.equal(RED.node.message().payload.content, 'I am a useless message');
     assert.equal(RED.node.message().originalMessage.chat.id, 42);
-    assert.equal(RED.node.context().chat.get('myValue').key_1, 42);
-    assert.equal(RED.node.context().chat.get('myValue').key_2, 'yes');
+    assert.equal(msg.chat().get('myValue').key_1, 42);
+    assert.equal(msg.chat().get('myValue').key_2, 'yes');
   });
 
 });

@@ -10,10 +10,7 @@ module.exports = function(RED) {
 
     this.on('input', function(msg) {
 
-      var context = node.context();
-      var originalMessage = msg.originalMessage;
-      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
-      var chatContext = context.global.get('chat:' + chatId);
+      var chatContext = msg.chat();
 
       if (chatContext != null) {
         var chatLog = new ChatLog(chatContext);

@@ -2,6 +2,7 @@ var _ = require('underscore');
 var moment = require('moment');
 var ChatContext = require('./lib/chat-context');
 var ChatLog = require('./lib/chat-log');
+var ChatContextStore = require('./lib/chat-context-store');
 var helpers = require('./lib/facebook/facebook');
 var utils = require('./lib/helpers/utils');
 var fs = require('fs');
@@ -71,17 +72,7 @@ module.exports = function(RED) {
       // todo fix this
       //var isAuthorized = node.config.isAuthorized(username, userId);
       var isAuthorized = true;
-
-      // get or create chat id
-      if (context.global != null) {
-        var chatContext = context.global.get('chat:' + chatId);
-        if (chatContext == null) {
-          chatContext = ChatContext(chatId);
-          context.global.set('chat:' + chatId, chatContext);
-        }
-      } else {
-        self.error('Unable to find context().global in Node-RED');
-      }
+      var chatContext = ChatContextStore.getOrCreateChatContext(self, chatId);
 
       var payload = null;
       // decode the message, eventually download stuff
@@ -111,7 +102,7 @@ module.exports = function(RED) {
               }
             },
             chat: function() {
-              return context.global.get('chat:' + chatId);
+              return ChatContextStore.getChatContext(self, chatId);
             }
           }, self.log)
         })
@@ -496,11 +487,8 @@ module.exports = function(RED) {
         return;
       }
 
-      var channelId = msg.payload.chatId;
-      var context = node.context();
       var track = node.track;
-      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
-      var chatContext = context.global.get('chat:' + chatId);
+      var chatContext = msg.chat();
 
       // check if this node has some wirings in the follow up pin, in that case
       // the next message should be redirected here

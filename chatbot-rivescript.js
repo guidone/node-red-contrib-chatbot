@@ -16,7 +16,7 @@ module.exports = function(RED) {
       var originalMessage = msg.originalMessage;
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
       var context = node.context();
-      var chatContext = context.global.get('chat:' + chatId);
+      var chatContext = msg.chat();
 
       // exit if payload content is not string
       var content = null;

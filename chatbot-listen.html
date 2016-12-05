@@ -608,8 +608,7 @@
 </pre>
     in the first case the extracted email will be available in the chat context
 <pre>
-var chatId = msg.originalMessage.chat.id;
-var chat = context.global.get('chat:' + chatId);
+var chat = msg.chat();
 chat.get('email') // my-email@email.com
 </pre>
   </p>

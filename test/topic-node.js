@@ -5,7 +5,7 @@ var TopicBlock = require('../chatbot-topic');
 
 describe('Chat topic node', function() {
 
-  it('should pass through in 1 and 4 if topic is ask_name', function() {
+  it('should pass through in 1 if topic is ask_name, stops at first', function() {
     var msg = RED.createMessage(null);
     RED.node.config({
       rules: [
@@ -25,7 +25,7 @@ describe('Chat topic node', function() {
     assert.isNull(RED.node.message(0));
     assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
     assert.isNull(RED.node.message(2));
-    assert.equal(RED.node.message(3).originalMessage.chat.id, '42');
+    assert.isNull(RED.node.message(3));
   });
 
   it('should pass through in 3 if topic is *', function() {
@@ -85,12 +85,12 @@ describe('Chat topic node', function() {
     assert.isNull(RED.node.message(3));
 
     var msg2 = RED.createMessage(null);
-    RED.node.context().chat.set('topic', 'ask_name');
+    msg.chat().set('topic', 'ask_name');
     RED.node.get().emit('input', msg2);
     assert.isNull(RED.node.message(0));
     assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
     assert.isNull(RED.node.message(2));
-    assert.equal(RED.node.message(3).originalMessage.chat.id, '42');
+    assert.isNull(RED.node.message(3));
 
   });
 
@@ -112,7 +112,7 @@ describe('Chat topic node', function() {
     RED.node.get().emit('input', msg);
 
     assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
-    assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
+    assert.isNull(RED.node.message(1));
     assert.isNull(RED.node.message(2));
     assert.isNull(RED.node.message(3));
 

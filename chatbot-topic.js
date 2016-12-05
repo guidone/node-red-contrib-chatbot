@@ -1,4 +1,3 @@
-var _ = require('underscore');
 var utils = require('./lib/helpers/utils');
 
 module.exports = function(RED) {
@@ -11,12 +10,11 @@ module.exports = function(RED) {
 
     this.on('input', function(msg) {
 
-      var context = node.context();
       var originalMessage = msg.originalMessage;
-      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
-      var chatContext = context.global.get('chat:' + chatId);
+      var chatContext = msg.chat();
 
       var rules = node.rules;
+
       // do nothing
       if (originalMessage == null || rules.length == 0) {
         return;
@@ -24,8 +22,15 @@ module.exports = function(RED) {
       var output = [];
       var currentTopic = chatContext.get('topic');
 
+      var matched = false;
+
       rules.forEach(function(rule) {
-        output.push(utils.matchContext(currentTopic, rule.topic) ? msg : null);
+        if (!matched && utils.matchContext(currentTopic, rule.topic)) {
+          matched = true;
+          output.push(msg);
+        } else {
+          output.push(null);
+        }
       });
       node.send(output);
     });

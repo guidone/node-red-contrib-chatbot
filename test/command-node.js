@@ -46,8 +46,8 @@ describe('Chat command node', function() {
     RED.node.get().emit('input', msg);
     assert.equal(RED.node.message().payload.content, '/test sun trees');
     assert.equal(RED.node.message().originalMessage.chat.id, 42);
-    assert.equal(RED.node.context().chat.get('param1'), 'sun');
-    assert.equal(RED.node.context().chat.get('param2'), 'trees');
+    assert.equal(msg.chat().get('param1'), 'sun');
+    assert.equal(msg.chat().get('param2'), 'trees');
   });
 
 });

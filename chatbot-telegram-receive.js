@@ -1,10 +1,10 @@
 var _ = require('underscore');
 var TelegramBot = require('node-telegram-bot-api');
 var moment = require('moment');
-var ChatContext = require('./lib/chat-context');
-var ChatLog = require('./lib/chat-log.js');
+var ChatLog = require('./lib/chat-log');
+var ChatContextStore = require('./lib/chat-context-store');
 var helpers = require('./lib/telegram/telegram');
-var DEBUG = false;
+var DEBUG = true;
 
 module.exports = function(RED) {
 
@@ -176,18 +176,7 @@ module.exports = function(RED) {
       var chatId = botMsg.chat.id;
       var userId = botMsg.from.id;
       var isAuthorized = self.isAuthorized(username, userId);
-
-      var context = self.context();
-      // get or create chat id,
-      if (context.global != null) {
-        var chatContext = context.global.get('chat:' + chatId);
-        if (chatContext == null) {
-          chatContext = ChatContext(chatId);
-          context.global.set('chat:' + chatId, chatContext);
-        }
-      } else {
-        self.error('Unable to find context().global in Node-RED ');
-      }
+      var chatContext = ChatContextStore.getOrCreateChatContext(self, chatId);
 
       // store some information
       chatContext.set('chatId', chatId);
@@ -207,7 +196,7 @@ module.exports = function(RED) {
             payload: payload,
             originalMessage: botMsg,
             chat: function() {
-              return context.global.get('chat:' + chatId);
+              return ChatContextStore.getChatContext(self, chatId);
             }
           }, self.log)
         })
@@ -369,11 +358,11 @@ module.exports = function(RED) {
         return;
       }
 
-      var context = node.context();
+      //var context = node.context();
       var buttons = null;
       var track = node.track;
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
-      var chatContext = context.global.get('chat:' + chatId);
+      var chatContext = msg.chat();
       var type = msg.payload.type;
 
       // check if this node has some wirings in the follow up pin, in that case

@@ -19,7 +19,7 @@ module.exports = function(RED) {
       var transport = msg.originalMessage != null && msg.originalMessage.transport != null ? msg.originalMessage.transport : null;
 
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
-      var chatContext = context.global.get('chat:' + chatId);
+      var chatContext = msg.chat();
 
       // format a little
       console.log('');

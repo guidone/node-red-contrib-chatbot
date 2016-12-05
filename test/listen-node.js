@@ -47,7 +47,7 @@ describe('Chat listen node', function() {
     RED.node.get().emit('input', msg);
     assert.equal(RED.node.message().payload.content, 'can you send your curriculum vitae to guido.bellomo@gmail.com');
     assert.equal(RED.node.message().originalMessage.chat.id, 42);
-    assert.equal(RED.node.context().chat.get('email'), 'guido.bellomo@gmail.com');
+    assert.equal(msg.chat().get('email'), 'guido.bellomo@gmail.com');
   });
 
   it('should NOT detect a composed phrase send curriculum and extract email', function () {

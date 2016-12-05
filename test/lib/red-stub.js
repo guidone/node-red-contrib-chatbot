@@ -1,5 +1,6 @@
 var _ = require('underscore');
 var ChatContext = require('../../lib/chat-context.js');
+var ChatContextStore = require('../../lib/chat-context-store');
 
 module.exports = function() {
 
@@ -34,6 +35,8 @@ module.exports = function() {
 
     createMessage: function(payload, transport) {
       var chatId = 42;
+      // create a chat context if doesn't exists
+      //var context = ChatContextStore.getOrCreateChatContext(null, chatId);
       var msg = {
         originalMessage: {
           transport: transport != null ? transport : 'telegram',
@@ -42,11 +45,15 @@ module.exports = function() {
           },
           message_id: 72
         },
+        chat: function() {
+          return ChatContextStore.getChatContext(null, chatId);
+        },
         payload: payload != null ? payload : 'I am the original message'
       };
       _chatContext = ChatContext(chatId);
       _chatContext.clear();
-      _global['chat:' + chatId] = _chatContext;
+      // store it
+      ChatContextStore.set(chatId, _chatContext);
       if (payload != null) {
         msg.payload = payload;
       }
