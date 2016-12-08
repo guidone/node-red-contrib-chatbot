@@ -279,7 +279,7 @@ module.exports = function(RED) {
             break;
 
           case 'buttons':
-            return bot.sendActions(msg.payload.chatId, msg.payload.content, msg.payload.actions);
+            return bot.sendActions(msg.payload.chatId, msg.payload.content, msg.payload.buttons);
             break;
 
           case 'photo':
