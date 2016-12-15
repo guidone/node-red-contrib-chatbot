@@ -15,6 +15,9 @@ describe('Chat conversation node', function() {
     RED.node.get().emit('input', {});
     assert.equal(RED.node.message().originalMessage.chat.id, '4242');
     assert.equal(RED.node.message().originalMessage.transport, 'telegram');
+    assert.isFunction(RED.node.message().chat);
+    assert.equal(RED.node.message().chat().get('transport'), 'telegram');
+    assert.equal(RED.node.message().chat().get('chatId'), '4242');
   });
 
 });

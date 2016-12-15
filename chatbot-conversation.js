@@ -1,4 +1,5 @@
 var _ = require('underscore');
+var ChatContextStore = require('./lib/chat-context-store');
 
 module.exports = function(RED) {
 
@@ -21,6 +22,13 @@ module.exports = function(RED) {
         },
         message_id: null,
         transport: transport
+      };
+      msg.chat = function() {
+        return ChatContextStore.getOrCreateChatContext(node, chatId, {
+          chatId: chatId,
+          transport: transport,
+          authorized: true
+        });
       };
 
       // fix chat id in payload if any
