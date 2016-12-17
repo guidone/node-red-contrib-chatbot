@@ -443,21 +443,46 @@ module.exports = function(RED) {
               }
               break;
             case 'inline-buttons':
-              buttons = {
-                reply_markup: JSON.stringify({
-                  inline_keyboard: _(msg.payload.buttons).map(function(button) {
-                    return [{text: button.label, callback_data: button.value}];
-                  })
-                })
-              };
-              // store the last buttons
+              // create inline buttons, docs for this is https://core.telegram.org/bots/api#inlinekeyboardmarkup
+              // create the first array of array
+              var inlineKeyboard = [[]];
+              // cycle through buttons, add new line at the end if flag
+              _(msg.payload.buttons).each(function(button) {
+                var json = null;
+                if (!_.isEmpty(button.url)) {
+                  json = {
+                    text: button.label,
+                    url: button.url
+                  };
+                } else if (!_.isEmpty(button.value)) {
+                  json = {
+                    text: button.label,
+                    callback_data: button.value
+                  };
+                } else {
+                  json = {
+                    text: button.label,
+                    callback_data: button.label
+                  };
+                }
+                // add the button to the last row
+                inlineKeyboard[inlineKeyboard.length -1].push(json);
+                // if new line, then add a blank array
+                if (button.newLine) {
+                  inlineKeyboard.push([]);
+                }
+              });
+              // store the last buttons, this will be handled by the receiver
               if (node.telegramBot.lastInlineButtons == null) {
                 node.telegramBot.lastInlineButtons = {};
               }
               node.telegramBot.lastInlineButtons[chatId] = msg.payload.buttons;
               // finally send
-              node.telegramBot.sendMessage(chatId, msg.payload.content, buttons)
-                .catch(node.error);
+              node.telegramBot.sendMessage(chatId, msg.payload.content, {
+                reply_markup: JSON.stringify({
+                  inline_keyboard: inlineKeyboard
+                })
+              }).catch(node.error);
               break;
             case 'buttons':
               if (_.isEmpty(msg.payload.content)) {
