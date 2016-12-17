@@ -15,32 +15,39 @@ module.exports = function(RED) {
 
     this.on('input', function(msg) {
 
-      var context = node.context();
-      var transport = msg.originalMessage != null && msg.originalMessage.transport != null ? msg.originalMessage.transport : null;
+      //var context = node.context();
+      //var transport = msg.originalMessage != null && msg.originalMessage.transport != null ? msg.originalMessage.transport : null;
 
-      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
-      var chatContext = msg.chat();
+      //var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
+      if (_.isFunction(msg.chat)) {
+        var chatContext = msg.chat();
 
-      // format a little
-      console.log('');
-      console.log(grey('------ ChatBot debug ----------------'));
-      console.log(green('Transport:'), white(transport));
-      console.log(green('chatId:'), white(chatId));
+        // format a little
+        console.log('');
+        console.log(grey('------ ChatBot debug ----------------'));
+        console.log(green('Transport:'), white(chatContext.get('transport')));
+        console.log(green('chatId:'), white(chatContext.get('chatId')));
 
-      // push out context
-      if (chatContext != null) {
-        console.log(grey('------ ChatBot context --------------'));
-        _(chatContext.all()).each(function (value, key) {
-          console.log(green(key + ':'), white(value));
-        });
+        // push out context
+        if (chatContext != null) {
+          console.log(grey('------ ChatBot context --------------'));
+          _(chatContext.all()).each(function (value, key) {
+            console.log(green(key + ':'), white(value));
+          });
+        }
+      } else {
+        // normal message here
+        console.log('');
+        console.log(grey('------ Message ----------------'));
+        if (_.isString(msg.payload)) {
+          console.log(msg.payload);
+        } else {
+          console.log(JSON.stringify(msg.payload));
+        }
+
       }
       console.log('');
-
-      // show on debug panel
-      node.warn({
-        transport: transport,
-        chatId: chatId
-      });
+      // show on console
       node.warn(chatContext.all());
     });
 
