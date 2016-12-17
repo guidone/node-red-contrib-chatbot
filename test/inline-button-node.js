@@ -51,7 +51,42 @@ describe('Chat inline buttons node', function() {
 
   });
 
-  it('should send inline buttons in Facebook', function () {
+  it('should send inline buttons in Telegram', function () {
+    var msg = RED.createMessage({}, 'telegram');
+    RED.node.config({
+      message: 'message for the buttons',
+      answers: [
+        {
+          value: 'value 1',
+          label: 'Value 1',
+          answer: 'alert 1'
+        },
+        {
+          label: 'Value 2',
+          url: 'http://www.javascript-jedi.com'
+        }
+      ]
+    });
+    InlineButtonsBlock(RED);
+    RED.node.get().emit('input', msg);
+    assert.equal(RED.node.message().payload.type, 'inline-buttons');
+    assert.equal(RED.node.message().payload.content, 'message for the buttons');
+    assert.equal(RED.node.message().payload.chatId, 42);
+    assert.isArray(RED.node.message().payload.buttons);
+    assert.equal(RED.node.message().payload.buttons[0].value, 'value 1');
+    assert.equal(RED.node.message().payload.buttons[0].label, 'Value 1');
+    assert.equal(RED.node.message().payload.buttons[0].answer, 'alert 1');
+    assert.isUndefined(RED.node.message().payload.buttons[0].alert);
+    assert.equal(RED.node.message().payload.buttons[1].label, 'Value 2');
+    assert.equal(RED.node.message().payload.buttons[1].url, 'http://www.javascript-jedi.com');
+    assert.isUndefined(RED.node.message().payload.buttons[1].alert);
+
+
+  });
+
+
+
+  it('should not send inline buttons in Facebook', function () {
     var msg = RED.createMessage({}, 'facebook');
     RED.node.config({
       message: 'message for the buttons',
@@ -81,7 +116,7 @@ describe('Chat inline buttons node', function() {
     assert.equal(RED.node.message(), null);
   });
 
-  it('should send inline buttons in Smooch', function () {
+  it('should not send inline buttons in Smooch', function () {
     var msg = RED.createMessage({}, 'smooch');
     RED.node.config({
       message: 'message for the buttons',
@@ -111,7 +146,7 @@ describe('Chat inline buttons node', function() {
     assert.equal(RED.node.message(), null);
   });
 
-  it('should send inline buttons in Slack', function () {
+  it('should not send inline buttons in Slack', function () {
     var msg = RED.createMessage({}, 'slack');
     RED.node.config({
       message: 'message for the buttons',
