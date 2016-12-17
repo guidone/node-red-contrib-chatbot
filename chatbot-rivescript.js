@@ -11,6 +11,14 @@ module.exports = function(RED) {
     this.parse_mode = config.parse_mode;
     this.transports = ['telegram', 'slack', 'facebook'];
 
+    this.on('close', function (done) {
+      var context = node.context();
+      // clear the instance of rivebot
+      context.set('rivebot', null);
+      node.status({});
+      done();
+    });
+
     this.on('input', function(msg) {
       var script = node.script;
       var originalMessage = msg.originalMessage;
@@ -32,9 +40,19 @@ module.exports = function(RED) {
       if (context.get('rivebot') != null) {
         bot = context.get('rivebot');
       } else {
-        bot = new RiveScript({utf8: true, debug: false});
+        // create the new bot instance
+        bot = new RiveScript({
+          utf8: true,
+          debug: false,
+          onDebug: function(str) {
+            // log parsing error to node-red and set status
+            node.error(str);
+            node.status({fill: 'red', shape: 'ring', text: 'parsing errors'});
+          }
+        });
         bot.stream(script);
         bot.sortReplies();
+        // store in context
         context.set('rivebot', bot);
       }
 
@@ -51,7 +69,6 @@ module.exports = function(RED) {
       }
       // get a reply
       var reply = bot.reply(chatId, content);
-
       if (reply.match(/^ERR:/)) {
         // clone the object, otherwise side effect
         msg = {
