@@ -88,6 +88,27 @@ describe('Chat message node', function() {
     assert.equal(RED.node.message().payload.chatId, 42);
   });
 
+  it('should compose a message using user defined variable in context', function() {
+    var msg = RED.createMessage();
+    RED.node.config({
+      message: 'The number is {{myvariable}} snd the name is {{myName}}',
+      track: false,
+      answer: false
+    });
+    RED.environment.chat(msg.originalMessage.chat.id, {
+      authorized: true,
+      chatId: msg.originalMessage.chat.id,
+      myvariable: '24',
+      myName: 'Javascript Jedi'
+    });
+    MessageBlock(RED);
+    RED.node.context().flow.set('name', 'Guidone');
+    RED.node.get().emit('input', msg);
+    assert.equal(RED.node.message().payload.content, 'The number is 24 snd the name is Javascript Jedi');
+    assert.equal(RED.node.message().payload.chatId, 42);
+  });
+
+
   it('should send a message with markdown formatting', function() {
     var msg = RED.createMessage();
     RED.node.config({

@@ -66,7 +66,7 @@
     "node-telegram-bot-api": "^0.24.0",
     "qr-image": "^3.1.0",
     "request": "^2.73.0",
-    "rivescript": "^1.15.0",
+    "rivescript": "1.17.1",
     "sanitize-filename": "^1.6.0",
     "smooch-core": "^2.0.0",
     "speakeasy-nlp": "^0.2.2",
