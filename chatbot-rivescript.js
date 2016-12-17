@@ -43,14 +43,14 @@ module.exports = function(RED) {
         bot.setUservars(chatId, _(chatContext.all()).mapObject(function(value) {
           return _.isString(value) || _.isNumber(value) || _.isArray(value) ? value : null;
         }));
-        if (!_.isEmpty(chatContext.get('intent'))) {
+        if (!_.isEmpty(chatContext.get('topic'))) {
           bot.setUservar(chatId, 'topic', chatContext.get('topic'));
+        } else {
+          bot.setUservar(chatId, 'topic', 'random');
         }
       }
-
       // get a reply
       var reply = bot.reply(chatId, content);
-
 
       if (reply.match(/^ERR:/)) {
         // clone the object, otherwise side effect
