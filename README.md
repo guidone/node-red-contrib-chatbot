@@ -333,6 +333,7 @@ It's not possible to tell which node will be executed first, so if the first exe
 
 ## Changelog
 
+* **0.6.9** - Fixed RiveScript node (parser reloaded after deploy, better handling of syntax errors, status message), updated Telegram inline buttons (URL button, multi line buttons), minor bugs
 * **0.6.8** - Fixed bug missing .chat() in conversation node
 * **0.6.7** -  Fixed bug with missing global context
 * **0.6.5** - Added topic node, fixed command node in multi chat, added Api.ai node, minor fixes
