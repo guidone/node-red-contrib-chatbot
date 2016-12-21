@@ -2,7 +2,9 @@ var speak = require("speakeasy-nlp");
 var levenshtein = require('fast-levenshtein');
 var _ = require('underscore');
 var regexps = require('./lib/helpers/regexps.js');
-var debug = false;
+var debug = true;
+
+var nlp = require('nlp_compromise');
 
 module.exports = function(RED) {
 
@@ -48,6 +50,9 @@ module.exports = function(RED) {
     debug && console.log('tokens - ', sentence.tokens);
     debug && console.log('analysis - ', sentence);
 
+
+
+
     // scan the words, all must be present
     var result = _(words).all(function(word) {
 
@@ -89,9 +94,8 @@ module.exports = function(RED) {
 
     this.on('input', function(msg) {
       var sentences = node.sentences;
-      var originalMessage = msg.originalMessage;
-      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
-      var context = node.context();
+      //var originalMessage = msg.originalMessage;
+
       var chatContext = msg.chat();
 
       // exit if not string
@@ -109,6 +113,22 @@ module.exports = function(RED) {
           // check if valid json
           var words = sentence.split(',');
           debug && console.log('---- START analysis ' + msg.payload.content);
+
+
+          var phrase = nlp.text(msg.payload.content);
+          console.log('pppp', phrase);
+
+          phrase.terms().forEach(function(term) {
+            if (term.text == '$' || term.text == '€') {
+              term.tag = 'Currency';
+              term.pos.Currency = true;
+              term.pos.Noun = true;
+            }
+          });
+
+
+          console.log('temrs---', phrase.terms());
+          console.log('root---', phrase.root());
           // analize sentence
           var analysis = speak.classify(msg.payload.content);
           // send message if the sentence is matched, otherwise stop here

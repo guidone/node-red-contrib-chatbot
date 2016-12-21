@@ -405,6 +405,7 @@ module.exports = function(RED) {
 
           switch (type) {
             case 'message':
+              console.log('mando---', msg.payload.content, msg.payload.options);
               node.telegramBot.sendMessage(chatId, msg.payload.content, msg.payload.options)
                 .catch(function(error) {
                   node.handleError(error, msg);
