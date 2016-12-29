@@ -7,11 +7,14 @@
       name: {
         value: ''
       },
-      sentences: {
+      showdebug: {
+        value: false
+      },
+      rules: {
         value: [],
         validate: function(sentences) {
           var valid = true;
-          var idx, k;
+          /*var idx, k;
           var re = /\{\{([A-Za-z0-9])\}\}/;
           var allowedTags = ['email', 'number', 'url'];
           for(idx = 0; idx < sentences.length; idx++) {
@@ -24,29 +27,33 @@
                 }
               }
             }
-          }
+          }*/
           return valid;
         }
+      },
+      outputs: {
+        value: 1
       }
     },
     inputs: 1,
-    outputs: 2,
+    outputs: 1,
     icon: 'chatbot-listen.png',
     paletteLabel: 'Listen',
     label: function() {
       return this.name || 'chatbot-listen';
     },
     oneditsave: function() {
-      var domSentences = $('#node-input-sentences-container').editableList('items');
+      var domRules = $('#node-input-sentences-container').editableList('items');
       var node = this;
       var idx;
       // init
-      node.sentences = [];
+      node.rules = [];
       // move rules
-      for(idx = 0; idx < domSentences.length; idx++) {
-        var selector = domSentences[idx].find('input');
-        node.sentences.push(selector.val());
+      for(idx = 0; idx < domRules.length; idx++) {
+        var selector = domRules[idx].find('input');
+        node.rules.push(selector.val());
       }
+      this.outputs = node.rules.length;
     },
 
     oneditprepare: function() {
@@ -87,12 +94,12 @@
         });
 
 
-      var sentences = this.sentences || [];
+      var rules = this.rules || [];
       // populate the control
       var idx;
-      for (idx = 0; idx < sentences.length; idx++) {
-        var sentence = sentences[idx];
-        $("#node-input-sentences-container").editableList('addItem', sentence);
+      for (idx = 0; idx < rules.length; idx++) {
+        var rule = rules[idx];
+        $("#node-input-sentences-container").editableList('addItem', rule);
       }
 
     }
@@ -331,7 +338,7 @@
       var id = $(this).attr('id');
       $('#'+id+'_tagsinput .tag').remove();
       $.fn.tagsInput.importTags(this,str);
-    }
+    };
 
     $.fn.tagsInput = function(options) {
       var settings = jQuery.extend({
@@ -556,33 +563,47 @@
     <input type="text" id="node-input-name" placeholder="Name">
   </div>
   <div class="form-row" style="margin-bottom:0;">
-    <label style="width:100%;"><i class="fa fa-list"></i> <span>Set of Tokens</span></label>
+    <label style="width:100%;"><i class="fa fa-list"></i> <span>Keyword rules</span></label>
   </div>
   <div class="form-row node-input-sentences-container-row">
     <ol id="node-input-sentences-container"></ol>
-    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;">
-      Use special tokens like <code>{{email}}</code>, <code>{{number}}</code>, <code>{{url}}</code> to extract special kind of data while interpreting the sentence,
-      these parse value will be available in the chat context.
+    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;display:block;">
+    Available types are: <em>word (catches everything), noun, verb, adjective, conjunction, adverb, symbol, date, determiner, person,
+  number, email, url, currency</em>.<br>
+    Use square brackets to match a keyword of a particular type, for example: <code>check[verb]</code> only matches the
+    a keyword "check" which is a verb in the sentence.<br>
+    Use types to extract some kind of data from the sentence, for example: <code>[email]->useremail</code> will match a
+    valid email in the sentence and store it in the chat context variable "useremail".
     </div>
   </div>
+  <div class="form-row">
+    <label for="node-input-answer"><i class="icon-wrench"></i> Debug</label>
+    <input type="checkbox" value="true" id="node-input-showdebug">
+    <span style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;display:block;">
+    Dump the analysis of the sentences in the console (terms, nouns, verbs, etc).</span>
+</div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-listen">
-  <p>
-    Listen to inbound messages and verify that matches to a predefined set of tokens or patterns (like an email).
-    If matches, the message is send through the output, otherwise not. <b>[Telegram, Slack]</b>
-  </p>
-  <p>
-    Sets of tokens work with a logical OR, means that is sufficient that just one set of tokens matches the incoming to
-    pass it through the output.
-  </p>
-  <p>
-    Given these two set of tokens
+<p>
+  Simple keyword based language interpreter. If the inbound message matches the keywords then it's redirected to the related
+  output <em>[Telegram, Facebook, Smooch, Slack]</em>.
+</p>
+<p>
+  All the keywords for a row must match the input message in order to have the message go through the related output. Smaller keywords
+  requires an exact match, longer ones match with Levehnstein algorithm (so for example the keyword "building" also matches
+  "boilding").
+</p>
+<p>
+  The first row that matches stops the todo
+</p>
+<p>
+  Given these two set of tokens
 <pre>
-1 - [send] [curriculum] [vitae]<br>
-2 - [send] [cv]
+1 - send curriculum vitae<br>
+2 - send cv
 </pre>
-    then the inbound messages:
+  then the inbound messages:
 <pre>
 "can you send your curriculum vitae"
 // MATCH
@@ -593,23 +614,62 @@
 "please send your curriculum"
 // DOESN'T MATCH
 </pre>
-  </p>
-  <p>
-    This node can also extract some special data like emails, etc., for example given this set of tokens
+</p>
+<p>
+  Listen node is also capable of a basic simple analysis of the sentence (only available for English) and for a more
+  specific match is possible to specify also the type for a keyword
+  <pre>
+  1 - send[verb] curriculum[noun] vitae
+  2 - send[verb] cv</pre>
+  Available types are: word (catches everything), noun, verb, adjective, conjunction, adverb, symbol, date, determiner, person,
+  number, email, url, currency.
+</p>
+<p>
+  Keyword types are particularly useful to search for patterns in the user's input and store them in the chat context,
+  for example to match a sentence like <em>"send you curriculum vitae to Peter at peter.something@gmail.com"</em>
+  <pre>
+  1 - send[verb] curriculum to [person]->name at [email]->toemail</pre>
+  then the inbound messages:
 <pre>
-1 - [send] [curriculum] [vitae] [{{email}}]
-</pre>
-    then the inbound messages:
-<pre>
-"can you send your curriculum vitae to my-email@email.com"
+"can you send your curriculum vitae to John at my-email@email.com"
 // MATCH
-"can you send your curriculum vitae to my-emailATemail.com"
-// DOESN'T MATCH
+"can you send your curriculum vitae to John at my-emailATemail.com"
+// DOESN'T MATCH, not a valid email
+"can you send your curriculum vitae to someone at my-email@email.com"
+// DOESN'T MATCH, someone is not a valid name
 </pre>
-    in the first case the extracted email will be available in the chat context
+  and in any function node connected to the related output
 <pre>
 var chat = msg.chat();
-chat.get('email') // my-email@email.com
+chat.get('name'); // -> John
+chat.get('toemail'); // -> peter.something@gmail.com
 </pre>
-  </p>
+  or in a message node connected to the related output
+<pre>
+Hi {{name}}, I'll send the curriculum vitae to {{toemail}}
+</pre>
+</p>
+<p>
+Available types:
+<ul>
+<li>
+  <strong>word</strong>: that matches everything
+</li>
+<li><strong>adjective, conjunction, adverb, preposition, determiner</strong>: match the keyword using Levenshtein distance
+(the keyword "home" will match "hime" but will not match "hole")</li>
+<li><strong>symbol</strong>: Match a symbol like: &eur;, %, $, £ and #</li>
+<li><strong>number</strong>: match a number: float, integer or written in plain english (e.g. "forty two")</li>
+<li><strong>currency</strong>: match a currency (e.g. "dollars", "$", "euros", "&eur;")</li>
+<li><strong>email</strong>: match well formatted email</li>
+<li><strong>url</strong>: match well URL address</li>
+<li><strong>verb</strong>: match a verb, if the keyword is specified it could match the exact word of the infinitive form
+(for example the keyword <em>"tell[verb]"</em> will match the sentence <em>"I can <b>tell</b>"</em> but also
+<em>"I <b>told</b> you the truth"</em>)
+</li>
+<li><strong>person</strong>: Matches a person name (e.g. "Jack Frost")</li>
+<li><strong>date</strong>: Matches a date (e.g. "10th January" or "10/1/1972") and convert it to a date object. If the year or month
+are not specified, the current year or month will be used</li>
+</ul>
+
+</p>
 </script>

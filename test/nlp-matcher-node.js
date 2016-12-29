@@ -311,7 +311,7 @@ describe('NLP matcher', function() {
       }
     ]);
 
-    var matchedRules = NplMatcher.matchRule(terms, rules);
+    var matchedRules = NplMatcher.matchRules(terms, rules);
 
 
     assert.equal(matchedRules[0].at(0).type, 'noun');
@@ -367,7 +367,7 @@ describe('NLP matcher', function() {
 
 
 
-    var matchedRules = NplMatcher.matchRule(terms, rules);
+    var matchedRules = NplMatcher.matchRules(terms, rules);
 
     /*_(matchedRules).each(function(rules, idx) {
       console.log('');
@@ -417,7 +417,7 @@ describe('NLP matcher', function() {
       }
     ]);
 
-    var matchedRules = NplMatcher.matchRule(terms, rules);
+    var matchedRules = NplMatcher.matchRules(terms, rules);
 
     /*assert.equal(matchedRules[0].at(0).type, 'noun');
     assert.equal(matchedRules[0].at(0).distance, 1);
@@ -455,7 +455,7 @@ describe('NLP matcher', function() {
       }
     ]);
 
-    var matchedRules = NplMatcher.matchRule(terms, rules);
+    var matchedRules = NplMatcher.matchRules(terms, rules);
 
     assert.equal(matchedRules[0].count(), 2);
 
@@ -494,7 +494,7 @@ describe('NLP matcher', function() {
         variable: 'when'
       }
     ]);
-    var matchedRules = NplMatcher.matchRule(terms, rules);
+    var matchedRules = NplMatcher.matchRules(terms, rules);
 
     /*matchedRules.forEach(function(rules, idx) {
       console.log('');
@@ -519,6 +519,388 @@ describe('NLP matcher', function() {
     assert.equal(matchedRules[0].at(2).distance, 1);
 
   });
+
+  it('should match number written in letters', function() {
+
+    var message = 'I owe forty five apples to Jimmy';
+    var terms = NplMatcher.parseSentence(message);
+    var rules = new NplMatcher.MatchRules([
+      {
+        type: 'verb',
+        text: 'owe'
+      },
+      {
+        type: 'number',
+        variable: 'age'
+      },
+      {
+        text: 'apple',
+        type: 'noun'
+      }
+    ]);
+    var matchedRules = NplMatcher.matchRules(terms, rules);
+
+    /*matchedRules.forEach(function(rules, idx) {
+     console.log('');
+     console.log('Rule #' + (idx + 1));
+     console.log(rules.toJSON());
+     });*/
+
+    assert.equal(matchedRules[0].count(), 3);
+
+    assert.equal(matchedRules[0].at(0).type, 'verb');
+    assert.equal(matchedRules[0].at(0).text, 'owe');
+    assert.equal(matchedRules[0].at(0).distance, 1);
+
+    assert.equal(matchedRules[0].at(1).type, 'number');
+    assert.equal(matchedRules[0].at(1).value, 45);
+    assert.equal(matchedRules[0].at(1).variable, 'age');
+    assert.equal(matchedRules[0].at(1).distance, 0);
+
+    assert.equal(matchedRules[0].at(2).type, 'noun');
+    assert.equal(matchedRules[0].at(2).text, 'apple');
+    assert.equal(matchedRules[0].at(2).raw, 'apples');
+
+  });
+
+
+
+  it('should understand negated sentences', function() {
+
+    var message = 'I will not pay 450 $ for this shoes';
+    var terms = NplMatcher.parseSentence(message);
+    var rules = new NplMatcher.MatchRules([
+      'not[conjunction]',
+      'pay[verb]',
+      '[number]->amount',
+      '[currency]->currency',
+      'for',
+      '[noun]->what'
+    ]);
+    var matchedRules = NplMatcher.matchRules(terms, rules);
+
+    /*matchedRules.forEach(function(rules, idx) {
+     console.log('');
+     console.log('Rule #' + (idx + 1));
+     console.log(rules.toJSON());
+     });*/
+
+    //console.log('---', terms);
+    assert.lengthOf(matchedRules, 1);
+    assert.equal(matchedRules[0].count(), 6);
+
+    assert.equal(matchedRules[0].at(0).type, 'conjunction');
+    assert.equal(matchedRules[0].at(0).text, 'not');
+    assert.equal(matchedRules[0].at(0).distance, 2);
+
+    assert.equal(matchedRules[0].at(1).type, 'verb');
+    assert.equal(matchedRules[0].at(1).text, 'pay');
+    assert.equal(matchedRules[0].at(1).distance, 0);
+
+    assert.equal(matchedRules[0].at(2).type, 'number');
+    assert.equal(matchedRules[0].at(2).value, 450);
+    assert.equal(matchedRules[0].at(2).distance, 0);
+    assert.equal(matchedRules[0].at(2).variable, 'amount');
+
+    assert.equal(matchedRules[0].at(3).type, 'currency');
+    assert.equal(matchedRules[0].at(3).value, '$');
+    assert.equal(matchedRules[0].at(3).distance, 0);
+    assert.equal(matchedRules[0].at(3).variable, 'currency');
+
+    assert.equal(matchedRules[0].at(4).text, 'for');
+    assert.equal(matchedRules[0].at(4).raw, 'for');
+
+    assert.equal(matchedRules[0].at(5).type, 'noun');
+    assert.equal(matchedRules[0].at(5).value, 'shoes');
+    assert.equal(matchedRules[0].at(5).distance, 1);
+    assert.equal(matchedRules[0].at(5).variable, 'what');
+
+  });
+
+  it('should match myself saying my name', function() {
+
+    var message = 'My name is Jack';
+    var terms = NplMatcher.parseSentence(message);
+    var rules = new NplMatcher.MatchRules([
+      {
+        text: 'name'
+      },
+      {
+        text: 'is'
+      },
+      {
+        type: 'person',
+        variable: 'name'
+      }
+    ]);
+    var matchedRules = NplMatcher.matchRules(terms, rules);
+
+    /*matchedRules.forEach(function(rules, idx) {
+     console.log('');
+     console.log('Rule #' + (idx + 1));
+     console.log(rules.toJSON());
+     });*/
+
+    assert.equal(matchedRules[0].count(), 3);
+
+    assert.isNull(matchedRules[0].at(0).type);
+    assert.equal(matchedRules[0].at(0).text, 'name');
+    assert.equal(matchedRules[0].at(0).raw, 'name');
+    assert.equal(matchedRules[0].at(0).distance, 1);
+
+    assert.isNull(matchedRules[0].at(1).type);
+    assert.equal(matchedRules[0].at(1).text, 'is');
+    assert.equal(matchedRules[0].at(1).raw, 'is');
+    assert.equal(matchedRules[0].at(1).distance, 0);
+
+    assert.equal(matchedRules[0].at(2).type, 'person');
+    assert.equal(matchedRules[0].at(2).value, 'Jack');
+    assert.equal(matchedRules[0].at(2).distance, 0);
+
+  });
+
+  it('should parse a percentage', function() {
+
+    var message = '40 %';
+    var terms = NplMatcher.parseSentence(message);
+    var rules = new NplMatcher.MatchRules([
+      {
+        type: 'number',
+        variable: 'value'
+      },
+      {
+        type: 'symbol'
+      }
+    ]);
+    var matchedRules = NplMatcher.matchRules(terms, rules);
+
+    /*matchedRules.forEach(function(rules, idx) {
+     console.log('');
+     console.log('Rule #' + (idx + 1));
+     console.log(rules.toJSON());
+     });*/
+
+    assert.equal(matchedRules[0].count(), 2);
+
+    assert.equal(matchedRules[0].at(0).type, 'number');
+    assert.equal(matchedRules[0].at(0).value, 40);
+    assert.equal(matchedRules[0].at(0).raw, '40');
+    assert.equal(matchedRules[0].at(0).distance, 0);
+
+    assert.equal(matchedRules[0].at(1).type, 'symbol');
+    assert.equal(matchedRules[0].at(1).value, '%');
+    assert.equal(matchedRules[0].at(1).raw, '%');
+    assert.equal(matchedRules[0].at(1).distance, 0);
+
+
+  });
+
+  it('should parse a percentage with symbol attached to the number', function() {
+
+    var message = '40%';
+    var terms = NplMatcher.parseSentence(message);
+    var rules = new NplMatcher.MatchRules([
+      {
+        type: 'number',
+        variable: 'value'
+      },
+      {
+        type: 'symbol'
+      }
+    ]);
+    var matchedRules = NplMatcher.matchRules(terms, rules);
+
+    /*matchedRules.forEach(function(rules, idx) {
+     console.log('');
+     console.log('Rule #' + (idx + 1));
+     console.log(rules.toJSON());
+     });*/
+
+    assert.equal(matchedRules[0].count(), 2);
+
+    assert.equal(matchedRules[0].at(0).type, 'number');
+    assert.equal(matchedRules[0].at(0).value, 40);
+    assert.equal(matchedRules[0].at(0).raw, '40');
+    assert.equal(matchedRules[0].at(0).distance, 0);
+
+    assert.equal(matchedRules[0].at(1).type, 'symbol');
+    assert.equal(matchedRules[0].at(1).value, '%');
+    assert.equal(matchedRules[0].at(1).raw, '%');
+    assert.equal(matchedRules[0].at(1).distance, 0);
+
+  });
+
+  it('should parse a currency with symbol attached to the number', function() {
+
+    var message = 'amount is 40$ and taxes 10.2%';
+    var terms = NplMatcher.parseSentence(message);
+    var rules = new NplMatcher.MatchRules([
+      {
+        type: 'number',
+        variable: 'amount'
+      },
+      {
+        type: 'currency',
+        variable: 'currency'
+      },
+      {
+        type: 'noun',
+        text: 'taxes'
+      },
+      {
+        type: 'number',
+        variable: 'taxes'
+      },
+      {
+        type: 'symbol',
+        text: '%'
+      }
+    ]);
+    var matchedRules = NplMatcher.matchRules(terms, rules);
+
+    /*matchedRules.forEach(function(rules, idx) {
+     console.log('');
+     console.log('Rule #' + (idx + 1));
+     console.log(rules.toJSON());
+     });*/
+
+    assert.equal(matchedRules[0].count(), 5);
+
+    assert.equal(matchedRules[0].at(0).type, 'number');
+    assert.equal(matchedRules[0].at(0).value, 40);
+    assert.equal(matchedRules[0].at(0).raw, '40');
+    assert.equal(matchedRules[0].at(0).distance, 2);
+
+    assert.equal(matchedRules[0].at(1).type, 'currency');
+    assert.equal(matchedRules[0].at(1).value, '$');
+    assert.equal(matchedRules[0].at(1).raw, '$');
+    assert.equal(matchedRules[0].at(1).distance, 0);
+
+    assert.equal(matchedRules[0].at(2).type, 'noun');
+    assert.isNull(matchedRules[0].at(2).value);
+    assert.equal(matchedRules[0].at(2).raw, 'taxes');
+    assert.equal(matchedRules[0].at(2).distance, 1);
+
+    assert.equal(matchedRules[0].at(3).type, 'number');
+    assert.equal(matchedRules[0].at(3).value, 10.2);
+    assert.equal(matchedRules[0].at(3).variable, 'taxes');
+    assert.equal(matchedRules[0].at(3).raw, '10.2');
+    assert.equal(matchedRules[0].at(3).distance, 0);
+
+    assert.equal(matchedRules[0].at(4).type, 'symbol');
+    assert.equal(matchedRules[0].at(4).text, '%');
+    assert.equal(matchedRules[0].at(4).raw, '%');
+    assert.equal(matchedRules[0].at(4).distance, 0);
+
+  });
+
+  it('should match past form of a verb', function() {
+
+    var message = 'I told you the truth';
+    var terms = NplMatcher.parseSentence(message);
+    var rules = new NplMatcher.MatchRules([
+      {
+        type: 'verb',
+        text: 'tell'
+      },
+      {
+        type: 'noun',
+        text: 'truth'
+      }
+    ]);
+    var matchedRules = NplMatcher.matchRules(terms, rules);
+
+    /*matchedRules.forEach(function(rules, idx) {
+     console.log('');
+     console.log('Rule #' + (idx + 1));
+     console.log(rules.toJSON());
+     });*/
+
+    assert.equal(matchedRules[0].count(), 2);
+
+    assert.equal(matchedRules[0].at(0).type, 'verb');
+    assert.equal(matchedRules[0].at(0).text, 'tell');
+    assert.equal(matchedRules[0].at(0).raw, 'told');
+    assert.equal(matchedRules[0].at(0).distance, 1);
+
+    assert.equal(matchedRules[0].at(1).type, 'noun');
+    assert.equal(matchedRules[0].at(1).text, 'truth');
+    assert.equal(matchedRules[0].at(1).distance, 2);
+
+  });
+
+  it('should match a url', function() {
+
+    var message = 'I am reading http://javascript-jedi.com';
+    var terms = NplMatcher.parseSentence(message);
+    var rules = new NplMatcher.MatchRules([
+      {
+        type: 'verb',
+        text: 'am reading'
+      },
+      {
+        type: 'url',
+        variable: 'address'
+      }
+    ]);
+    var matchedRules = NplMatcher.matchRules(terms, rules);
+
+    /*matchedRules.forEach(function(rules, idx) {
+     console.log('');
+     console.log('Rule #' + (idx + 1));
+     console.log(rules.toJSON());
+     });*/
+
+    assert.equal(matchedRules[0].count(), 2);
+
+    assert.equal(matchedRules[0].at(0).type, 'verb');
+    assert.equal(matchedRules[0].at(0).text, 'am reading');
+    assert.equal(matchedRules[0].at(0).raw, 'am reading');
+    assert.equal(matchedRules[0].at(0).distance, 1);
+
+    assert.equal(matchedRules[0].at(1).type, 'url');
+    assert.equal(matchedRules[0].at(1).variable, 'address');
+    assert.equal(matchedRules[0].at(1).value, 'http://javascript-jedi.com');
+    assert.equal(matchedRules[0].at(1).distance, 0);
+
+  });
+
+  it('should match a url without leading http://', function() {
+
+    var message = 'I am reading javascript-jedi.com';
+    var terms = NplMatcher.parseSentence(message);
+    var rules = new NplMatcher.MatchRules([
+      {
+        type: 'verb',
+        text: 'am reading'
+      },
+      {
+        type: 'url',
+        variable: 'address'
+      }
+    ]);
+    var matchedRules = NplMatcher.matchRules(terms, rules);
+
+    /*matchedRules.forEach(function(rules, idx) {
+     console.log('');
+     console.log('Rule #' + (idx + 1));
+     console.log(rules.toJSON());
+     });*/
+
+    assert.equal(matchedRules[0].count(), 2);
+
+    assert.equal(matchedRules[0].at(0).type, 'verb');
+    assert.equal(matchedRules[0].at(0).text, 'am reading');
+    assert.equal(matchedRules[0].at(0).raw, 'am reading');
+    assert.equal(matchedRules[0].at(0).distance, 1);
+
+    assert.equal(matchedRules[0].at(1).type, 'url');
+    assert.equal(matchedRules[0].at(1).variable, 'address');
+    assert.equal(matchedRules[0].at(1).value, 'javascript-jedi.com');
+    assert.equal(matchedRules[0].at(1).distance, 0);
+
+  });
+
 
 });
 

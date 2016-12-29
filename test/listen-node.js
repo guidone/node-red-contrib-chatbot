@@ -5,7 +5,25 @@ var ListenBlock = require('../chatbot-listen');
 
 describe('Chat listen node', function() {
 
-  it('should detect a simple phrase send curriculum', function () {
+  it('should detect the percentage before the raw number', function () {
+    var msg = RED.createMessage({content: '100%'});
+    RED.node.config({
+      rules: [
+        '[number]->tipPercentage,%[symbol]',
+        '[number]->tip',
+        '*'
+      ]
+    });
+    ListenBlock(RED);
+    RED.node.get().emit('input', msg);
+
+    assert.equal(RED.node.message(0).payload.content, '100%');
+    assert.isNull(RED.node.message(1));
+    assert.isNull(RED.node.message(2));
+    assert.equal(msg.chat().get('tipPercentage'), 100);
+  });
+
+  /*it('should detect a simple phrase send curriculum', function () {
     var msg = RED.createMessage({content: 'can you send your curriculum vitae'});
     RED.node.config({
       sentences: ['send,curriculum,vitae']
@@ -59,6 +77,6 @@ describe('Chat listen node', function() {
     ListenBlock(RED);
     RED.node.get().emit('input', msg);
     assert.equal(RED.node.message(), null);
-  });
+  });*/
 
 });
