@@ -12,8 +12,19 @@ module.exports = function(RED) {
 
     this.on('input', function(msg) {
 
-      var chatId = node.chatId;
-      var transport = node.transport;
+      var chatId = null;
+      if (!_.isEmpty(node.chatId)) {
+        chatId = node.chatId;
+      } else if (msg.payload != null && msg.payload.chatId != null) {
+        chatId = msg.payload.chatId;
+      }
+
+      var transport = null;
+      if (!_.isEmpty(node.transport)) {
+        transport = node.transport;
+      } else if (msg.payload != null && msg.payload.transport != null) {
+        transport = msg.payload.transport;
+      }
 
       // ensure the original message is injected
       msg.originalMessage = {

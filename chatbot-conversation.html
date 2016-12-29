@@ -10,7 +10,7 @@
         value: ''
       },
       transport: {
-        value: 'telegram'
+        value: ''
       }
     },
     inputs: 1,
@@ -31,8 +31,10 @@
 <div class="form-row">
   <label for="node-input-transport"><i class="icon-plane"></i> Transport</label>
   <select id="node-input-transport">
+    <option value="">Select transport</option>
     <option value="facebook">Facebook Messenger</option>
     <option value="slack">Slack</option>
+    <option value="smooch">Smooch</option>
     <option value="telegram">Telegram</option>
   </select>
 </div>
@@ -47,14 +49,22 @@
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-conversation">
-  <p>
-  Start a chat bot conversation, for example to initiate a conversation (sending a message) to a user in response of a
-  Node Red event, chain this node to a Message node (or Image, Location, etc).
-  </p>
-  <p>
-  The <code>chatId</code> is needed to initiate the conversation (you can grab the chatId from the logs or a debug node),
-  the <code>chatId</code> is unique per user across the different platforms (Telegram, Facebook, Slack).
-  </p>
+<p>
+Start a chat bot conversation, for example to initiate a conversation (sending a message) to a user in response of a
+Node Red event, chain this node to a Message node (or Image, Location, etc) <em>[Telegram, Facebook, Smooch, Slack]</em>
+</p>
+<p>
+The <code>chatId</code> is needed to initiate the conversation (you can grab the chatId from the logs or a debug node),
+the <code>chatId</code> is unique per user across the different platforms (Telegram, Facebook, Slack).
+</p>
+<p>The parameters <code>chatId</code> and <code>transport</code> can be passed through the payload by the upstream node:</p>
+<pre>
+msg.payload = {
+  chatId: '42',
+  transport: 'telegram'
+};
+return msg;
+</pre>
 </script>
 
 
