@@ -25,7 +25,7 @@ describe('Chat RiveScript node', function() {
     RiveScriptBlock(RED);
     RED.node.get().emit('input', msg);
     assert.equal(RED.node.message(), null);
-    assert.equal(RED.node.message(1).payload.content, 'ERR: No Reply Matched');
+    assert.equal(RED.node.message(1).payload, 'ERR: No Reply Matched');
   });
 
   it('should grab the name and store it', function() {

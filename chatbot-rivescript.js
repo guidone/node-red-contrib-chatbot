@@ -71,11 +71,9 @@ module.exports = function(RED) {
       var reply = bot.reply(chatId, content);
       if (reply.match(/^ERR:/)) {
         // clone the object, otherwise side effect
-        msg = {
-          originalMessage: originalMessage,
-          payload: {content: reply}
-        };
-        node.send([null, msg]);
+        var cloned = RED.util.cloneMessage(msg);
+        cloned.payload = reply;
+        node.send([null, cloned]);
       } else {
         if (chatContext != null) {
           // set the vars back
