@@ -139,7 +139,7 @@ module.exports = function(RED) {
           var context = node.context();
           //var isAuthorized = node.config.isAuthorized(username, userId);
           var isAuthorized = true; // fix is authorized
-          var chatContext = ChatContextStore.getOrCreateChatContext(self, chatId);
+          var chatContext = ChatContextStore.getOrCreateChatContext(this, channelId);
 
           // todo store the user
           /*if (!_.isEmpty(username)) {
