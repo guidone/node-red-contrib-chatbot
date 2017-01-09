@@ -901,6 +901,35 @@ describe('NLP matcher', function() {
 
   });
 
+  it('should match a verb with preposition', function() {
+
+    var message = 'switch on lights dining room';
+    var terms = NplMatcher.parseSentence(message);
+    var rules = new NplMatcher.MatchRules([
+      'switch on','dining','room'
+    ]);
+    var matchedRules = NplMatcher.matchRules(terms, rules);
+
+    /*matchedRules.forEach(function(rules, idx) {
+     console.log('');
+     console.log('Rule #' + (idx + 1));
+     console.log(rules.toJSON());
+     });*/
+
+    assert.equal(matchedRules[0].count(), 3);
+
+    assert.equal(matchedRules[0].at(0).text, 'switch on');
+    assert.equal(matchedRules[0].at(0).distance, 0);
+
+    assert.equal(matchedRules[0].at(1).text, 'dining');
+    assert.equal(matchedRules[0].at(1).distance, 1);
+
+    assert.equal(matchedRules[0].at(2).text, 'room');
+    assert.equal(matchedRules[0].at(2).distance, 0);
+
+  });
+
+
 
 });
 
