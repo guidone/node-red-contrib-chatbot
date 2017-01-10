@@ -333,6 +333,8 @@ It's not possible to tell which node will be executed first, so if the first exe
 
 ## Changelog
 
+* **0.6.12** - Fix bug with Slack receive node (node still needs huge refactoring)
+* **0.6.11** - Fix error with the second output of the Rivescript node
 * **0.6.10** - Conversation node now accepts parameters also from the upstream node
 * **0.6.9** - Fixed RiveScript node (parser reloaded after deploy, better handling of syntax errors, status message), updated Telegram inline buttons (URL button, multi line buttons), minor bugs
 * **0.6.8** - Fixed bug missing .chat() in conversation node
