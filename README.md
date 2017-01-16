@@ -1,6 +1,9 @@
 <img src="./docs/logo/RedBot_logo.png" width="250" align="left">
 With **RedBot** you can visually build a full featured chat bot for **Telegram**, **Facebook Messenger** and **Slack** with Node-RED. ~~Almost~~ no coding skills required.
 
+![Release](https://img.shields.io/github/release/guidone/node-red-contrib-chatbot.svg)
+![npm](https://img.shields.io/npm/dm/node-red-contrib-chatbot.svg)
+
 > Node-RED is a tool for wiring together hardware devices, APIs and online services in new and interesting ways.
 
 ## Getting started
@@ -45,7 +48,8 @@ Now you have a useful bot that answers *"Hi there!"* to any received message. We
 
 ### Object nodes
 * **Audio**: takes the `msg.payload` binary (or a local file) and sends out as audio to the chat, can track response
-* **Buttons**: request information to the chat user using buttons using a predefined list
+* **Buttons**: inline buttons for quick replies
+* **Keyboard**: custom keyboard for quick replies
 * **Debug**: Debug incoming messages and chat contexts (useful to get the `chatId`)
 * **Image**: takes the `msg.payload` binary (or a local file) and sends out as image to the chat, can track response
 * **Log**: Convert a chat message (inbound or outbound) to a single line string suitable to be sent to a log file
@@ -59,7 +63,8 @@ Now you have a useful bot that answers *"Hi there!"* to any received message. We
 |              | Telegram | Facebook | Smooch | Slack |
 |--------------|----------|----------|--------|-------|
 | Audio        |     ✓    |     ✓    |    ✓   |   ✓   |
-| Buttons      |     ✓    |          |    ✓   |       |
+| Buttons     |     ✓    |     ✓    |    ✓   |       |
+| Keyboard |     ✓    |          |        |       |
 | Conversation |     ✓    |          |        |       |
 | Debug        |     ✓    |     ✓    |    ✓   |   ✓   |
 | Image        |     ✓    |     ✓    |    ✓   |       |
@@ -332,7 +337,7 @@ The reason is that **Node-RED** is asynchronous and single threaded, the *msg* o
 It's not possible to tell which node will be executed first, so if the first executed node changes the *msg* object , the second one will receive a different payload causing unwanted side effects very difficult to track down.
 
 ## Changelog
-
+* **0.6.13** - - **[breaking changes]** The previous "Buttons" node was renamed in "Keyboards", this feature is only available in Telegram. The previous "Inline Buttons" node was renamed "Buttons" and enabled for Telegram, Facebook and Smooch (with some additional options like value, label, urls)
 * **0.6.12** - Fix bug with Slack receive node (node still needs huge refactoring)
 * **0.6.11** - Fix error with the second output of the Rivescript node
 * **0.6.10** - Conversation node now accepts parameters also from the upstream node

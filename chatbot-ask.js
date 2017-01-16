@@ -11,7 +11,7 @@ module.exports = function(RED) {
     this.answers = config.answers;
     this.message = config.message;
     this.inline = config.inline;
-    this.transports = ['telegram', 'facebook', 'smooch'];
+    this.transports = ['telegram'];
 
     this.on('input', function(msg) {
 
