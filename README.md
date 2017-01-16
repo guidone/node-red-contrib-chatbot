@@ -65,7 +65,7 @@ Now you have a useful bot that answers *"Hi there!"* to any received message. We
 | Audio        |     ✓    |     ✓    |    ✓   |   ✓   |
 | Buttons     |     ✓    |     ✓    |    ✓   |       |
 | Keyboard |     ✓    |          |        |       |
-| Conversation |     ✓    |          |        |       |
+| Conversation |     ✓    |     ✓    |    ✓   |   ✓   |
 | Debug        |     ✓    |     ✓    |    ✓   |   ✓   |
 | Image        |     ✓    |     ✓    |    ✓   |       |
 | Log          |     ✓    |     ✓    |    ✓   |   ✓   |
