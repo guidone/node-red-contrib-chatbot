@@ -41,7 +41,7 @@
         addItem: function(container, i, answer) {
           var value = typeof answer == 'object' ? '' : answer;
           var row1 = $('<div/>').appendTo(container);
-          $('<input type="text" value="' + answer.value + '"/>', {
+          $('<input type="text" value="' + (answer.value != null ? answer.value : '') + '"/>', {
             class: 'node-input-rule-type',
             style: 'width:100%px; margin-right:10px;'
             })
