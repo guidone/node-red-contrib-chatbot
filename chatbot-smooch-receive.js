@@ -278,8 +278,15 @@ module.exports = function(RED) {
             bot.sendMessage(msg.payload.chatId, msg.payload.content, reportError);
             break;
 
-          case 'buttons':
-            return bot.sendActions(msg.payload.chatId, msg.payload.content, msg.payload.buttons);
+          case 'inline-buttons':
+            // docs here https://docs.smooch.io/rest/#action-buttons
+            return bot.sendActions(msg.payload.chatId, msg.payload.content, msg.payload.buttons)
+              .catch(function(err) {
+                reject(err);
+              })
+              .then(function() {
+                resolve();
+              });
             break;
 
           case 'photo':
@@ -341,6 +348,7 @@ module.exports = function(RED) {
 
     });
   }
+
   RED.nodes.registerType('chatbot-smooch-send', SmoochOutNode);
 
 };

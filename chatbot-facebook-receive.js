@@ -159,9 +159,7 @@ module.exports = function(RED) {
     }
 
     this.on('close', function (done) {
-
       var endpoints = ['/facebook', '/facebook/_status'];
-
       // remove middleware for facebook callback
       RED.httpNode._router.stack.forEach(function(route, i, routes) {
         if (route.route && _.contains(endpoints, route.route.path)) {

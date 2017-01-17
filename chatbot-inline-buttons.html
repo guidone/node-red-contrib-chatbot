@@ -54,12 +54,6 @@
         if ($.trim(answer.answer) == '') {
           answer.answer = null;
         }
-        if ($.trim(answer.value) != '' && $.trim(answer.label) == '') {
-          answer.label = answer.value;
-        }
-        if ($.trim(answer.label) != '' && $.trim(answer.value) == '') {
-          answer.value = answer.label;
-        }
         node.answers.push(answer);
       }
     },
@@ -97,7 +91,7 @@
               inputUrl.attr('disabled', $.trim(current) !== '');
             })
             .appendTo(row1);
-          var inputUrl = $('<input class="node-input-rule-type" type="text" name="button-url" value="' + url + '" placeholder="Redirect URL (optional)"/>')
+          var inputUrl = $('<input class="node-input-rule-type platform-smooch-telegram" type="text" name="button-url" value="' + url + '" placeholder="Redirect URL (optional)"/>')
             .css({
               width: '92%'
             })
@@ -108,7 +102,7 @@
               inputAnswer.attr('disabled', $.trim(current) !== '');
             })
             .appendTo(row2);
-          var inputImageUrl = $('<input class="node-input-rule-type platform-facebook" type="text" name="button-image-url" value="' + image_url + '" placeholder="Image URL (optional)"/>')
+          var inputImageUrl = $('<input class="node-input-rule-type platform-smooch-facebook" type="text" name="button-image-url" value="' + image_url + '" placeholder="Image URL (optional)"/>')
             .css({
               width: '92%'
             })
@@ -294,7 +288,21 @@ return msg;
 .platform-telegram-facebook {
   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADRJREFUGBlj1F764D8DAcACk78SJQ9jwmmdZQ/BbLgimABIMYwNU80EY+Cjh4QidJ+BPAQAUcEMK/ZfXe8AAAAASUVORK5CYII=),
     url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEJJREFUGBljtIqc8Z+BAGCByR9dlg5jwmnrqJlgNlwRiAcThKuCMpjQBbDxUUxCthLZVBRFyBLIJhJlHVGKGIkJJwAbVQzJXzC/gwAAAABJRU5ErkJggg==);
-  background-position: right 3px top 4px, right 3px top 14px;
+  background-position: right 2px top 2px, right 12px top 2px;
+  background-repeat: no-repeat, no-repeat;
+}
+
+.platform-smooch-facebook {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAENJREFUGBljXOyx/T8DAcAEk4/Z7gFjgmlkPlwRSAYmAaNhulAULfHcAVYIopEBiiKQBLoCkBiGIpAgOqCeIkZiwgkAEPoRCUXTyWoAAAAASUVORK5CYII=),
+    url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEJJREFUGBljtIqc8Z+BAGCByR9dlg5jwmnrqJlgNlwRiAcThKuCMpjQBbDxUUxCthLZVBRFyBLIJhJlHVGKGIkJJwAbVQzJXzC/gwAAAABJRU5ErkJggg==);
+  background-position: right 2px top 2px, right 12px top 2px;
+  background-repeat: no-repeat, no-repeat;
+}
+
+.platform-smooch-telegram {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAENJREFUGBljXOyx/T8DAcAEk4/Z7gFjgmlkPlwRSAYmAaNhulAULfHcAVYIopEBiiKQBLoCkBiGIpAgOqCeIkZiwgkAEPoRCUXTyWoAAAAASUVORK5CYII=),
+    url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADRJREFUGBlj1F764D8DAcACk78SJQ9jwmmdZQ/BbLgimABIMYwNU80EY+Cjh4QidJ+BPAQAUcEMK/ZfXe8AAAAASUVORK5CYII=);
+  background-position: right 2px top 2px, right 12px top 2px;
   background-repeat: no-repeat, no-repeat;
 }
 
