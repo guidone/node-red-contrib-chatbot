@@ -15,10 +15,10 @@
     },
     inputs: 1,
     outputs: 1,
-    paletteLabel: 'Buttons',
+    paletteLabel: 'Keyboards',
     icon: 'chatbot-ask.png',
     label: function() {
-      return this.name || 'Buttons';
+      return this.name || 'Keyboards';
     },
     oneditsave: function() {
       var answers = $("#node-input-answers-container").editableList('items');
@@ -41,7 +41,7 @@
         addItem: function(container, i, answer) {
           var value = typeof answer == 'object' ? '' : answer;
           var row1 = $('<div/>').appendTo(container);
-          $('<input type="text" value="' + answer.value + '"/>', {
+          $('<input type="text" value="' + (answer.value != null ? answer.value : '') + '"/>', {
             class: 'node-input-rule-type',
             style: 'width:100%px; margin-right:10px;'
             })
@@ -84,8 +84,8 @@
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-ask">
-<p>Present quick alternatives (canned answers) to the users through buttons <em>[Telegram, Facebook, Smooch]</em>.</p>
-<p>The button can be passed through the payload by the upstream node:</p>
+<p>Show quick alternatives (canned answers) to the users with custom keyboards <em>[Telegram]</em>.</p>
+<p>The custom keyboards can also be passed through the payload by the upstream node:</p>
 <br/>
 <pre>
 msg.payload = {

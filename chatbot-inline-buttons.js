@@ -10,7 +10,7 @@ module.exports = function(RED) {
     var node = this;
     this.answers = config.answers;
     this.message = config.message;
-    this.transports = ['telegram'];
+    this.transports = ['telegram', 'facebook', 'smooch'];
 
     this.on('input', function(msg) {
 

@@ -30,10 +30,10 @@
     },
     inputs: 1,
     outputs: 1,
-    paletteLabel: 'Inline Buttons',
+    paletteLabel: 'Buttons',
     icon: 'chatbot-inline-button.png',
     label: function() {
-      return this.name || 'Inline Buttons';
+      return this.name || 'Buttons';
     },
     oneditsave: function() {
       var answers = $("#node-input-answers-container").editableList('items');
@@ -47,17 +47,12 @@
           label: answers[idx].find('input[name=button-label]').val(),
           answer: answers[idx].find('input[name=button-answer]').val(),
           url: answers[idx].find('input[name=button-url]').val(),
+          image_url: answers[idx].find('input[name=button-image-url]').val(),
           alert: answers[idx].find('input[name=button-alert]').is(':checked'),
           newLine: answers[idx].find('input[name=new-line]').is(':checked')
         };
         if ($.trim(answer.answer) == '') {
           answer.answer = null;
-        }
-        if ($.trim(answer.value) != '' && $.trim(answer.label) == '') {
-          answer.label = answer.value;
-        }
-        if ($.trim(answer.label) != '' && $.trim(answer.value) == '') {
-          answer.value = answer.label;
         }
         node.answers.push(answer);
       }
@@ -73,11 +68,13 @@
           var value = item.value != null ? item.value : '';
           var answer = item.answer != null ? item.answer : '';
           var url = item.url != null ? item.url : '';
+          var image_url = item.image_url != null ? item.image_url : '';
 
           var row1 = $('<div/>').appendTo(container);
           var row2 = $('<div/>').css('marginTop','5px').appendTo(container);
           var row3 = $('<div/>').css('marginTop','5px').appendTo(container);
           var row4 = $('<div/>').css('marginTop','5px').appendTo(container);
+          var row5 = $('<div/>').css('marginTop','5px').appendTo(container);
           var inputLabel = $('<input class="node-input-rule-type" type="text" name="button-label" value="' + label + '" placeholder="Button label"/>')
             .css({
               width: '45%'
@@ -94,18 +91,7 @@
               inputUrl.attr('disabled', $.trim(current) !== '');
             })
             .appendTo(row1);
-          var inputAnswer = $('<input class="node-input-rule-type" type="text" name="button-answer" value="' + answer + '" placeholder="Button feedback (optional)"/>')
-            .css({
-              width: '92%'
-            })
-            .attr('disabled', $.trim(url) !== '')
-            .on('keyup', function() {
-              var current = $(this).val();
-              inputAlert.attr('disabled', $.trim(current) === '');
-              inputUrl.attr('disabled', $.trim(current) !== '');
-            })
-            .appendTo(row2);
-          var inputUrl = $('<input class="node-input-rule-type" type="text" name="button-url" value="' + url + '" placeholder="Redirect URL (optional)"/>')
+          var inputUrl = $('<input class="node-input-rule-type platform-smooch-telegram" type="text" name="button-url" value="' + url + '" placeholder="Redirect URL (optional)"/>')
             .css({
               width: '92%'
             })
@@ -115,7 +101,23 @@
               inputValue.attr('disabled', $.trim(current) !== '');
               inputAnswer.attr('disabled', $.trim(current) !== '');
             })
+            .appendTo(row2);
+          var inputImageUrl = $('<input class="node-input-rule-type platform-smooch-facebook" type="text" name="button-image-url" value="' + image_url + '" placeholder="Image URL (optional)"/>')
+            .css({
+              width: '92%'
+            })
             .appendTo(row3);
+          var inputAnswer = $('<input class="node-input-rule-type platform-telegram" type="text" name="button-answer" value="' + answer + '" placeholder="Button feedback (optional)"/>')
+            .css({
+              width: '92%'
+            })
+            .attr('disabled', $.trim(url) !== '')
+            .on('keyup', function() {
+              var current = $(this).val();
+              inputAlert.attr('disabled', $.trim(current) === '');
+              inputUrl.attr('disabled', $.trim(current) !== '');
+            })
+            .appendTo(row4);
           var inputAlert = $('<input type="checkbox" name="button-alert" value="on"/>')
             .css({
               width: 'auto',
@@ -124,8 +126,8 @@
             })
             .prop('checked', item.alert)
             .attr('disabled', $.trim(answer) === '')
-            .appendTo(row4);
-          $('<span>Alert</span>').appendTo(row4);
+            .appendTo(row5);
+          $('<span>Alert</span><span class="icon-platform-telegram"></span>').appendTo(row5);
           var inputNewLine = $('<input type="checkbox" name="new-line" value="on"/>')
             .css({
               width: 'auto',
@@ -134,8 +136,8 @@
               marginBottom: '5px'
             })
             .prop('checked', item.newLine)
-            .appendTo(row4);
-          $('<span>New line</span>').appendTo(row4);
+            .appendTo(row5);
+          $('<span>New line</span><span class="icon-platform-telegram"></span>').appendTo(row5);
           resizeRule(container);
         },
         resizeItem: resizeRule,
@@ -171,24 +173,36 @@
 <div class="form-row node-input-rule-container-row">
   <ol id="node-input-answers-container"></ol>
 </div>
+<div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;margin-bottom:10px;">
+  Some attributes apply for specific platform:<br>
+  <span class="icon-platform-facebook"></span> = <span style="font-size:10px">Facebook</span>
+  <span class="icon-platform-telegram"></span> = <span style="font-size:10px">Telegram</span>
+  <span class="icon-platform-smooch"></span> = <span style="font-size:10px">Smooch</span>
+  <span class="icon-platform-slack"></span> = <span style="font-size:10px">Slack</span>
+</div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-inline-buttons">
-<p>Present quick alternatives to the users through inline buttons and optionally show feedback <em>[Telegram]</em>.</p>
+<p>Present quick alternatives to the users through inline buttons (and optionally show feedback for Telegram)<em>[Telegram, Facebook, Smooch]</em>.</p>
 <p>For each button:
 <ul>
   <li><em>label</em>: The label of the button</li>
   <li><em>value (optional)</em>: The value of the button, max 64 bytes, this is the response that will re-routed the the flow
   like a normal message (will not be shown in the chat history of the client)</li>
   <li><em>Button feedback (optional)</em>: Show a button feedback when the user clicks the button</li>
-  <li><em>Button URL (optional)</em>: Open the browser to the specified URL (url and value cannot be used with the same button)</li>
-  <li><em>Alert (optional)</em>: Show the feedback with a modal alert in the client</li>
-  <li><em>New Line (optional)</em>: Starts a new row of buttons after this</li>
+  <li><em>Button URL (optional)</em>: Open the browser to the specified URL (url and value cannot be used with the same button).
+  Only for Telegram.
+  </li>
+  <li><em>Image URL (optional)</em>: Show image inside the button. Only for Facebook.
+  </li>
+  <li><em>Alert (optional)</em>: Show the feedback with a modal alert in the client. Only for Telegram.</li>
+  <li><em>New Line (optional)</em>: Starts a new row of buttons after this. Only for Telegram.</li>
 </ul>
 </p>
 <p>The button can be passed through the payload by the upstream node:</p>
 <br/>
 <pre>
+// todo add here image_url and newLine
 msg.payload = {
   message: 'The message with the buttons',
   buttons: [
@@ -196,7 +210,8 @@ msg.payload = {
       value: 'text 1',
       label: 'label of the button 1',
       answer: 'this is the answer',
-      alert: true
+      alert: true,
+      newLine: true
     },
     {
       value: 'text 2',
@@ -209,5 +224,97 @@ msg.payload = {
 return msg;
 </pre>
 </script>
+
+<style>
+
+.icon-platform-telegram {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADRJREFUGBlj1F764D8DAcACk78SJQ9jwmmdZQ/BbLgimABIMYwNU80EY+Cjh4QidJ+BPAQAUcEMK/ZfXe8AAAAASUVORK5CYII=);
+  margin-left: 3px;
+  margin-right: 3px;
+  vertical-align: middle;
+}
+
+.icon-platform-facebook {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEJJREFUGBljtIqc8Z+BAGCByR9dlg5jwmnrqJlgNlwRiAcThKuCMpjQBbDxUUxCthLZVBRFyBLIJhJlHVGKGIkJJwAbVQzJXzC/gwAAAABJRU5ErkJggg==);
+  margin-left: 3px;
+  margin-right: 3px;
+  vertical-align: middle;
+}
+
+.icon-platform-smooch {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAENJREFUGBljXOyx/T8DAcAEk4/Z7gFjgmlkPlwRSAYmAaNhulAULfHcAVYIopEBiiKQBLoCkBiGIpAgOqCeIkZiwgkAEPoRCUXTyWoAAAAASUVORK5CYII=);
+  margin-left: 3px;
+  margin-right: 3px;
+  vertical-align: middle;
+}
+
+.icon-platform-slack {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEtJREFUGBljDNvW/Z+BAGBBll/pWYLMZQjf3gPmwxWBFMAEUVQCOUzoAtj4cJNApiBbh2wqXBHIBGQJZOtJsw7ZKnRT4dYhW4XueACZqRaCOTsvfwAAAABJRU5ErkJggg==);
+  margin-left: 3px;
+  margin-right: 3px;
+  vertical-align: middle;
+}
+
+.platform-facebook {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEJJREFUGBljtIqc8Z+BAGCByR9dlg5jwmnrqJlgNlwRiAcThKuCMpjQBbDxUUxCthLZVBRFyBLIJhJlHVGKGIkJJwAbVQzJXzC/gwAAAABJRU5ErkJggg==);
+  background-position: right 2px top 2px;
+  background-repeat: no-repeat;
+}
+
+.platform-telegram {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADRJREFUGBlj1F764D8DAcACk78SJQ9jwmmdZQ/BbLgimABIMYwNU80EY+Cjh4QidJ+BPAQAUcEMK/ZfXe8AAAAASUVORK5CYII=);
+  background-position: right 2px top 2px;
+  background-repeat: no-repeat;
+}
+
+.platform-smooch {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAENJREFUGBljXOyx/T8DAcAEk4/Z7gFjgmlkPlwRSAYmAaNhulAULfHcAVYIopEBiiKQBLoCkBiGIpAgOqCeIkZiwgkAEPoRCUXTyWoAAAAASUVORK5CYII=);
+  background-position: right 2px top 2px;
+  background-repeat: no-repeat;
+}
+
+.platform-telegram-facebook {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADRJREFUGBlj1F764D8DAcACk78SJQ9jwmmdZQ/BbLgimABIMYwNU80EY+Cjh4QidJ+BPAQAUcEMK/ZfXe8AAAAASUVORK5CYII=),
+    url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEJJREFUGBljtIqc8Z+BAGCByR9dlg5jwmnrqJlgNlwRiAcThKuCMpjQBbDxUUxCthLZVBRFyBLIJhJlHVGKGIkJJwAbVQzJXzC/gwAAAABJRU5ErkJggg==);
+  background-position: right 2px top 2px, right 12px top 2px;
+  background-repeat: no-repeat, no-repeat;
+}
+
+.platform-smooch-facebook {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAENJREFUGBljXOyx/T8DAcAEk4/Z7gFjgmlkPlwRSAYmAaNhulAULfHcAVYIopEBiiKQBLoCkBiGIpAgOqCeIkZiwgkAEPoRCUXTyWoAAAAASUVORK5CYII=),
+    url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEJJREFUGBljtIqc8Z+BAGCByR9dlg5jwmnrqJlgNlwRiAcThKuCMpjQBbDxUUxCthLZVBRFyBLIJhJlHVGKGIkJJwAbVQzJXzC/gwAAAABJRU5ErkJggg==);
+  background-position: right 2px top 2px, right 12px top 2px;
+  background-repeat: no-repeat, no-repeat;
+}
+
+.platform-smooch-telegram {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAENJREFUGBljXOyx/T8DAcAEk4/Z7gFjgmlkPlwRSAYmAaNhulAULfHcAVYIopEBiiKQBLoCkBiGIpAgOqCeIkZiwgkAEPoRCUXTyWoAAAAASUVORK5CYII=),
+    url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADRJREFUGBlj1F764D8DAcACk78SJQ9jwmmdZQ/BbLgimABIMYwNU80EY+Cjh4QidJ+BPAQAUcEMK/ZfXe8AAAAASUVORK5CYII=);
+  background-position: right 2px top 2px, right 12px top 2px;
+  background-repeat: no-repeat, no-repeat;
+}
+
+.platform-telegram-facebook-smooch {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADRJREFUGBlj1F764D8DAcACk78SJQ9jwmmdZQ/BbLgimABIMYwNU80EY+Cjh4QidJ+BPAQAUcEMK/ZfXe8AAAAASUVORK5CYII=),
+  url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEJJREFUGBljtIqc8Z+BAGCByR9dlg5jwmnrqJlgNlwRiAcThKuCMpjQBbDxUUxCthLZVBRFyBLIJhJlHVGKGIkJJwAbVQzJXzC/gwAAAABJRU5ErkJggg==),
+  url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAENJREFUGBljXOyx/T8DAcAEk4/Z7gFjgmlkPlwRSAYmAaNhulAULfHcAVYIopEBiiKQBLoCkBiGIpAgOqCeIkZiwgkAEPoRCUXTyWoAAAAASUVORK5CYII=);
+  background-position: right 2px top 2px, right 12px top 2px, right 22px top 2px;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+}
+
+
+</style>
 
 

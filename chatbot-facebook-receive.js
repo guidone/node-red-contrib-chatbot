@@ -90,7 +90,7 @@ module.exports = function(RED) {
           chatContext.set('lastName', profile.last_name);
           chatContext.set('authorized', isAuthorized);
           chatContext.set('transport', 'facebook');
-          chatContext.set('message', botMsg.message.text);
+          chatContext.set('message', payload.content);
 
           var chatLog = new ChatLog(chatContext);
           return chatLog.log({
@@ -159,9 +159,7 @@ module.exports = function(RED) {
     }
 
     this.on('close', function (done) {
-
       var endpoints = ['/facebook', '/facebook/_status'];
-
       // remove middleware for facebook callback
       RED.httpNode._router.stack.forEach(function(route, i, routes) {
         if (route.route && _.contains(endpoints, route.route.path)) {
@@ -191,7 +189,17 @@ module.exports = function(RED) {
         }
 
         var message = botMsg.message;
-        if (!_.isEmpty(message.text)) {
+        if (!_.isEmpty(message.quick_reply)) {
+          resolve({
+            chatId: chatId,
+            messageId: messageId,
+            type: 'message',
+            content: message.quick_reply.payload,
+            date: moment(botMsg.timestamp),
+            inbound: true
+          });
+          return;
+        } else if (!_.isEmpty(message.text)) {
           resolve({
             chatId: chatId,
             messageId: messageId,
@@ -371,15 +379,19 @@ module.exports = function(RED) {
 
             break;
 
-          case 'buttons':
-            // prepare buttons
+          case 'inline-buttons':
             var quickReplies = _(msg.payload.buttons).map(function(button) {
-              return {
+              var quickReply = {
                 content_type: 'text',
-                title: button,
-                payload: button
+                title: button.label,
+                payload: !_.isEmpty(button.value) ? button.value : button.label
               };
+              if (!_.isEmpty(button.image_url)) {
+                quickReply.image_url = button.image_url;
+              }
+              return quickReply;
             });
+
             // send
             bot.sendMessage(
               msg.payload.chatId,
@@ -389,6 +401,7 @@ module.exports = function(RED) {
               },
               reportError
             );
+
             break;
 
           case 'message':
