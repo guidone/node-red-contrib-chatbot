@@ -135,5 +135,53 @@ describe('Chat message node', function() {
     assert.equal(RED.node.message().payload.content, 'I ❤️ ☕️!');
   });
 
+  it('should use {{payload}} with a number as input', function() {
+    var msg = RED.createMessage(42);
+    RED.node.config({
+      message: 'There is a {{payload}} at the door',
+      track: false,
+      answer: false
+    });
+    MessageBlock(RED);
+    RED.node.get().emit('input', msg);
+    assert.equal(RED.node.message().payload.content, 'There is a 42 at the door');
+  });
+
+  it('should use {{payload}} with a string as input', function() {
+    var msg = RED.createMessage('42');
+    RED.node.config({
+      message: 'There is a {{payload}} at the door',
+      track: false,
+      answer: false
+    });
+    MessageBlock(RED);
+    RED.node.get().emit('input', msg);
+    assert.equal(RED.node.message().payload.content, 'There is a 42 at the door');
+  });
+
+  it('should use {{payload}} with a object as input', function() {
+    var msg = RED.createMessage({id: 42});
+    RED.node.config({
+      message: 'There is a {{payload}} at the door',
+      track: false,
+      answer: false
+    });
+    MessageBlock(RED);
+    RED.node.get().emit('input', msg);
+    assert.equal(RED.node.message().payload.content, 'There is a [object Object] at the door');
+  });
+
+  it('should use {{payload}} with an array as input', function() {
+    var msg = RED.createMessage([1,2,3]);
+    RED.node.config({
+      message: 'There is a {{payload}} at the door',
+      track: false,
+      answer: false
+    });
+    MessageBlock(RED);
+    RED.node.get().emit('input', msg);
+    assert.equal(RED.node.message().payload.content, 'There is a 1,2,3 at the door');
+  });
+
 });
 

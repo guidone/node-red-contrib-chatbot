@@ -337,7 +337,8 @@ The reason is that **Node-RED** is asynchronous and single threaded, the *msg* o
 It's not possible to tell which node will be executed first, so if the first executed node changes the *msg* object , the second one will receive a different payload causing unwanted side effects very difficult to track down.
 
 ## Changelog
-* **0.6.13** - - **[breaking changes]** The previous "Buttons" node was renamed in "Keyboards", this feature is only available in Telegram. The previous "Inline Buttons" node was renamed "Buttons" and enabled for Telegram, Facebook and Smooch (with some additional options like value, label, urls)
+* **0.6.14** - Fixed use of {{payload}} in message template
+* **0.6.13** - **[breaking changes]** The previous "Buttons" node was renamed in "Keyboards", this feature is only available in Telegram. The previous "Inline Buttons" node was renamed "Buttons" and enabled for Telegram, Facebook and Smooch (with some additional options like value, label, urls)
 * **0.6.12** - Fix bug with Slack receive node (node still needs huge refactoring)
 * **0.6.11** - Fix error with the second output of the Rivescript node
 * **0.6.10** - Conversation node now accepts parameters also from the upstream node
