@@ -152,6 +152,8 @@ module.exports = function(RED) {
         }
         // do not remove from hash, the user could click again
       }
+      // copy the "from" of the message containing user information, not chatbot detail
+      botMsg.message.from = botMsg.from;
       // send answer back to client
       self.telegramBot.answerCallbackQuery(botMsg.id, answer, alert)
         .then(function() {
