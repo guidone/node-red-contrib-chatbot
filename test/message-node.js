@@ -183,5 +183,75 @@ describe('Chat message node', function() {
     assert.equal(RED.node.message().payload.content, 'There is a 1,2,3 at the door');
   });
 
+  it('should send a message randomly picked from array', function() {
+    var msg = RED.createMessage();
+    RED.node.config({
+      message: ['Message 1', 'Message 2', 'Message 3'],
+      track: false,
+      answer: false
+    });
+    MessageBlock(RED);
+    RED.node.get().emit('input', msg);
+    assert.oneOf(RED.node.message().payload.content, ['Message 1', 'Message 2', 'Message 3']);
+  });
+
+  it('should have even distribution for a randomly picked message', function() {
+    var msg = RED.createMessage();
+    RED.node.config({
+      message: ['Message 1', 'Message 2', 'Message 3'],
+      track: false,
+      answer: false
+    });
+    MessageBlock(RED);
+    // check distribution
+    var stack = [];
+    for(var idx = 0; idx < 1000; idx++) {
+      RED.node.get().emit('input', msg);
+      stack.push(RED.node.message().payload.content);
+    }
+    var stats = _.countBy(stack);
+
+    assert.isAtLeast(stats['Message 1'], 290);
+    assert.isAtMost(stats['Message 1'], 380);
+    assert.isAtLeast(stats['Message 2'], 290);
+    assert.isAtMost(stats['Message 2'], 380);
+    assert.isAtLeast(stats['Message 3'], 290);
+    assert.isAtMost(stats['Message 3'], 380);
+  });
+
+  it('should send a message randomly picked from array passed as payload', function() {
+    var msg = RED.createMessage(['Message 1', 'Message 2', 'Message 3']);
+    RED.node.config({
+      track: false,
+      answer: false
+    });
+    MessageBlock(RED);
+    RED.node.get().emit('input', msg);
+    assert.oneOf(RED.node.message().payload.content, ['Message 1', 'Message 2', 'Message 3']);
+  });
+
+  it('should have even distribution for a randomly picked message passed as payload', function() {
+    RED.node.config({
+      track: false,
+      answer: false
+    });
+    MessageBlock(RED);
+    // check distribution
+    var stack = [];
+    for(var idx = 0; idx < 1000; idx++) {
+      var msg = RED.createMessage(['Message 1', 'Message 2', 'Message 3']);
+      RED.node.get().emit('input', msg);
+      stack.push(RED.node.message().payload.content);
+    }
+    var stats = _.countBy(stack);
+
+    assert.isAtLeast(stats['Message 1'], 290);
+    assert.isAtMost(stats['Message 1'], 380);
+    assert.isAtLeast(stats['Message 2'], 290);
+    assert.isAtMost(stats['Message 2'], 380);
+    assert.isAtLeast(stats['Message 3'], 290);
+    assert.isAtMost(stats['Message 3'], 380);
+  });
+
 });
 

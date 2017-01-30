@@ -13,6 +13,11 @@ module.exports = function(RED) {
     this.parse_mode = config.parse_mode;
     this.transports = ['telegram', 'slack', 'facebook', 'smooch'];
 
+    this.pickOne = function(messages) {
+      var luck = Math.floor(Math.random() * messages.length);
+      return messages[luck];
+    };
+
     this.on('input', function(msg) {
       var message = node.message;
       var answer = node.answer;
@@ -28,9 +33,11 @@ module.exports = function(RED) {
       }
 
       if (!_.isEmpty(node.message)) {
-        message = node.message;
+        message = _.isArray(node.message) ? node.pickOne(node.message) : node.message;
       } else if (_.isString(msg.payload) && !_.isEmpty(msg.payload)) {
         message = msg.payload;
+      } else if (_.isArray(msg.payload) && !_.isEmpty(msg.payload)) {
+        message = node.pickOne(msg.payload);
       } else if (_.isNumber(msg.payload)) {
         message = String(msg.payload);
       } else {

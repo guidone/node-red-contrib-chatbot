@@ -7,7 +7,7 @@
         value: ''
       },
       message: {
-        value: ''
+        value: ['']
       },
       answer: {
         value: false
@@ -25,6 +25,53 @@
     icon: 'chatbot-message.png',
     label: function() {
       return this.name || 'Text';
+    },
+    oneditsave: function() {
+      var messages = $("#node-input-message-container").editableList('items');
+      var node = this;
+      node.message = [];
+
+      var idx;
+      for(idx = 0; idx < messages.length; idx++) {
+        node.message.push({
+          message: messages[idx].find('textarea').val()
+        });
+      }
+    },
+
+    oneditprepare: function() {
+      $('#node-input-message-container')
+        .css('min-height','300px')
+        .css('min-width','450px')
+        .editableList({
+          addButton: 'Add message version',
+          addItem: function (container, i, item) {
+            var row = $('<div/>').appendTo(container);
+            var content = '';
+            if (typeof item == 'string') {
+              content = item;
+            } else if (item.message != null) {
+              content = item.message;
+            }
+            $('<textarea placeholder="Message">' + content + '</textarea>')
+              .css({
+                width: '93%',
+                height: '100px'
+              })
+              .appendTo(row);
+          },
+          removable: true,
+          sortable: true
+        });
+
+      var message = this.message;
+      if (typeof message == 'string') {
+        message = [message];
+      }
+      var idx;
+      for (idx = 0; idx < message.length; idx++) {
+        $("#node-input-message-container").editableList('addItem', message[idx]);
+      }
     }
   });
 </script>
@@ -34,11 +81,11 @@
   <label for="node-input-name"><i class="icon-tag"></i> Name</label>
   <input type="text" id="node-input-name" placeholder="Name">
 </div>
-<div class="form-row">
-  <label for="node-input-message"><i class="icon-envelope"></i> Message</label>
-  <textarea id="node-input-message" placeholder="Message" style="width:93%;height:200px;"></textarea>
+<div class="form-row node-input-rule-container-row">
+  <ol id="node-input-message-container"></ol>
   <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;">
-    Supports handlebars-like variables for chat context like {{firstName}}, {{lastName}}, etc. and emoticons (:smile:, etc.)
+    Supports handlebars-like variables for chat context like {{firstName}}, {{lastName}}, etc. and emoticons (:smile:, etc.).
+    In case of multiple version of the content, one will be randomly chosen.
   </div>
 </div>
 <div class="form-row">
@@ -58,12 +105,32 @@
   </div>
 </div>
 </script>
-
 <script type="text/x-red" data-help-name="chatbot-message">
 <p>Plain text message with templating capabilities <em>[Telegram, Facebook, Smooch, Slack]</em></p>
-<p>The text message can be passed through the payload by the upstream node:</p>
+<p>
+Used to send a plain text message to the chatbot's user, a handlebars-like syntax can be used to insert values from the
+chat context, for example:
+<pre>
+Hi {{firstName}}, your check is {{total}} euros
+</pre>
+Some <a href="https://github.com/guidone/node-red-contrib-chatbot#template-variables" target="_blank">special values</a> (like {{firstName}}, {{lastName}}, {{chatId}}, etc) are always available.
+</p>
+<p>
+It's possible to specify more content versions for the same message, one will we randomly chosen with an even distribution.
+</p>
+<p>
+The text message can be passed through the payload by the upstream node:
+</p>
 <pre>
 msg.payload = 'I am a message';
+return msg;
+</pre>
+or for multiple versions of the message
+<pre>
+msg.payload = [
+  'First version of the message',
+  'Second version of the message'
+];
 return msg;
 </pre>
 </script>
