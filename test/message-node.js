@@ -186,7 +186,7 @@ describe('Chat message node', function() {
   it('should send a message randomly picked from array', function() {
     var msg = RED.createMessage();
     RED.node.config({
-      message: ['Message 1', 'Message 2', 'Message 3'],
+      message: [{message: 'Message 1'}, {message: 'Message 2'}, {message: 'Message 3'}],
       track: false,
       answer: false
     });
@@ -198,7 +198,7 @@ describe('Chat message node', function() {
   it('should have even distribution for a randomly picked message', function() {
     var msg = RED.createMessage();
     RED.node.config({
-      message: ['Message 1', 'Message 2', 'Message 3'],
+      message: [{message: 'Message 1'}, {message: 'Message 2'}, {message: 'Message 3'}],
       track: false,
       answer: false
     });

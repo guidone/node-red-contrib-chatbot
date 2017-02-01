@@ -337,6 +337,7 @@ The reason is that **Node-RED** is asynchronous and single threaded, the *msg* o
 It's not possible to tell which node will be executed first, so if the first executed node changes the *msg* object , the second one will receive a different payload causing unwanted side effects very difficult to track down.
 
 ## Changelog
+* **0.6.17** - Fix bug on node message (multiple content)
 * **0.6.16** - Added multiple content versions for the message node (random pick)
 * **0.6.15** - Fixed incorrect "from" information aswering inline buttons in Telegram
 * **0.6.14** - Fixed use of {{payload}} in message template

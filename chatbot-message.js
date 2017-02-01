@@ -15,7 +15,7 @@ module.exports = function(RED) {
 
     this.pickOne = function(messages) {
       var luck = Math.floor(Math.random() * messages.length);
-      return messages[luck];
+      return _.isString(messages[luck]) ? messages[luck] : messages[luck].message;
     };
 
     this.on('input', function(msg) {
