@@ -32,7 +32,7 @@ module.exports = function(RED) {
         if (chatContext != null) {
           console.log(grey('------ ChatBot context --------------'));
           _(chatContext.all()).each(function (value, key) {
-            console.log(green(key + ':'), white(value));
+            console.log(green(key + ':'), value instanceof Buffer ? '<Buffer>' : white(value));
           });
         }
       } else {
