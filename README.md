@@ -350,6 +350,7 @@ This might be useful to take appropriate actions based on the chat user (*chatId
 ```
 
 ## Changelog
+* **0.6.18** - Fix catch all node with Telegram, parse integer number, improved debug node
 * **0.6.17** - Fix bug on node message (multiple content)
 * **0.6.16** - Added multiple content versions for the message node (random pick)
 * **0.6.15** - Fixed incorrect "from" information aswering inline buttons in Telegram

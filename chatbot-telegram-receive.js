@@ -4,7 +4,7 @@ var moment = require('moment');
 var ChatLog = require('./lib/chat-log');
 var ChatContextStore = require('./lib/chat-context-store');
 var helpers = require('./lib/telegram/telegram');
-var DEBUG = true;
+var DEBUG = false;
 
 module.exports = function(RED) {
 
