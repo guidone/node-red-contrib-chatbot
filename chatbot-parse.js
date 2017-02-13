@@ -38,6 +38,13 @@ module.exports = function(RED) {
               parsedValue = msg.payload.content;
             }
             break;
+          case 'number-integer':
+            if (_.isNumber(msg.payload.content)) {
+              parsedValue = Math.round(msg.payload.content);
+            } else if (_.isString(msg.payload.content) && msg.payload.content.match(/^[0-9]+$/)) {
+              parsedValue = parseInt(msg.payload.content, 10);
+            }
+            break;
           case 'boolean':
             if (_.isString(msg.payload.content) && _(yesWords).contains(msg.payload.content.toLowerCase())) {
               parsedValue = true;

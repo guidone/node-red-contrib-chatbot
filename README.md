@@ -336,7 +336,21 @@ return cloned;
 The reason is that **Node-RED** is asynchronous and single threaded, the *msg* object sent to the sibling nodes is the very same instance.
 It's not possible to tell which node will be executed first, so if the first executed node changes the *msg* object , the second one will receive a different payload causing unwanted side effects very difficult to track down.
 
+### Error Handling
+The **Node-RED**  `Catch all node`  will intercept any relevant error raised by the receivers/senders.
+This might be useful to take appropriate actions based on the chat user (*chatId*). The error payload will be:
+
+```
+{
+  chatId: 1234,
+  code: 403, // error code, it depends on the platform
+  description: 'Forbidden: bot was blocked by the user',
+  error: ... // original error object
+}
+```
+
 ## Changelog
+* **0.6.18** - Fix catch all node with Telegram, parse integer number, improved debug node
 * **0.6.17** - Fix bug on node message (multiple content)
 * **0.6.16** - Added multiple content versions for the message node (random pick)
 * **0.6.15** - Fixed incorrect "from" information aswering inline buttons in Telegram

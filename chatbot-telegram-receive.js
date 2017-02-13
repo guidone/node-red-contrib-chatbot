@@ -4,7 +4,7 @@ var moment = require('moment');
 var ChatLog = require('./lib/chat-log');
 var ChatContextStore = require('./lib/chat-context-store');
 var helpers = require('./lib/telegram/telegram');
-var DEBUG = true;
+var DEBUG = false;
 
 module.exports = function(RED) {
 
@@ -339,6 +339,30 @@ module.exports = function(RED) {
       RED.events.removeListener('node:' + config.id, handler);
     });
 
+    this.handleError = function(error, msg) {
+      // convert to string
+      var plainError = error != null ? String(error) : '';
+      // remove anything before any eventual '{', telegram lib returns a plain text error
+      // in order to parse it
+      var jsonError = plainError.replace(/^.*\{/,'{');
+      var errorCode = null;
+      var errorDescription = plainError;
+      // now try to parse
+      try {
+        var parsedError = JSON.parse(jsonError);
+        errorCode = parsedError.error_code;
+        errorDescription = parsedError.description;
+      } catch(e) {
+        // do nothing
+      }
+      // send out, second parameter goes through the catch all node
+      node.error(plainError, {
+        chatId: msg.payload.chatId,
+        code: errorCode,
+        description: errorDescription
+      });
+    };
+
     this.on('input', function (msg) {
 
       // check if the message is from telegram
@@ -348,15 +372,15 @@ module.exports = function(RED) {
       }
 
       if (msg.payload == null) {
-        node.warn("msg.payload is empty");
+        node.warn('msg.payload is empty');
         return;
       }
       if (msg.payload.chatId == null) {
-        node.warn("msg.payload.chatId is empty");
+        node.warn('msg.payload.chatId is empty');
         return;
       }
       if (msg.payload.type == null) {
-        node.warn("msg.payload.type is empty");
+        node.warn('msg.payload.type is empty');
         return;
       }
 
@@ -382,36 +406,52 @@ module.exports = function(RED) {
           switch (type) {
             case 'message':
               node.telegramBot.sendMessage(chatId, msg.payload.content, msg.payload.options)
-                .catch(node.error);
+                .catch(function(error) {
+                  node.handleError(error, msg);
+                });
               break;
             case 'photo':
               node.telegramBot.sendPhoto(chatId, msg.payload.content, {
                 caption: msg.payload.caption
-              }).catch(node.error);
+              }).catch(function(error) {
+                node.handleError(error, msg);
+              });
               break;
             case 'document':
               node.telegramBot.sendDocument(chatId, msg.payload.content, msg.payload.options)
-                .catch(node.error);
+                .catch(function(error) {
+                  node.handleError(error, msg);
+                });
               break;
             case 'sticker':
               node.telegramBot.sendSticker(chatId, msg.payload.content, msg.payload.options)
-                .catch(node.error);
+                .catch(function(error) {
+                  node.handleError(error, msg);
+                });
               break;
             case 'video':
               node.telegramBot.sendVideo(chatId, msg.payload.content, msg.payload.options)
-                .catch(node.error);
+                .catch(function(error) {
+                  node.handleError(error, msg);
+                });
               break;
             case 'audio':
               node.telegramBot.sendVoice(chatId, msg.payload.content, msg.payload.options)
-                .catch(node.error);
+                .catch(function(error) {
+                  node.handleError(error, msg);
+                });
               break;
             case 'location':
               node.telegramBot.sendLocation(chatId, msg.payload.content.latitude, msg.payload.content.longitude, msg.payload.options)
-                .catch(node.error);
+                .catch(function(error) {
+                  node.handleError(error, msg);
+                });
               break;
             case 'action':
               node.telegramBot.sendChatAction(chatId, msg.payload.waitingType != null ? msg.payload.waitingType : 'typing')
-                .catch(node.error);
+                .catch(function(error) {
+                  node.handleError(error, msg);
+                });
               break;
             case 'request':
               var keyboard = null;
@@ -439,7 +479,9 @@ module.exports = function(RED) {
                       'one_time_keyboard': true
                     })
                   })
-                  .catch(node.error);
+                  .catch(function(error) {
+                    node.handleError(error, msg);
+                  });
               } else {
                 node.error('Request type not supported');
               }
@@ -484,7 +526,9 @@ module.exports = function(RED) {
                 reply_markup: JSON.stringify({
                   inline_keyboard: inlineKeyboard
                 })
-              }).catch(node.error);
+              }).catch(function(error) {
+                node.handleError(error, msg);
+              });
               break;
             case 'buttons':
               if (_.isEmpty(msg.payload.content)) {
@@ -505,7 +549,9 @@ module.exports = function(RED) {
                 chatId,
                 msg.payload.content,
                 buttons
-              ).catch(node.error);
+              ).catch(function(error) {
+                node.handleError(error, msg);
+              });
               break;
 
             default:
