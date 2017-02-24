@@ -146,14 +146,17 @@ For example suppose we would like to offer the the chatbot user the option to re
 
 ![Example Email](./docs/images/example-email.png)
 
-The first block listen to incoming message and verify that it matches a set of tokens, if it matches the message is routed to the first output, otherwise the second output.
+The first block listen to incoming message and verify that it matches a set of tokens, if it matches the message is routed to the first output or second output, otherwise the last one.
 The `Listen Node` is configured in this way
 
 ![Example Listen Node](./docs/images/example-listen.png)
 
-basically there are a set of tokens that must be present in the message in order to match. It' sufficient that one set of tokens matches to have the message routed to the first output.
-The `Listen Node` also takes into account small changes to the word (using  Levenshtein distance algorithm), for example, in that case
+All the keywords for a row must match the input message in order to have the message go through the related output. Smaller keywords requires an exact match, longer ones match with Levehnstein algorithm (so for example the keyword "building" also matches "boilding").
 
+The token `->email` it's used to save the matched word to the chat context variable *email*.
+The keyword `*` matches everything and it's generally used as a catch-all in case all previous rules failed. Remember that if a rules is matched, the following rules are skipped and not tested.
+
+For example:
 ```
 "send your cv to an_email@gmail.com" // ok
 "send your curriculum to an_email@gmail.com" // ok
@@ -162,7 +165,19 @@ The `Listen Node` also takes into account small changes to the word (using  Leve
 "send to an_email@gmail.com" // no, missing cv or curriculum token
 ```
 
-There are some special tokes like `{{email}}` that matches any token that looks like and email and store it the chat context (in that case the key will be "email").
+Listen node is also capable of a basic simple analysis of the sentence (only available for **English**) and a more specific match is possible to specify also the type for a keyword.
+
+Available types are: *word* (catches everything), *noun*, *verb*, *adjective*, *conjunction*, *adverb*, *symbol*, *date*, *determiner*, *person*, *number*, *email*, *url*, *currency*.
+
+For a better match we can rewrite the rules in this way, in that case only valid email will be catched
+
+![Example Listen Node](./docs/images/example-listen-2.png)
+
+The generic syntax of a token is `text-to-match[type]->variable`
+
+* *text-to-match*: the text to match
+* *type*: the type of token (verb, number, url, etc.)
+* *variable*: the variable name to store the value into
 
 A little bit of coding is required to prepare the payload for the email node
 
@@ -180,7 +195,7 @@ msg.attachments = [
 return msg;
 ```
 
-The first output of the `Listen Node` is also connected to a confirmation message to be sent back to the user: `Sending resume to {{email}}`. Here the variable `{{email}}` is automatically replaced by the value present in the chat context.
+The output 1 and 2 of the `Listen Node` are connected to a confirmation message to be sent back to the user: `Sending resume to {{myemail}}`. Here the variable `{{myemail}}` is automatically replaced by the value present in the chat context.
 
 ### Tracking answers
 Complex chatbots may require to request some information to the user and then go on with the rest of the flow, in this example
@@ -351,6 +366,7 @@ This might be useful to take appropriate actions based on the chat user (*chatId
 ```
 
 ## Changelog
+* **0.6.19** - **[breaking changes]** Improved Listen node, better NLP and variables extraction. Previous special tokens like *{email}*, *{url}* are no longer valid
 * **0.6.18** - Fix catch all node with Telegram, parse integer number, improved debug node
 * **0.6.17** - Fix bug on node message (multiple content)
 * **0.6.16** - Added multiple content versions for the message node (random pick)

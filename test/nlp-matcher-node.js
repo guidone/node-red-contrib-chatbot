@@ -929,6 +929,40 @@ describe('NLP matcher', function() {
 
   });
 
+  it('should match sentenct with just the variable', function() {
+
+    var message = 'send cv to guido.bellomo@gmail.com';
+    var terms = NplMatcher.parseSentence(message);
+    var rules = new NplMatcher.MatchRules([
+      'send', 'cv', 'to', '->email'
+    ]);
+
+
+    var matchedRules = NplMatcher.matchRules(terms, rules);
+
+    /*matchedRules.forEach(function(rules, idx) {
+     console.log('');
+     console.log('Rule #' + (idx + 1));
+     console.log(rules.toJSON());
+     });*/
+
+    assert.equal(matchedRules[0].count(), 4);
+
+    assert.equal(matchedRules[0].at(0).text, 'send');
+    assert.equal(matchedRules[0].at(0).distance, 0);
+
+    assert.equal(matchedRules[0].at(1).text, 'cv');
+    assert.equal(matchedRules[0].at(1).distance, 0);
+
+    assert.equal(matchedRules[0].at(2).text, 'to');
+    assert.equal(matchedRules[0].at(2).distance, 0);
+
+    assert.equal(matchedRules[0].at(3).value, 'guido.bellomo@gmail.com');
+    assert.equal(matchedRules[0].at(3).distance, 0);
+
+  });
+
+
 
 
 });
