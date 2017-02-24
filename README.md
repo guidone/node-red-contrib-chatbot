@@ -11,14 +11,15 @@ With **RedBot** you can visually build a full featured chat bot for **Telegram**
 First of all install  [Node-RED](http://nodered.org/docs/getting-started/installation)
 
 ```
-sudo npm install -g node-red
+$ sudo npm install -g node-red
 ```
 
-Then open  the user data directory  `$HOME/.node-red`  and install the package
+Then open  the user data directory  `~/.node-red`  and install the package
 
 ```
-cd $HOME/.node-red
-npm install node-red-contrib-chatbot
+$ cd ~/.node-red
+$ npm install node-red-contrib-chatbot
+$ node-red
 ```
 
 Then run
