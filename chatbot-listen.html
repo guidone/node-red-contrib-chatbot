@@ -63,6 +63,7 @@
       $('#node-input-sentences-container')
         .css('min-height','300px').css('min-width', '450px')
         .editableList({
+          addButton: 'Add rule',
           addItem: function(container, i, sentence) {
             var value = typeof sentence == 'object' ? '' : sentence;
             var row = $('<div/>').appendTo(container);
@@ -591,11 +592,12 @@
 </p>
 <p>
   All the keywords for a row must match the input message in order to have the message go through the related output. Smaller keywords
-  requires an exact match, longer ones match with Levehnstein algorithm (so for example the keyword "building" also matches
-  "boilding").
+  requires an exact match, longer ones match with <em>Levehnstein</em> algorithm (so for example the keyword <em>"building"</em> also matches
+  <em>"boilding"</em>).
 </p>
 <p>
-  The first row that matches stops the todo
+  If a rule is matched, the following rules are skipped and not evaluated. A rule with just a <code>*</code> matches
+  everything and it's generally used as a catch-all at the end if every other rules are not matched.
 </p>
 <p>
   Given these two set of tokens
@@ -650,6 +652,14 @@ Hi {{name}}, I'll send the curriculum vitae to {{toemail}}
 </pre>
 </p>
 <p>
+  The generic syntax of a token is <code>text-to-match[type]->variable</code>:
+<ul>
+<li><em>text-to-match</em>: the text to match</li>
+<li><em>type</em>: the type of token (verb, number, url, etc.)</li>
+<li><em>variable</em>: the variable name to store the value into</li>
+</ul>
+</p>
+<p>
 Available types:
 <ul>
 <li>
@@ -670,6 +680,5 @@ Available types:
 <li><strong>date</strong>: Matches a date (e.g. "10th January" or "10/1/1972") and convert it to a date object. If the year or month
 are not specified, the current year or month will be used</li>
 </ul>
-
 </p>
 </script>
