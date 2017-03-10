@@ -4,6 +4,7 @@ var moment = require('moment');
 var ChatLog = require('./lib/chat-log');
 var ChatContextStore = require('./lib/chat-context-store');
 var helpers = require('./lib/telegram/telegram');
+var utils = require('./lib/helpers/utils');
 var DEBUG = false;
 
 module.exports = function(RED) {
@@ -387,8 +388,8 @@ module.exports = function(RED) {
       //var context = node.context();
       var buttons = null;
       var track = node.track;
-      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
-      var chatContext = msg.chat();
+      var chatId = utils.getChatId(msg);
+      var chatContext = utils.getChatContext(msg);
       var type = msg.payload.type;
 
       // check if this node has some wirings in the follow up pin, in that case
@@ -405,7 +406,6 @@ module.exports = function(RED) {
 
           switch (type) {
             case 'message':
-              console.log('mando---', msg.payload.content, msg.payload.options);
               node.telegramBot.sendMessage(chatId, msg.payload.content, msg.payload.options)
                 .catch(function(error) {
                   node.handleError(error, msg);
