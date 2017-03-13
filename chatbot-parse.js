@@ -1,4 +1,5 @@
 var _ = require('underscore');
+var nlp = require('nlp_compromise');
 
 module.exports = function(RED) {
 
@@ -43,6 +44,12 @@ module.exports = function(RED) {
               parsedValue = Math.round(msg.payload.content);
             } else if (_.isString(msg.payload.content) && msg.payload.content.match(/^[0-9]+$/)) {
               parsedValue = parseInt(msg.payload.content, 10);
+            } else {
+              var parsedSentence = nlp.text(msg.payload.content);
+              var term = _(parsedSentence.terms()).find(function(term) {
+                return term.pos.Value;
+              });
+              parsedValue = term != null ? term.number : null;
             }
             break;
           case 'boolean':
