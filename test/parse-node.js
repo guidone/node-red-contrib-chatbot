@@ -78,9 +78,5 @@ describe('Chat parse node', function() {
     assert.isNull(RED.node.message(1));
   });
 
-
-
-
-
 });
 

@@ -366,6 +366,7 @@ This might be useful to take appropriate actions based on the chat user (*chatId
 ```
 
 ## Changelog
+
 * **0.6.19** - **[breaking changes]** Improved Listen node, better NLP and variables extraction. Previous special tokens like *{email}*, *{url}* are no longer valid
 * **0.6.18** - Fix catch all node with Telegram, parse integer number, improved debug node
 * **0.6.17** - Fix bug on node message (multiple content)
