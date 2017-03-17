@@ -1,4 +1,4 @@
-<img src="./docs/logo/RedBot_logo.png" width="250" align="left">
+<img src="https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/logo/RedBot_logo.png" width="250" align="left">
 With **RedBot** you can visually build a full featured chat bot for **Telegram**, **Facebook Messenger** and **Slack** with Node-RED. ~~Almost~~ no coding skills required.
 
 ![Release](https://img.shields.io/github/release/guidone/node-red-contrib-chatbot.svg)
@@ -33,15 +33,15 @@ Use **@BotFather** to create a chat bot, [follow instructions here](https://core
 
 Then open your **Node-RED** and add a `Telegram Receiver`, in the configuration panel, add a new bot and paste the **token**
 
-![Telegram Receiver](./docs/images/example-telegram-receiver.png)
+![Telegram Receiver](https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/images/example-telegram-receiver.png)
 
 Now add a  `Message`  node and connect to the  `Telegram Receiver`
 
-![Simple Message](./docs/images/example-simple-message.png)
+![Simple Message](https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/images/example-simple-message.png)
 
 Finally add a `Telegram Sender` node, don't forget to select in the configuration panel the same bot of the `Telegram Receiver`, this should be the final layout
 
-![Example Simple](./docs/images/example-simple.png)
+![Example Simple](https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/images/example-simple.png)
 
 Now you have a useful bot that answers *"Hi there!"* to any received message. We can do a lot better.
 
@@ -104,7 +104,7 @@ Now you have a useful bot that answers *"Hi there!"* to any received message. We
 Here are some examples connecting the ChatBot blocks
 
 ### Basic Send Message
-![Example Message](./docs/images/example-message.png)
+![Example Message](https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/images/example-message.png)
 The first node `/hi` listen the incoming messages for the string *"/hi"*, if it finds it pass through the outpin otherwise nothing.
 
 The second node `Hi!` simply outputs a message using the templating `Hi {{username}}!`, the message node just prepares the payload for the message, the node `Telegram Sender` actually sends out the message.
@@ -113,26 +113,26 @@ The node `Telegram Receiver` sets up some variables in the chat context flow: *f
 *Note*: username is only available in Telegram if it's specified in the chat settings.
 
 ### Collect Email
-![Example Collect Email](./docs/images/example-collect-email.png)
+![Example Collect Email](https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/images/example-collect-email.png)
 This is an example of how to parse the user input. The first **Email** block after the receiver just show a prompt message, note that the sender block tracks the user answer, that means that next message from the user will start from here and will be re-routed to the output to the `Telegram Sender` node.
 
 If a valid email is found then the parsed value will be routed to the first output otherwise the second. The parsed email is available as payload or can be stored in the flow context,  for example in the `email` variable.
 
 The **Show Email** is just a simple message block that uses templating to show variables store in flow context (or global): `Your email is {{email}}`
 ### Authorized Users
-![Authorized Users](./docs/images/example-autorized-users.png)
+![Authorized Users](https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/images/example-autorized-users.png)
 In the node `Telegram Receiver` it's possible to specify a comma seprated list of authorized users (either the userId or the username), for every inbound message the `authorized` boolean variable will be updated in the chat context.
 
 The node `Authorized?` sends the message through the first output is the user is authorized, otherwise the second output.
 
 ### Send Image
-![Authorized Users](./docs/images/example-image.png)
+![Authorized Users](https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/images/example-image.png)
 This example respons to a command `/cam` in the chat sending an image.
 The first node `/cam` triggers an http request (for example to the URL of a web cam), then resulting payload is sent to the `Image` node which prepares the payload for the `Telegram Sender` node.
 The **/cam** command also triggers a waiting message *"Uploading a photo..."* while the image is downloaded.
 
 ### Log Chats
-![Authorized Users](./docs/images/example-log.png)
+![Authorized Users](https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/images/example-log.png)
 The Log node takes a message payload (inbound or outbound) and trasforms it in a string suitable to be appended to a log file.
 
 ```
@@ -144,12 +144,12 @@ The Log node takes a message payload (inbound or outbound) and trasforms it in a
 The `Listen Node` is able to detect and parse a set of simple sentence with a very simple keyword detection algorithm.
 For example suppose we would like to offer the the chatbot user the option to request our curriculum vitae and deliver that by email
 
-![Example Email](./docs/images/example-email.png)
+![Example Email](https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/images/example-email.png)
 
 The first block listen to incoming message and verify that it matches a set of tokens, if it matches the message is routed to the first output or second output, otherwise the last one.
 The `Listen Node` is configured in this way
 
-![Example Listen Node](./docs/images/example-listen.png)
+![Example Listen Node](https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/images/example-listen.png)
 
 All the keywords for a row must match the input message in order to have the message go through the related output. Smaller keywords requires an exact match, longer ones match with Levehnstein algorithm (so for example the keyword "building" also matches "boilding").
 
@@ -171,7 +171,7 @@ Available types are: *word* (catches everything), *noun*, *verb*, *adjective*, *
 
 For a better match we can rewrite the rules in this way, in that case only valid email will be catched
 
-![Example Listen Node](./docs/images/example-listen-2.png)
+![Example Listen Node](https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/images/example-listen-2.png)
 
 The generic syntax of a token is `text-to-match[type]->variable`
 
@@ -200,7 +200,7 @@ The output 1 and 2 of the `Listen Node` are connected to a confirmation message 
 ### Tracking answers
 Complex chatbots may require to request some information to the user and then go on with the rest of the flow, in this example
 
-![Track Conversation](./docs/images/example-track.png)
+![Track Conversation](https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/images/example-track.png)
 
 The user receive a message `"Please enter your email:"`, note that the `Telegram Sender` node has an output, that means that the next message from the same user will be automatically re-routed to the rest of the flow connected to that output, continuing in this way the conversation. The `Parse Node` scan the message for the email and store it the chat context, the final message just show the captured value `"Your email is {{email}}"`.
 
@@ -210,7 +210,7 @@ In order to enable the output pin `Telegram Sender` check the *track* option in 
 ### Send a Location
 Here is an example where the chatbot request the user location. The user can share his location with the *"share"* button in **Telegram** and **Facebook** or can insert manually the address, here is the flow
 
-![User Position](./docs/images/example-position.png)
+![User Position](https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/images/example-position.png)
 
 First is presented a message to the user asking to share his position, this is connected to a `Telegram Sender`  with the *tracking* option activated, the answer to this message will not start over the flow but will continue to the nodes attached to this sender output.
 
@@ -221,7 +221,7 @@ The final message just the coordinates `"Your position is {{location.latitude}},
 ### RiveScript parser
 [RiveScript](https://www.rivescript.com/) is a simple scripting language for chatbots with an easy to learn syntax.
 
-![RiveScript](./docs/images/example-rivescript.png)
+![RiveScript](https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/images/example-rivescript.png)
 
 The most simple script
 ```
@@ -302,7 +302,7 @@ In the template system some defaults variables are available using the *{{variab
 `Text node` supports basic *Handlebars* -like templates, sometimes this is not enough and a proper message needs to be prepared in an upstream node.
 Every message node (Text, Image, etc) accepts  strings, images, etc. as input, preparing a message in an upstream node it's very simple, for example:
 
-![Prepare text in upstream node](./docs/images/example-programmatically-text.png)
+![Prepare text in upstream node](https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/images/example-programmatically-text.png)
 
 The `Function node` looks like
 ```
@@ -333,7 +333,7 @@ Inside a **Function node** you're free to modify the payload of a message and ev
 
 For every message node it's possible to prepare the message in the upstream node, for an image for example
 
-![Prepare text in upstream node](./docs/images/example-programmatically-image.png)
+![Prepare text in upstream node](https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/images/example-programmatically-image.png)
 
 Here the `File node` puts the loaded file into the payload as a Buffer (keeping the rest of the *msg* object intact), the Image node reads it and prepare the proper payload for the sender node.
 
