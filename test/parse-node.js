@@ -50,8 +50,33 @@ describe('Chat parse node', function() {
     assert.equal(RED.node.message(1).payload.content, 'my email is guido.bellomoATgmail.com');
   });
 
+  it('should parse an integer number', function() {
+    var msg = RED.createMessage({
+      content: '42'
+    });
+    RED.node.config({
+      parseType: 'number-integer',
+      parseVariable: 'number'
+    });
+    ParseBlock(RED);
+    RED.node.get().emit('input', msg);
+    assert.equal(RED.node.message(0).payload, 42);
+    assert.isNull(RED.node.message(1));
+  });
 
-
+  it('should parse number written in plain english', function() {
+    var msg = RED.createMessage({
+      content: 'forty two'
+    });
+    RED.node.config({
+      parseType: 'number-integer',
+      parseVariable: 'number'
+    });
+    ParseBlock(RED);
+    RED.node.get().emit('input', msg);
+    assert.equal(RED.node.message(0).payload, 42);
+    assert.isNull(RED.node.message(1));
+  });
 
 });
 
