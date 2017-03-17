@@ -2,7 +2,7 @@
 
 With **RedBot** you can visually build a full featured chat bot for **Telegram**, **Facebook Messenger** and **Slack** with Node-RED. ~~Almost~~ no coding skills required.
 
-![Release](https://img.shields.io/github/release/guidone/node-red-contrib-chatbot.svg)
+![Release](https://img.shields.io/npm/v/node-red-contrib-chatbot.svg)
 ![npm](https://img.shields.io/npm/dm/node-red-contrib-chatbot.svg)
 
 > Node-RED is a tool for wiring together hardware devices, APIs and online services in new and interesting ways.
@@ -378,6 +378,7 @@ This might be useful to take appropriate actions based on the chat user (*chatId
 
 ## Changelog
 
+* **0.6.20** - Fixed breaking error in Messenger, improved docs, parse node now parses numbers written in plain english
 * **0.6.19** - **[breaking changes]** Improved Listen node, better NLP and variables extraction. Previous special tokens like *{email}*, *{url}* are no longer valid
 * **0.6.18** - Fix catch all node with Telegram, parse integer number, improved debug node
 * **0.6.17** - Fix bug on node message (multiple content)
