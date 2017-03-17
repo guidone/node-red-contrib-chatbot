@@ -120,6 +120,7 @@ This is an example of how to parse the user input. The first **Email** block aft
 If a valid email is found then the parsed value will be routed to the first output otherwise the second. The parsed email is available as payload or can be stored in the flow context,  for example in the `email` variable.
 
 The **Show Email** is just a simple message block that uses templating to show variables store in flow context (or global): `Your email is {{email}}`
+
 ### Authorized Users
 ![Authorized Users](https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/images/example-autorized-users.png)
 In the node `Telegram Receiver` it's possible to specify a comma seprated list of authorized users (either the userId or the username), for every inbound message the `authorized` boolean variable will be updated in the chat context.
@@ -197,6 +198,15 @@ return msg;
 ```
 
 The output 1 and 2 of the `Listen Node` are connected to a confirmation message to be sent back to the user: `Sending resume to {{myemail}}`. Here the variable `{{myemail}}` is automatically replaced by the value present in the chat context.
+
+### Start a conversation
+Sometimes it's useful to trigger a conversation after an external event, for example an http call or a sensor.
+The `Conversation Node` is used to initialize a conversation
+
+![Example Conversation](https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/images/example-conversation.png)
+
+The configuration of the node requires the *chatId* of the recipient and the type of transport (*Telegram, Facebook, Slack, etc*). In order to get the *chatId* of the current user just use a Debug Node and grab it from the console log.
+In order to initiate a conversation the recipient must have started the chatbot.
 
 ### Tracking answers
 Complex chatbots may require to request some information to the user and then go on with the rest of the flow, in this example
