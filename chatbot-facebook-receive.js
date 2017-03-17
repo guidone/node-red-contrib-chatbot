@@ -330,6 +330,33 @@ module.exports = function(RED) {
       node.warn("no config.");
     }
 
+    function sendMeta(msg) {
+      return new Promise(function(resolve, reject) {
+
+        var type = msg.payload.type;
+        var bot = node.bot;
+        var credentials = node.config.credentials;
+
+        var reportError = function(err) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve()
+          }
+        };
+
+        switch (type) {
+          case 'persistent-menu':
+            bot.setPersistentMenu(msg.payload.items, reportError);
+            break;
+
+          default:
+            reject();
+        }
+
+      });
+    }
+
     function sendMessage(msg) {
 
       return new Promise(function(resolve, reject) {
@@ -376,7 +403,6 @@ module.exports = function(RED) {
               },
               reportError
             );
-
             break;
 
           case 'inline-buttons':
@@ -493,30 +519,38 @@ module.exports = function(RED) {
         // exit, it's not from facebook
         return;
       }
+
       // check payload
       var error = utils.hasValidPayload(msg);
       if (error != null) {
-        node.error(error);
-        return;
+        // try send meta messages that don't required a valid payload (for example persistent menu)
+        // if there any error - from payload or meta calls - then log
+        sendMeta(msg)
+          .then(function() {
+            // ok, do nothing
+          }, function(metaError) {
+            node.error(metaError || error);
+          });
+      } else {
+        // payload is valid, go on
+        var track = node.track;
+        var chatContext = msg.chat();
+
+        // check if this node has some wirings in the follow up pin, in that case
+        // the next message should be redirected here
+        if (chatContext != null && track && !_.isEmpty(node.wires[0])) {
+          chatContext.set('currentConversationNode', node.id);
+          chatContext.set('currentConversationNode_at', moment());
+        }
+
+        var chatLog = new ChatLog(chatContext);
+
+        chatLog.log(msg, this.config.log)
+          .then(function () {
+            sendMessage(msg);
+          });
+
       }
-
-      var track = node.track;
-      var chatContext = msg.chat();
-
-      // check if this node has some wirings in the follow up pin, in that case
-      // the next message should be redirected here
-      if (chatContext != null && track && !_.isEmpty(node.wires[0])) {
-        chatContext.set('currentConversationNode', node.id);
-        chatContext.set('currentConversationNode_at', moment());
-      }
-
-      var chatLog = new ChatLog(chatContext);
-
-      chatLog.log(msg, this.config.log)
-        .then(function () {
-          sendMessage(msg);
-        });
-
     });
   }
   RED.nodes.registerType('chatbot-facebook-send', FacebookOutNode);

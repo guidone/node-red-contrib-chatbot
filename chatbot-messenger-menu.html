@@ -1,0 +1,194 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-messenger-menu', {
+    category: 'RedBot',
+    color: '#FFCC66',
+    defaults: {
+      name: {
+        value: ''
+      },
+      items: {
+        value: [],
+        validate: function(items) {
+          var valid = true;
+          var idx;
+          for(idx = 0; idx < items.length; idx++) {
+            // label button must be always present
+            if ($.trim(items[idx].title) === '') {
+              valid = false;
+            }
+            // check url
+            if (items[idx].type == 'web_url' && $.trim(items[idx].url) == '') {
+              valid = false;
+            }
+            // check payload
+            if (items[idx].type == 'postback' && $.trim(items[idx].payload) == '') {
+              valid = false;
+            }
+          }
+          return valid;
+        }
+      },
+      message: {
+        value: ''
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'Messenger Menu',
+    icon: 'chatbot-inline-button.png',
+    label: function() {
+      return this.name || 'Messenger Menu';
+    },
+    oneditsave: function() {
+      var items = $("#node-input-items-container").editableList('items');
+      var node = this;
+      node.items = [];
+      var idx;
+      for(idx = 0; idx < items.length; idx++) {
+        var item = {
+          type: items[idx].find('select[name=item-type]').val(),
+          title: items[idx].find('input[name=item-title]').val()
+        };
+        if (items[idx].find('input[name=item-url]').val() != '') {
+          item.url = items[idx].find('input[name=item-url]').val();
+        }
+        if (items[idx].find('input[name=item-payload]').val() != '') {
+          item.payload = items[idx].find('input[name=item-payload]').val();
+        }
+        if (items[idx].find('select[name=item-web-height]').val() != '') {
+          item.webview_height_ratio = items[idx].find('select[name=item-web-height]').val();
+        }
+        if (items[idx].find('input[name=item-extensions]').is(':checked')) {
+          item.messenger_extensions = true;
+        }
+        node.items.push(item);
+      }
+    },
+
+    oneditprepare: function() {
+
+      function resizeRule() {}
+      $('#node-input-items-container').css('min-height','300px').css('min-width','450px').editableList({
+        addItem: function(container, i, item) {
+
+          var type = item.type != null ? item.type : 'web_url';
+          var title = item.title != null ? item.title : '';
+          var url = item.url != null ? item.url : '';
+          var payload = item.payload != null ? item.payload : '';
+          var webviewHeight = item.webview_height_ratio != null ? item.webview_height_ratio : '';
+          var extensions = item.messenger_extensions != null ? item.messenger_extensions : '';
+
+          var row1 = $('<div/>').appendTo(container);
+          var row2 = $('<div/>').css('marginTop','5px').appendTo(container);
+          var row3 = $('<div/>').css('marginTop','5px').appendTo(container);
+          var row4 = $('<div/>').css('marginTop','5px').appendTo(container);
+          var row5 = $('<div/>').css('marginTop','5px').appendTo(container);
+          var row6 = $('<div/>').css('marginTop','5px').appendTo(container);
+
+          var selectTypeHtml = '<select class="node-input-rule-type" name="item-type" placeholder="Select type of menu item">'
+            + '<option value="web_url"' + (type == 'web_url' ? ' selected' : '') + '>Web Url</option>'
+            + '<option value="postback"' + (type == 'postback' ? ' selected' : '') + '>Postback</option>'
+            + '</select>';
+
+          var selectType = $(selectTypeHtml)
+            .change(function() {
+              var type = selectType.val();
+              if (type == 'web_url') {
+                inputUrl.attr('disabled', false);
+                inputPayload.attr('disabled', true);
+                selectWebHeight.attr('disabled', false);
+                messengerExtensions.attr('disabled', false);
+              } else if (type == 'postback') {
+                inputUrl.attr('disabled', true);
+                inputPayload.attr('disabled', false);
+                selectWebHeight.attr('disabled', true);
+                messengerExtensions.attr('disabled', true);
+              }
+            })
+            .css({
+              width: '92%'
+            })
+            .appendTo(row1);
+
+          var inputTitle = $('<input class="node-input-rule-type" type="text" name="item-title" value="' + title + '" placeholder="Title of the item"/>')
+            .css({
+              width: '92%'
+            })
+            .appendTo(row2);
+
+          var inputPayload = $('<input class="node-input-rule-type" type="text" name="item-payload" value="' + payload + '" placeholder="Payload"/>')
+            .css({
+              width: '92%'
+            })
+            .attr('disabled', type == 'web_url')
+            .appendTo(row3);
+
+          var inputUrl = $('<input class="node-input-rule-type" type="text" name="item-url" value="' + url + '" placeholder="Web URL"/>')
+            .css({
+              width: '92%'
+            })
+            .attr('disabled', type == 'postback')
+            .appendTo(row4);
+
+
+          var selectWebHeightHtml = '<select class="node-input-rule-type" name="item-web-height" placeholder="Web view height">'
+            + '<option value=""' + (webviewHeight == '' ||  webviewHeight == null ? ' selected' : '') + '>None</option>'
+            + '<option value="compact"' + (webviewHeight == 'compact' ? ' selected' : '') + '>Compact</option>'
+            + '<option value="tall"' + (webviewHeight == 'tall' ? ' selected' : '') + '>Tall</option>'
+            + '<option value="full"' + (webviewHeight == 'full' ? ' selected' : '') + '>Full</option>'
+            + '</select>';
+          var selectWebHeight = $(selectWebHeightHtml)
+            .css({
+              width: '92%'
+            })
+            .attr('disabled', type == 'postback')
+            .appendTo(row5);
+
+          var messengerExtensions = $('<input type="checkbox" name="item-extensions" value="on"/>')
+            .css({
+              width: 'auto',
+              marginRight: '10px',
+              marginBottom: '5px'
+            })
+            .prop('checked', extensions)
+            .attr('disabled', type == 'postback')
+            .appendTo(row6);
+          $('<span>Messenger Extensions</span>').appendTo(row6);
+
+          resizeRule(container);
+        },
+        resizeItem: resizeRule,
+        removable: true,
+        sortable: true
+      });
+
+      var items = this.items;
+      var idx;
+      for (idx = 0; idx < items.length; idx++) {
+        $('#node-input-items-container').editableList('addItem', items[idx]);
+      }
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-messenger-menu">
+<div class="form-row">
+  <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+  <input type="text" id="node-input-name" placeholder="Name">
+</div>
+<div class="form-row" style="margin-bottom:0;">
+  <label><i class="fa fa-list"></i> <span>Buttons</span></label>
+</div>
+<div class="form-row node-input-rule-container-row">
+  <ol id="node-input-items-container"></ol>
+</div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-messenger-menu">
+<p>Facebook Messenger persistent menu<em>[Facebook]</em>.</p>
+
+</script>
+
+
+
+

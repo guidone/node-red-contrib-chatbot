@@ -38,6 +38,7 @@
       "chatbot-rivescript": "chatbot-rivescript.js",
       "chatbot-telegram-receive": "chatbot-telegram-receive.js",
       "chatbot-slack-receive": "chatbot-slack-receive.js",
+      "chatbot-messenger-menu": "chatbot-messenger-menu.js",
       "chatbot-facebook-receive": "chatbot-facebook-receive.js",
       "chatbot-smooch-receive": "chatbot-smooch-receive.js"
     }
