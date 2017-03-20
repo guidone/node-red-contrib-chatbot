@@ -22,10 +22,10 @@ module.exports = function(RED) {
       var message = null;
 
       // check transport compatibility
-      if (!_.contains(node.transports, msg.originalMessage.transport)) {
-        node.error('This node is not available for transport: ' + msg.originalMessage.transport);
+      if (!utils.matchTransport(node, msg)) {
         return;
       }
+
       // get from config or payload
       if (_.isArray(node.answers) && !_.isEmpty(node.answers)) {
         answers = node.answers;

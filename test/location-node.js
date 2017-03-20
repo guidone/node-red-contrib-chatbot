@@ -31,5 +31,16 @@ describe('Chat request node', function() {
     assert.equal(RED.node.message().payload.content.longitude, '9.1809077');
   });
 
+  it('should send a location message in Smooch', function() {
+    var msg = RED.createMessage(null, 'smooch');
+    RED.node.config({
+      latitude: '45.4842045',
+      longitude: '9.1809077'
+    });
+    LocationBlock(RED);
+    RED.node.get().emit('input', msg);
+    assert.isNull(RED.node.message());
+  });
+
 });
 

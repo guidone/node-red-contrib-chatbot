@@ -19,6 +19,11 @@ module.exports = function(RED) {
       var longitude = node.longitude;
       var place = node.place;
 
+      // check transport compatibility
+      if (!utils.matchTransport(node, msg)) {
+        return;
+      }
+
       if (_.isObject(msg.payload) && _.isNumber(msg.payload.latitude) && _.isNumber(msg.payload.longitude)) {
         latitude = msg.payload.latitude;
         longitude = msg.payload.longitude;

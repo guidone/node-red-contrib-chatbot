@@ -27,8 +27,7 @@ module.exports = function(RED) {
       var template = MessageTemplate(msg, node);
 
       // check transport compatibility
-      if (!_.contains(node.transports, msg.originalMessage.transport)) {
-        node.error('This node is not available for transport: ' + msg.originalMessage.transport);
+      if (!utils.matchTransport(node, msg)) {
         return;
       }
 

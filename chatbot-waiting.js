@@ -1,10 +1,11 @@
 var _ = require('underscore');
+var utils = require('./lib/helpers/utils');
 
 module.exports = function(RED) {
 
   function ChatBotWaiting(config) {
     RED.nodes.createNode(this, config);
-    var node = this;
+
     this.waitingType = config.waitingType;
     this.transports = ['telegram', 'slack', 'facebook'];
 
@@ -16,11 +17,10 @@ module.exports = function(RED) {
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
 
       // check transport compatibility
-      if (!_.contains(node.transports, msg.originalMessage.transport)) {
-        node.error('This node is not available for transport: ' + msg.originalMessage.transport);
+      if (!utils.matchTransport(node, msg)) {
         return;
       }
-      if (msg.originalMessage.transport === 'slack' && waitingType !== 'typing') {
+      if (utils.getTransport(msg) === 'slack' && waitingType !== 'typing') {
         node.error('Only \'typing\' is supported for slack transport');
         return;
       }

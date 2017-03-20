@@ -12,9 +12,13 @@ module.exports = function(RED) {
 
     this.on('input', function(msg) {
 
-
       var chatId = utils.getChatId(msg);
       var messageId = utils.getMessageId(msg);
+
+      // check transport compatibility
+      if (!utils.matchTransport(node, msg)) {
+        return;
+      }
 
       var items = node.items;
       if (_.isArray(msg.payload)) {

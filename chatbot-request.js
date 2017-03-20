@@ -1,6 +1,7 @@
 var _ = require('underscore');
 var MessageTemplate = require('./lib/message-template.js');
 var emoji = require('node-emoji');
+var utils = require('./lib/helpers/utils');
 
 module.exports = function(RED) {
 
@@ -23,8 +24,7 @@ module.exports = function(RED) {
       var template = MessageTemplate(msg, node);
 
       // check transport compatibility
-      if (!_.contains(node.transports, msg.originalMessage.transport)) {
-        node.error('This node is not available for transport: ' + msg.originalMessage.transport);
+      if (!utils.matchTransport(node, msg)) {
         return;
       }
 

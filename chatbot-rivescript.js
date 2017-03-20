@@ -9,7 +9,7 @@ module.exports = function(RED) {
     this.script = config.script;
     this.answer = config.answer;
     this.parse_mode = config.parse_mode;
-    this.transports = ['telegram', 'slack', 'facebook'];
+    this.transports = ['telegram', 'slack', 'facebook', 'smooch'];
 
     this.on('close', function (done) {
       var context = node.context();
