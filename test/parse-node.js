@@ -78,5 +78,19 @@ describe('Chat parse node', function() {
     assert.isNull(RED.node.message(1));
   });
 
+  it.only('should parse a date', function() {
+    var msg = RED.createMessage({
+      content: '2/19/2017'
+    });
+    RED.node.config({
+      parseType: 'date',
+      parseVariable: 'date'
+    });
+    ParseBlock(RED);
+    RED.node.get().emit('input', msg);
+    //assert.equal(RED.node.message(0).payload, 42);
+    //assert.isNull(RED.node.message(1));
+  });
+
 });
 
