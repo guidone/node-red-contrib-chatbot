@@ -15,11 +15,6 @@ module.exports = function(RED) {
       var chatId = utils.getChatId(msg);
       var messageId = utils.getMessageId(msg);
 
-      // check transport compatibility
-      if (!utils.matchTransport(node, msg)) {
-        return;
-      }
-
       var items = node.items;
       if (_.isArray(msg.payload)) {
         items = msg.payload;
