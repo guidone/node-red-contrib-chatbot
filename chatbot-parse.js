@@ -43,7 +43,7 @@ module.exports = function(RED) {
             break;
           case 'date':
             if (!_.isEmpty(msg.payload.content)) {
-              var momented = moment(msg.payload.content);
+              var momented = moment(new Date(msg.payload.content));
               if (momented.isValid()) {
                 parsedValue = momented.toDate();
               } else {

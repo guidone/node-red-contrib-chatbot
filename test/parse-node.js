@@ -2,6 +2,7 @@ var _ = require('underscore');
 var assert = require('chai').assert;
 var RED = require('./lib/red-stub')();
 var ParseBlock = require('../chatbot-parse');
+var moment = require('moment');
 
 describe('Chat parse node', function() {
 
@@ -78,7 +79,7 @@ describe('Chat parse node', function() {
     assert.isNull(RED.node.message(1));
   });
 
-  it.only('should parse a date', function() {
+  it('should parse a date', function() {
     var msg = RED.createMessage({
       content: '2/19/2017'
     });
@@ -88,8 +89,12 @@ describe('Chat parse node', function() {
     });
     ParseBlock(RED);
     RED.node.get().emit('input', msg);
-    //assert.equal(RED.node.message(0).payload, 42);
-    //assert.isNull(RED.node.message(1));
+    assert.instanceOf(RED.node.message(0).payload, Date);
+
+    var d = moment(RED.node.message(0).payload);
+    assert.equal(d.get('year'), 2017);
+    assert.equal(d.get('month'), 1);
+    assert.equal(d.get('date'), 19);
   });
 
 });
