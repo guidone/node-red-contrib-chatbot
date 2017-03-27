@@ -1,5 +1,6 @@
 var _ = require('underscore');
 var nlp = require('nlp_compromise');
+var moment = require('moment');
 
 module.exports = function(RED) {
 
@@ -23,6 +24,7 @@ module.exports = function(RED) {
       var parseType = this.parseType;
       var parseVariable = this.parseVariable;
       var chatContext = msg.chat();
+      var parsedSentence = null;
 
       var parsedValue = null;
 
@@ -39,13 +41,30 @@ module.exports = function(RED) {
               parsedValue = msg.payload.content;
             }
             break;
+          case 'date':
+            if (!_.isEmpty(msg.payload.content)) {
+              var momented = moment(new Date(msg.payload.content));
+              if (momented.isValid()) {
+                parsedValue = momented.toDate();
+              } else {
+                console.log('ok try with literal');
+              }
+            }
+            /*parsedSentence = nlp.text(msg.payload.content);
+            console.log('----', parsedSentence.terms());
+            var term = _(parsedSentence.terms()).find(function(term) {
+              return term.pos.Value;
+            });
+            parsedValue = term != null ? term.number : null;*/
+            break;
+
           case 'number-integer':
             if (_.isNumber(msg.payload.content)) {
               parsedValue = Math.round(msg.payload.content);
             } else if (_.isString(msg.payload.content) && msg.payload.content.match(/^[0-9]+$/)) {
               parsedValue = parseInt(msg.payload.content, 10);
             } else {
-              var parsedSentence = nlp.text(msg.payload.content);
+              parsedSentence = nlp.text(msg.payload.content);
               var term = _(parsedSentence.terms()).find(function(term) {
                 return term.pos.Value;
               });

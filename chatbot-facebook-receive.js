@@ -67,7 +67,7 @@ module.exports = function(RED) {
 
       var userId = botMsg.sender.id;
       var chatId = botMsg.sender.id;
-      var messageId = botMsg.message.mid;
+      var messageId = botMsg.message != null ? botMsg.message.mid : null;
       var context = self.context();
       // todo fix this
       //var isAuthorized = node.config.isAuthorized(username, userId);
@@ -154,6 +154,7 @@ module.exports = function(RED) {
           this.bot.expressMiddleware(RED.httpNode);
 
           this.bot.on('message', this.handleMessage);
+          this.bot.on('postback', this.handleMessage);
         }
       }
     }
@@ -182,7 +183,7 @@ module.exports = function(RED) {
 
         var userId = botMsg.sender.id;
         var chatId = botMsg.sender.id;
-        var messageId = botMsg.message.mid;
+        var messageId = botMsg.message != null ? botMsg.message.mid : null;
 
         if (botMsg.message == null) {
           reject('Unable to detect inbound message for Facebook');
@@ -300,7 +301,7 @@ module.exports = function(RED) {
         });
 
       } else {
-        node.warn("no bot in config.");
+        node.warn('Please select a chatbot configuration in Facebook Messenger Receiver');
       }
     } else {
       node.warn('Missing configuration in Facebook Messenger Receiver');
@@ -328,6 +329,33 @@ module.exports = function(RED) {
       }
     } else {
       node.warn("no config.");
+    }
+
+    function sendMeta(msg) {
+      return new Promise(function(resolve, reject) {
+
+        var type = msg.payload.type;
+        var bot = node.bot;
+        var credentials = node.config.credentials;
+
+        var reportError = function(err) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve()
+          }
+        };
+
+        switch (type) {
+          case 'persistent-menu':
+            bot.setPersistentMenu(msg.payload.items, reportError);
+            break;
+
+          default:
+            reject();
+        }
+
+      });
     }
 
     function sendMessage(msg) {
@@ -376,7 +404,6 @@ module.exports = function(RED) {
               },
               reportError
             );
-
             break;
 
           case 'inline-buttons':
@@ -493,29 +520,45 @@ module.exports = function(RED) {
         // exit, it's not from facebook
         return;
       }
-      // check payload
-      var error = utils.hasValidPayload(msg);
-      if (error != null) {
-        node.error(error);
-        return;
-      }
 
-      var track = node.track;
-      var chatContext = msg.chat();
+      // try to send the meta first (those messages that doesn't require a valid payload)
+      sendMeta(msg)
+        .then(function() {
+          // ok, meta sent, stop here
+        }, function(error) {
+          // if here, either there was an error or no met message was sent
+          if (error != null) {
+            node.error(error);
+          } else {
+            // check payload
+            var payloadError = utils.hasValidPayload(msg);
+            if (payloadError != null) {
+              // invalid payload
+              node.error(payloadError);
+            } else {
 
-      // check if this node has some wirings in the follow up pin, in that case
-      // the next message should be redirected here
-      if (chatContext != null && track && !_.isEmpty(node.wires[0])) {
-        chatContext.set('currentConversationNode', node.id);
-        chatContext.set('currentConversationNode_at', moment());
-      }
+              // payload is valid, go on
+              var track = node.track;
+              var chatContext = msg.chat();
 
-      var chatLog = new ChatLog(chatContext);
+              // check if this node has some wirings in the follow up pin, in that case
+              // the next message should be redirected here
+              if (chatContext != null && track && !_.isEmpty(node.wires[0])) {
+                chatContext.set('currentConversationNode', node.id);
+                chatContext.set('currentConversationNode_at', moment());
+              }
 
-      chatLog.log(msg, this.config.log)
-        .then(function () {
-          sendMessage(msg);
-        });
+              var chatLog = new ChatLog(chatContext);
+
+              chatLog.log(msg, node.config.log)
+                .then(function () {
+                  sendMessage(msg);
+                });
+
+            } // end valid payload
+          } // end no error
+        }); // end then
+
 
     });
   }

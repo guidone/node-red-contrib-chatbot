@@ -78,6 +78,7 @@ Now you have a useful bot that answers *"Hi there!"* to any received message. We
 | Request      |     ✓    |          |        |       |
 | Waiting      |     ✓    |     ✓    |        |       |
 | Voice        |     ✓    |     ✓    |        |       |
+| Menu         |          |     ✓    |        |       |
 
 ### Parsing and flow control nodes
 
@@ -379,6 +380,7 @@ This might be useful to take appropriate actions based on the chat user (*chatId
 
 ## Changelog
 
+* **0.6.21** - Added node for Facebook Messenger persisten menu
 * **0.6.20** - Fixed breaking error in Messenger, improved docs, parse node now parses numbers written in plain english
 * **0.6.19** - **[breaking changes]** Improved Listen node, better NLP and variables extraction. Previous special tokens like *{email}*, *{url}* are no longer valid
 * **0.6.18** - Fix catch all node with Telegram, parse integer number, improved debug node

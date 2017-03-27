@@ -2,6 +2,7 @@ var _ = require('underscore');
 var fs = require('fs');
 var Path = require('path');
 var sanitize = require('sanitize-filename');
+var utils = require('./lib/helpers/utils');
 
 module.exports = function(RED) {
 
@@ -21,8 +22,7 @@ module.exports = function(RED) {
       var messageId = msg.payload.messageId || (originalMessage && originalMessage.message_id);
 
       // check transport compatibility
-      if (msg.originalMessage.transport != null && !_.contains(node.transports, msg.originalMessage.transport)) {
-        node.error('This node is not available for transport: ' + msg.originalMessage.transport);
+      if (!utils.matchTransport(node, msg)) {
         return;
       }
 
