@@ -419,10 +419,13 @@ module.exports = function(RED) {
               });
               break;
             case 'document':
-              node.telegramBot.sendDocument(chatId, msg.payload.content, msg.payload.options)
-                .catch(function(error) {
-                  node.handleError(error, msg);
-                });
+              node.telegramBot.sendDocument(chatId, msg.payload.content, {
+                caption: msg.payload.caption
+              }, {
+                filename: msg.payload.filename
+              }).catch(function(error) {
+                node.handleError(error, msg);
+              });
               break;
             case 'sticker':
               node.telegramBot.sendSticker(chatId, msg.payload.content, msg.payload.options)

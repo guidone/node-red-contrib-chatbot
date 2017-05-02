@@ -519,6 +519,19 @@ module.exports = function(RED) {
             });
             break;
 
+          case 'document':
+            helpers.uploadBuffer({
+              recipient: msg.payload.chatId,
+              type: 'file',
+              buffer: msg.payload.content,
+              token: credentials.token,
+              filename: msg.payload.filename,
+              mimeType: msg.payload.mimeType
+            }).catch(function(err) {
+              reject(err);
+            });
+            break;
+
           case 'photo':
             var image = msg.payload.content;
             helpers.uploadBuffer({

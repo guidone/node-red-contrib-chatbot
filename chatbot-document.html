@@ -1,0 +1,64 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-document', {
+    category: 'RedBot',
+    color: '#FFCC66',
+    defaults: {
+      name: {
+        value: ''
+      },
+      filename: {
+        value: ''
+      },
+      caption: {
+        value: '',
+        required: false
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'chatbot-image.png',
+    paletteLabel: 'Document',
+    label: function() {
+      return this.name || 'Document';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-document">
+<div class="form-row">
+  <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+  <input type="text" id="node-input-name" placeholder="Name">
+</div>
+<div class="form-row">
+  <label for="node-input-caption"><i class="fa fa-tag"></i> Caption</label>
+  <input type="text" id="node-input-caption" placeholder="Caption">
+</div>
+<div class="form-row">
+  <label for="node-input-filename"><i class="fa fa-file"></i> Filename</label>
+  <input type="text" id="node-input-filename" placeholder="Filename">
+</div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-document">
+<p>
+  Send image, prepares the payload to send an image to the chat sender using the <code>Buffer</code> as input or
+  loading the file if specified in the node config <em>[Telegram, Facebook, Slack, Smooch]</em>.
+</p>
+<p>The image can be passed through the payload by the upstream node:</p>
+<br/>
+<pre>
+msg.payload = {
+  caption: 'I am the caption',
+  image: msg.payload // an instance of Buffer
+}
+return msg;
+</pre>
+<p>
+It's also possible to wire directly a file or http node (choosing "binary buffer" in the "return" drop down)
+to the <code>Image node</code>.
+</p>
+Only supports some file format, zip, pdf and gif are ok no more 50 mb
+
+</script>
+
+

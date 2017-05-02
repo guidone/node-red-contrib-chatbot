@@ -4,7 +4,8 @@
   "description": "REDBot a Chat bot for a full featured chat bot for Telegram**, Facebook Messenger and Slack. Almost no coding skills required",
   "scripts": {
     "test": "mocha",
-    "tunnel": "ngrok http 127.0.0.1:1880"
+    "ngrok": "ngrok http 127.0.0.1:1880",
+    "localtunnel": "lt --port 1880"
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,7 @@
       "chatbot-listen": "chatbot-listen.js",
       "chatbot-parse": "chatbot-parse.js",
       "chatbot-command": "chatbot-command.js",
+      "chatbot-document": "chatbot-document.js",
       "chatbot-image": "chatbot-image.js",
       "chatbot-audio": "chatbot-audio.js",
       "chatbot-analyze": "chatbot-analyze.js",
@@ -63,11 +65,13 @@
     "compromise": "^7.0.28",
     "cookie-parser": "^1.4.3",
     "fast-levenshtein": "^1.1.3",
+    "jszip": "^3.1.3",
     "languagedetect": "^1.1.1",
+    "mime": "^1.3.4",
     "moment": "^2.13.0",
     "nlp_compromise": "^6.5.3",
     "node-emoji": "^1.3.1",
-    "node-telegram-bot-api": "^0.24.0",
+    "node-telegram-bot-api": "^0.27.1",
     "prettyjson": "^1.2.1",
     "qr-image": "^3.1.0",
     "request": "^2.73.0",
