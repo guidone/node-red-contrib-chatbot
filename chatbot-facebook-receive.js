@@ -84,7 +84,7 @@ module.exports = function(RED) {
         .then(function(profile) {
           // store some information
           chatContext.set('chatId', chatId);
-          chatContext.set('messageId', botMsg.message.mid);
+          chatContext.set('messageId', messageId);
           chatContext.set('userId', userId);
           chatContext.set('firstName', profile.first_name);
           chatContext.set('lastName', profile.last_name);
@@ -155,6 +155,7 @@ module.exports = function(RED) {
 
           this.bot.on('message', this.handleMessage);
           this.bot.on('postback', this.handleMessage);
+          this.bot.on('account_linking', this.handleMessage);
         }
       }
     }
@@ -184,6 +185,19 @@ module.exports = function(RED) {
         var userId = botMsg.sender.id;
         var chatId = botMsg.sender.id;
         var messageId = botMsg.message != null ? botMsg.message.mid : null;
+
+        if (!_.isEmpty(botMsg.account_linking)) {
+          resolve({
+            chatId: chatId,
+            messageId: messageId,
+            type: 'account-linking',
+            content: botMsg.account_linking.authorization_code,
+            linkStatus: botMsg.account_linking.status,
+            date: moment(botMsg.timestamp),
+            inbound:true
+          })
+          return;
+        }
 
         if (botMsg.message == null) {
           reject('Unable to detect inbound message for Facebook');
@@ -401,6 +415,29 @@ module.exports = function(RED) {
                     'content_type': 'location'
                   }
                 ]
+              },
+              reportError
+            );
+            break;
+
+          case 'account-link':
+            var attachment = {
+              'type': 'template',
+              'payload': {
+                'template_type': 'button',
+                'text': msg.payload.content,
+                'buttons': [
+                  {
+                    'type': 'account_link',
+                    'url': msg.payload.authUrl
+                  }
+                ]
+              }
+            };
+            bot.sendMessage(
+              msg.payload.chatId,
+              {
+                attachment: attachment
               },
               reportError
             );
