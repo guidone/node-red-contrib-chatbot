@@ -62,12 +62,13 @@ Now you have a useful bot that answers *"Hi there!"* to any received message. We
 * **Request**: request special information from the chat client like the current location or the phone numbers
 * **Waiting**: sets the waiting status on the chat client (something like _your_chatbot is typing_ )
 * **Voice**: create an audio mp3 from text
+*  **Account Linking**: Link current session to an external account
 
 |              | Telegram | Facebook | Smooch | Slack |
 |--------------|----------|----------|--------|-------|
 | Audio        |     ✓    |     ✓    |    ✓   |   ✓   |
-| Buttons     |     ✓    |     ✓    |    ✓   |       |
-| Keyboard |     ✓    |          |        |       |
+| Buttons      |     ✓    |     ✓    |    ✓   |       |
+| Keyboard     |     ✓    |          |        |       |
 | Conversation |     ✓    |     ✓    |    ✓   |   ✓   |
 | Debug        |     ✓    |     ✓    |    ✓   |   ✓   |
 | Image        |     ✓    |     ✓    |    ✓   |       |
@@ -79,6 +80,7 @@ Now you have a useful bot that answers *"Hi there!"* to any received message. We
 | Waiting      |     ✓    |     ✓    |        |       |
 | Voice        |     ✓    |     ✓    |        |       |
 | Menu         |          |     ✓    |        |       |
+| Account Link |          |     ✓    |        |       |
 
 ### Parsing and flow control nodes
 
@@ -100,8 +102,8 @@ Now you have a useful bot that answers *"Hi there!"* to any received message. We
 | RiveScript   |     ✓    |     ✓    |    ✓   |   ✓   |
 | Transport    |     ✓    |     ✓    |    ✓   |   ✓   |
 | Context      |     ✓    |     ✓    |    ✓   |   ✓   |
-| Api.ai          |     ✓    |     ✓    |    ✓   |   ✓   |
-| Topic           |     ✓    |     ✓    |    ✓   |   ✓   |
+| Api.ai       |     ✓    |     ✓    |    ✓   |   ✓   |
+| Topic        |     ✓    |     ✓    |    ✓   |   ✓   |
 
 ## Examples
 Here are some examples connecting the **RedBot** blocks
@@ -330,11 +332,11 @@ It's important to understand how RedBot keeps track of the current conversation,
 ```
 {
   originalMessage: {
-    ...
+	...
   },
   payload: {
-    type: 'text',
-    ...
+	type: 'text',
+	...
   }
 }
 ```
@@ -380,7 +382,8 @@ This might be useful to take appropriate actions based on the chat user (*chatId
 
 ## Changelog
 
-* **0.6.21** - Added node for Facebook Messenger persisten menu
+* **0.6.22** - Added node for Facebook external account linking
+* **0.6.21** - Added node for Facebook Messenger persistent menu
 * **0.6.20** - Fixed breaking error in Messenger, improved docs, parse node now parses numbers written in plain english
 * **0.6.19** - **[breaking changes]** Improved Listen node, better NLP and variables extraction. Previous special tokens like *{email}*, *{url}* are no longer valid
 * **0.6.18** - Fix catch all node with Telegram, parse integer number, improved debug node
@@ -412,12 +415,13 @@ This might be useful to take appropriate actions based on the chat user (*chatId
 - **0.5.1** - **[breaking changes]**: moved the tracking option to the sender node, this will break previous flows where the tracking output was in the message node. If errors on saving the flow occurs after the upgrade, export the whole flow and import it again. Added debug node.
 
 ## Known Problems
-- There's no way to exit a current conversation
+* There's no way to exit a current conversation
 * Slack Sender and Receiver are not complete yet
 
 ## Credits
 * Inspired by the Karl-Heinz Wind work [node-red-contrib-telegram](https://github.com/windkh/node-red-contrib-telegrambot)
 * [Telegram Bot API for NodeJS](https://github.com/yagop/node-telegram-bot-api)
+* [NLP Compromise](https://github.com/nlp-compromise/compromise)
 
 ## The MIT License
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -430,3 +434,4 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 Coded with :heart: in :it:
+
