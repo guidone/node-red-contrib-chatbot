@@ -2,7 +2,7 @@ var _ = require('underscore');
 var fs = require('fs');
 var Path = require('path');
 var utils = require('./lib/helpers/utils');
-var sanitize = require("sanitize-filename");
+var sanitize = require('sanitize-filename');
 var mime = require('mime');
 var BufferTransformers = require('./lib/buffer-transformers');
 
