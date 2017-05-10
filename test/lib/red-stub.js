@@ -119,6 +119,27 @@ module.exports = function() {
             _cbInput(msg);
           }
         };
+        node.await = function() {
+          var retries = 0;
+          var intervalId = null;
+          return new Promise(function(resolve, reject) {
+            intervalId = setInterval(function() {
+              if (_message !== null) {
+                clearInterval(intervalId);
+                resolve();
+              } else if (_error != null) {
+                console.log('errororrororo');
+                clearInterval(intervalId);
+                reject(_error);
+              } else if (retries > 10) {
+                clearInterval(intervalId);
+                reject();
+              } else {
+                retries++;
+              }
+            }, 100);
+          });
+        };
         node.send = function(msg) {
           _message = msg;
         };

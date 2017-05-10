@@ -47,7 +47,6 @@ module.exports = function(RED) {
         defaultFilename = msg.payload.filename;
       }
 
-
       if (!_.isEmpty(path)) {
         file = {
           filename: Path.basename(path),
@@ -81,6 +80,10 @@ module.exports = function(RED) {
           buffer: msg.payload.file
         };
       }
+      // exit if no file description
+      if (file == null) {
+        return;
+      }
       // get caption
       var caption = null;
       if (!_.isEmpty(node.caption)) {
@@ -88,7 +91,6 @@ module.exports = function(RED) {
       } else if (_.isObject(msg.payload) && _.isString(msg.payload.caption) && !_.isEmpty(msg.payload.caption)) {
         caption = msg.payload.caption;
       }
-
       // if the file has a not accepted extension, then zip it
       var transform = BufferTransformers.identity;
       if (!_(validExtensions).contains(file.extension)) {
@@ -97,6 +99,7 @@ module.exports = function(RED) {
       // zip the file if needed or leave it as is
       transform(file)
         .then(function(newFile) {
+          //console.log('++++', newFile);
           // send out the message
           msg.payload = {
             type: 'document',
