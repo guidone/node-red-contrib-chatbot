@@ -38,6 +38,16 @@ module.exports = function(RED) {
         return;
       }
 
+      var defaultFilename = null;
+      if (!_.isEmpty(msg.filename)) {
+        defaultFilename = msg.filename;
+      } else if (!_.isEmpty(name)) {
+        defaultFilename = sanitize(name);
+      } else if (msg.payload != null && !_.isEmpty(msg.payload.filename)) {
+        defaultFilename = msg.payload.filename;
+      }
+
+
       if (!_.isEmpty(path)) {
         file = {
           filename: Path.basename(path),
@@ -48,17 +58,30 @@ module.exports = function(RED) {
       } else if (msg.payload instanceof Buffer) {
         // handle a file buffer passed through payload
         // todo what happens if mimetype is null
+        //var filename = !_.isEmpty(msg.filename) ? filename : (sanitize(name) )
+        if (_.isEmpty(defaultFilename) || _.isEmpty(Path.extname(defaultFilename))) {
+          node.error('Unknown filetype, use the "name" parameter to specify the file name and extension as default');
+          return;
+        }
         file = {
-          filename: sanitize(name),
-          buffer: msg.payload,
-          extension: Path.extname(path)
+          filename: Path.basename(defaultFilename),
+          extension: Path.extname(defaultFilename),
+          mimeType: mime.lookup(defaultFilename),
+          buffer: msg.payload
         };
-        // todo what if no image
       } else if (_.isObject(msg.payload) && msg.payload.file instanceof Buffer) {
-        content = msg.payload.file;
-        // todo zip it?
+        if (_.isEmpty(defaultFilename) || _.isEmpty(Path.extname(defaultFilename))) {
+          node.error('Unknown filetype, use the "name" parameter to specify the file name and extension as default');
+          return;
+        }
+        file = {
+          filename: Path.basename(defaultFilename),
+          extension: Path.extname(defaultFilename),
+          mimeType: mime.lookup(defaultFilename),
+          buffer: msg.payload.file
+        };
       }
-
+      // get caption
       var caption = null;
       if (!_.isEmpty(node.caption)) {
         caption = node.caption;

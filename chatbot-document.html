@@ -16,7 +16,7 @@
     },
     inputs: 1,
     outputs: 1,
-    icon: 'chatbot-image.png',
+    icon: 'chatbot-document.png',
     paletteLabel: 'Document',
     label: function() {
       return this.name || 'Document';
@@ -41,24 +41,9 @@
 
 <script type="text/x-red" data-help-name="chatbot-document">
 <p>
-  Send image, prepares the payload to send an image to the chat sender using the <code>Buffer</code> as input or
-  loading the file if specified in the node config <em>[Telegram, Facebook, Slack, Smooch]</em>.
+  Send document <em>[Telegram, Facebook]</em>.
 </p>
-<p>The image can be passed through the payload by the upstream node:</p>
-<br/>
-<pre>
-msg.payload = {
-  caption: 'I am the caption',
-  image: msg.payload // an instance of Buffer
-}
-return msg;
-</pre>
-<p>
-It's also possible to wire directly a file or http node (choosing "binary buffer" in the "return" drop down)
-to the <code>Image node</code>.
-</p>
-Only supports some file format, zip, pdf and gif are ok no more 50 mb
-
+<p>tbd</p>
 </script>
 
 
