@@ -30,20 +30,42 @@
   <input type="text" id="node-input-name" placeholder="Name">
 </div>
 <div class="form-row">
-  <label for="node-input-caption"><i class="fa fa-tag"></i> Caption</label>
-  <input type="text" id="node-input-caption" placeholder="Caption">
-</div>
-<div class="form-row">
   <label for="node-input-filename"><i class="fa fa-file"></i> Filename</label>
   <input type="text" id="node-input-filename" placeholder="Filename">
+</div>
+<div class="form-row">
+  <label for="node-input-caption"><i class="fa fa-tag"></i> Caption</label>
+  <input type="text" id="node-input-caption" class="platform-telegram" placeholder="Caption">
+</div>
+<div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;margin-bottom:10px;">
+  Some attributes apply for specific platform:<br>
+  <span class="icon-platform-facebook"></span> = <span style="font-size:10px">Facebook</span>
+  <span class="icon-platform-telegram"></span> = <span style="font-size:10px">Telegram</span>
+  <span class="icon-platform-smooch"></span> = <span style="font-size:10px">Smooch</span>
+  <span class="icon-platform-slack"></span> = <span style="font-size:10px">Slack</span>
 </div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-document">
 <p>
-  Send document <em>[Telegram, Facebook]</em>.
+Send document a document, automatically zip it if the used platform doesn't support the file format <em>[Telegram, Facebook]</em>.
 </p>
-<p>tbd</p>
+<p>
+The <code>Document node</code> can send a file from the local filesystem or from a Buffer payload from the upstream node or
+from a <code>File node</code>.
+</p>
+<p>
+Some file types are not supported by a specific platform, for example <em>Telegram</em> only supports <em>.zip</em>, <em>.pdf</em>, <em>.gif</em>. A file not supported is automatically zipped.<br>
+</p>
+<p>
+To programmatically send a document, in the upstream <code>Function node</code>
+<pre>
+msg.payload.file = new Buffer(<my-buffer>);
+msg.payload.filename = 'my-file-name.pdf';
+return msg;
+</pre>
+<code>.file</code> is a <code>Buffer</code> type.
+</p>
 </script>
 
 

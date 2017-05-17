@@ -30,7 +30,6 @@ module.exports = function(RED) {
       var messageId = utils.getMessageId(msg);
       var transport = utils.getTransport(msg);
       var validExtensions = ValidExtensions[transport];
-      var content = null;
       var file = null;
 
       // check transport compatibility
@@ -59,7 +58,7 @@ module.exports = function(RED) {
         // todo what happens if mimetype is null
         //var filename = !_.isEmpty(msg.filename) ? filename : (sanitize(name) )
         if (_.isEmpty(defaultFilename) || _.isEmpty(Path.extname(defaultFilename))) {
-          node.error('Unknown filetype, use the "name" parameter to specify the file name and extension as default');
+          node.error('Unknown file type, use the "name" parameter to specify the file name and extension as default');
           return;
         }
         file = {
@@ -70,7 +69,7 @@ module.exports = function(RED) {
         };
       } else if (_.isObject(msg.payload) && msg.payload.file instanceof Buffer) {
         if (_.isEmpty(defaultFilename) || _.isEmpty(Path.extname(defaultFilename))) {
-          node.error('Unknown filetype, use the "name" parameter to specify the file name and extension as default');
+          node.error('Unknown file type, use the "name" parameter to specify the file name and extension as default');
           return;
         }
         file = {
