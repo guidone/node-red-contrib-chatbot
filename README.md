@@ -8,9 +8,18 @@ With **RedBot** you can visually build a full featured chat bot for **Telegram**
 
 > Node-RED is a tool for wiring together hardware devices, APIs and online services in new and interesting ways.
 
+## Documentation
+
+1. **RedBot** nodes *(tbd)*
+2. Examples *(tbd)*
+3. Chat context *(tbd)*
+4. Advanced examples *(tbd)*
+5. [Changelog](https://github.com/guidone/node-red-contrib-chatbot/wiki/Changelog)
+
+
 ## Getting started
 
-First of all install  [Node-RED](http://nodered.org/docs/getting-started/installation)
+First of all install [Node-RED](http://nodered.org/docs/getting-started/installation)
 
 ```
 $ sudo npm install -g node-red
@@ -81,6 +90,7 @@ Now you have a useful bot that answers *"Hi there!"* to any received message. We
 | Voice        |     ✓    |     ✓    |        |       |
 | Menu         |          |     ✓    |        |       |
 | Account Link |          |     ✓    |        |       |
+| Document     |     ✓    |     ✓    |        |       |
 
 ### Parsing and flow control nodes
 
@@ -106,7 +116,7 @@ Now you have a useful bot that answers *"Hi there!"* to any received message. We
 | Topic        |     ✓    |     ✓    |    ✓   |   ✓   |
 
 ## Examples
-Here are some examples connecting the **RedBot** blocks
+Here are some examples connecting the **RedBot** nodes
 
 ### Basic Send Message
 ![Example Message](https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/images/example-message.png)
