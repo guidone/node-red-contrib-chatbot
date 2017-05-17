@@ -182,7 +182,7 @@ module.exports = function(RED) {
     this.getMessageDetails = function (botMsg, bot) {
       return new Promise(function (resolve, reject) {
 
-        var userId = botMsg.sender.id;
+        //var userId = botMsg.sender.id;
         var chatId = botMsg.sender.id;
         var messageId = botMsg.message != null ? botMsg.message.mid : null;
 
@@ -227,7 +227,6 @@ module.exports = function(RED) {
         }
 
         if (_.isArray(message.attachments) && !_.isEmpty(message.attachments)) {
-
           var attachment = message.attachments[0];
           switch(attachment.type) {
             case 'image':
@@ -247,7 +246,23 @@ module.exports = function(RED) {
                   reject('Unable to download ' + attachment.payload.url);
                 });
               break;
-
+            case 'file':
+              // download the image into a buffer
+              helpers.downloadFile(attachment.payload.url)
+                .then(function(buffer) {
+                  resolve({
+                    chatId: chatId,
+                    messageId: messageId,
+                    type: 'document',
+                    content: buffer,
+                    date: moment(botMsg.timestamp),
+                    inbound: true
+                  });
+                })
+                .catch(function() {
+                  reject('Unable to download ' + attachment.payload.url);
+                });
+              break;
             case 'location':
               resolve({
                 chatId: chatId,
@@ -262,14 +277,11 @@ module.exports = function(RED) {
               });
               break;
           }
-
         } else {
           reject('Unable to detect inbound message for Facebook Messenger');
         }
-
       });
     }
-
   }
 
   RED.nodes.registerType('chatbot-facebook-node', FacebookBotNode, {
@@ -514,6 +526,19 @@ module.exports = function(RED) {
               buffer: audio,
               token: credentials.token,
               filename: msg.payload.filename
+            }).catch(function(err) {
+              reject(err);
+            });
+            break;
+
+          case 'document':
+            helpers.uploadBuffer({
+              recipient: msg.payload.chatId,
+              type: 'file',
+              buffer: msg.payload.content,
+              token: credentials.token,
+              filename: msg.payload.filename,
+              mimeType: msg.payload.mimeType
             }).catch(function(err) {
               reject(err);
             });

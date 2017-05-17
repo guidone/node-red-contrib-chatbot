@@ -18,9 +18,8 @@ module.exports = function(RED) {
 
       var path = node.filename;
       var name = node.name;
-      var originalMessage = msg.originalMessage;
-      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
-      var messageId = msg.payload.messageId || (originalMessage && originalMessage.message_id);
+      var chatId = utils.getChatId(msg);
+      var messageId = utils.getMessageId(msg);
       var content = null;
 
       // check transport compatibility
