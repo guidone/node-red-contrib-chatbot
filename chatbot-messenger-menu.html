@@ -11,17 +11,21 @@
         validate: function(items) {
           var valid = true;
           var idx;
+          // maximum 5
+          if (items.length > 5) {
+            return false;
+          }
           for(idx = 0; idx < items.length; idx++) {
             // label button must be always present
             if ($.trim(items[idx].title) === '') {
               valid = false;
             }
             // check url
-            if (items[idx].type == 'web_url' && $.trim(items[idx].url) == '') {
+            if (items[idx].type === 'web_url' && $.trim(items[idx].url) === '') {
               valid = false;
             }
             // check payload
-            if (items[idx].type == 'postback' && $.trim(items[idx].payload) == '') {
+            if (items[idx].type === 'postback' && $.trim(items[idx].payload) === '') {
               valid = false;
             }
           }
@@ -187,12 +191,13 @@
 
 <script type="text/x-red" data-help-name="chatbot-messenger-menu">
 <p>Facebook Messenger persistent menu <em>[Facebook]</em>.</p>
-<p>This will set the persisten menu next to the editable area in Facebook Messenger, there two kind of options:</p>
+<p>This will set the persistent menu next to the editable area in Facebook Messenger, there two kind of options:</p>
 <ul>
 <li><b>Web Url:</b> it opens a specific url. In the mobile version it's possible to specify the size of the browser window<.
 Also supports <a target="_blank" href="https://developers.facebook.com/docs/messenger-platform/webview">Messenger Extensions</a>./li>
 <li><b>Postback:</b> sends the text defined in "payload" field to the chat</li>
 </ul>
+Maximum 5 menu items.
 <p>
 The menu can be passed through the payload by the upstream node:
 </p>
