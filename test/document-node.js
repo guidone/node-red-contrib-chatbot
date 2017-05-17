@@ -105,14 +105,13 @@ describe('Chat document node', function() {
       });
   });
 
-  it('should send a buffer document with Telegram without using name for mime type', function () {
+  it.only('should send a buffer document with Telegram without using name for mime type', function () {
     var msg = RED.createMessage(fs.readFileSync(__dirname + '/dummy/image.png'), 'telegram');
     RED.node.config({});
     DocumentBlock(RED);
 
     RED.node.get().emit('input', msg);
-
-    assert.equal(RED.node.error(), 'Unknown filetype, use the "name" parameter to specify the file name and extension as default');
+    assert.equal(RED.node.error(), 'Unknown file type, use the "name" parameter to specify the file name and extension as default');
   });
 
   it('should send a document from pdf a file with Facebook', function () {
