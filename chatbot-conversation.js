@@ -26,12 +26,20 @@ module.exports = function(RED) {
         transport = msg.payload.transport;
       }
 
+      var messageId = null;
+      if (!_.isEmpty(node.messageId)) {
+        messageId = node.messageId;
+      } else if (msg.payload != null && msg.payload.messageId != null) {
+        messageId = msg.payload.messageId;
+      }
+
       // ensure the original message is injected
       msg.originalMessage = {
         chat: {
           id: chatId
         },
         message_id: null,
+        modify_message_id: messageId,
         transport: transport
       };
       msg.chat = function() {

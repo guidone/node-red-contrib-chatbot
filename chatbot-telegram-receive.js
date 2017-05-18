@@ -406,10 +406,31 @@ module.exports = function(RED) {
 
           switch (type) {
             case 'message':
-              node.telegramBot.sendMessage(chatId, msg.payload.content, msg.payload.options)
-                .catch(function(error) {
-                  node.handleError(error, msg);
-                });
+              if (msg.originalMessage.modify_message_id != null) {
+                console.log('ok dovrei aggiornare ',msg.message_id);
+                node.telegramBot.editMessageText(msg.payload.content, {
+                  chat_id: chatId,
+                  message_id: msg.originalMessage.modify_message_id
+                }).then(
+                  function (response) {
+                    console.log('Nuovo message_id', response.message_id);
+                    chatContext.set('messageId', response.message_id)
+                  },
+                  function (error) {
+                    node.handleError(error, msg);
+                  });
+
+              } else {
+                node.telegramBot.sendMessage(chatId, msg.payload.content, msg.payload.options)
+                  .then(
+                    function (response) {
+                      console.log('Nuovo message_id', response.message_id);
+                      chatContext.set('messageId', response.message_id)
+                    },
+                    function (error) {
+                      node.handleError(error, msg);
+                    });
+              }
               break;
             case 'photo':
               node.telegramBot.sendPhoto(chatId, msg.payload.content, {

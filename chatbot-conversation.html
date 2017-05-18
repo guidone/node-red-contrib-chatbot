@@ -11,10 +11,29 @@
       },
       transport: {
         value: ''
+      },
+      messageId: {
+        value: ''
+      },
+      contextMessageId: {
+        value: false
       }
     },
     inputs: 1,
     outputs: 1,
+    oneditprepare: function() {
+
+      var _this = this;
+
+      $('#node-input-contextMessageId').on('change', function() {
+        var checked = $(this).is(':checked');
+        if (checked) {
+          $('#node-input-messageId').val('{messageId}').attr('disabled', true);
+        } else {
+          $('#node-input-messageId').val(_this.messageId).attr('disabled', false);
+        }
+      });
+    },
     paletteLabel: 'Conversation',
     icon: 'chatbot-conversation.png',
     label: function() {
@@ -40,11 +59,30 @@
 </div>
 <div class="form-row">
   <label for="node-input-name"><i class="icon-user"></i> ChatId</label>
-  <input type="text" id="node-input-chatId" placeholder="Chat id">
+  <input type="text" id="node-input-chatId" placeholder="Chat id" style="width:150px;">
   <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;">
   The <code>chatId</code> is needed to initiate the conversation (you can grab the chatId from the logs or a debug node),
   the <code>chatId</code> is unique per user across the different platforms (Telegram, Facebook, Slack).
   </div>
+</div>
+<div class="form-row">
+  <label for="node-input-name"><i class="icon-user"></i> MessageId</label>
+  <input type="text" id="node-input-messageId" class="platform-telegram" placeholder="Message Id" style="width:150px;">
+<<<<<<< Updated upstream
+  <input type="checkbox" value="true" id="node-input-contextMessageId" style="width:20px;"> Use chat context messageId
+=======
+  <input type="checkbox" value="true" id="node-input-contextMessageId" style="width:20px;"> Use context <em>{messageId}</em>
+>>>>>>> Stashed changes
+  <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;">
+description of message id
+  </div>
+</div>
+<div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:30px;margin-bottom:10px;">
+  Some attributes apply for specific platform:<br>
+  <span class="icon-platform-facebook"></span> = <span style="font-size:10px">Facebook</span>
+  <span class="icon-platform-telegram"></span> = <span style="font-size:10px">Telegram</span>
+  <span class="icon-platform-smooch"></span> = <span style="font-size:10px">Smooch</span>
+  <span class="icon-platform-slack"></span> = <span style="font-size:10px">Slack</span>
 </div>
 </script>
 
