@@ -55,8 +55,6 @@ module.exports = function(RED) {
         };
       } else if (msg.payload instanceof Buffer) {
         // handle a file buffer passed through payload
-        // todo what happens if mimetype is null
-        //var filename = !_.isEmpty(msg.filename) ? filename : (sanitize(name) )
         if (_.isEmpty(defaultFilename) || _.isEmpty(Path.extname(defaultFilename))) {
           node.error('Unknown file type, use the "name" parameter to specify the file name and extension as default');
           return;
@@ -68,6 +66,7 @@ module.exports = function(RED) {
           buffer: msg.payload
         };
       } else if (_.isObject(msg.payload) && msg.payload.file instanceof Buffer) {
+        // handle a buffer passed by another document node
         if (_.isEmpty(defaultFilename) || _.isEmpty(Path.extname(defaultFilename))) {
           node.error('Unknown file type, use the "name" parameter to specify the file name and extension as default');
           return;
@@ -77,6 +76,17 @@ module.exports = function(RED) {
           extension: Path.extname(defaultFilename),
           mimeType: mime.lookup(defaultFilename),
           buffer: msg.payload.file
+        };
+      } else if (!_.isEmpty(msg.filename)) {
+        if (!fs.existsSync(msg.filename)) {
+          node.error('File doesn\'t exist: ' + msg.filename);
+          return;
+        }
+        file = {
+          filename: Path.basename(msg.filename),
+          buffer: fs.readFileSync(msg.filename),
+          mimeType: mime.lookup(msg.filename),
+          extension: Path.extname(msg.filename)
         };
       }
       // exit if no file description
