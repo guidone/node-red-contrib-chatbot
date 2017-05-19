@@ -51,8 +51,8 @@ describe('Chat document node', function() {
     DocumentBlock(RED);
     RED.node.get().emit('input', msg);
 
-    assert.equal(RED.node.error(), 'File doesn\'t exist: /web/node-red-contrib-chatbot/test/dummy/file-wrong.pdf');
-
+    assert.include(RED.node.error(), 'File doesn\'t exist:');
+    assert.include(RED.node.error(), 'file-wrong.pdf');
   });
 
   it('should send a document from bin a file with Telegram', function () {
