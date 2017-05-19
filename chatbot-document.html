@@ -64,7 +64,11 @@ msg.payload.file = new Buffer(<my-buffer>);
 msg.payload.filename = 'my-file-name.pdf';
 return msg;
 </pre>
-<code>.file</code> is a <code>Buffer</code> type.
+<code>.file</code> is a <code>Buffer</code> type. To pass the path of a local file from the upstream node
+<pre>
+msg.filename = '/my/local/file.pdf';
+return msg;
+</pre>
 </p>
 </script>
 
