@@ -6,7 +6,7 @@ var DocumentBlock = require('../chatbot-document');
 
 describe('Chat document node', function() {
 
-  it('should send a document from pdf a file with Telegram', function () {
+  it('should send a local pdf document with filename parameter Telegram', function () {
     var msg = RED.createMessage(null, 'telegram');
     RED.node.config({
       name: 'my file',
@@ -24,6 +24,35 @@ describe('Chat document node', function() {
         assert.equal(RED.node.message().payload.filename, 'file.pdf');
         assert.equal(RED.node.message().originalMessage.chat.id, 42);
       });
+  });
+
+  it('should send a local pdf document with filename parameter in upstream node Telegram', function () {
+    var msg = RED.createMessage(null, 'telegram');
+    msg.filename = __dirname + '/dummy/file.pdf';
+    RED.node.config({});
+    DocumentBlock(RED);
+    RED.node.get().emit('input', msg);
+
+    return RED.node.get().await()
+      .then(function() {
+        assert.equal(RED.node.message().payload.type, 'document');
+        assert.equal(RED.node.message().payload.mimeType, 'application/pdf');
+        assert.equal(RED.node.message().payload.inbound, false);
+        assert.instanceOf(RED.node.message().payload.content, Buffer);
+        assert.equal(RED.node.message().payload.filename, 'file.pdf');
+        assert.equal(RED.node.message().originalMessage.chat.id, 42);
+      });
+  });
+
+  it('should send a local pdf document with a wrong filename parameter in upstream node Telegram', function () {
+    var msg = RED.createMessage(null, 'telegram');
+    msg.filename = __dirname + '/dummy/file-wrong.pdf';
+    RED.node.config({});
+    DocumentBlock(RED);
+    RED.node.get().emit('input', msg);
+
+    assert.equal(RED.node.error(), 'File doesn\'t exist: /web/node-red-contrib-chatbot/test/dummy/file-wrong.pdf');
+
   });
 
   it('should send a document from bin a file with Telegram', function () {
@@ -105,7 +134,7 @@ describe('Chat document node', function() {
       });
   });
 
-  it.only('should send a buffer document with Telegram without using name for mime type', function () {
+  it('should send a buffer document with Telegram without using name for mime type', function () {
     var msg = RED.createMessage(fs.readFileSync(__dirname + '/dummy/image.png'), 'telegram');
     RED.node.config({});
     DocumentBlock(RED);
@@ -153,6 +182,5 @@ describe('Chat document node', function() {
         assert.equal(RED.node.message().originalMessage.chat.id, 42);
       });
   });
-
 
 });

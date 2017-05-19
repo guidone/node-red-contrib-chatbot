@@ -24,7 +24,7 @@ module.exports = function(RED) {
 
     this.on('input', function(msg) {
 
-      var path = node.filename;
+      //var path = node.filename;
       var name = node.name;
       var chatId = utils.getChatId(msg);
       var messageId = utils.getMessageId(msg);
@@ -44,9 +44,22 @@ module.exports = function(RED) {
         defaultFilename = sanitize(name);
       } else if (msg.payload != null && !_.isEmpty(msg.payload.filename)) {
         defaultFilename = msg.payload.filename;
+      } else if (msg.payload != null && !_.isEmpty(msg.filename)) {
+        defaultFilename = msg.filename;
+      }
+
+      var path = null;
+      if (!_.isEmpty(node.filename)) {
+        path = node.filename;
+      } else if (!_.isEmpty(msg.filename)) {
+        path = msg.filename;
       }
 
       if (!_.isEmpty(path)) {
+        if (!fs.existsSync(path)) {
+          node.error('File doesn\'t exist: ' + path);
+          return;
+        }
         file = {
           filename: Path.basename(path),
           buffer: fs.readFileSync(path),
@@ -76,17 +89,6 @@ module.exports = function(RED) {
           extension: Path.extname(defaultFilename),
           mimeType: mime.lookup(defaultFilename),
           buffer: msg.payload.file
-        };
-      } else if (!_.isEmpty(msg.filename)) {
-        if (!fs.existsSync(msg.filename)) {
-          node.error('File doesn\'t exist: ' + msg.filename);
-          return;
-        }
-        file = {
-          filename: Path.basename(msg.filename),
-          buffer: fs.readFileSync(msg.filename),
-          mimeType: mime.lookup(msg.filename),
-          extension: Path.extname(msg.filename)
         };
       }
       // exit if no file description
