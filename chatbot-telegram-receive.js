@@ -171,8 +171,11 @@ module.exports = function(RED) {
       botMsg.transport = 'telegram';
 
       if (DEBUG) {
+        // eslint-disable-next-line no-console
         console.log('START:-------');
+        // eslint-disable-next-line no-console
         console.log(botMsg);
+        // eslint-disable-next-line no-console
         console.log('END:-------');
       }
       var username = !_.isEmpty(botMsg.from.username) ? botMsg.from.username : null;

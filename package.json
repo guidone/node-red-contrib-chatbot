@@ -25,7 +25,6 @@
       "chatbot-document": "chatbot-document.js",
       "chatbot-image": "chatbot-image.js",
       "chatbot-audio": "chatbot-audio.js",
-      "chatbot-analyze": "chatbot-analyze.js",
       "chatbot-location": "chatbot-location.js",
       "chatbot-ask": "chatbot-ask.js",
       "chatbot-inline-buttons": "chatbot-inline-buttons.js",
