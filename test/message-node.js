@@ -245,11 +245,11 @@ describe('Chat message node', function() {
     }
     var stats = _.countBy(stack);
 
-    assert.isAtLeast(stats['Message 1'], 290);
+    assert.isAtLeast(stats['Message 1'], 280);
     assert.isAtMost(stats['Message 1'], 380);
-    assert.isAtLeast(stats['Message 2'], 290);
+    assert.isAtLeast(stats['Message 2'], 280);
     assert.isAtMost(stats['Message 2'], 380);
-    assert.isAtLeast(stats['Message 3'], 290);
+    assert.isAtLeast(stats['Message 3'], 280);
     assert.isAtMost(stats['Message 3'], 380);
   });
 

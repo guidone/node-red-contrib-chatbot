@@ -20,8 +20,6 @@ module.exports = function(RED) {
       } else if (msg.payload != null && msg.payload.chatId != null) {
         chatId = msg.payload.chatId;
       }
-      // get the chat context
-      var chatContext = ChatContextStore.getOrCreateChatContext(node, chatId);
       // evaluate platform transport
       var transport = null;
       if (!_.isEmpty(node.transport)) {
@@ -29,6 +27,11 @@ module.exports = function(RED) {
       } else if (msg.payload != null && msg.payload.transport != null) {
         transport = msg.payload.transport;
       }
+      // get the chat context
+      var chatContext = ChatContextStore.getOrCreateChatContext(node, chatId, {
+        chatId: chatId,
+        transport: transport
+      });
       // evaluate message if
       var messageId = null;
       if (!_.isEmpty(node.messageId)) {
@@ -38,7 +41,6 @@ module.exports = function(RED) {
       } else if (this.contextMessageId && chatContext.get('messageId') != null) {
         messageId = chatContext.get('messageId');
       }
-
       // ensure the original message is injected
       msg.originalMessage = {
         chat: {
@@ -48,6 +50,7 @@ module.exports = function(RED) {
         modify_message_id: messageId,
         transport: transport
       };
+
       msg.chat = function() {
         return ChatContextStore.getOrCreateChatContext(node, chatId, {
           chatId: chatId,
