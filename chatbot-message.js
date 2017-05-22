@@ -31,11 +31,13 @@ module.exports = function(RED) {
         return;
       }
 
-      if (!_.isEmpty(node.message)) {
-        message = _.isArray(node.message) ? node.pickOne(node.message) : node.message;
+      if (_.isString(node.message) && !_.isEmpty(node.message)) {
+        message = node.message;
+      } else if (_.isArray(node.message) && !_.isEmpty(node.message) && !_.isEmpty(node.message[0])) {
+        message = node.pickOne(node.message);
       } else if (_.isString(msg.payload) && !_.isEmpty(msg.payload)) {
         message = msg.payload;
-      } else if (_.isArray(msg.payload) && !_.isEmpty(msg.payload)) {
+      } else if (_.isArray(msg.payload) && !_.isEmpty(msg.payload) && !_.isEmpty(msg.payload[0])) {
         message = node.pickOne(msg.payload);
       } else if (_.isNumber(msg.payload)) {
         message = String(msg.payload);
