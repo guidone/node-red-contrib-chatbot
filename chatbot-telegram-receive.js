@@ -399,6 +399,13 @@ module.exports = function(RED) {
         chatContext.set('currentConversationNode_at', moment());
       }
 
+      var messageOk = function (response) {
+        chatContext.set('messageId', response.message_id)
+      };
+      var messageError = function (error) {
+        node.handleError(error, msg);
+      };
+
       var chatLog = new ChatLog(chatContext);
 
       chatLog.log(msg, this.config.log)
@@ -407,76 +414,47 @@ module.exports = function(RED) {
           switch (type) {
             case 'message':
               if (msg.originalMessage.modify_message_id != null) {
-                console.log('ok dovrei aggiornare ',msg.message_id);
                 node.telegramBot.editMessageText(msg.payload.content, {
                   chat_id: chatId,
                   message_id: msg.originalMessage.modify_message_id
-                }).then(
-                  function (response) {
-                    console.log('Nuovo message_id', response.message_id);
-                    chatContext.set('messageId', response.message_id)
-                  },
-                  function (error) {
-                    node.handleError(error, msg);
-                  });
+                }).then(messageOk, messageError);
 
               } else {
                 node.telegramBot.sendMessage(chatId, msg.payload.content, msg.payload.options)
-                  .then(
-                    function (response) {
-                      console.log('Nuovo message_id', response.message_id);
-                      chatContext.set('messageId', response.message_id)
-                    },
-                    function (error) {
-                      node.handleError(error, msg);
-                    });
+                  .then(messageOk, messageError);
               }
               break;
             case 'photo':
               node.telegramBot.sendPhoto(chatId, msg.payload.content, {
                 caption: msg.payload.caption
-              }).catch(function(error) {
-                node.handleError(error, msg);
-              });
+              }).then(messageOk, messageError);
               break;
             case 'document':
               node.telegramBot.sendDocument(chatId, msg.payload.content, {
                 caption: msg.payload.caption
               }, {
                 filename: msg.payload.filename
-              }).catch(function(error) {
-                node.handleError(error, msg);
-              });
+              }).then(messageOk, messageError);
               break;
             case 'sticker':
               node.telegramBot.sendSticker(chatId, msg.payload.content, msg.payload.options)
-                .catch(function(error) {
-                  node.handleError(error, msg);
-                });
+                .then(messageOk, messageError);
               break;
             case 'video':
               node.telegramBot.sendVideo(chatId, msg.payload.content, msg.payload.options)
-                .catch(function(error) {
-                  node.handleError(error, msg);
-                });
+                .then(messageOk, messageError);
               break;
             case 'audio':
               node.telegramBot.sendVoice(chatId, msg.payload.content, msg.payload.options)
-                .catch(function(error) {
-                  node.handleError(error, msg);
-                });
+                .then(messageOk, messageError);
               break;
             case 'location':
               node.telegramBot.sendLocation(chatId, msg.payload.content.latitude, msg.payload.content.longitude, msg.payload.options)
-                .catch(function(error) {
-                  node.handleError(error, msg);
-                });
+                .then(messageOk, messageError);
               break;
             case 'action':
               node.telegramBot.sendChatAction(chatId, msg.payload.waitingType != null ? msg.payload.waitingType : 'typing')
-                .catch(function(error) {
-                  node.handleError(error, msg);
-                });
+                .then(messageOk, messageError);
               break;
             case 'request':
               var keyboard = null;
@@ -504,9 +482,7 @@ module.exports = function(RED) {
                       'one_time_keyboard': true
                     })
                   })
-                  .catch(function(error) {
-                    node.handleError(error, msg);
-                  });
+                  .then(messageOk, messageError);
               } else {
                 node.error('Request type not supported');
               }
@@ -546,14 +522,22 @@ module.exports = function(RED) {
                 node.telegramBot.lastInlineButtons = {};
               }
               node.telegramBot.lastInlineButtons[chatId] = msg.payload.buttons;
-              // finally send
-              node.telegramBot.sendMessage(chatId, msg.payload.content, {
-                reply_markup: JSON.stringify({
+              // send buttons or edit
+              if (msg.originalMessage.modify_message_id != null) {
+                node.telegramBot.editMessageReplyMarkup(JSON.stringify({
                   inline_keyboard: inlineKeyboard
-                })
-              }).catch(function(error) {
-                node.handleError(error, msg);
-              });
+                }), {
+                  chat_id: chatId,
+                  message_id: msg.originalMessage.modify_message_id
+                }).then(messageOk, messageError);
+              } else {
+                // finally send
+                node.telegramBot.sendMessage(chatId, msg.payload.content, {
+                  reply_markup: JSON.stringify({
+                    inline_keyboard: inlineKeyboard
+                  })
+                }).then(messageOk, messageError);
+              }
               break;
             case 'buttons':
               if (_.isEmpty(msg.payload.content)) {
@@ -574,9 +558,7 @@ module.exports = function(RED) {
                 chatId,
                 msg.payload.content,
                 buttons
-              ).catch(function(error) {
-                node.handleError(error, msg);
-              });
+              ).then(messageOk, messageError);
               break;
 
             default:
