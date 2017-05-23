@@ -18,6 +18,12 @@ module.exports = function(RED) {
       return _.isString(messages[luck]) ? messages[luck] : messages[luck].message;
     };
 
+    this.emptyMessages = function(messages) {
+      return _.isEmpty(messages) || _(messages).all(function(message) {
+        return _.isEmpty(message);
+      });
+    };
+
     this.on('input', function(msg) {
       var message = node.message;
       var answer = node.answer;
@@ -33,11 +39,11 @@ module.exports = function(RED) {
 
       if (_.isString(node.message) && !_.isEmpty(node.message)) {
         message = node.message;
-      } else if (_.isArray(node.message) && !_.isEmpty(node.message) && !_.isEmpty(node.message[0])) {
+      } else if (_.isArray(node.message) && !this.emptyMessages(node.message)) {
         message = node.pickOne(node.message);
       } else if (_.isString(msg.payload) && !_.isEmpty(msg.payload)) {
         message = msg.payload;
-      } else if (_.isArray(msg.payload) && !_.isEmpty(msg.payload) && !_.isEmpty(msg.payload[0])) {
+      } else if (_.isArray(msg.payload) && !this.emptyMessages(msg.payload)) {
         message = node.pickOne(msg.payload);
       } else if (_.isNumber(msg.payload)) {
         message = String(msg.payload);
