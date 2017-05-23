@@ -5,7 +5,8 @@
   "scripts": {
     "test": "mocha",
     "ngrok": "ngrok http 127.0.0.1:1880",
-    "localtunnel": "lt --port 1880"
+    "localtunnel": "lt --port 1880",
+    "lint": "eslint *.js ./lib/**.js"
   },
   "repository": {
     "type": "git",

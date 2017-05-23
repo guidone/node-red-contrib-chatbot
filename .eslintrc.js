@@ -227,7 +227,7 @@ module.exports = {
         ],
         "prefer-numeric-literals": "error",
         "prefer-promise-reject-errors": "off",
-        "prefer-reflect": "error",
+        "prefer-reflect": "off",
         "prefer-rest-params": "error",
         "prefer-spread": "error",
         "prefer-template": "off",
@@ -271,7 +271,7 @@ module.exports = {
             "error",
             "never"
         ],
-        "valid-jsdoc": "error",
+        "valid-jsdoc": "off",
         "vars-on-top": "off",
         "wrap-iife": "error",
         "wrap-regex": "off",
