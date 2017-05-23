@@ -101,7 +101,7 @@ msg.payload = {
 return msg;
 </pre>
 <p>
-  In order to edit an already sent message, specify the <code>messageId</code> or use the context <code>messageId</code> which is the id of the last sent message. To set the <code>messageId</code> programmatically in the upstream node
+In order to edit an already sent message (only <em>Telegram</em>), specify the <code>messageId</code> or use the context <code>messageId</code> which is the id of the last sent message. To set the <code>messageId</code> programmatically in the upstream node
 <pre>
 msg.payload = {
   messageId: 123456

@@ -11,6 +11,7 @@ module.exports = function(RED) {
     this.chatId = config.chatId;
     this.transport = config.transport;
     this.contextMessageId = config.contextMessageId;
+    this.messageId = config.messageId;
 
     this.on('input', function(msg) {
       // evaluate chat id
