@@ -1,7 +1,5 @@
 var _ = require('underscore');
 var WebClient = require('@slack/client').WebClient;
-var moment = require('moment');
-var ChatContext = require('./lib/chat-context');
 var ChatContextStore = require('./lib/chat-context-store');
 var helpers = require('./lib/slack/slack');
 var fs = require('fs');
@@ -127,16 +125,18 @@ module.exports = function(RED) {
 
           // todo get this dinamically
           if (botMsg.user === 'U1Q04RGU9') {
+            // eslint-disable-next-line no-console
             console.log('from myself exiting');
             return;
           }
 
 
           //var username = !_.isEmpty(botMsg.from.username) ? botMsg.from.username : null;
-          var username = ''; // todo fix
+          //var username = ''; // todo fix
+          var chatId = botMsg.channel;
           var channelId = botMsg.channel;
           var userId = botMsg.user;
-          var context = node.context();
+          //var context = node.context();
           //var isAuthorized = node.config.isAuthorized(username, userId);
           var isAuthorized = true; // fix is authorized
           var chatContext = ChatContextStore.getOrCreateChatContext(this, channelId);
@@ -173,7 +173,7 @@ module.exports = function(RED) {
                   }
                 },
                 chat: function() {
-                  return ChatContextStore.getChatContext(self, chatId);
+                  return ChatContextStore.getChatContext(node, chatId);
                 }
               };
 
@@ -277,7 +277,7 @@ module.exports = function(RED) {
                     file: fs.createReadStream(tmpFile),
                     filetype: 'auto',
                     channels: msg.payload.chatId
-                  }, function handleContentFileUpload(err, res) {
+                  }, function handleContentFileUpload() {
                   }
                 );
               }
@@ -308,9 +308,9 @@ module.exports = function(RED) {
         return;
       }
 
-      var channelId = msg.payload.chatId;
+      //var channelId = msg.payload.chatId;
 
-      var noop = function() {};
+      //var noop = function() {};
 
       /*if (msg.payload.content == null) {
        node.warn("msg.payload.content is empty");
@@ -318,7 +318,7 @@ module.exports = function(RED) {
        }*/
 
       prepareMessage(msg)
-        .then(function(obj) {
+        .then(function() {
           //node.slackBot.postMessage(channelId, obj.content, obj.params, noop);
         });
 

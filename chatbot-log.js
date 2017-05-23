@@ -1,5 +1,3 @@
-var _ = require('underscore');
-var moment = require('moment');
 var ChatLog = require('./lib/chat-log.js');
 
 module.exports = function(RED) {

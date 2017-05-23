@@ -23,29 +23,40 @@ module.exports = function(RED) {
         var chatContext = msg.chat();
 
         // format a little
+        // eslint-disable-next-line no-console
         console.log('');
+        // eslint-disable-next-line no-console
         console.log(grey('------ ChatBot debug ----------------'));
+        // eslint-disable-next-line no-console
         console.log(green('Transport:'), white(chatContext.get('transport')));
+        // eslint-disable-next-line no-console
         console.log(green('chatId:'), white(chatContext.get('chatId')));
 
         // push out context
         if (chatContext != null) {
+          // eslint-disable-next-line no-console
           console.log(grey('------ ChatBot context --------------'));
           _(chatContext.all()).each(function (value, key) {
+            // eslint-disable-next-line no-console
             console.log(green(key + ':'), value instanceof Buffer ? '<Buffer>' : white(value));
           });
         }
       } else {
         // normal message here
+        // eslint-disable-next-line no-console
         console.log('');
+        // eslint-disable-next-line no-console
         console.log(grey('------ Message ----------------'));
         if (_.isString(msg.payload)) {
+          // eslint-disable-next-line no-console
           console.log(msg.payload);
         } else {
+          // eslint-disable-next-line no-console
           console.log(JSON.stringify(msg.payload));
         }
 
       }
+      // eslint-disable-next-line no-console
       console.log('');
       // show on console
       node.warn(chatContext.all());

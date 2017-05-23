@@ -47,15 +47,9 @@ module.exports = function(RED) {
               if (momented.isValid()) {
                 parsedValue = momented.toDate();
               } else {
-                console.log('ok try with literal');
+                // todo literal
               }
             }
-            /*parsedSentence = nlp.text(msg.payload.content);
-            console.log('----', parsedSentence.terms());
-            var term = _(parsedSentence.terms()).find(function(term) {
-              return term.pos.Value;
-            });
-            parsedValue = term != null ? term.number : null;*/
             break;
 
           case 'number-integer':

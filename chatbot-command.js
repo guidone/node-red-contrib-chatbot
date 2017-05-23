@@ -1,5 +1,4 @@
 var _ = require('underscore');
-var utils = require('./lib/helpers/utils');
 
 module.exports = function(RED) {
 
@@ -10,8 +9,6 @@ module.exports = function(RED) {
 
     this.on('input', function(msg) {
       var command = node.command;
-      var context = node.context();
-      var chatId = utils.getChatId(msg);
       var chatContext = msg.chat();
 
       var match = command;

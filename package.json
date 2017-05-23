@@ -1,11 +1,12 @@
 {
   "name": "node-red-contrib-chatbot",
-  "version": "0.6.24",
+  "version": "0.6.25-beta-1",
   "description": "REDBot a Chat bot for a full featured chat bot for Telegram**, Facebook Messenger and Slack. Almost no coding skills required",
   "scripts": {
     "test": "mocha",
     "ngrok": "ngrok http 127.0.0.1:1880",
-    "localtunnel": "lt --port 1880"
+    "localtunnel": "lt --port 1880",
+    "lint": "eslint *.js ./lib/**.js"
   },
   "repository": {
     "type": "git",
@@ -25,7 +26,6 @@
       "chatbot-document": "chatbot-document.js",
       "chatbot-image": "chatbot-image.js",
       "chatbot-audio": "chatbot-audio.js",
-      "chatbot-analyze": "chatbot-analyze.js",
       "chatbot-location": "chatbot-location.js",
       "chatbot-ask": "chatbot-ask.js",
       "chatbot-inline-buttons": "chatbot-inline-buttons.js",
@@ -84,6 +84,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "eslint": "^3.19.0",
     "mocha": "^3.2.0"
   }
 }

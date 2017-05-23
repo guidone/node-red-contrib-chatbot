@@ -1,22 +1,16 @@
 var _ = require('underscore');
 var moment = require('moment');
-var ChatContext = require('./lib/chat-context');
 var ChatLog = require('./lib/chat-log');
 var ChatContextStore = require('./lib/chat-context-store');
 var helpers = require('./lib/facebook/facebook');
 var utils = require('./lib/helpers/utils');
-var fs = require('fs');
-var os = require('os');
 var request = require('request').defaults({ encoding: null });
-var https = require('https');
-var http = require('http');
 var Bot = require('./lib/facebook/messenger-bot');
 var clc = require('cli-color');
 
 var DEBUG = false;
 var green = clc.greenBright;
 var white = clc.white;
-var red = clc.red;
 var grey = clc.blackBright;
 
 module.exports = function(RED) {
@@ -57,8 +51,11 @@ module.exports = function(RED) {
       var facebookBot = self.bot;
 
       if (DEBUG) {
+        // eslint-disable-next-line no-console
         console.log('START:-------');
+        // eslint-disable-next-line no-console
         console.log(botMsg);
+        // eslint-disable-next-line no-console
         console.log('END:-------');
       }
 
@@ -68,7 +65,6 @@ module.exports = function(RED) {
       var userId = botMsg.sender.id;
       var chatId = botMsg.sender.id;
       var messageId = botMsg.message != null ? botMsg.message.mid : null;
-      var context = self.context();
       // todo fix this
       //var isAuthorized = node.config.isAuthorized(username, userId);
       var isAuthorized = true;
@@ -144,11 +140,16 @@ module.exports = function(RED) {
           });
 
           var uiPort = RED.settings.get('uiPort');
+          // eslint-disable-next-line no-console
           console.log('');
+          // eslint-disable-next-line no-console
           console.log(grey('------ Facebook Webhook ----------------'));
+          // eslint-disable-next-line no-console
           console.log(green('Webhook URL: ') + white('http://localhost' + (uiPort != '80' ? ':' + uiPort : '')
               + '/redbot/facebook'));
+          // eslint-disable-next-line no-console
           console.log(green('Verify token is: ') + white(this.verify_token));
+          // eslint-disable-next-line no-console
           console.log('');
           // mount endpoints on local express
           this.bot.expressMiddleware(RED.httpNode);
@@ -179,7 +180,7 @@ module.exports = function(RED) {
     };
 
     // creates the message details object from the original message
-    this.getMessageDetails = function (botMsg, bot) {
+    this.getMessageDetails = function (botMsg) {
       return new Promise(function (resolve, reject) {
 
         //var userId = botMsg.sender.id;
@@ -362,7 +363,7 @@ module.exports = function(RED) {
 
         var type = msg.payload.type;
         var bot = node.bot;
-        var credentials = node.config.credentials;
+        //var credentials = node.config.credentials;
 
         var reportError = function(err) {
           if (err) {
@@ -494,7 +495,7 @@ module.exports = function(RED) {
             var lat = msg.payload.content.latitude;
             var lon = msg.payload.content.longitude;
 
-            var attachment = {
+            var locationAttachment = {
               'type': 'template',
               'payload': {
                 'template_type': 'generic',
@@ -512,7 +513,7 @@ module.exports = function(RED) {
             bot.sendMessage(
               msg.payload.chatId,
               {
-                attachment: attachment
+                attachment: locationAttachment
               },
               reportError
             );

@@ -1,6 +1,4 @@
-var levenshtein = require('fast-levenshtein');
 var _ = require('underscore');
-var regexps = require('./lib/helpers/regexps.js');
 var NplMatcher = require('./lib/npl-matcher');
 var clc = require('cli-color');
 var prettyjson = require('prettyjson');
@@ -40,10 +38,14 @@ module.exports = function(RED) {
 
       // debug the terms
       if (debug) {
+        // eslint-disable-next-line no-console
         console.log('');
+        // eslint-disable-next-line no-console
         console.log(grey('------ Sentence Analysis ----------------'));
+        // eslint-disable-next-line no-console
         console.log(green('Message:'), white(message));
         try {
+          // eslint-disable-next-line no-console
           console.log(prettyjson.render(terms._terms));
         } catch(e) {
           // pretty json may breaks
@@ -51,6 +53,7 @@ module.exports = function(RED) {
       }
 
       rules.forEach(function(rule) {
+        var matchedRule = null;
         if (!matched && rule === '*') {
           // mark as matched, only the first wins
           matched = true;

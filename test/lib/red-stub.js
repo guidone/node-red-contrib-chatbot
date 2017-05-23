@@ -128,7 +128,6 @@ module.exports = function() {
                 clearInterval(intervalId);
                 resolve();
               } else if (_error != null) {
-                console.log('errororrororo');
                 clearInterval(intervalId);
                 reject(_error);
               } else if (retries > 10) {
