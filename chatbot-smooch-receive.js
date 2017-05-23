@@ -1,10 +1,6 @@
 var _ = require('underscore');
 var moment = require('moment');
-var fs = require('fs');
-var os = require('os');
-var request = require('request').defaults({ encoding: null });
 var SmoochBot = require('./lib/smooch/smooch-bot');
-var ChatContext = require('./lib/chat-context');
 var ChatContextStore = require('./lib/chat-context-store');
 var ChatLog = require('./lib/chat-log');
 var helpers = require('./lib/smooch/helpers');
@@ -13,7 +9,6 @@ var clc = require('cli-color');
 var DEBUG = false;
 var green = clc.greenBright;
 var white = clc.white;
-var red = clc.red;
 var grey = clc.blackBright;
 
 module.exports = function(RED) {
@@ -43,8 +38,11 @@ module.exports = function(RED) {
       var facebookBot = self.bot;
 
       if (DEBUG) {
+        // eslint-disable-next-line no-console
         console.log('START:-------');
+        // eslint-disable-next-line no-console
         console.log(botMsg);
+        // eslint-disable-next-line no-console
         console.log('END:-------');
       }
 
@@ -54,7 +52,6 @@ module.exports = function(RED) {
       var userId = botMsg.authorId;
       var chatId = botMsg.authorId;
       var messageId = botMsg._id;
-      var context = self.context();
       // todo fix this
       //var isAuthorized = node.config.isAuthorized(username, userId);
       var isAuthorized = true;
@@ -123,10 +120,14 @@ module.exports = function(RED) {
           });
 
           var uiPort = RED.settings.get('uiPort');
+          // eslint-disable-next-line no-console
           console.log('');
+          // eslint-disable-next-line no-console
           console.log(grey('------ Smooch Webhook ----------------'));
+          // eslint-disable-next-line no-console
           console.log(green('Webhook URL: ') + white('http://localhost' + (uiPort != '80' ? ':' + uiPort : '')
               + '/redbot/smooch'));
+          // eslint-disable-next-line no-console
           console.log('');
           // mount endpoints on local express
           this.bot.addExpressMiddleware(RED.httpNode);
@@ -149,7 +150,7 @@ module.exports = function(RED) {
     };
 
     // creates the message details object from the original message
-    this.getMessageDetails = function (message, bot) {
+    this.getMessageDetails = function (message) {
 
       return new Promise(function (resolve, reject) {
 
@@ -259,7 +260,7 @@ module.exports = function(RED) {
 
         var type = msg.payload.type;
         var bot = node.bot;
-        var credentials = node.config.credentials;
+        //var credentials = node.config.credentials;
 
         var reportError = function(err) {
           if (err) {
@@ -287,7 +288,6 @@ module.exports = function(RED) {
               .then(function() {
                 resolve();
               });
-            break;
 
           case 'photo':
             var image = msg.payload.content;

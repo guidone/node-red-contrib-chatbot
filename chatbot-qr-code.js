@@ -1,4 +1,3 @@
-var _ = require('underscore');
 var qr = require('qr-image');
 var MessageTemplate = require('./lib/message-template.js');
 

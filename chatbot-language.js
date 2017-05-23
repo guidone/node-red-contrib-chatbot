@@ -1,5 +1,3 @@
-var speak = require("speakeasy-nlp");
-var levenshtein = require('fast-levenshtein');
 var _ = require('underscore');
 var lngDetector = new (require('languagedetect'));
 

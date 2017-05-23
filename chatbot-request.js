@@ -1,4 +1,3 @@
-var _ = require('underscore');
 var MessageTemplate = require('./lib/message-template.js');
 var emoji = require('node-emoji');
 var utils = require('./lib/helpers/utils');

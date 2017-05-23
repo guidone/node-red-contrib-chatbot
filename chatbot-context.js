@@ -14,7 +14,6 @@ module.exports = function(RED) {
 
       msg = RED.util.cloneMessage(msg);
 
-      var context = node.context();
       var command = this.command;
       var fieldValue = this.fieldValue;
       var fieldType = this.fieldType;
