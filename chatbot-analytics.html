@@ -1,0 +1,43 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-analytics',{
+    category: 'RedBot Flow',
+    color: '#FFCC66',
+    defaults: {
+      platform: {
+        value: 'dashbot'
+      },
+      token: {
+        value: ''
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'Analytics',
+    icon: 'chatbot-language.png',
+    label: function() {
+      return 'Analytics';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-analytics">
+<div class="form-row">
+  <label for="node-input-platform"><i class="icon-flag"></i> Service</label>
+  <select id="node-input-platform" placeholder="Analytics platform">
+    <option value="dashbot">Dashbot.io</option>
+  </select>
+</div>
+<div class="form-row">
+  <label for="node-input-place"><i class="icon-comment"></i> Token</label>
+  <input type="text" id="node-input-token" placeholder="Token">
+  <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+    Api token for the analytics platform.
+  </div>
+</div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-analytics">
+  <p>
+tdb
+  </p>
+</script>
