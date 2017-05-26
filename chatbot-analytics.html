@@ -1,6 +1,6 @@
 <script type="text/javascript">
   RED.nodes.registerType('chatbot-analytics',{
-    category: 'RedBot Flow',
+    category: 'RedBot Platforms',
     color: '#FFCC66',
     defaults: {
       platform: {
@@ -13,7 +13,7 @@
     inputs: 1,
     outputs: 1,
     paletteLabel: 'Analytics',
-    icon: 'chatbot-language.png',
+    icon: 'chatbot-analytics.png',
     label: function() {
       return 'Analytics';
     }
@@ -28,10 +28,10 @@
   </select>
 </div>
 <div class="form-row">
-  <label for="node-input-place"><i class="icon-comment"></i> Token</label>
+  <label for="node-input-place"><i class="icon-wrench"></i> Token</label>
   <input type="text" id="node-input-token" placeholder="Token">
   <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
-    Api token for the analytics platform.
+    Api token for the analytics platform, get a valid API key from the analytics control panel.
   </div>
 </div>
 </script>
@@ -40,6 +40,7 @@
 <p>
 Track chatbot activities with external services, currently only Dashbot.io is supported <em>[Telegram, Facebook, Smooch, Slack]</em>.
 </p>
-
-
+<p>
+This is a pass-through node, it will track the node in the selected analytics platform and forward the unmodified message to the output. Place the node just after a receiver (for example a <code>Telegram Receiver Node</code>) and just before sender (for example a <code>Telegram Sender Node</code>).
+</p>
 </script>
