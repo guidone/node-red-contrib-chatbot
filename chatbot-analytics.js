@@ -1,4 +1,3 @@
-var _ = require('underscore');
 var analytics = {
   dashbot: require('./lib/analytics/dashbot')
 };
