@@ -206,8 +206,10 @@ module.exports = function(RED) {
             }
           }, self.log)
         })
+        /*.then(function(msg) {
+          return analytics.dashbot.inbound(msg);
+        })*/
         .then(function(msg) {
-
           var currentConversationNode = chatContext.get('currentConversationNode');
           // if a conversation is going on, go straight to the conversation node, otherwise if authorized
           // then first pin, if not second pin

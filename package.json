@@ -15,6 +15,7 @@
   "node-red": {
     "nodes": {
       "chatbot-message": "chatbot-message.js",
+      "chatbot-analytics": "chatbot-analytics.js",
       "chatbot-context": "chatbot-context.js",
       "chatbot-topic": "chatbot-topic.js",
       "chatbot-apiai": "chatbot-apiai.js",
