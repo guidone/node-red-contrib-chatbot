@@ -235,7 +235,9 @@ module.exports = function(RED) {
         if (!this.telegramBot) {
           telegramBot = new TelegramBot(this.token, {
             polling: {
-              timeout: 10,
+              params: {
+                timeout: 10
+              },
               interval: !isNaN(parseInt(self.polling, 10)) ? parseInt(self.polling, 10) : 1000
             }
           });
