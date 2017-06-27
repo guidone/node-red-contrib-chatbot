@@ -66,26 +66,38 @@ module.exports = function(RED) {
             .catch(function(error) {
               reject(error);
             });
-        } else if (botMsg.audio) {
-          resolve({
-            chatId: botMsg.chat.id,
-            messageId: botMsg.message_id,
-            type: 'audio',
-            content: botMsg.audio.file_id,
-            caption: botMsg.caption,
-            date: moment.unix(botMsg.date),
-            inbound: true
-          });
+        } else if (botMsg.voice) {
+          telegramBot.getFileLink(botMsg.voice.file_id)
+            .then(function(path) {
+              return helpers.downloadFile(path);
+            })
+            .then(function(buffer) {
+               resolve({
+                 chatId: botMsg.chat.id,
+                 messageId: botMsg.message_id,
+                 type: 'audio',
+                 content: buffer,
+                 caption: botMsg.caption,
+                 date: moment.unix(botMsg.date),
+                 inbound: true
+               });
+            });
         } else if (botMsg.document) {
-          resolve({
-            chatId: botMsg.chat.id,
-            messageId: botMsg.message_id,
-            type: 'document',
-            content: botMsg.document.file_id,
-            caption: botMsg.caption,
-            date: moment.unix(botMsg.date),
-            inbound: true
-          });
+          telegramBot.getFileLink(botMsg.document.file_id)
+            .then(function(path) {
+              return helpers.downloadFile(path);
+            })
+            .then(function(buffer) {
+              resolve({
+                chatId: botMsg.chat.id,
+                messageId: botMsg.message_id,
+                type: 'document',
+                content: buffer,
+                caption: botMsg.caption,
+                date: moment.unix(botMsg.date),
+                inbound: true
+              });
+            });
         } else if (botMsg.sticker) {
           resolve({
             chatId: botMsg.chat.id,
@@ -96,25 +108,21 @@ module.exports = function(RED) {
             inbound: true
           });
         } else if (botMsg.video) {
-          resolve({
-            chatId: botMsg.chat.id,
-            messageId: botMsg.message_id,
-            type: 'video',
-            content: botMsg.video.file_id,
-            caption: botMsg.caption,
-            date: moment.unix(botMsg.date),
-            inbound: true
-          });
-        } else if (botMsg.voice) {
-          resolve({
-            chatId: botMsg.chat.id,
-            messageId: botMsg.message_id,
-            type: 'voice',
-            content: botMsg.voice.file_id,
-            caption: botMsg.caption,
-            date: moment.unix(botMsg.date),
-            inbound: true
-          });
+          telegramBot.getFileLink(botMsg.video.file_id)
+            .then(function(path) {
+              return helpers.downloadFile(path);
+            })
+            .then(function(buffer) {
+              resolve({
+                chatId: botMsg.chat.id,
+                messageId: botMsg.message_id,
+                type: 'video',
+                content: buffer,
+                caption: botMsg.caption,
+                date: moment.unix(botMsg.date),
+                inbound: true
+              });
+            });
         } else if (botMsg.location) {
           resolve({
             chatId: botMsg.chat.id,
