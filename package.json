@@ -25,6 +25,7 @@
       "chatbot-parse": "chatbot-parse.js",
       "chatbot-command": "chatbot-command.js",
       "chatbot-document": "chatbot-document.js",
+      "chatbot-video": "chatbot-video.js",
       "chatbot-image": "chatbot-image.js",
       "chatbot-audio": "chatbot-audio.js",
       "chatbot-location": "chatbot-location.js",

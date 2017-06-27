@@ -456,8 +456,9 @@ module.exports = function(RED) {
                 .then(messageOk, messageError);
               break;
             case 'video':
-              node.telegramBot.sendVideo(chatId, msg.payload.content, msg.payload.options)
-                .then(messageOk, messageError);
+              node.telegramBot.sendVideo(chatId, msg.payload.content, {
+                caption: msg.payload.caption
+              }).then(messageOk, messageError);
               break;
             case 'audio':
               node.telegramBot.sendVoice(chatId, msg.payload.content, msg.payload.options)
