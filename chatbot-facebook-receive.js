@@ -196,7 +196,7 @@ module.exports = function(RED) {
             linkStatus: botMsg.account_linking.status,
             date: moment(botMsg.timestamp),
             inbound:true
-          })
+          });
           return;
         }
 
@@ -536,6 +536,19 @@ module.exports = function(RED) {
             helpers.uploadBuffer({
               recipient: msg.payload.chatId,
               type: 'file',
+              buffer: msg.payload.content,
+              token: credentials.token,
+              filename: msg.payload.filename,
+              mimeType: msg.payload.mimeType
+            }).catch(function(err) {
+              reject(err);
+            });
+            break;
+
+          case 'video':
+            helpers.uploadBuffer({
+              recipient: msg.payload.chatId,
+              type: 'video',
               buffer: msg.payload.content,
               token: credentials.token,
               filename: msg.payload.filename,
