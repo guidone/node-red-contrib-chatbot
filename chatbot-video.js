@@ -10,7 +10,6 @@ var ValidExtensions = {
   'telegram': ['.mp4']
 };
 
-
 module.exports = function(RED) {
 
   function ChatBotVideo(config) {
@@ -77,7 +76,7 @@ module.exports = function(RED) {
           buffer: msg.payload
         };
       } else if (_.isObject(msg.payload) && msg.payload.file instanceof Buffer) {
-        // handle a buffer passed by another document node
+        // handle a buffer passed by another video node
         if (_.isEmpty(defaultFilename) || _.isEmpty(Path.extname(defaultFilename))) {
           node.error('Unknown file type, use the "name" parameter to specify the file name and extension as default');
           return;
@@ -88,11 +87,10 @@ module.exports = function(RED) {
           mimeType: mime.lookup(defaultFilename),
           buffer: msg.payload.file
         };
-      }
-      // exit if no file description
-      /*if (file == null) {
+      } else {
+        node.error('Unable to find a video in the input message.');
         return;
-      }*/
+      }
 
       // get caption
       var caption = null;
@@ -103,9 +101,7 @@ module.exports = function(RED) {
       }
 
       // if the file has a not a valid extension, stop it
-
       if (!_(validExtensions).contains(file.extension)) {
-        // todo exit with error
         node.error('Unsupported file format for video node, allowed formats: ' + validExtensions.join(', '));
         return;
       }

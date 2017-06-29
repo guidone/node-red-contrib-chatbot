@@ -51,22 +51,22 @@
 Send a video to the chat <em>[Facebook]</em>.
 </p>
 <p>
-The <code>Document node</code> can send a file from the local filesystem or from a Buffer payload from the upstream node or
+The <code>Video node</code> can send a file from the local filesystem or from a Buffer payload from the upstream node or
 from a <code>File node</code>.
 </p>
 <p>
-Some file types are not supported by a specific platform, for example <em>Telegram</em> only supports <em>.zip</em>, <em>.pdf</em>, <em>.gif</em>. A file not supported is automatically zipped.<br>
+Some file types are not supported by a specific platform, for example <em>Telegram</em> and <em>Facebook</em> only supports <em>.mp4</em>. Different video format che be sent with the <code>Document node</code>.<br>
 </p>
 <p>
-To programmatically send a document, in the upstream <code>Function node</code>
+To programmatically send a video, in the upstream <code>Function node</code>
 <pre>
 msg.payload.file = new Buffer(<my-buffer>);
-msg.payload.filename = 'my-file-name.pdf';
+msg.payload.filename = 'my-video.mp4';
 return msg;
 </pre>
 <code>.file</code> is a <code>Buffer</code> type. To pass the path of a local file from the upstream node
 <pre>
-msg.filename = '/my/local/file.pdf';
+msg.filename = '/my/local/my-video.mp4';
 return msg;
 </pre>
 </p>

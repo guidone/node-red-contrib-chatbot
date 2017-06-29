@@ -93,6 +93,7 @@ module.exports = function(RED) {
       }
       // exit if no file description
       if (file == null) {
+        node.error('Unable to find a file in the input message.');
         return;
       }
       // get caption
