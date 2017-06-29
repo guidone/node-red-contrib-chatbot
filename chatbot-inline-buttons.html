@@ -1,4 +1,33 @@
 <script type="text/javascript">
+
+  $.fn.mountButtonDialog = function() {
+
+    var container = $(this);
+
+    var main = $('<div/>').appendTo(container);
+
+    var selectButtonType = $('<select/>', {style:"width:200px; margin-left: 5px; text-align: center;"})
+      .attr('placeholder', 'Select button type')
+      .appendTo(main);
+
+
+    selectButtonType.append($('<option value="">Select button type</option>'));
+    selectButtonType.append($('<option value="url">URL</option>'));
+    selectButtonType.append($('<option value="postback">Postback</option>'));
+
+    var panelUrl = $('<div style="display:none;"/>').appendTo(container);
+    $('<div>panel url</div>').appendTo(panelUrl)
+
+
+    var panelPostback = $('<div style="display:none;"/>').appendTo(container);
+    $('<div>panel postback</div>').appendTo(panelPostback);
+
+
+    return container;
+
+  };
+
+
   RED.nodes.registerType('chatbot-inline-buttons', {
     category: 'RedBot',
     color: '#FFCC66',
@@ -70,7 +99,9 @@
           var url = item.url != null ? item.url : '';
           var image_url = item.image_url != null ? item.image_url : '';
 
-          var row1 = $('<div/>').appendTo(container);
+          $(container).mountButtonDialog();
+
+          /*var row1 = $('<div/>').appendTo(container);
           var row2 = $('<div/>').css('marginTop','5px').appendTo(container);
           var row3 = $('<div/>').css('marginTop','5px').appendTo(container);
           var row4 = $('<div/>').css('marginTop','5px').appendTo(container);
@@ -138,7 +169,7 @@
             .prop('checked', item.newLine)
             .appendTo(row5);
           $('<span>New line</span><span class="icon-platform-telegram"></span>').appendTo(row5);
-          resizeRule(container);
+          resizeRule(container);*/
         },
         resizeItem: resizeRule,
         removable: true,
