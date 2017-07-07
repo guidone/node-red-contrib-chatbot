@@ -1,32 +1,287 @@
 <script type="text/javascript">
 
-  $.fn.mountButtonDialog = function() {
+  $.RedBot = {};
+  $.RedBot.buttonTypes = [
+    {
+      type: 'url',
+      label: 'URL',
+      className: 'platform-combo-telegram-facebook'
+    },
+    {
+      type: 'postback',
+      label: 'Postback',
+      className: 'platform-combo-telegram-facebook'
+    },
+    {
+      type: 'quick-reply',
+      label: 'Postback',
+      className: 'platform-combo-facebook'
+    },
+    {
+      type: 'location',
+      label: 'Location',
+      className: 'platform-combo-facebook'
+    },
+    {
+      type: 'call',
+      label: 'Phone Call',
+      className: 'platform-combo-facebook'
+    },
+    {
+      type: 'share',
+      label: 'Share',
+      className: 'platform-combo-facebook'
+    },
+    {
+      type: 'login',
+      label: 'Log In',
+      className: 'platform-combo-facebook'
+    },
+    {
+      type: 'logout',
+      label: 'Log Out',
+      className: 'platform-combo-facebook'
+    },
+    {
+      type: 'newline',
+      label: 'New row of buttons',
+      className: 'platform-combo-telegram'
+    }
+  ];
+  $.RedBot.validate = {};
+  $.RedBot.validate.notEmpty = function(str) {
+    return str != null && str != '';
+  };
+  $.RedBot.validate.url = function(url) {
+    return url != null && url.match(/[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi);
+  };
+  $.RedBot.validate.button = function(button) {
+    switch(button.type) {
+      case 'url':
+        return $.RedBot.validate.notEmpty(button.label) && $.RedBot.validate.url(button.url);
+      case 'postback':
+        return $.RedBot.validate.notEmpty(button.label) && $.RedBot.validate.notEmpty(button.value);
+      case 'quick-reply':
+        return $.RedBot.validate.notEmpty(button.label) && $.RedBot.validate.notEmpty(button.value);
+      case 'call':
+        return $.RedBot.validate.notEmpty(button.label) && $.RedBot.validate.notEmpty(button.number);
+      case 'newline':
+      case 'share':
+      case 'logout':
+      case 'location':
+        return true;
+      case 'login':
+        return $.RedBot.validate.url(button.url);
+      default:
+        return false;
+    }
+  };
+  $.RedBot.buttonTypes.findButton = function(type) {
+    var button = null;
+    this.forEach(function(current) {
+      if (current.type === type) {
+        button = current;
+      }
+    });
+    return button;
+  };
+
+  $.fn.RB_setButtonData = function(obj) {
 
     var container = $(this);
 
-    var main = $('<div/>').appendTo(container);
+    var select = $('select[name=type]', container).val(obj.type);
+    var panel = $('.panel-' + obj.type, container).show();
+    var button = $.RedBot.buttonTypes.findButton(obj.type);
+    if (button != null) {
+      select.attr('class', button.className);
+    }
 
-    var selectButtonType = $('<select/>', {style:"width:200px; margin-left: 5px; text-align: center;"})
-      .attr('placeholder', 'Select button type')
-      .appendTo(main);
-
-
-    selectButtonType.append($('<option value="">Select button type</option>'));
-    selectButtonType.append($('<option value="url">URL</option>'));
-    selectButtonType.append($('<option value="postback">Postback</option>'));
-
-    var panelUrl = $('<div style="display:none;"/>').appendTo(container);
-    $('<div>panel url</div>').appendTo(panelUrl)
-
-
-    var panelPostback = $('<div style="display:none;"/>').appendTo(container);
-    $('<div>panel postback</div>').appendTo(panelPostback);
-
+    $('input[name=label]', panel).val(obj.label);
+    $('input[name=url]', panel).val(obj.url);
+    $('input[name=value]', panel).val(obj.value);
+    $('input[name=number]', panel).val(obj.number);
+    $('input[name=answer]', panel).val(obj.answer);
+    $('input[name=alert]', panel).attr('checked', obj.alert === true);
 
     return container;
-
   };
 
+  $.fn.RB_getButtonData = function() {
+
+    var container = $(this);
+
+    var type = $('select[name="type"]', container);
+    var panel = $('.panel-' + type.val(), container);
+    var label = $('input[name="label"]', panel);
+    var url = $('input[name="url"]', panel);
+    var value = $('input[name="value"]', panel);
+    var number = $('input[name="number"]', panel);
+    var answer = $('input[name="answer"]', panel);
+    var alert = $('input[name="alert"]', panel);
+    var result = null;
+
+    switch(type.val()) {
+      case 'url':
+        result = {
+          type: 'url',
+          label: label.val(),
+          url: url.val(),
+          answer: answer.val(),
+          alert: alert.is(':checked')
+        };
+        break;
+      case 'call':
+        result = {
+          type: 'call',
+          label: label.val(),
+          number: number.val()
+        };
+        break;
+      case 'postback':
+        result = {
+          type: 'postback',
+          label: label.val(),
+          value: value.val(),
+          answer: answer.val(),
+          alert: alert.is(':checked')
+        };
+        break;
+      case 'quick-reply':
+        result = {
+          type: 'quick-reply',
+          label: label.val(),
+          value: value.val(),
+          url: url.val()
+        };
+        break;
+      case 'newline':
+        result = {
+          type: 'newline'
+        };
+        break;
+      case 'location':
+        result = {
+          type: 'location'
+        };
+        break;
+      case 'share':
+        result = {
+          type: 'share'
+        };
+        break;
+      case 'logout':
+        result = {
+          type: 'logout'
+        };
+        break;
+      case 'login':
+        result = {
+          type: 'login',
+          url: url.val()
+        };
+        break;
+    }
+
+    return result;
+  };
+
+  $.fn.RB_mountButtonDialog = function(options) {
+
+    options = options || {};
+    options.types = options.types != null ?
+      options.types : ['url', 'postback', 'call', 'share', 'login', 'newline', 'logout', 'location', 'quick-reply'];
+
+    var container = $(this);
+    var main = $('<div/>').appendTo(container);
+
+    var selectButtonType = $('<select name="type"/>', {style:"width:200px; margin-left: 5px; text-align: center;"})
+      .attr('placeholder', 'Select button type')
+      .change(function() {
+        var type = $(this).val();
+        $('.panel', container).hide();
+        $('.panel-' + type, container).show();
+        // find the right button
+        var button = $.RedBot.buttonTypes.findButton(type);
+        // store class
+        if (button != null) {
+          $(this).attr('class', button.className);
+        } else {
+          $(this).attr('class', '');
+        }
+      })
+      .appendTo(main);
+
+    selectButtonType.append($('<option value="">Select button type</option>'));
+    $.RedBot.buttonTypes.forEach(function(button) {
+      if (options.types.indexOf(button.type) !== -1) {
+        selectButtonType.append($('<option value="' + button.type + '">' + button.label + '</option>'));
+      }
+    });
+
+    var panelUrl = $('<div class="panel panel-url" style="display:none;"/>').appendTo(container);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="label" placeholder="Button label"/>'))
+      .appendTo(panelUrl);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="url" placeholder="Button URL"/>'))
+      .appendTo(panelUrl);
+    $('<div/>').css('marginTop','5px')
+      .append('<input class="node-input-rule-type platform-telegram" type="text" name="answer" placeholder="Button feedback"/>')
+      .append('<input type="checkbox" name="alert" value="on" style="width: auto;margin:0px 10px 5px 10px;"/>')
+      .append('<span>With popup</span><span class="icon-platform-telegram"></span>')
+      .appendTo(panelUrl);
+
+    var panelPostback = $('<div class="panel panel-postback" style="display:none;"/>').appendTo(container);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="label" placeholder="Button label"/>'))
+      .appendTo(panelPostback);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="value" placeholder="Postback value">'))
+      .appendTo(panelPostback);
+    $('<div/>').css('marginTop','5px')
+      .append('<input class="node-input-rule-type platform-telegram" type="text" name="answer" placeholder="Button feedback (optional)"/>')
+      .append('<input type="checkbox" name="alert" value="on" style="width: auto;margin:0px 10px 5px 10px;"/>')
+      .append('<span>With popup</span><span class="icon-platform-telegram"></span>')
+      .appendTo(panelPostback);
+
+    var panelQuickReply = $('<div class="panel panel-quick-reply" style="display:none;"/>').appendTo(container);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="label" placeholder="Button label"/>'))
+      .appendTo(panelQuickReply);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="value" placeholder="Postback value">'))
+      .appendTo(panelQuickReply);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="url" placeholder="Image URL"/>'))
+      .appendTo(panelQuickReply);
+
+    var panelCall = $('<div class="panel panel-call" style="display:none;"/>').appendTo(container);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="label" placeholder="Button label"/>'))
+      .appendTo(panelCall);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="number" placeholder="Phone number"/>'))
+      .appendTo(panelCall);
+
+    var panelNewline = $('<div class="panel panel-newline" style="display:none;"/>').appendTo(container);
+    $('<div/>').css('marginTop','5px')
+      .html('This creates a new row of buttons')
+      .appendTo(panelNewline);
+
+    $('<div class="panel panel-share" style="display:none;"/>').appendTo(container);
+
+    $('<div class="panel panel-logout" style="display:none;"/>').appendTo(container);
+
+    $('<div class="panel panel-location" style="display:none;"/>').appendTo(container);
+
+    var panelLogin = $('<div class="panel panel-login" style="display:none;"/>').appendTo(container);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="url" placeholder="Authentication URL callback"/>'))
+      .appendTo(panelLogin);
+
+    return container;
+  };
 
   RED.nodes.registerType('chatbot-inline-buttons', {
     category: 'RedBot',
@@ -41,12 +296,7 @@
           var valid = true;
           var idx;
           for(idx = 0; idx < answers.length; idx++) {
-            // label button must be always present
-            if ($.trim(answers[idx].label) === '') {
-              valid = false;
-            }
-            // check url
-            if ($.trim(answers[idx].url) != '' && !answers[idx].url.match(/[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi)) {
+            if (!$.RedBot.validate.button(answers[idx])) {
               valid = false;
             }
           }
@@ -68,143 +318,64 @@
       var answers = $("#node-input-answers-container").editableList('items');
       var node = this;
       node.answers = [];
-
       var idx;
       for(idx = 0; idx < answers.length; idx++) {
-        var answer = {
-          value: answers[idx].find('input[name=button-value]').val(),
-          label: answers[idx].find('input[name=button-label]').val(),
-          answer: answers[idx].find('input[name=button-answer]').val(),
-          url: answers[idx].find('input[name=button-url]').val(),
-          image_url: answers[idx].find('input[name=button-image-url]').val(),
-          alert: answers[idx].find('input[name=button-alert]').is(':checked'),
-          newLine: answers[idx].find('input[name=new-line]').is(':checked')
-        };
-        if ($.trim(answer.answer) == '') {
-          answer.answer = null;
-        }
-        node.answers.push(answer);
+        node.answers.push($(answers[idx]).RB_getButtonData());
       }
     },
-
     oneditprepare: function() {
-
-      function resizeRule(rule) {}
-      $('#node-input-answers-container').css('min-height','300px').css('min-width','450px').editableList({
-        addItem: function(container, i, item) {
-
-          var label = item.label != null ? item.label : '';
-          var value = item.value != null ? item.value : '';
-          var answer = item.answer != null ? item.answer : '';
-          var url = item.url != null ? item.url : '';
-          var image_url = item.image_url != null ? item.image_url : '';
-
-          $(container).mountButtonDialog();
-
-          /*var row1 = $('<div/>').appendTo(container);
-          var row2 = $('<div/>').css('marginTop','5px').appendTo(container);
-          var row3 = $('<div/>').css('marginTop','5px').appendTo(container);
-          var row4 = $('<div/>').css('marginTop','5px').appendTo(container);
-          var row5 = $('<div/>').css('marginTop','5px').appendTo(container);
-          var inputLabel = $('<input class="node-input-rule-type" type="text" name="button-label" value="' + label + '" placeholder="Button label"/>')
-            .css({
-              width: '45%'
-            })
-            .appendTo(row1);
-          var inputValue = $('<input class="node-input-rule-type" type="text" name="button-value" value="' + value + '" placeholder="Button value (optional)"/>')
-            .css({
-              width: '45%',
-              marginLeft: '2%'
-            })
-            .attr('disabled', $.trim(url) !== '')
-            .on('keyup', function() {
-              var current = $(this).val();
-              inputUrl.attr('disabled', $.trim(current) !== '');
-            })
-            .appendTo(row1);
-          var inputUrl = $('<input class="node-input-rule-type platform-smooch-telegram" type="text" name="button-url" value="' + url + '" placeholder="Redirect URL (optional)"/>')
-            .css({
-              width: '92%'
-            })
-            .attr('disabled', $.trim(answer) !== '' || $.trim(value) !== '')
-            .on('keyup', function() {
-              var current = $(this).val();
-              inputValue.attr('disabled', $.trim(current) !== '');
-              inputAnswer.attr('disabled', $.trim(current) !== '');
-            })
-            .appendTo(row2);
-          var inputImageUrl = $('<input class="node-input-rule-type platform-smooch-facebook" type="text" name="button-image-url" value="' + image_url + '" placeholder="Image URL (optional)"/>')
-            .css({
-              width: '92%'
-            })
-            .appendTo(row3);
-          var inputAnswer = $('<input class="node-input-rule-type platform-telegram" type="text" name="button-answer" value="' + answer + '" placeholder="Button feedback (optional)"/>')
-            .css({
-              width: '92%'
-            })
-            .attr('disabled', $.trim(url) !== '')
-            .on('keyup', function() {
-              var current = $(this).val();
-              inputAlert.attr('disabled', $.trim(current) === '');
-              inputUrl.attr('disabled', $.trim(current) !== '');
-            })
-            .appendTo(row4);
-          var inputAlert = $('<input type="checkbox" name="button-alert" value="on"/>')
-            .css({
-              width: 'auto',
-              marginRight: '10px',
-              marginBottom: '5px'
-            })
-            .prop('checked', item.alert)
-            .attr('disabled', $.trim(answer) === '')
-            .appendTo(row5);
-          $('<span>Alert</span><span class="icon-platform-telegram"></span>').appendTo(row5);
-          var inputNewLine = $('<input type="checkbox" name="new-line" value="on"/>')
-            .css({
-              width: 'auto',
-              marginRight: '10px',
-              marginLeft: '10px',
-              marginBottom: '5px'
-            })
-            .prop('checked', item.newLine)
-            .appendTo(row5);
-          $('<span>New line</span><span class="icon-platform-telegram"></span>').appendTo(row5);
-          resizeRule(container);*/
-        },
-        resizeItem: resizeRule,
-        removable: true,
-        sortable: true
-      });
+      $('#node-input-answers-container')
+        .css('min-height','300px')
+        .css('min-width','450px')
+        .editableList({
+          addItem: function(container, i, item) {
+            $(container).RB_mountButtonDialog({
+              types: ['url', 'postback', 'call', 'login', 'newline', 'logout']
+            });
+            $(container).RB_setButtonData(item);
+          },
+          removable: true,
+          sortable: true
+        });
 
       var answers = this.answers;
       var idx;
       for (idx = 0; idx < answers.length; idx++) {
         var answer = answers[idx];
-        $("#node-input-answers-container").editableList('addItem', answer);
+        $('#node-input-answers-container').editableList('addItem', answer);
       }
+    },
+    oneditresize: function() {
+      var dialogForm = $('#dialog-form');
+      var rowName = $('.form-row-name', dialogForm);
+      var rowMessage = $('.form-row-message', dialogForm);
+      var rowLabel = $('.form-row-label', dialogForm);
+      var rowHint = $('.form-row-hint', dialogForm);
+      var height = dialogForm.height() - rowName.height() - rowMessage.height() - rowLabel.height() - rowHint.height() - 30;
+      $('#node-input-answers-container').editableList('height', height);
     }
   });
 </script>
 
 <script type="text/x-red" data-template-name="chatbot-inline-buttons">
-<div class="form-row">
+<div class="form-row form-row-name">
   <label for="node-input-name"><i class="icon-tag"></i> Name</label>
   <input type="text" id="node-input-name" placeholder="Name">
 </div>
-<div class="form-row">
+<div class="form-row form-row-message">
   <label for="node-input-message"><i class="icon-envelope"></i> Message</label>
-  <textarea id="node-input-message" placeholder="Message" style="width:93%;height:100px;"></textarea>
+  <textarea id="node-input-message" placeholder="Message" style="width:93%;height:50px;"></textarea>
   <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;">
     Supports handlebars-like variables for chat context like {{firstName}}, {{lastName}}, etc. and emoticons (:smile:, etc.)
   </div>
 </div>
-<div class="form-row" style="margin-bottom:0;">
+<div class="form-row form-row-label" style="margin-bottom:0;">
   <label><i class="fa fa-list"></i> <span>Buttons</span></label>
 </div>
 <div class="form-row node-input-rule-container-row">
   <ol id="node-input-answers-container"></ol>
 </div>
-<div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;margin-bottom:10px;">
+<div class="form-row-hint" style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;margin-bottom:10px;">
   Some attributes apply for specific platform:<br>
   <span class="icon-platform-facebook"></span> = <span style="font-size:10px">Facebook</span>
   <span class="icon-platform-telegram"></span> = <span style="font-size:10px">Telegram</span>
@@ -257,7 +428,6 @@ return msg;
 </script>
 
 <style>
-
 .icon-platform-telegram {
   display: inline-block;
   width: 9px;
@@ -304,15 +474,33 @@ return msg;
   background-repeat: no-repeat;
 }
 
+.platform-combo-facebook {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEJJREFUGBljtIqc8Z+BAGCByR9dlg5jwmnrqJlgNlwRiAcThKuCMpjQBbDxUUxCthLZVBRFyBLIJhJlHVGKGIkJJwAbVQzJXzC/gwAAAABJRU5ErkJggg==);
+  background-position: right 12px top 2px;
+  background-repeat: no-repeat;
+}
+
 .platform-telegram {
   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADRJREFUGBlj1F764D8DAcACk78SJQ9jwmmdZQ/BbLgimABIMYwNU80EY+Cjh4QidJ+BPAQAUcEMK/ZfXe8AAAAASUVORK5CYII=);
   background-position: right 2px top 2px;
   background-repeat: no-repeat;
 }
 
+.platform-combo-telegram {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADRJREFUGBlj1F764D8DAcACk78SJQ9jwmmdZQ/BbLgimABIMYwNU80EY+Cjh4QidJ+BPAQAUcEMK/ZfXe8AAAAASUVORK5CYII=);
+  background-position: right 12px top 2px;
+  background-repeat: no-repeat;
+}
+
 .platform-smooch {
   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAENJREFUGBljXOyx/T8DAcAEk4/Z7gFjgmlkPlwRSAYmAaNhulAULfHcAVYIopEBiiKQBLoCkBiGIpAgOqCeIkZiwgkAEPoRCUXTyWoAAAAASUVORK5CYII=);
   background-position: right 2px top 2px;
+  background-repeat: no-repeat;
+}
+
+.platform-combo-smooch {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAENJREFUGBljXOyx/T8DAcAEk4/Z7gFjgmlkPlwRSAYmAaNhulAULfHcAVYIopEBiiKQBLoCkBiGIpAgOqCeIkZiwgkAEPoRCUXTyWoAAAAASUVORK5CYII=);
+  background-position: right 12px top 2px;
   background-repeat: no-repeat;
 }
 
@@ -323,6 +511,13 @@ return msg;
   background-repeat: no-repeat, no-repeat;
 }
 
+.platform-combo-telegram-facebook {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADRJREFUGBlj1F764D8DAcACk78SJQ9jwmmdZQ/BbLgimABIMYwNU80EY+Cjh4QidJ+BPAQAUcEMK/ZfXe8AAAAASUVORK5CYII=),
+  url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEJJREFUGBljtIqc8Z+BAGCByR9dlg5jwmnrqJlgNlwRiAcThKuCMpjQBbDxUUxCthLZVBRFyBLIJhJlHVGKGIkJJwAbVQzJXzC/gwAAAABJRU5ErkJggg==);
+  background-position: right 12px top 2px, right 22px top 2px;
+  background-repeat: no-repeat, no-repeat;
+}
+
 .platform-smooch-facebook {
   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAENJREFUGBljXOyx/T8DAcAEk4/Z7gFjgmlkPlwRSAYmAaNhulAULfHcAVYIopEBiiKQBLoCkBiGIpAgOqCeIkZiwgkAEPoRCUXTyWoAAAAASUVORK5CYII=),
     url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEJJREFUGBljtIqc8Z+BAGCByR9dlg5jwmnrqJlgNlwRiAcThKuCMpjQBbDxUUxCthLZVBRFyBLIJhJlHVGKGIkJJwAbVQzJXzC/gwAAAABJRU5ErkJggg==);
@@ -330,10 +525,24 @@ return msg;
   background-repeat: no-repeat, no-repeat;
 }
 
+.platform-combo-smooch-facebook {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAENJREFUGBljXOyx/T8DAcAEk4/Z7gFjgmlkPlwRSAYmAaNhulAULfHcAVYIopEBiiKQBLoCkBiGIpAgOqCeIkZiwgkAEPoRCUXTyWoAAAAASUVORK5CYII=),
+  url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEJJREFUGBljtIqc8Z+BAGCByR9dlg5jwmnrqJlgNlwRiAcThKuCMpjQBbDxUUxCthLZVBRFyBLIJhJlHVGKGIkJJwAbVQzJXzC/gwAAAABJRU5ErkJggg==);
+  background-position: right 12px top 2px, right 22px top 2px;
+  background-repeat: no-repeat, no-repeat;
+}
+
 .platform-smooch-telegram {
   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAENJREFUGBljXOyx/T8DAcAEk4/Z7gFjgmlkPlwRSAYmAaNhulAULfHcAVYIopEBiiKQBLoCkBiGIpAgOqCeIkZiwgkAEPoRCUXTyWoAAAAASUVORK5CYII=),
     url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADRJREFUGBlj1F764D8DAcACk78SJQ9jwmmdZQ/BbLgimABIMYwNU80EY+Cjh4QidJ+BPAQAUcEMK/ZfXe8AAAAASUVORK5CYII=);
   background-position: right 2px top 2px, right 12px top 2px;
+  background-repeat: no-repeat, no-repeat;
+}
+
+.platform-combo-smooch-telegram {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAENJREFUGBljXOyx/T8DAcAEk4/Z7gFjgmlkPlwRSAYmAaNhulAULfHcAVYIopEBiiKQBLoCkBiGIpAgOqCeIkZiwgkAEPoRCUXTyWoAAAAASUVORK5CYII=),
+  url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADRJREFUGBlj1F764D8DAcACk78SJQ9jwmmdZQ/BbLgimABIMYwNU80EY+Cjh4QidJ+BPAQAUcEMK/ZfXe8AAAAASUVORK5CYII=);
+  background-position: right 12px top 2px, right 22px top 2px;
   background-repeat: no-repeat, no-repeat;
 }
 
@@ -345,7 +554,13 @@ return msg;
   background-repeat: no-repeat, no-repeat, no-repeat;
 }
 
-
+.platform-combo-telegram-facebook-smooch {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADRJREFUGBlj1F764D8DAcACk78SJQ9jwmmdZQ/BbLgimABIMYwNU80EY+Cjh4QidJ+BPAQAUcEMK/ZfXe8AAAAASUVORK5CYII=),
+  url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEJJREFUGBljtIqc8Z+BAGCByR9dlg5jwmnrqJlgNlwRiAcThKuCMpjQBbDxUUxCthLZVBRFyBLIJhJlHVGKGIkJJwAbVQzJXzC/gwAAAABJRU5ErkJggg==),
+  url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAENJREFUGBljXOyx/T8DAcAEk4/Z7gFjgmlkPlwRSAYmAaNhulAULfHcAVYIopEBiiKQBLoCkBiGIpAgOqCeIkZiwgkAEPoRCUXTyWoAAAAASUVORK5CYII=);
+  background-position: right 12px top 2px, right 22px top 2px, right 32px top 2px;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+}
 </style>
 
 
