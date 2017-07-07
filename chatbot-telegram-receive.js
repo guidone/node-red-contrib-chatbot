@@ -510,27 +510,29 @@ module.exports = function(RED) {
               // cycle through buttons, add new line at the end if flag
               _(msg.payload.buttons).each(function(button) {
                 var json = null;
-                if (!_.isEmpty(button.url)) {
-                  json = {
-                    text: button.label,
-                    url: button.url
-                  };
-                } else if (!_.isEmpty(button.value)) {
-                  json = {
-                    text: button.label,
-                    callback_data: button.value
-                  };
-                } else {
-                  json = {
-                    text: button.label,
-                    callback_data: button.label
-                  };
+                switch(button.type) {
+                  case 'url':
+                    json = {
+                      text: button.label,
+                      url: button.url
+                    };
+                    break;
+                  case 'postback':
+                    json = {
+                      text: button.label,
+                      callback_data: !_.isEmpty(button.value) ? button.value : button.label
+                    };
+                    break;
+                  case 'newline':
+                    inlineKeyboard.push([]);
+                    break;
+                  default:
+                    console.log('WANR not able to handle this buttons');
+
                 }
-                // add the button to the last row
-                inlineKeyboard[inlineKeyboard.length -1].push(json);
-                // if new line, then add a blank array
-                if (button.newLine) {
-                  inlineKeyboard.push([]);
+                if (json != null) {
+                  // add the button to the last row, if any
+                  inlineKeyboard[inlineKeyboard.length - 1].push(json);
                 }
               });
               // store the last buttons, this will be handled by the receiver

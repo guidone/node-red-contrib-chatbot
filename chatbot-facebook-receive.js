@@ -8,7 +8,7 @@ var request = require('request').defaults({ encoding: null });
 var Bot = require('./lib/facebook/messenger-bot');
 var clc = require('cli-color');
 
-var DEBUG = false;
+var DEBUG = true;
 var green = clc.greenBright;
 var white = clc.white;
 var grey = clc.blackBright;
@@ -387,13 +387,72 @@ module.exports = function(RED) {
 
     function sendMessage(msg) {
 
+      function parseButtons(buttons) {
+        return _(buttons).chain()
+          .map(function(button) {
+            var temp = null;
+            switch(button.type) {
+              case 'url':
+                return {
+                  type: 'web_url',
+                  title: button.label,
+                  url: button.url
+                };
+              case 'call':
+                return {
+                  type: 'phone_number',
+                  title: button.label,
+                  payload: button.number
+                };
+              case 'postback':
+                return {
+                  type: 'postback',
+                  title: button.label,
+                  payload: button.value
+                };
+              case 'share':
+                return {
+                  type: 'element_share'
+                };
+              case 'login':
+                return {
+                  type: 'account_link',
+                  url: button.url
+                };
+              case 'logout':
+                return {
+                  type: 'account_unlink'
+                };
+              case 'quick-reply':
+                temp = {
+                  content_type: 'text',
+                  title: button.label,
+                  payload: !_.isEmpty(button.value) ? button.value : button.label
+                };
+                if (!_.isEmpty(button.url)) {
+                  temp.image_url = button.url;
+                }
+                return temp;
+              case 'location':
+                return {
+                  content_type: 'location'
+                };
+              default:
+                console.log('Facebook Messenger was not able to use button of type "' + button.type + '"');
+                return null;
+            }
+          })
+          .compact()
+          .value();
+      }
+
       return new Promise(function(resolve, reject) {
 
         var type = msg.payload.type;
         var bot = node.bot;
         var credentials = node.config.credentials;
-
         var reportError = function(err) {
+          console.log('err', err);
           if (err) {
             reject(err);
           } else {
@@ -456,29 +515,81 @@ module.exports = function(RED) {
             );
             break;
 
-          case 'inline-buttons':
-            var quickReplies = _(msg.payload.buttons).map(function(button) {
-              var quickReply = {
-                content_type: 'text',
-                title: button.label,
-                payload: !_.isEmpty(button.value) ? button.value : button.label
-              };
-              if (!_.isEmpty(button.image_url)) {
-                quickReply.image_url = button.image_url;
-              }
-              return quickReply;
-            });
+          case 'generic-template':
 
+console.log('send generic template');
+            bot.sendMessage(
+              msg.payload.chatId,
+              {
+                attachment: {
+                  type: 'template',
+                  payload: {
+                    template_type: 'generic',
+                    elements: [
+                      {
+                        title: 'Welcome to ',
+                        image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/PM5544_with_non-PAL_signals.png/320px-PM5544_with_non-PAL_signals.png",
+                        subtitle: "We e got the right hat for everyone.",
+                        /*"default_action": {
+                          "type": "web_url",
+                          "url": "https://peterssendreceiveapp.ngrok.io/view?item=103",
+                          "messenger_extensions": true,
+                          "webview_height_ratio": "tall",
+                          "fallback_url": "https://peterssendreceiveapp.ngrok.io/"
+                        },*/
+                        "buttons": [
+                          {
+                            "type": "web_url",
+                            "url": "https://petersfancybrownhats.com",
+                            "title": "View Website"
+                          }
+                          ,
+                          {
+                            "type": "postback",
+                            "title": "Start Chatting",
+                            "payload": "DEVELOPER_DEFINED_PAYLOAD"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              reportError
+            );
+
+            break;
+
+
+          case 'quick-replies':
             // send
             bot.sendMessage(
               msg.payload.chatId,
               {
                 text: msg.payload.content,
-                quick_replies: quickReplies
+                quick_replies: parseButtons(msg.payload.buttons)
               },
               reportError
             );
+            break;
 
+          case 'inline-buttons':
+console.log('inline buttons', parseButtons(msg.payload.buttons));
+
+            bot.sendMessage(
+              msg.payload.chatId,
+              {
+                attachment: {
+                  type: 'template',
+                  payload: {
+                    template_type: 'button',
+                    text: msg.payload.content,
+                    buttons: parseButtons(msg.payload.buttons)
+                  }
+                }
+              },
+              reportError
+            );
             break;
 
           case 'message':

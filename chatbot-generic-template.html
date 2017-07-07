@@ -1,0 +1,105 @@
+<script type="text/javascript">
+
+  RED.nodes.registerType('chatbot-generic-template', {
+    category: 'RedBot',
+    color: '#FFCC66',
+    defaults: {
+      name: {
+        value: ''
+      },
+      message: {
+        value: '',
+        validate: function(message) {
+          return $.RedBot.validate.notEmpty(message);
+        }
+      },
+      buttons: {
+        value: [],
+        validate: function(buttons) {
+          var valid = true;
+          var idx;
+          for(idx = 0; idx < buttons.length; idx++) {
+            if (!$.RedBot.validate.button(buttons[idx])) {
+              valid = false;
+            }
+          }
+          return valid;
+        }
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'Generic Template',
+    icon: 'chatbot-inline-button.png',
+    label: function() {
+      return this.name || 'Generic Template';
+    },
+    oneditsave: function() {
+      var buttons = $("#node-input-buttons-container").editableList('items');
+      var node = this;
+      node.buttons = [];
+      var idx;
+      for(idx = 0; idx < buttons.length; idx++) {
+        node.buttons.push($(buttons[idx]).RB_getButtonData());
+      }
+    },
+    oneditprepare: function() {
+      $('#node-input-buttons-container')
+        //.css('min-height','300px')
+        .css('min-width','450px')
+        .editableList({
+          addItem: function(container, i, item) {
+            $(container).RB_mountButtonDialog({
+              types: ['quick-reply', 'location']
+            });
+            $(container).RB_setButtonData(item);
+          },
+          removable: true,
+          sortable: true
+        });
+
+      if (this.buttons != null) {
+        this.buttons.forEach(function(button) {
+          $('#node-input-buttons-container').editableList('addItem', button);
+        });
+      }
+    },
+    oneditresize: function() {
+      var dialogForm = $('#dialog-form');
+      var rowName = $('.form-row-name', dialogForm);
+      var rowMessage = $('.form-row-message', dialogForm);
+      var rowLabel = $('.form-row-label', dialogForm);
+
+      var height = dialogForm.height() - rowName.height() - rowLabel.height() - rowMessage.height() - 30;
+      $('#node-input-buttons-container').editableList('height', height);
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-generic-template">
+<div class="form-row form-row-name">
+  <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+  <input type="text" id="node-input-name" placeholder="Name">
+</div>
+<div class="form-row form-row-message">
+  <label for="node-input-message"><i class="icon-envelope"></i> Message</label>
+  <textarea id="node-input-message" placeholder="Message" style="width:93%;height:50px;"></textarea>
+  <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;">
+    Supports handlebars-like variables for chat context like {{firstName}}, {{lastName}}, etc. and emoticons (:smile:, etc.)
+  </div>
+</div>
+<div class="form-row form-row-label" style="margin-bottom:0;">
+  <label><i class="fa fa-list"></i> <span>Buttons</span></label>
+</div>
+<div class="form-row node-input-rule-container-row">
+  <ol id="node-input-buttons-container"></ol>
+</div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-generic-template">
+<p>Generic Template <em>[Facebook]</em>.</p>
+
+</script>
+
+
+
