@@ -582,7 +582,7 @@
     <input type="checkbox" value="true" id="node-input-showdebug">
     <span style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;display:block;">
     Dump the analysis of the sentences in the console (terms, nouns, verbs, etc).</span>
-</div>
+  </div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-listen">
@@ -597,7 +597,7 @@
 </p>
 <p>
   If a rule is matched, the following rules are skipped and not evaluated. A rule with just a <code>*</code> matches
-  everything and it's generally used as a catch-all at the end if every other rules are not matched.
+  everything and it's generally used as a catch-all at the end if every other rules are not matched. The node will not try to parse command-like sentences (for example <pre>/my_command</pre>)
 </p>
 <p>
   Given these two set of tokens

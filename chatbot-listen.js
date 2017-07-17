@@ -2,6 +2,7 @@ var _ = require('underscore');
 var NplMatcher = require('./lib/npl-matcher');
 var clc = require('cli-color');
 var prettyjson = require('prettyjson');
+var helpers = require('./lib/helpers/regexps');
 
 var green = clc.greenBright;
 var white = clc.white;
@@ -35,6 +36,11 @@ module.exports = function(RED) {
       // parse incoming message
       var message = msg.payload.content;
       var terms = NplMatcher.parseSentence(message);
+
+      // do not try to parse if it's a command like
+      if (helpers.isCommand(message)) {
+        return;
+      }
 
       // debug the terms
       if (debug) {

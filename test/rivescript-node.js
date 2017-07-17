@@ -28,6 +28,30 @@ describe('Chat RiveScript node', function() {
     assert.equal(RED.node.message(1).payload, 'ERR: No Reply Matched');
   });
 
+  it('should answer with the default sentence', function() {
+    var msg = RED.createMessage({content: 'I have an headache'});
+    RED.node.clear();
+    RED.node.config({
+      script: '! version = 2.0\n\n+ hello bot\n- Hello, human!\n+ *\n- Did not understand'
+    });
+    RiveScriptBlock(RED);
+    RED.node.get().emit('input', msg);
+    assert.equal(RED.node.message(0).payload, 'Did not understand');
+    assert.isNull(RED.node.message(1));
+  });
+
+  it('should not answer with the default sentence for command-like sentences', function() {
+    var msg = RED.createMessage({content: '/cmd'});
+    RED.node.clear();
+    RED.node.config({
+      script: '! version = 2.0\n\n+ hello bot\n- Hello, human!\n+ *\n- Did not understand'
+    });
+    RiveScriptBlock(RED);
+    RED.node.get().emit('input', msg);
+    assert.isNull(RED.node.message(0));
+    assert.isNull(RED.node.message(1));
+  });
+
   it('should grab the name and store it', function() {
     var msg = RED.createMessage({content: 'my name is guido'});
     RED.node.clear();

@@ -8,6 +8,9 @@
       },
       script: {
         value: '! version = 2.0\n\n'
+      },
+      debug: {
+        value: false
       }
     },
     inputs: 1,
@@ -36,21 +39,19 @@
       delete this.editor;
     },
     oneditresize: function(size) {
-      var rows = $("#dialog-form>div:not(.node-text-editor-row)");
-      var height = $("#dialog-form").height();
-      for (var i=0;i<rows.size();i++) {
-        height -= $(rows[i]).outerHeight(true);
-      }
-      var editorRow = $("#dialog-form>div.node-text-editor-row");
-      height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
-      $(".node-text-editor").css("height",height+"px");
+      var dialogForm = $('#dialog-form');
+      var rowName = $('.form-row-name', dialogForm);
+      var rowInfo = $('.form-row-info', dialogForm);
+      var rowDebug = $('.form-row-debug', dialogForm);
+      var height = dialogForm.height() - rowName.height() - rowInfo.height() - rowDebug.height() - 30;
+      $('.node-text-editor').css('height', height + 'px');
       this.editor.resize();
     }
   });
 </script>
 
 <script type="text/x-red" data-template-name="chatbot-rivescript">
-<div class="form-row">
+<div class="form-row form-row-name">
   <label for="node-input-name"><i class="icon-tag"></i> Name</label>
   <input type="text" id="node-input-name" placeholder="Name">
   <input type="hidden" id="node-input-script" autofocus="autofocus">
@@ -58,10 +59,16 @@
 <div class="form-row">
   <div style="height: 250px; min-height:150px;" class="node-text-editor" id="node-input-script-editor"></div>
 </div>
-<div class="form-row">
+<div class="form-row form-row-info">
   <div style="font-size: 12px;color: #999999;line-height: 14px;">
     <b>RiveScript</b> used to elaborate the answer, read the <a target="_blank" href="https://www.rivescript.com/docs/tutorial">tutorial here</a>
   </div>
+</div>
+<div class="form-row form-row-debug">
+  <label for="node-input-answer"><i class="icon-wrench"></i> Debug</label>
+  <input type="checkbox" value="true" id="node-input-debug">
+  <span style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;display:block;">
+    Show Rivescript debug information in the Node-RED debug panel
 </div>
 </script>
 
@@ -69,7 +76,7 @@
 <p>Reply to an incoming message using RiveScript</p>
 <p>
 This node answers with a string to the first output if the script is able to elaborate a reply, otherwise a
-string error is sent to the second output. This node is generally connected to a message node.
+string error is sent to the second output. This node output is generally connected to a message node. The node will not try to parse command-like sentences (for example <pre>/my_command</pre>)
 </p>
 <p>
 A RiveScript looks like
