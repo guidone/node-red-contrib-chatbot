@@ -1,5 +1,7 @@
 var _ = require('underscore');
 var RiveScript = require('rivescript');
+var helpers = require('./lib/helpers/regexps');
+var utils = require('./lib/helpers/utils');
 
 module.exports = function(RED) {
 
@@ -7,6 +9,7 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
     var node = this;
     this.script = config.script;
+    this.debug = config.debug;
     this.answer = config.answer;
     this.parse_mode = config.parse_mode;
     this.transports = ['telegram', 'slack', 'facebook', 'smooch'];
@@ -21,8 +24,8 @@ module.exports = function(RED) {
 
     this.on('input', function(msg) {
       var script = node.script;
-      var originalMessage = msg.originalMessage;
-      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
+      var debug = node.debug;
+      var chatId = utils.getChatId(msg);
       var context = node.context();
       var chatContext = msg.chat();
 
@@ -31,7 +34,7 @@ module.exports = function(RED) {
       if (msg.payload != null && msg.payload.content != null && _.isString(msg.payload.content)) {
         content = msg.payload.content;
       }
-      if (_.isEmpty(content)) {
+      if (_.isEmpty(content) || helpers.isCommand(content)) {
         return;
       }
 
@@ -43,11 +46,9 @@ module.exports = function(RED) {
         // create the new bot instance
         bot = new RiveScript({
           utf8: true,
-          debug: false,
-          onDebug: function(str) {
-            // log parsing error to node-red and set status
-            node.error(str);
-            node.status({fill: 'red', shape: 'ring', text: 'parsing errors'});
+          debug: !!debug,
+          onDebug: debug && function(str) {
+            node.warn(str);
           }
         });
         bot.stream(script);
@@ -56,6 +57,7 @@ module.exports = function(RED) {
         context.set('rivebot', bot);
       }
 
+      // set the topic
       if (chatContext != null) {
         // anything that is not string printable
         bot.setUservars(chatId, _(chatContext.all()).mapObject(function(value) {

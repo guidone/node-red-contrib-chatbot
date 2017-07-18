@@ -23,6 +23,21 @@ describe('Chat listen node', function() {
     assert.equal(msg.chat().get('tipPercentage'), 100);
   });
 
+  it('should not try to parse a command-like message', function () {
+    var msg = RED.createMessage({content: '/view'});
+    RED.node.config({
+      rules: [
+        '[number]->tip',
+        '*'
+      ]
+    });
+    ListenBlock(RED);
+    RED.node.get().emit('input', msg);
+
+    assert.isNull(RED.node.message(0));
+    assert.isNull(RED.node.message(1));
+  });
+
   /*it('should detect a simple phrase send curriculum', function () {
     var msg = RED.createMessage({content: 'can you send your curriculum vitae'});
     RED.node.config({
