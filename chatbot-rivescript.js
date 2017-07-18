@@ -24,7 +24,7 @@ module.exports = function(RED) {
 
     this.on('input', function(msg) {
       var script = node.script;
-      var debug = node.debug;
+      var debug = _.isBoolean(node.debug) ? node.debug : false;
       var chatId = utils.getChatId(msg);
       var context = node.context();
       var chatContext = msg.chat();
@@ -46,7 +46,7 @@ module.exports = function(RED) {
         // create the new bot instance
         bot = new RiveScript({
           utf8: true,
-          debug: !!debug,
+          debug: debug,
           onDebug: debug && function(str) {
             node.warn(str);
           }
