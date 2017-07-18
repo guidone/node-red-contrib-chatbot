@@ -21,21 +21,19 @@
       return this.name || 'RiveScript';
     },
     oneditprepare: function() {
-      var that = this;
-      $( "#node-input-outputs" ).spinner({
-        min:1
+      $('#node-input-outputs').spinner({
+        min: 1
       });
       this.editor = RED.editor.createEditor({
         id: 'node-input-script-editor',
         mode: 'ace/mode/text',
-        value: $("#node-input-script").val(),
-        globals: {
-        }
+        value: $('#node-input-script').val(),
+        globals: {}
       });
       this.editor.focus();
     },
     oneditsave: function() {
-      $("#node-input-script").val(this.editor.getValue());
+      $('#node-input-script').val(this.editor.getValue());
       delete this.editor;
     },
     oneditresize: function(size) {
@@ -68,18 +66,18 @@
   <label for="node-input-answer"><i class="icon-wrench"></i> Debug</label>
   <input type="checkbox" value="true" id="node-input-debug">
   <span style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;display:block;">
-    Show Rivescript debug information in the Node-RED debug panel
+    Show <b>Rivescript</b> debug information in the Node-RED debug panel
+  </span>
 </div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-rivescript">
-<p>Reply to an incoming message using RiveScript</p>
+<p>Reply to an incoming message using <b>RiveScript</b></p>
 <p>
-This node answers with a string to the first output if the script is able to elaborate a reply, otherwise a
-string error is sent to the second output. This node output is generally connected to a message node. The node will not try to parse command-like sentences (for example <pre>/my_command</pre>)
+This node answers with a string to the first output if the script is able to elaborate a reply, otherwise a string error is sent to the second output. This node output is generally connected to a message node. The node will not try to parse command-like sentences (for example <code>/my_command</code>)
 </p>
 <p>
-A RiveScript looks like
+A <b>RiveScript</b> looks like
 <pre>
 ! version = 2.0
 
@@ -93,10 +91,10 @@ It's also able to parse the sentence and store data to the chat context
 + my name is guido
 - &lt;set name=&lt;star&gt;&gt;ok, I'll remember your name as &lt;get name&gt;
 </pre>
-RiveScript can get/set variables in the chat context.
+<b>RiveScript</b> can get/set variables in the chat context.
 </p>
 <p>
-You can use the chat context variable <em>topic</em> to scope some RiveScript triggers into topics
+  You can use the chat context variable <em>topic</em> to scope some <b>RiveScript</b> triggers into topics
 <p>
 <pre>
 ! version = 2.0
@@ -107,13 +105,13 @@ You can use the chat context variable <em>topic</em> to scope some RiveScript tr
 < topic
 </pre>
 <p>
-In this case the trigger <em>"*"</em> will be executed only if the topic is <em>name_ok</em>
-(it's possible to set the intent using a <code>Context node</code> or in <b>RiveScript</b> with
-<code>{topic=new_topic}</code>). Note that <b>RiveScript</b>'s
-<em>topic</em> and <b>RedBot</b>'s <em>intent</em> are the same thing.
+  In this case the trigger <em>"*"</em> will be executed only if the topic is <em>name_ok</em>
+  (it's possible to set the intent using a <code>Context node</code> or in <b>RiveScript</b> with
+  <code>{topic=new_topic}</code>). Note that <b>RiveScript</b>'s
+  <em>topic</em> and <b>RedBot</b>'s <em>intent</em> are the same thing.
 </p>
 <p>
-Read a RiveScript tutorial <a href="https://www.rivescript.com/docs/tutorial" target="_blank">tutorial here</a>
+  Read a <b>RiveScript</b> tutorial <a href="https://www.rivescript.com/docs/tutorial" target="_blank">tutorial here</a>
 </p>
 </script>
 
