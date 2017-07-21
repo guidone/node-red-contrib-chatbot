@@ -103,7 +103,7 @@ module.exports = function(RED) {
           }, self.log)
         })
         .then(function (msg) {
-
+          console.log('sono qua....');
           var currentConversationNode = chatContext.get('currentConversationNode');
           // if a conversation is going on, go straight to the conversation node, otherwise if authorized
           // then first pin, if not second pin
@@ -559,8 +559,7 @@ console.log('send generic template');
                             "type": "web_url",
                             "url": "https://petersfancybrownhats.com",
                             "title": "View Website"
-                          }
-                          ,
+                          },
                           {
                             "type": "postback",
                             "title": "Start Chatting",
@@ -579,6 +578,7 @@ console.log('send generic template');
 
 
           case 'quick-replies':
+            console.log('quick-replies', msg.payload.buttons);
             // send
             bot.sendMessage(
               msg.payload.chatId,
@@ -610,6 +610,7 @@ console.log('inline buttons', parseButtons(msg.payload.buttons));
             break;
 
           case 'message':
+            console.log('invio messagge', msg.payload);
             bot.sendMessage(
               msg.payload.chatId,
               {
@@ -708,23 +709,19 @@ console.log('inline buttons', parseButtons(msg.payload.buttons));
 
     // relay message
     var handler = function(msg) {
+      console.log('arriva all handler');
       node.send(msg);
     };
     RED.events.on('node:' + config.id, handler);
 
-    // cleanup on close
-    this.on('close',function() {
-      RED.events.removeListener('node:' + config.id, handler);
-    });
-
     this.on('input', function (msg) {
-
+      console.log('arrivo al controll', msg);
       // check if the message is from facebook
       if (msg.originalMessage != null && msg.originalMessage.transport !== 'facebook') {
         // exit, it's not from facebook
         return;
       }
-
+      console.log('arrivo input', msg);
       // try to send the meta first (those messages that doesn't require a valid payload)
       sendMeta(msg)
         .then(function() {
@@ -734,6 +731,7 @@ console.log('inline buttons', parseButtons(msg.payload.buttons));
           if (error != null) {
             node.error(error);
           } else {
+            console.log('arrivo al meta', msg);
             // check payload
             var payloadError = utils.hasValidPayload(msg);
             if (payloadError != null) {
@@ -756,6 +754,7 @@ console.log('inline buttons', parseButtons(msg.payload.buttons));
 
               chatLog.log(msg, node.config.log)
                 .then(function () {
+                  console.log('arrivo al log', msg);
                   sendMessage(msg);
                 });
 
@@ -765,6 +764,16 @@ console.log('inline buttons', parseButtons(msg.payload.buttons));
 
 
     });
+
+    // cleanup on close
+    this.on('close',function() {
+      console.log('stacco csto cazzo');
+      RED.events.removeListener('node:' + config.id, handler);
+      console.log('ho staccato sto cazzo');
+    });
+
+    console.log('***** RIATTACCATO STO CAZZO ******');
+
   }
   RED.nodes.registerType('chatbot-facebook-send', FacebookOutNode);
 

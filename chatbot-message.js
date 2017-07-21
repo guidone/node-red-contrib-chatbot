@@ -25,6 +25,10 @@ module.exports = function(RED) {
     };
 
     this.on('input', function(msg) {
+
+      console.log('MESSSAGEEEE', msg);
+
+
       var message = node.message;
       var answer = node.answer;
       var parse_mode = node.parse_mode;
@@ -70,6 +74,7 @@ module.exports = function(RED) {
         msg.payload.options.reply_to_message_id = messageId;
       }
       // send out reply
+      console.log('STO PER MANDARE MESSSAGEEEE');
       node.send(msg);
     });
   }
