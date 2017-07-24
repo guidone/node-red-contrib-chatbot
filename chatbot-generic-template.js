@@ -8,6 +8,7 @@ module.exports = function(RED) {
   function ChatBotGenericTemplate(config) {
     RED.nodes.createNode(this, config);
     var node = this;
+    this.name = config.name;
     this.buttons = config.buttons;
     this.title = config.title;
     this.subtitle = config.subtitle;
@@ -25,25 +26,31 @@ module.exports = function(RED) {
       var messageId = utils.getMessageId(msg);
       var template = MessageTemplate(msg, node);
 
-      // check transport compatibility
-      if (!utils.matchTransport(node, msg)) {
-        return;
-      }
-
       // get values from config
       var buttons = utils.extractValue('array', 'buttons', node, msg);
       var title = utils.extractValue('string', 'title', node, msg);
       var subtitle = utils.extractValue('string', 'subtitle', node, msg);
       var imageUrl = utils.extractValue('string', 'imageUrl', node, msg);
 
-      msg.payload = {
-        type: 'generic-template',
+      var elements = [];
+      // if inbound is another message from a generic template, then push them toghether to create a carousel
+      if (msg.payload != null && msg.payload.type === 'generic-template' && _.isArray(msg.payload.elements)
+        && !_.isEmpty(msg.payload.elements)) {
+        elements = _.union(elements, msg.payload.elements);
+      }
+      // add the current one
+      elements.push({
         title: title,
         subtitle: subtitle,
         imageUrl: imageUrl,
-        chatId: chatId,
-        messageId: messageId,
         buttons: buttons
+      });
+
+      msg.payload = {
+        type: 'generic-template',
+        elements: elements,
+        chatId: chatId,
+        messageId: messageId
       };
 
       node.send(msg);

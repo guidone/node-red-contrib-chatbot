@@ -522,6 +522,7 @@ module.exports = function(RED) {
             );
             break;
 
+          // todo deprecated
           case 'account-link':
             var attachment = {
               'type': 'template',
@@ -546,19 +547,21 @@ module.exports = function(RED) {
             break;
 
           case 'generic-template':
-
-console.log('send generic template', msg.payload);
-            var element = {
-              title: msg.payload.title,
-              buttons: parseButtons(msg.payload.buttons)
-            };
-            if (!_.isEmpty(msg.payload.subtitle)) {
-              element.subtitle = msg.payload.subtitle;
-            }
-            if (!_.isEmpty(msg.payload.imageUrl)) {
-              element.image_url = msg.payload.imageUrl;
-            }
-
+            // translate elements into facebook format
+            var elements = msg.payload.elements.map(function(item) {
+              var element = {
+                title: item.title,
+                buttons: parseButtons(item.buttons)
+              };
+              if (!_.isEmpty(item.subtitle)) {
+                element.subtitle = item.subtitle;
+              }
+              if (!_.isEmpty(item.imageUrl)) {
+                element.image_url = item.imageUrl;
+              }
+              return element;
+            });
+            // sends
             bot.sendMessage(
               msg.payload.chatId,
               {
@@ -566,7 +569,7 @@ console.log('send generic template', msg.payload);
                   type: 'template',
                   payload: {
                     template_type: 'generic',
-                    elements: [element]
+                    elements: elements
                   }
                 }
               },
@@ -575,7 +578,6 @@ console.log('send generic template', msg.payload);
             break;
 
           case 'quick-replies':
-            console.log('quick-replies', msg.payload.buttons);
             // send
             bot.sendMessage(
               msg.payload.chatId,
@@ -588,8 +590,6 @@ console.log('send generic template', msg.payload);
             break;
 
           case 'inline-buttons':
-console.log('inline buttons', parseButtons(msg.payload.buttons));
-
             bot.sendMessage(
               msg.payload.chatId,
               {

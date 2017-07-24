@@ -23,25 +23,10 @@ module.exports = function(RED) {
       var messageId = utils.getMessageId(msg);
       var template = MessageTemplate(msg, node);
 
-      // check transport compatibility
-      if (!utils.matchTransport(node, msg)) {
-        return;
-      }
-
-      // prepare buttons, first the config, then payload
-      var buttons = null;
-      if (_.isArray(node.buttons) && !_.isEmpty(node.buttons)) {
-        buttons = node.buttons;
-      } else if (_.isObject(msg.payload) && _.isArray(msg.payload.buttons) && !_.isEmpty(msg.payload.buttons)) {
-        buttons = msg.payload.buttons;
-      }
+      // get values from config
       // prepare the message, first the config, then payload
-      var message = null;
-      if (_.isString(node.message) && !_.isEmpty(node.message)) {
-        message = node.message;
-      } else if (_.isObject(msg.payload) && _.isString(msg.payload.message) && !_.isEmpty(msg.payload.message)) {
-        message = msg.payload.message;
-      }
+      var buttons = utils.extractValue('array', 'buttons', node, msg);
+      var message = utils.extractValue('string', 'message', node, msg);
 
       msg.payload = {
         type: 'quick-replies',
@@ -50,7 +35,7 @@ module.exports = function(RED) {
         messageId: messageId,
         buttons: buttons
       };
-console.log('quick replies', msg.payload);
+
       node.send(msg);
     });
 

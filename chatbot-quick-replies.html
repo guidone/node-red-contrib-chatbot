@@ -50,9 +50,12 @@
         .editableList({
           addItem: function(container, i, item) {
             $(container).RB_mountButtonDialog({
-              types: ['quick-reply', 'location']
+              types: ['quick-reply', 'location'],
+              badges: false
             });
-            $(container).RB_setButtonData(item);
+            $(container).RB_setButtonData(item, {
+              badges: false
+            });
           },
           removable: true,
           sortable: true
