@@ -5,47 +5,56 @@
     {
       type: 'url',
       label: 'URL',
-      className: 'platform-combo-telegram-facebook'
+      className: 'platform-combo-telegram-facebook',
+      platforms: ['facebook', 'telegram']
     },
     {
       type: 'postback',
       label: 'Postback',
-      className: 'platform-combo-telegram-facebook'
+      className: 'platform-combo-telegram-facebook',
+      platforms: ['facebook', 'telegram']
     },
     {
       type: 'quick-reply',
       label: 'Postback',
-      className: 'platform-combo-facebook'
+      className: 'platform-combo-facebook',
+      platforms: ['facebook']
     },
     {
       type: 'location',
       label: 'Location',
-      className: 'platform-combo-facebook'
+      className: 'platform-combo-facebook',
+      platforms: ['facebook']
     },
     {
       type: 'call',
       label: 'Phone Call',
-      className: 'platform-combo-facebook'
+      className: 'platform-combo-facebook',
+      platforms: ['facebook']
     },
     {
       type: 'share',
       label: 'Share',
-      className: 'platform-combo-facebook'
+      className: 'platform-combo-facebook',
+      platforms: ['facebook']
     },
     {
       type: 'login',
       label: 'Log In',
-      className: 'platform-combo-facebook'
+      className: 'platform-combo-facebook',
+      platforms: ['facebook']
     },
     {
       type: 'logout',
       label: 'Log Out',
-      className: 'platform-combo-facebook'
+      className: 'platform-combo-facebook',
+      platforms: ['facebook']
     },
     {
       type: 'newline',
       label: 'New row of buttons',
-      className: 'platform-combo-telegram'
+      className: 'platform-combo-telegram',
+      platforms: ['telegram']
     }
   ];
   $.RedBot.validate = {};
@@ -56,6 +65,9 @@
     return url != null && url.match(/[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi);
   };
   $.RedBot.validate.button = function(button) {
+    if (button == null) {
+      return false;
+    }
     switch(button.type) {
       case 'url':
         return $.RedBot.validate.notEmpty(button.label) && $.RedBot.validate.url(button.url);
@@ -85,15 +97,50 @@
     });
     return button;
   };
+  $.RedBot.platforms = function(platforms, availablePlatforms) {
+    var match = false;
+    platforms.forEach(function(platform) {
+      if (availablePlatforms.indexOf(platform) !== -1) {
+        match = true;
+      }
+    });
+    return match;
+  };
+  $.RedBot.platformClass = function(control, platforms) {
 
-  $.fn.RB_setButtonData = function(obj) {
+    var base = null;
+    switch(control) {
+      case 'select': base = 'platform-combo'; break;
+      case 'icon': base = 'icon-platform'; break;
+      case 'text': base = 'platform'; break;
+      default:
+        console.error('Unrecognized platform icon for type "' + control + '"');
+        return '';
+    }
+
+    var platformClasses = [];
+    if (platforms.indexOf('telegram') !== -1) {
+      platformClasses.push('telegram');
+    }
+    if (platforms.indexOf('facebook') !== -1) {
+      platformClasses.push('facebook');
+    }
+    if (platforms.indexOf('smooch') !== -1) {
+      platformClasses.push('smooch');
+    }
+
+    return platformClasses.length !== 0 ? base + '-' + platformClasses.join('-') : '';
+  };
+  $.fn.RB_setButtonData = function(obj, options) {
+
+    options = options || {};
+    options.badges = options.badges !== false;
 
     var container = $(this);
-
     var select = $('select[name=type]', container).val(obj.type);
     var panel = $('.panel-' + obj.type, container).show();
     var button = $.RedBot.buttonTypes.findButton(obj.type);
-    if (button != null) {
+    if (button != null && options.badges) {
       select.attr('class', button.className);
     }
 
@@ -191,15 +238,20 @@
 
     return result;
   };
-
+  $.fn.RB_hasPlatform = function(platform, platforms) {
+    return platforms.indexOf(platform) !== -1 ? $(this) : $();
+  };
   $.fn.RB_mountButtonDialog = function(options) {
 
     options = options || {};
     options.types = options.types != null ?
       options.types : ['url', 'postback', 'call', 'share', 'login', 'newline', 'logout', 'location', 'quick-reply'];
+    options.platforms = options.platforms != null ? options.platforms : ['facebook', 'telegram'];
+    options.badges = options.badges !== false;
 
     var container = $(this);
     var main = $('<div/>').appendTo(container);
+    var cx = options.badges ? $.RedBot.platformClass : function() { return ''; };
 
     var selectButtonType = $('<select name="type"/>', {style:"width:200px; margin-left: 5px; text-align: center;"})
       .attr('placeholder', 'Select button type')
@@ -209,8 +261,8 @@
         $('.panel-' + type, container).show();
         // find the right button
         var button = $.RedBot.buttonTypes.findButton(type);
-        // store class
-        if (button != null) {
+        // store class only if badges should be shown
+        if (button != null && options.badges) {
           $(this).attr('class', button.className);
         } else {
           $(this).attr('class', '');
@@ -220,7 +272,7 @@
 
     selectButtonType.append($('<option value="">Select button type</option>'));
     $.RedBot.buttonTypes.forEach(function(button) {
-      if (options.types.indexOf(button.type) !== -1) {
+      if (options.types.indexOf(button.type) !== -1 && $.RedBot.platforms(options.platforms, button.platforms)) {
         selectButtonType.append($('<option value="' + button.type + '">' + button.label + '</option>'));
       }
     });
@@ -233,18 +285,20 @@
       .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="url" placeholder="Button URL"/>'))
       .appendTo(panelUrl);
     $('<div/>').css('marginTop','5px')
-      .append('<input class="node-input-rule-type platform-telegram" type="text" name="answer" placeholder="Button feedback"/>')
+      .RB_hasPlatform('telegram', options.platforms)
+      .append('<input class="node-input-rule-type ' + cx('text', ['telegram']) + '" type="text" name="answer" placeholder="Button feedback"/>')
       .append('<input type="checkbox" name="alert" value="on" style="width: auto;margin:0px 10px 5px 10px;"/>')
-      .append('<span>With popup</span><span class="icon-platform-telegram"></span>')
+      .append('<span>With popup</span><span class="' + cx('icon', ['facebook']) + '"></span>')
       .appendTo(panelUrl);
     $('<div/>').css('marginTop','5px')
-      .append('<select name="webview_height_ratio" class="platform-combo-facebook" style="width:70%">'
+      .RB_hasPlatform('facebook', options.platforms)
+      .append('<select name="webview_height_ratio" class="' + cx('select', ['facebook']) + '" style="width:70%">'
         + '<option value="tall">Tall</option>'
         + '<option value="compact">Compact</option>'
         + '<option value="full">Full</option>'
         + '</select>')
       .append('<input type="checkbox" name="messenger_extensions" value="on" style="width: auto;margin:0px 10px 5px 10px;"/>')
-      .append('<span>Extensions</span><span class="icon-platform-facebook"></span>')
+      .append('<span>Extensions</span><span class="' + cx('icon', ['facebook']) + '"></span>')
       .appendTo(panelUrl);
 
     var panelPostback = $('<div class="panel panel-postback" style="display:none;"/>').appendTo(container);
@@ -255,9 +309,10 @@
       .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="value" placeholder="Postback value">'))
       .appendTo(panelPostback);
     $('<div/>').css('marginTop','5px')
-      .append('<input class="node-input-rule-type platform-telegram" type="text" name="answer" placeholder="Button feedback (optional)"/>')
+      .RB_hasPlatform('telegram', options.platforms)
+      .append('<input class="node-input-rule-type ' + cx('text', ['telegram']) + '" type="text" name="answer" placeholder="Button feedback (optional)"/>')
       .append('<input type="checkbox" name="alert" value="on" style="width: auto;margin:0px 10px 5px 10px;"/>')
-      .append('<span>With popup</span><span class="icon-platform-telegram"></span>')
+      .append('<span>With popup</span><span class="' + cx('icon', ['telegram']) + '"></span>')
       .appendTo(panelPostback);
 
     var panelQuickReply = $('<div class="panel panel-quick-reply" style="display:none;"/>').appendTo(container);

@@ -9,12 +9,15 @@
       },
       title: {
         value: '',
-        validate: function(message) {
-          return $.RedBot.validate.notEmpty(message);
+        validate: function(title) {
+          return $.RedBot.validate.notEmpty(title) && title.length <= 80 ;
         }
       },
       subtitle: {
-        value: ''
+        value: '',
+        validate: function(subtitle) {
+          return subtitle == null || subtitle.length <= 80
+        }
       },
       imageUrl: {
         value: ''
@@ -29,7 +32,7 @@
               valid = false;
             }
           }
-          return valid;
+          return valid && buttons.length <= 3;
         }
       }
     },
@@ -51,14 +54,17 @@
     },
     oneditprepare: function() {
       $('#node-input-buttons-container')
-        //.css('min-height','300px')
         .css('min-width','450px')
         .editableList({
           addItem: function(container, i, item) {
             $(container).RB_mountButtonDialog({
-              types: ['url', 'postback', 'call', 'login', 'newline', 'logout']
+              types: ['url', 'postback', 'call', 'login', 'newline', 'logout'],
+              platforms: ['facebook'],
+              badges: false
             });
-            $(container).RB_setButtonData(item);
+            $(container).RB_setButtonData(item, {
+              badges: false
+            });
           },
           removable: true,
           sortable: true
@@ -93,13 +99,13 @@
   <label for="node-input-title">Title</label>
   <input type="text" id="node-input-title" placeholder="Title">
 </div>
+<div class="form-row form-row-subtitle">
+  <label for="node-input-subtitle">Subtitle</label>
+  <input type="text" id="node-input-subtitle" placeholder="Subtitle">
+</div>
 <div class="form-row form-row-imageUrl">
   <label for="node-input-image_url">Image URL</label>
   <input type="text" id="node-input-imageUrl" placeholder="Image URL">
-</div>
-<div class="form-row form-row-subtitle">
-  <label for="node-input-subtitle">Sub Title</label>
-  <input type="text" id="node-input-subtitle" placeholder="Sub Title">
 </div>
 <div class="form-row form-row-label" style="margin-bottom:0;">
   <label><i class="fa fa-list"></i> <span>Buttons</span></label>
