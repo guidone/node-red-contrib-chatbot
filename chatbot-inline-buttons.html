@@ -103,6 +103,8 @@
     $('input[name=number]', panel).val(obj.number);
     $('input[name=answer]', panel).val(obj.answer);
     $('input[name=alert]', panel).attr('checked', obj.alert === true);
+    $('select[name=webview_height_ratio]', panel).val(obj.webViewHeightRatio);
+    $('input[name=messenger_extensions]').attr('checked', obj.extensions === true);
 
     return container;
   };
@@ -119,6 +121,8 @@
     var number = $('input[name="number"]', panel);
     var answer = $('input[name="answer"]', panel);
     var alert = $('input[name="alert"]', panel);
+    var messengerExtensions = $('input[name="messenger_extensions"]', panel);
+    var webViewHeight = $('select[name="webview_height_ratio"]', panel);
     var result = null;
 
     switch(type.val()) {
@@ -127,6 +131,8 @@
           type: 'url',
           label: label.val(),
           url: url.val(),
+          webViewHeightRatio: webViewHeight.val(),
+          extensions: messengerExtensions.is(':checked'),
           answer: answer.val(),
           alert: alert.is(':checked')
         };
@@ -230,6 +236,15 @@
       .append('<input class="node-input-rule-type platform-telegram" type="text" name="answer" placeholder="Button feedback"/>')
       .append('<input type="checkbox" name="alert" value="on" style="width: auto;margin:0px 10px 5px 10px;"/>')
       .append('<span>With popup</span><span class="icon-platform-telegram"></span>')
+      .appendTo(panelUrl);
+    $('<div/>').css('marginTop','5px')
+      .append('<select name="webview_height_ratio" class="platform-combo-facebook" style="width:70%">'
+        + '<option value="tall">Tall</option>'
+        + '<option value="compact">Compact</option>'
+        + '<option value="full">Full</option>'
+        + '</select>')
+      .append('<input type="checkbox" name="messenger_extensions" value="on" style="width: auto;margin:0px 10px 5px 10px;"/>')
+      .append('<span>Extensions</span><span class="icon-platform-facebook"></span>')
       .appendTo(panelUrl);
 
     var panelPostback = $('<div class="panel panel-postback" style="display:none;"/>').appendTo(container);

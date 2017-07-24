@@ -9,7 +9,9 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
     var node = this;
     this.buttons = config.buttons;
-    this.message = config.message;
+    this.title = config.title;
+    this.subtitle = config.subtitle;
+    this.imageUrl = config.imageUrl;
     this.transports = ['facebook'];
 
     this.on('input', function(msg) {
@@ -28,24 +30,17 @@ module.exports = function(RED) {
         return;
       }
 
-      // prepare buttons, first the config, then payload
-      var buttons = null;
-      if (_.isArray(node.buttons) && !_.isEmpty(node.buttons)) {
-        buttons = node.buttons;
-      } else if (_.isObject(msg.payload) && _.isArray(msg.payload.buttons) && !_.isEmpty(msg.payload.buttons)) {
-        buttons = msg.payload.buttons;
-      }
-      // prepare the message, first the config, then payload
-      var message = null;
-      if (_.isString(node.message) && !_.isEmpty(node.message)) {
-        message = node.message;
-      } else if (_.isObject(msg.payload) && _.isString(msg.payload.message) && !_.isEmpty(msg.payload.message)) {
-        message = msg.payload.message;
-      }
+      // get values from config
+      var buttons = utils.extractValue('array', 'buttons', node, msg);
+      var title = utils.extractValue('string', 'title', node, msg);
+      var subtitle = utils.extractValue('string', 'subtitle', node, msg);
+      var imageUrl = utils.extractValue('string', 'imageUrl', node, msg);
 
       msg.payload = {
         type: 'generic-template',
-        content: message != null ? emoji.emojify(template(message)) : null,
+        title: title,
+        subtitle: subtitle,
+        imageUrl: imageUrl,
         chatId: chatId,
         messageId: messageId,
         buttons: buttons
