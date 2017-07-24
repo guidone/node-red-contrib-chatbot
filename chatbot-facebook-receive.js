@@ -48,7 +48,7 @@ module.exports = function(RED) {
 
        */
 
-      var facebookBot = self.bot;
+      var facebookBot = this;
 
       if (DEBUG) {
         // eslint-disable-next-line no-console
@@ -103,7 +103,6 @@ module.exports = function(RED) {
           }, self.log)
         })
         .then(function (msg) {
-          console.log('sono qua....');
           var currentConversationNode = chatContext.get('currentConversationNode');
           // if a conversation is going on, go straight to the conversation node, otherwise if authorized
           // then first pin, if not second pin
@@ -115,7 +114,6 @@ module.exports = function(RED) {
           } else {
             facebookBot.emit('relay', msg);
           }
-
         })
         .catch(function (error) {
           facebookBot.emit('relay', null, error);
@@ -154,21 +152,29 @@ module.exports = function(RED) {
           // mount endpoints on local express
           this.bot.expressMiddleware(RED.httpNode);
 
-          this.bot.on('message', this.handleMessage);
-          this.bot.on('postback', this.handleMessage);
-          this.bot.on('account_linking', this.handleMessage);
+          this.bot.on('message', this.handleMessage.bind(this.bot));
+          this.bot.on('postback', this.handleMessage.bind(this.bot));
+          this.bot.on('account_linking', this.handleMessage.bind(this.bot));
         }
       }
     }
 
     this.on('close', function (done) {
-      var endpoints = ['/facebook', '/facebook/_status'];
+      var endpoints = ['/redbot/facebook', '/redbot/facebook/_status'];
       // remove middleware for facebook callback
-      RED.httpNode._router.stack.forEach(function(route, i, routes) {
-        if (route.route && _.contains(endpoints, route.route.path)) {
-          routes.splice(i, 1);
+      var routesCount = RED.httpNode._router.stack.length;
+      _(RED.httpNode._router.stack).each(function (route, i, routes) {
+        if (route != null && route.route != null) {
+          if (_.contains(endpoints, route.route.path)) {
+            routes.splice(i, 1);
+          }
         }
       });
+      if (RED.httpNode._router.stack.length >= routesCount) {
+        // eslint-disable-next-line no-console
+        console.log('ERROR: improperly removed Facebook messenger routes, this will cause unexpected results and tricky bugs');
+      }
+      this.bot = null;
       done();
     });
 
@@ -393,11 +399,19 @@ module.exports = function(RED) {
             var temp = null;
             switch(button.type) {
               case 'url':
-                return {
+                temp = {
                   type: 'web_url',
                   title: button.label,
-                  url: button.url
+                  url: button.url,
+
                 };
+                if (button.webViewHeightRatio != null) {
+                  temp.webview_height_ratio = button.webViewHeightRatio;
+                }
+                if (button.extensions != null) {
+                  temp.messenger_extensions = button.extensions;
+                }
+                return temp;
               case 'call':
                 return {
                   type: 'phone_number',
@@ -452,7 +466,6 @@ module.exports = function(RED) {
         var bot = node.bot;
         var credentials = node.config.credentials;
         var reportError = function(err) {
-          console.log('err', err);
           if (err) {
             reject(err);
           } else {
@@ -517,7 +530,18 @@ module.exports = function(RED) {
 
           case 'generic-template':
 
-console.log('send generic template');
+console.log('send generic template', msg.payload);
+            var element = {
+              title: msg.payload.title,
+              buttons: parseButtons(msg.payload.buttons)
+            };
+            if (!_.isEmpty(msg.payload.subtitle)) {
+              element.subtitle = msg.payload.subtitle;
+            }
+            if (!_.isEmpty(msg.payload.imageUrl)) {
+              element.image_url = msg.payload.imageUrl;
+            }
+
             bot.sendMessage(
               msg.payload.chatId,
               {
@@ -525,40 +549,13 @@ console.log('send generic template');
                   type: 'template',
                   payload: {
                     template_type: 'generic',
-                    elements: [
-                      {
-                        title: 'Welcome to ',
-                        image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/PM5544_with_non-PAL_signals.png/320px-PM5544_with_non-PAL_signals.png",
-                        subtitle: "We e got the right hat for everyone.",
-                        /*"default_action": {
-                          "type": "web_url",
-                          "url": "https://peterssendreceiveapp.ngrok.io/view?item=103",
-                          "messenger_extensions": true,
-                          "webview_height_ratio": "tall",
-                          "fallback_url": "https://peterssendreceiveapp.ngrok.io/"
-                        },*/
-                        "buttons": [
-                          {
-                            "type": "web_url",
-                            "url": "https://petersfancybrownhats.com",
-                            "title": "View Website"
-                          },
-                          {
-                            "type": "postback",
-                            "title": "Start Chatting",
-                            "payload": "DEVELOPER_DEFINED_PAYLOAD"
-                          }
-                        ]
-                      }
-                    ]
+                    elements: [element]
                   }
                 }
               },
               reportError
             );
-
             break;
-
 
           case 'quick-replies':
             console.log('quick-replies', msg.payload.buttons);
@@ -593,7 +590,6 @@ console.log('inline buttons', parseButtons(msg.payload.buttons));
             break;
 
           case 'message':
-            console.log('invio messagge', msg.payload);
             bot.sendMessage(
               msg.payload.chatId,
               {
@@ -692,19 +688,16 @@ console.log('inline buttons', parseButtons(msg.payload.buttons));
 
     // relay message
     var handler = function(msg) {
-      console.log('arriva all handler');
       node.send(msg);
     };
     RED.events.on('node:' + config.id, handler);
 
     this.on('input', function (msg) {
-      console.log('arrivo al controll', msg);
       // check if the message is from facebook
       if (msg.originalMessage != null && msg.originalMessage.transport !== 'facebook') {
         // exit, it's not from facebook
         return;
       }
-      console.log('arrivo input', msg);
       // try to send the meta first (those messages that doesn't require a valid payload)
       sendMeta(msg)
         .then(function() {
@@ -714,7 +707,6 @@ console.log('inline buttons', parseButtons(msg.payload.buttons));
           if (error != null) {
             node.error(error);
           } else {
-            console.log('arrivo al meta', msg);
             // check payload
             var payloadError = utils.hasValidPayload(msg);
             if (payloadError != null) {
@@ -725,7 +717,6 @@ console.log('inline buttons', parseButtons(msg.payload.buttons));
               // payload is valid, go on
               var track = node.track;
               var chatContext = msg.chat();
-
               // check if this node has some wirings in the follow up pin, in that case
               // the next message should be redirected here
               if (chatContext != null && track && !_.isEmpty(node.wires[0])) {
@@ -737,27 +728,25 @@ console.log('inline buttons', parseButtons(msg.payload.buttons));
 
               chatLog.log(msg, node.config.log)
                 .then(function () {
-                  console.log('arrivo al log', msg);
-                  sendMessage(msg);
+                  return sendMessage(msg);
+                })
+                .then(function() {
+                  // we're done
+                }, function(err) {
+                  node.error(err);
                 });
-
             } // end valid payload
           } // end no error
         }); // end then
-
-
     });
 
     // cleanup on close
     this.on('close',function() {
-      console.log('stacco csto cazzo');
       RED.events.removeListener('node:' + config.id, handler);
-      console.log('ho staccato sto cazzo');
     });
-
-    console.log('***** RIATTACCATO STO CAZZO ******');
-
   }
+
+
   RED.nodes.registerType('chatbot-facebook-send', FacebookOutNode);
 
 };
