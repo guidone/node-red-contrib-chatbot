@@ -39,7 +39,7 @@
     inputs: 1,
     outputs: 1,
     paletteLabel: 'Generic Template',
-    icon: 'chatbot-inline-button.png',
+    icon: 'chatbot-generic-template.png',
     label: function() {
       return this.name || 'Generic Template';
     },
@@ -58,7 +58,7 @@
         .editableList({
           addItem: function(container, i, item) {
             $(container).RB_mountButtonDialog({
-              types: ['url', 'postback', 'call', 'login', 'newline', 'logout'],
+              types: ['url', 'postback', 'call', 'login', 'newline', 'logout', 'share'],
               platforms: ['facebook'],
               badges: false
             });
@@ -116,7 +116,23 @@
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-generic-template">
-<p>Generic Template <em>[Facebook]</em>.</p>
+<p>Generic Template is a small card with few lines of text, an optional image and buttons. Can be chained to create a carousel<em>[Facebook]</em>.</p>
+<p>
+  Available buttons:
+  <ul>
+    <li><em>URL</em>: Open a URL inside the client. Supports <em>Messenger Extensions</em> </li>
+    <li><em>Postback</em>: Allow the user to send a predefined message, the message will no be shown in the chat history. Supports <em>Messenger Extensions</em></em></li>
+    <li><em>Share</em>: Shares the content, only if used inside a Generic Template</li>
+    <li><em>Phone call</em>: Starts a phone call on mobile</li>
+    <li><em>Log In</em>: Starts the account linking flow</li>
+    <li><em>Log Out</em>: Starts the account unlinking flow</li>
+  </ul>
+</p>
+
+todo
+- chain generic template
+- programmatically create a template
+- limits for text and buttons
 
 </script>
 
