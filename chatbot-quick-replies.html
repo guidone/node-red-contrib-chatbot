@@ -30,7 +30,7 @@
     inputs: 1,
     outputs: 1,
     paletteLabel: 'Quick Replies',
-    icon: 'chatbot-inline-button.png',
+    icon: 'chatbot-quick-replies.png',
     label: function() {
       return this.name || 'Quick Replies';
     },
@@ -45,7 +45,6 @@
     },
     oneditprepare: function() {
       $('#node-input-buttons-container')
-        //.css('min-height','300px')
         .css('min-width','450px')
         .editableList({
           addItem: function(container, i, item) {

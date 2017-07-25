@@ -288,7 +288,7 @@
       .RB_hasPlatform('telegram', options.platforms)
       .append('<input class="node-input-rule-type ' + cx('text', ['telegram']) + '" type="text" name="answer" placeholder="Button feedback"/>')
       .append('<input type="checkbox" name="alert" value="on" style="width: auto;margin:0px 10px 5px 10px;"/>')
-      .append('<span>With popup</span><span class="' + cx('icon', ['facebook']) + '"></span>')
+      .append('<span>With popup</span><span class="' + cx('icon', ['telegram']) + '"></span>')
       .appendTo(panelUrl);
     $('<div/>').css('marginTop','5px')
       .RB_hasPlatform('facebook', options.platforms)
@@ -360,13 +360,13 @@
       name: {
         value: ''
       },
-      answers: {
+      buttons: {
         value: [],
-        validate: function(answers) {
+        validate: function(buttons) {
           var valid = true;
           var idx;
-          for(idx = 0; idx < answers.length; idx++) {
-            if (!$.RedBot.validate.button(answers[idx])) {
+          for(idx = 0; idx < buttons.length; idx++) {
+            if (!$.RedBot.validate.button(buttons[idx])) {
               valid = false;
             }
           }
@@ -385,16 +385,16 @@
       return this.name || 'Buttons';
     },
     oneditsave: function() {
-      var answers = $("#node-input-answers-container").editableList('items');
+      var buttons = $("#node-input-buttons-container").editableList('items');
       var node = this;
-      node.answers = [];
+      node.buttons = [];
       var idx;
-      for(idx = 0; idx < answers.length; idx++) {
-        node.answers.push($(answers[idx]).RB_getButtonData());
+      for(idx = 0; idx < buttons.length; idx++) {
+        node.buttons.push($(buttons[idx]).RB_getButtonData());
       }
     },
     oneditprepare: function() {
-      $('#node-input-answers-container')
+      $('#node-input-buttons-container')
         .css('min-height','300px')
         .css('min-width','450px')
         .editableList({
@@ -408,11 +408,10 @@
           sortable: true
         });
 
-      var answers = this.answers;
+      var buttons = this.buttons;
       var idx;
-      for (idx = 0; idx < answers.length; idx++) {
-        var answer = answers[idx];
-        $('#node-input-answers-container').editableList('addItem', answer);
+      for (idx = 0; idx < buttons.length; idx++) {
+        $('#node-input-buttons-container').editableList('addItem', buttons[idx]);
       }
     },
     oneditresize: function() {
@@ -422,7 +421,7 @@
       var rowLabel = $('.form-row-label', dialogForm);
       var rowHint = $('.form-row-hint', dialogForm);
       var height = dialogForm.height() - rowName.height() - rowMessage.height() - rowLabel.height() - rowHint.height() - 30;
-      $('#node-input-answers-container').editableList('height', height);
+      $('#node-input-buttons-container').editableList('height', height);
     }
   });
 </script>
@@ -443,7 +442,7 @@
   <label><i class="fa fa-list"></i> <span>Buttons</span></label>
 </div>
 <div class="form-row node-input-rule-container-row">
-  <ol id="node-input-answers-container"></ol>
+  <ol id="node-input-buttons-container"></ol>
 </div>
 <div class="form-row-hint" style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;margin-bottom:10px;">
   Some attributes apply for specific platform:<br>
@@ -455,7 +454,46 @@
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-inline-buttons">
-<p>Present quick alternatives to the users through inline buttons (and optionally show feedback for Telegram)<em>[Telegram, Facebook, Smooch]</em>.</p>
+<p>Show quick alternatives to the users through inline buttons and text (also known as Button Template in Facebook Messegner ) <em>[Telegram, Facebook, Smooch]</em>.</p>
+<p>
+  Available buttons:
+  <ul>
+    <li><em>URL</em>: Open a URL inside the client. Button feedbacks are available for Telegram and Messenger extensions in Facebook <em>[Telegram, Facebook]</em></li>
+    <li><em>Postback</em>: Allow the user to send a predefined message, the message will no be shown in the chat history. Button feedbacks are available for Telegram and Messenger extensions in Facebook <em>[Telegram, Facebook, Smooch]</em></li>
+    <li><em>Phone call</em>: Starts a phone call on mobile. <em>[Facebook]</em></li>
+    <li><em>Log In</em>: Starts the account linking flow. <em>[Facebook]</em></li>
+    <li><em>Log Out</em>: Starts the account unlinking flow. <em>[Facebook]</em></li>
+    <li><em>New row</em>: Telegram supports buttons layout with multiple row, this element just starts a new one. <em>[Telegram]</em></li>
+  </ul>
+</p>
+
+<p>
+  Buttons can be created programmatically by an upstream <code>Function node</code>:
+
+<pre>
+msg.buttons = [
+];
+
+
+</pre>
+
+</p>
+
+
+- explain Telegram feedbacks
+- explain messenger extensions
+- create buttons programmatically
+- list of fields
+
+
+
+
+
+
+
+
+
+
 <p>For each button:
 <ul>
   <li><em>label</em>: The label of the button</li>
