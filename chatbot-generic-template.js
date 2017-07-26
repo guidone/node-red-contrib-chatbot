@@ -2,6 +2,7 @@ var _ = require('underscore');
 var MessageTemplate = require('./lib/message-template.js');
 var emoji = require('node-emoji');
 var utils = require('./lib/helpers/utils');
+var validators = require('./lib/helpers/validators');
 
 module.exports = function(RED) {
 
@@ -27,15 +28,14 @@ module.exports = function(RED) {
       var template = MessageTemplate(msg, node);
 
       // get values from config
-      var buttons = utils.extractValue('array', 'buttons', node, msg);
+      var buttons = utils.extractValue('buttons', 'buttons', node, msg);
       var title = utils.extractValue('string', 'title', node, msg);
       var subtitle = utils.extractValue('string', 'subtitle', node, msg);
       var imageUrl = utils.extractValue('string', 'imageUrl', node, msg);
 
       var elements = [];
       // if inbound is another message from a generic template, then push them toghether to create a carousel
-      if (msg.payload != null && msg.payload.type === 'generic-template' && _.isArray(msg.payload.elements)
-        && !_.isEmpty(msg.payload.elements)) {
+      if (msg.payload != null && validators.genericTemplateElements(msg.payload.elements)) {
         elements = _.union(elements, msg.payload.elements);
       }
       // add the current one
