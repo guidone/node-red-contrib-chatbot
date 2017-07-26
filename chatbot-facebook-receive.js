@@ -386,7 +386,6 @@ module.exports = function(RED) {
 
         var type = msg.payload.type;
         var bot = node.bot;
-        //var credentials = node.config.credentials;
 
         var reportError = function(err) {
           if (err) {
@@ -398,7 +397,7 @@ module.exports = function(RED) {
 
         switch (type) {
           case 'persistent-menu':
-            bot.setPersistentMenu(msg.payload.items, reportError);
+            bot.setPersistentMenu(helpers.parseButtons(msg.payload.items), reportError);
             break;
 
           default:
@@ -409,72 +408,6 @@ module.exports = function(RED) {
     }
 
     function sendMessage(msg) {
-
-      function parseButtons(buttons) {
-        return _(buttons).chain()
-          .map(function(button) {
-            var temp = null;
-            switch(button.type) {
-              case 'url':
-                temp = {
-                  type: 'web_url',
-                  title: button.label,
-                  url: button.url
-                };
-                if (button.webViewHeightRatio != null) {
-                  temp.webview_height_ratio = button.webViewHeightRatio;
-                }
-                if (button.extensions != null) {
-                  temp.messenger_extensions = button.extensions;
-                }
-                return temp;
-              case 'call':
-                return {
-                  type: 'phone_number',
-                  title: button.label,
-                  payload: button.number
-                };
-              case 'postback':
-                return {
-                  type: 'postback',
-                  title: button.label,
-                  payload: button.value
-                };
-              case 'share':
-                return {
-                  type: 'element_share'
-                };
-              case 'login':
-                return {
-                  type: 'account_link',
-                  url: button.url
-                };
-              case 'logout':
-                return {
-                  type: 'account_unlink'
-                };
-              case 'quick-reply':
-                temp = {
-                  content_type: 'text',
-                  title: button.label,
-                  payload: !_.isEmpty(button.value) ? button.value : button.label
-                };
-                if (!_.isEmpty(button.url)) {
-                  temp.image_url = button.url;
-                }
-                return temp;
-              case 'location':
-                return {
-                  content_type: 'location'
-                };
-              default:
-                console.log('Facebook Messenger was not able to use button of type "' + button.type + '"');
-                return null;
-            }
-          })
-          .compact()
-          .value();
-      }
 
       return new Promise(function(resolve, reject) {
 
@@ -521,36 +454,12 @@ module.exports = function(RED) {
             );
             break;
 
-          // todo deprecated
-          case 'account-link':
-            var attachment = {
-              'type': 'template',
-              'payload': {
-                'template_type': 'button',
-                'text': msg.payload.content,
-                'buttons': [
-                  {
-                    'type': 'account_link',
-                    'url': msg.payload.authUrl
-                  }
-                ]
-              }
-            };
-            bot.sendMessage(
-              msg.payload.chatId,
-              {
-                attachment: attachment
-              },
-              reportError
-            );
-            break;
-
           case 'generic-template':
             // translate elements into facebook format
             var elements = msg.payload.elements.map(function(item) {
               var element = {
                 title: item.title,
-                buttons: parseButtons(item.buttons)
+                buttons: helpers.parseButtons(item.buttons)
               };
               if (!_.isEmpty(item.subtitle)) {
                 element.subtitle = item.subtitle;
@@ -582,7 +491,7 @@ module.exports = function(RED) {
               msg.payload.chatId,
               {
                 text: msg.payload.content,
-                quick_replies: parseButtons(msg.payload.buttons)
+                quick_replies: helpers.parseButtons(msg.payload.buttons)
               },
               reportError
             );
@@ -597,7 +506,7 @@ module.exports = function(RED) {
                   payload: {
                     template_type: 'button',
                     text: msg.payload.content,
-                    buttons: parseButtons(msg.payload.buttons)
+                    buttons: helpers.parseButtons(msg.payload.buttons)
                   }
                 }
               },

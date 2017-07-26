@@ -25,7 +25,7 @@ module.exports = function(RED) {
 
       // get values from config
       // prepare the message, first the config, then payload
-      var buttons = utils.extractValue('array', 'buttons', node, msg);
+      var buttons = utils.extractValue('buttons', 'buttons', node, msg);
       var message = utils.extractValue('string', 'message', node, msg);
 
       msg.payload = {
