@@ -419,8 +419,7 @@ module.exports = function(RED) {
                 temp = {
                   type: 'web_url',
                   title: button.label,
-                  url: button.url,
-
+                  url: button.url
                 };
                 if (button.webViewHeightRatio != null) {
                   temp.webview_height_ratio = button.webViewHeightRatio;

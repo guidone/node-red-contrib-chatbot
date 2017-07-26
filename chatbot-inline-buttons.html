@@ -466,17 +466,53 @@
     <li><em>New row</em>: Telegram supports buttons layout with multiple row, this element just starts a new one. <em>[Telegram]</em></li>
   </ul>
 </p>
-
 <p>
-  Buttons can be created programmatically by an upstream <code>Function node</code>:
-
+  <b>Telegram</b> supports a visual feedback, visible in the client, when a <code>Postback</code> or <code>URL</code> buttons is pressed.<br>
+  <b>Facebook</b> supports some extra parameters in the <code>URL</code> button, like the size of the web view and <a href="https://developers.facebook.com/docs/messenger-platform/webview" target="_blank">messenger extensions</a>.
+</p>
+<p>
+  Buttons can be created programmatically by an upstream <code>Function node</code> passing array of buttons in the message payload:
 <pre>
-msg.buttons = [
+msg.payload = [
+  {
+    type: 'url',
+    url: 'http://javascript-jedi.com',
+    label: 'Javascript Jedi'
+  },
+  {
+    type: 'postback',
+    value: 'MY_POSTBACK_MESSAGE',
+    label: 'Click me!'
+  },
+  {
+    type: 'share'
+  }
 ];
-
-
+return msg;
 </pre>
-
+<p>
+Another way is to specify each config option as keys of an object in the message payload:
+<pre>
+msg.payload = {
+  message: 'This is a message above the buttons',
+  buttons: [
+    {
+      type: 'url',
+      url: 'http://javascript-jedi.com',
+      label: 'Javascript Jedi'
+    },
+    {
+      type: 'postback',
+      value: 'MY_POSTBACK_MESSAGE',
+      label: 'Click me!'
+    },
+    {
+      type: 'share'
+    }
+  ]
+};
+return msg;
+</pre>
 </p>
 
 
