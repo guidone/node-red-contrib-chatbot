@@ -527,8 +527,7 @@ module.exports = function(RED) {
                     inlineKeyboard.push([]);
                     break;
                   default:
-                    console.log('WANR not able to handle this buttons');
-
+                    node.error('Telegram is not able to handle this button type "' + button.type + '"');
                 }
                 if (json != null) {
                   // add the button to the last row, if any

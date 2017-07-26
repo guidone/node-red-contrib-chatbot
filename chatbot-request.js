@@ -14,18 +14,18 @@ module.exports = function(RED) {
 
     this.on('input', function(msg) {
 
-      var originalMessage = msg.originalMessage;
-      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
-      var messageId = msg.payload.messageId || (originalMessage && originalMessage.message_id);
-      var message = node.message;
-      var requestType = node.requestType;
-      var buttonLabel = node.buttonLabel;
-      var template = MessageTemplate(msg, node);
-
       // check transport compatibility
       if (!utils.matchTransport(node, msg)) {
         return;
       }
+
+      var chatId = utils.getChatId(msg);
+      var messageId = utils.getMessageId(msg);
+
+      var message = utils.extractValue('string', 'message', node, msg);
+      var requestType = utils.extractValue('string', 'requestType', node, msg);
+      var buttonLabel = utils.extractValue('string', 'buttonLabel', node, msg);
+      var template = MessageTemplate(msg, node);
 
       msg.payload = {
         type: 'request',
