@@ -1,6 +1,5 @@
 var _ = require('underscore');
 var MessageTemplate = require('./lib/message-template.js');
-var emoji = require('node-emoji');
 var utils = require('./lib/helpers/utils');
 var validators = require('./lib/helpers/validators');
 
@@ -40,9 +39,9 @@ module.exports = function(RED) {
       }
       // add the current one
       elements.push({
-        title: title,
-        subtitle: subtitle,
-        imageUrl: imageUrl,
+        title: template(title),
+        subtitle: template(subtitle),
+        imageUrl: template(imageUrl),
         buttons: buttons
       });
 

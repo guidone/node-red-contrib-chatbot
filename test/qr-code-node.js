@@ -18,5 +18,15 @@ describe('Chat qr node', function() {
     assert.equal(RED.node.message().originalMessage.chat.id, 42);
   });
 
+  it('should create a qr code from a message from upstream node', function () {
+    var msg = RED.createMessage('this text will be encoded');
+    RED.node.config({});
+    QRCodeBlock(RED);
+    RED.node.get().emit('input', msg);
+    assert.equal(RED.node.message().payload.type, 'photo');
+    assert.equal(RED.node.message().payload.inbound, false);
+    assert.instanceOf(RED.node.message().payload.content, Buffer);
+    assert.equal(RED.node.message().originalMessage.chat.id, 42);
+  });
 
 });
