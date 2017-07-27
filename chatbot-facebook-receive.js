@@ -397,7 +397,12 @@ module.exports = function(RED) {
 
         switch (type) {
           case 'persistent-menu':
-            bot.setPersistentMenu(helpers.parseButtons(msg.payload.items), reportError);
+            var items = helpers.parseButtons(msg.payload.items);
+            // for some reason the called the same button as web_url and not url
+            items.forEach(function(item) {
+              item.type = item.type === 'url' ? 'web_url' : item.type;
+            });
+            bot.setPersistentMenu(items, reportError);
             break;
 
           default:

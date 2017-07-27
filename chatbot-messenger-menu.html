@@ -92,14 +92,14 @@
 Also supports <a target="_blank" href="https://developers.facebook.com/docs/messenger-platform/webview">Messenger Extensions</a>./li>
 <li><b>Postback:</b> sends the text defined in "payload" field to the chat</li>
 </ul>
-Maximum 5 menu items.
+Maximum 3 menu items.
 <p>
 The menu can be passed through the payload by the upstream node:
 </p>
 <pre>
 msg.payload = [
   {
-    type: 'web_url',
+    type: 'url',
     title: 'JavaScript Jedi',
     url: 'http://javascript-jedi.com',
     webview_height_ratio: 'full' // tall|full|compact
