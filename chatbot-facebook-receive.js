@@ -402,6 +402,7 @@ module.exports = function(RED) {
         var type = msg.payload.type;
         var bot = node.bot;
         var credentials = node.config.credentials;
+        var elements = null;
         var reportError = function(err) {
           if (err) {
             reject(err);
@@ -442,9 +443,42 @@ module.exports = function(RED) {
             );
             break;
 
+          case 'list-template':
+            // translate elements into facebook format
+            elements = msg.payload.elements.map(function(item) {
+              var element = {
+                title: item.title,
+                buttons: helpers.parseButtons(item.buttons)
+              };
+              if (!_.isEmpty(item.subtitle)) {
+                element.subtitle = item.subtitle;
+              }
+              if (!_.isEmpty(item.imageUrl)) {
+                element.image_url = item.imageUrl;
+              }
+              return element;
+            });
+            // sends
+            bot.sendMessage(
+              msg.payload.chatId,
+              {
+                attachment: {
+                  type: 'template',
+                  payload: {
+                    template_type: 'list',
+                    image_aspect_ratio: msg.payload.aspectRatio,
+                    sharable: msg.payload.sharable,
+                    elements: elements
+                  }
+                }
+              },
+              reportError
+            );
+            break;
+
           case 'generic-template':
             // translate elements into facebook format
-            var elements = msg.payload.elements.map(function(item) {
+            elements = msg.payload.elements.map(function(item) {
               var element = {
                 title: item.title,
                 buttons: helpers.parseButtons(item.buttons)

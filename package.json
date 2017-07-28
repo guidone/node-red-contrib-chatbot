@@ -33,6 +33,7 @@
       "chatbot-inline-buttons": "chatbot-inline-buttons.js",
       "chatbot-quick-replies": "chatbot-quick-replies.js",
       "chatbot-generic-template": "chatbot-generic-template.js",
+      "chatbot-list-template": "chatbot-list-template.js",
       "chatbot-request": "chatbot-request.js",
       "chatbot-log": "chatbot-log.js",
       "chatbot-qrcode": "chatbot-qr-code.js",
