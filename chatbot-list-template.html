@@ -1,0 +1,162 @@
+<script type="text/javascript">
+
+  RED.nodes.registerType('chatbot-list-template', {
+    category: 'RedBot',
+    color: '#FFCC66',
+    defaults: {
+      name: {
+        value: ''
+      },
+      title: {
+        value: '',
+        validate: function(title) {
+          return $.RedBot.validate.notEmpty(title) && title.length <= 80 ;
+        }
+      },
+      subtitle: {
+        value: '',
+        validate: function(subtitle) {
+          return subtitle == null || subtitle.length <= 80
+        }
+      },
+      imageUrl: {
+        value: ''
+      },
+      sharable: {
+        value: true
+      },
+      topElementStyle: {
+        value: 'large'
+      },
+      buttons: {
+        value: [],
+        validate: function(buttons) {
+          var valid = true;
+          var idx;
+          for(idx = 0; idx < buttons.length; idx++) {
+            if (!$.RedBot.validate.button(buttons[idx])) {
+              valid = false;
+            }
+          }
+          return valid && buttons.length <= 1 && buttons.length > 0;
+        }
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'List Template',
+    icon: 'chatbot-list-template.png',
+    label: function() {
+      return this.name || 'List Template';
+    },
+    oneditsave: function() {
+      var buttons = $("#node-input-buttons-container").editableList('items');
+      var node = this;
+      node.buttons = [];
+      var idx;
+      for(idx = 0; idx < buttons.length; idx++) {
+        node.buttons.push($(buttons[idx]).RB_getButtonData());
+      }
+    },
+    oneditprepare: function() {
+      $('#node-input-buttons-container')
+        .css('min-width','450px')
+        .editableList({
+          addItem: function(container, i, item) {
+            $(container).RB_mountButtonDialog({
+              types: ['url', 'postback', 'call', 'login', 'newline', 'logout', 'share'],
+              platforms: ['facebook'],
+              badges: false
+            });
+            $(container).RB_setButtonData(item, {
+              badges: false
+            });
+          },
+          removable: true,
+          sortable: true
+        });
+
+      if (this.buttons != null) {
+        this.buttons.forEach(function(button) {
+          $('#node-input-buttons-container').editableList('addItem', button);
+        });
+      }
+    },
+    oneditresize: function() {
+      var dialogForm = $('#dialog-form');
+      var rowName = $('.form-row-name', dialogForm);
+      var rowTitle = $('.form-row-title', dialogForm);
+      var rowSubtitle = $('.form-row-subtitle', dialogForm);
+      var rowImageUrl = $('.form-row-imageUrl', dialogForm);
+      var rowLabel = $('.form-row-label', dialogForm);
+      var rowCarousel = $('.form-row-carousel', dialogForm);
+      var height = dialogForm.height() - rowName.height() - rowTitle.height() - rowSubtitle.height()
+        - rowImageUrl.height() - rowLabel.height() - rowCarousel.height() - 40;
+      $('#node-input-buttons-container').editableList('height', height);
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-list-template">
+<div class="form-row form-row-name">
+  <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+  <input type="text" id="node-input-name" placeholder="Name">
+</div>
+<div class="form-row form-row-title">
+  <label for="node-input-title">Title</label>
+  <input type="text" id="node-input-title" placeholder="Title">
+</div>
+<div class="form-row form-row-subtitle">
+  <label for="node-input-subtitle">Subtitle</label>
+  <input type="text" id="node-input-subtitle" placeholder="Subtitle">
+</div>
+<div class="form-row form-row-imageUrl">
+  <label for="node-input-image_url">Image URL</label>
+  <input type="text" id="node-input-imageUrl" placeholder="Image URL">
+</div>
+<div class="form-row form-row-label" style="margin-bottom:0;">
+  <label><i class="fa fa-list"></i> <span>Buttons</span></label>
+</div>
+<div class="form-row node-input-rule-container-row">
+  <ol id="node-input-buttons-container"></ol>
+</div>
+<div class="form-row form-row-carousel">
+  <label for="node-input-topElementStyle">Top Element Style</label>
+  <select id="node-input-topElementStyle" style="width: 150px;" placeholder="Top element style">
+    <option value="large">Large</option>
+    <option value="compact">Compact</option>
+   </select>
+   <input type="checkbox" value="true" id="node-input-sharable" style="width: 20px; margin:0px 0px 0px 15px;">
+   <span>Sharable</span>
+</div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-list-template">
+<p>The List Template is a template that allows you to present a set of items vertically. <em>[Facebook]</em>.</p>
+<p>
+  It can be rendered in two different ways.<br>
+  The first way renders the first item with a cover image with text overlaid. This is good to making the first item appear prominently above the other items.<br>
+  The second way renders each item identically and is useful for presenting a list of items where no item is shown prominently.
+</p>
+<p>
+  Available buttons:
+  <ul>
+    <li><em>URL</em>: Open a URL inside the client. Supports <em>Messenger Extensions</em> </li>
+    <li><em>Postback</em>: Allow the user to send a predefined message, the message will no be shown in the chat history. Supports <em>Messenger Extensions</em></em></li>
+    <li><em>Share</em>: Shares the content, only if used inside a Generic Template</li>
+    <li><em>Phone call</em>: Starts a phone call on mobile</li>
+    <li><em>Log In</em>: Starts the account linking flow</li>
+    <li><em>Log Out</em>: Starts the account unlinking flow</li>
+  </ul>
+</p>
+<p>
+
+</p>
+
+todo
+
+
+</script>
+
+
+
