@@ -74,7 +74,7 @@
 <script type="text/x-red" data-help-name="chatbot-rivescript">
 <p>Reply to an incoming message using <b>RiveScript</b></p>
 <p>
-This node answers with a string to the first output if the script is able to elaborate a reply, otherwise a string error is sent to the second output. This node output is generally connected to a message node. The node will not try to parse command-like sentences (for example <code>/my_command</code>)
+This node answers with a string to the first output if the script is able to elaborate a reply, otherwise a string error is sent to the second output. This node output is generally connected to a <code>Message Node</code>. The node will not try to parse command-like sentences (for example <code>/my_command</code>)
 </p>
 <p>
 A <b>RiveScript</b> looks like
@@ -94,7 +94,7 @@ It's also able to parse the sentence and store data to the chat context
 <b>RiveScript</b> can get/set variables in the chat context.
 </p>
 <p>
-  You can use the chat context variable <em>topic</em> to scope some <b>RiveScript</b> triggers into topics
+  You can use the chat context variable <em>topic</em> to scope some <b>RiveScript</b> triggers into specific subjects
 <p>
 <pre>
 ! version = 2.0

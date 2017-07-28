@@ -22,6 +22,12 @@
       imageUrl: {
         value: ''
       },
+      sharable: {
+        value: true
+      },
+      aspectRatio: {
+        value: 'horizontal'
+      },
       buttons: {
         value: [],
         validate: function(buttons) {
@@ -32,7 +38,7 @@
               valid = false;
             }
           }
-          return valid && buttons.length <= 3;
+          return valid && buttons.length <= 3 && buttons.length > 0;
         }
       }
     },
@@ -83,8 +89,9 @@
       var rowSubtitle = $('.form-row-subtitle', dialogForm);
       var rowImageUrl = $('.form-row-imageUrl', dialogForm);
       var rowLabel = $('.form-row-label', dialogForm);
+      var rowCarousel = $('.form-row-carousel', dialogForm);
       var height = dialogForm.height() - rowName.height() - rowTitle.height() - rowSubtitle.height()
-        - rowImageUrl.height() - rowLabel.height() - 40;
+        - rowImageUrl.height() - rowLabel.height() - rowCarousel.height() - 40;
       $('#node-input-buttons-container').editableList('height', height);
     }
   });
@@ -112,6 +119,15 @@
 </div>
 <div class="form-row node-input-rule-container-row">
   <ol id="node-input-buttons-container"></ol>
+</div>
+<div class="form-row form-row-carousel">
+  <label for="node-input-aspectRatio">Carousel</label>
+  <select id="node-input-aspectRatio" style="width: 150px;" placeholder="Image Aspect Ratio">
+    <option value="horizontal">Horizontal</option>
+    <option value="square">Square</option>
+   </select>
+   <input type="checkbox" value="true" id="node-input-sharable" style="width: 20px; margin:0px 0px 0px 15px;">
+   <span>Sharable</span>
 </div>
 </script>
 

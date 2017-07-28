@@ -13,6 +13,8 @@ module.exports = function(RED) {
     this.title = config.title;
     this.subtitle = config.subtitle;
     this.imageUrl = config.imageUrl;
+    this.aspectRatio = config.aspectRatio;
+    this.sharable = config.sharable;
     this.transports = ['facebook'];
 
     this.on('input', function(msg) {
@@ -31,6 +33,8 @@ module.exports = function(RED) {
       var title = utils.extractValue('string', 'title', node, msg);
       var subtitle = utils.extractValue('string', 'subtitle', node, msg);
       var imageUrl = utils.extractValue('string', 'imageUrl', node, msg);
+      var aspectRatio = utils.extractValue('string', 'aspectRatio', node, msg);
+      var sharable = utils.extractValue('boolean', 'sharable', node, msg);
 
       var elements = [];
       // if inbound is another message from a generic template, then push them toghether to create a carousel
@@ -47,6 +51,8 @@ module.exports = function(RED) {
 
       msg.payload = {
         type: 'generic-template',
+        aspectRatio: !_.isEmpty(aspectRatio) ? aspectRatio : 'horizontal',
+        sharable: _.isBoolean(sharable) ? sharable : true,
         elements: elements,
         chatId: chatId,
         messageId: messageId
