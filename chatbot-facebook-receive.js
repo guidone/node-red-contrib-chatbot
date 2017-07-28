@@ -482,6 +482,8 @@ module.exports = function(RED) {
                   type: 'template',
                   payload: {
                     template_type: 'generic',
+                    image_aspect_ratio: msg.payload.aspectRatio,
+                    sharable: msg.payload.sharable,
                     elements: elements
                   }
                 }
