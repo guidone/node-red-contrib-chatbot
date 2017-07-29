@@ -230,6 +230,23 @@ module.exports = function(RED) {
         if (_.isArray(message.attachments) && !_.isEmpty(message.attachments)) {
           var attachment = message.attachments[0];
           switch(attachment.type) {
+            case 'audio':
+              // download the audio into a buffer
+              helpers.downloadFile(attachment.payload.url)
+                .then(function(buffer) {
+                  resolve({
+                    chatId: chatId,
+                    messageId: messageId,
+                    type: 'audio',
+                    content: buffer,
+                    date: moment(botMsg.timestamp),
+                    inbound: true
+                  });
+                })
+                .catch(function() {
+                  reject('Unable to download ' + attachment.payload.url);
+                });
+              break;
             case 'image':
               // download the image into a buffer
               helpers.downloadFile(attachment.payload.url)
