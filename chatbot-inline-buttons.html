@@ -516,9 +516,7 @@ return msg;
 </p>
 
 
-- explain Telegram feedbacks
-- explain messenger extensions
-- create buttons programmatically
+
 - list of fields
 
 
@@ -530,45 +528,7 @@ return msg;
 
 
 
-<p>For each button:
-<ul>
-  <li><em>label</em>: The label of the button</li>
-  <li><em>value (optional)</em>: The value of the button, max 64 bytes, this is the response that will re-routed the the flow
-  like a normal message (will not be shown in the chat history of the client)</li>
-  <li><em>Button feedback (optional)</em>: Show a button feedback when the user clicks the button</li>
-  <li><em>Button URL (optional)</em>: Open the browser to the specified URL (url and value cannot be used with the same button).
-  Only for Telegram.
-  </li>
-  <li><em>Image URL (optional)</em>: Show image inside the button. Only for Facebook.
-  </li>
-  <li><em>Alert (optional)</em>: Show the feedback with a modal alert in the client. Only for Telegram.</li>
-  <li><em>New Line (optional)</em>: Starts a new row of buttons after this. Only for Telegram.</li>
-</ul>
-</p>
-<p>The button can be passed through the payload by the upstream node:</p>
-<br/>
-<pre>
-// todo add here image_url and newLine
-msg.payload = {
-  message: 'The message with the buttons',
-  buttons: [
-    {
-      value: 'text 1',
-      label: 'label of the button 1',
-      answer: 'this is the answer',
-      alert: true,
-      newLine: true
-    },
-    {
-      value: 'text 2',
-      label: 'another label',
-      answer: 'this is the answer 2',
-      alert: false
-    }
-  ]
-}
-return msg;
-</pre>
+
 </script>
 
 <style>
