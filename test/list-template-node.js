@@ -156,7 +156,7 @@ describe('Chat list template node', function() {
     assert.equal(buttons[0].label, 'Value 1');
   });
 
-  it.only('should create a list template with Facebook passing all params in the payload of upstream node', function() {
+  it('should create a list template with Facebook passing all params in the payload of upstream node', function() {
     var msg = RED.createMessage({
       title: 'message for the template',
       subtitle: 'I am a subtitle',

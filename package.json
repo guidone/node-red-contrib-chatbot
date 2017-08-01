@@ -9,8 +9,9 @@
     "lint": "eslint *.js ./lib/**.js",
     "pull-wiki": "(cd ./wiki && git pull)",
     "commit-wiki": "git add . && git commit -m \"docs\"",
-    "build": "npm run pull-wiki && node ./bin/generate-docs",
-    "version": "npm run pull-wiki && node ./bin/generate-docs"
+    "build-docs": "git clone https://github.com/guidone/node-red-contrib-chatbot.wiki.git ./wiki && node ./bin/generate-docs && rm -rf ./wiki",
+    "clean": "rm -rf ./wiki",
+    "version": "git clone https://github.com/guidone/node-red-contrib-chatbot.wiki.git ./wiki && node ./bin/generate-docs && rm -rf ./wiki"
   },
   "repository": {
     "type": "git",

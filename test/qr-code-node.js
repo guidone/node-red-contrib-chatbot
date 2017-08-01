@@ -1,7 +1,7 @@
 var _ = require('underscore');
 var assert = require('chai').assert;
 var RED = require('./lib/red-stub')();
-var QRCodeBlock = require('../chatbot-qr-code');
+var QRCodeBlock = require('../chatbot-qrcode');
 
 describe('Chat qr node', function() {
 

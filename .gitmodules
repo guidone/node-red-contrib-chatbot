@@ -1,3 +1,0 @@
-[submodule "wiki"]
-	path = wiki
-	url = https://github.com/guidone/node-red-contrib-chatbot.wiki.git
