@@ -37,17 +37,28 @@ module.exports = function(RED) {
       var sharable = utils.extractValue('boolean', 'sharable', node, msg);
 
       var elements = [];
+      var globalButtons = null;
       // if inbound is another message from a generic template, then push them toghether to create a carousel
       if (msg.payload != null && validators.genericTemplateElements(msg.payload.elements)) {
         elements = _.union(elements, msg.payload.elements);
       }
-      // add the current one
-      elements.push({
-        title: template(title),
-        subtitle: template(subtitle),
-        imageUrl: template(imageUrl),
-        buttons: buttons
-      });
+      // add the current one if the title is null, otherwise se it as global button
+      if (!_.isEmpty(title)) {
+        var element = {
+          title: template(title),
+          subtitle: template(subtitle),
+          imageUrl: template(imageUrl),
+          buttons: buttons.length !== 0 ? [buttons[0]] : null // only 1 button allowed
+        };
+        // add the first "url" type button as default_action
+        var defaultAction = _(buttons).findWhere({type: 'url'});
+        if (defaultAction != null) {
+          element.default_action = _.extend({}, defaultAction, {type: 'web_url'});
+        }
+        elements.push(element);
+      } else {
+        globalButtons = buttons.length !== 0 ? [buttons[0]] : null; // only 1 button allowed
+      }
 
       msg.payload = {
         type: 'list-template',
@@ -55,7 +66,8 @@ module.exports = function(RED) {
         sharable: _.isBoolean(sharable) ? sharable : true,
         elements: elements,
         chatId: chatId,
-        messageId: messageId
+        messageId: messageId,
+        globalButtons: globalButtons
       };
 
       node.send(msg);
