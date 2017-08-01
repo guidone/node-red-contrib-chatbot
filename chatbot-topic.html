@@ -86,22 +86,20 @@
   </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-topic">
-  <p>
-  Control the flow based on the topic. Use the topic to restrict the working area of your bot's parsers based on
-  the user intentions.
-  </p>
-  <p>
-  The first matched topic skips the rest of the matching strings. To get a else-like behaviour, use a <code>*</code>
-  at the end of the list to capture all messages that don't match any topic.
-  </p>
-  <p>
-  Chat topic is stored in the chat context <em>"topic"</em>, use the <code>Context node</code> to change it or the
-  <code>{topic=my_topic}</code> directive in <em>RiveScript</em>.
-  </p>
-  <p>
-  The chat context could have more than one topic (in that case is an array of string).
-  </p>
+<script type="text/x-red" data-help-name="chatbot-topic"><p>Control the flow based on the topic. Use the topic to restrict the working area of your bot&#39;s parsers based on
+the user intentions.</p>
+<p>The first matched topic skips the rest of the matching. To get a else-like behaviour, use a <code>*</code>
+  at the end of the list to capture all messages that don&#39;t match any topic.</p>
+<p>Chat topic is stored in the chat context <em>&quot;topic&quot;</em>, use the <code>Context node</code> to change it or the <code>{topic=my_topic}</code> directive in <em>RiveScript</em>.</p>
+<p>The chat topic can also be changed in a <code>Function node</code></p>
+<pre><code>var chat = msg.chat();
+chat.set(&#39;topic&#39;, &#39;my_topic&#39;);
+return msg;
+</code></pre><p>The chat context could have more than one topic (in that case is an array of string).</p>
+<p><img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram">
+<img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook">
+<img src="https://img.shields.io/badge/platform-Slack-green.svg" alt="Slack">
+<img src="https://img.shields.io/badge/platform-Smooch-orange.svg" alt="Smooch"></p>
 </script>
 
 
