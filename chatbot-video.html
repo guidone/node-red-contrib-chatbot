@@ -46,30 +46,18 @@
 </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-video">
-<p>
-Send a video to the chat <em>[Facebook]</em>.
-</p>
-<p>
-The <code>Video node</code> can send a file from the local filesystem or from a Buffer payload from the upstream node or
-from a <code>File node</code>.
-</p>
-<p>
-Some file types are not supported by a specific platform, for example <em>Telegram</em> and <em>Facebook</em> only supports <em>.mp4</em>. Different video format che be sent with the <code>Document node</code>.<br>
-</p>
-<p>
-To programmatically send a video, in the upstream <code>Function node</code>
-<pre>
-msg.payload.file = new Buffer(<my-buffer>);
-msg.payload.filename = 'my-video.mp4';
+<script type="text/x-red" data-help-name="chatbot-video"><p>The <code>Video node</code> can send a file from the local filesystem, from a Buffer payload from the upstream node or
+from a <code>File node</code>.</p>
+<p>Some file types are not supported by a specific platform, for example <em>Telegram</em> and <em>Facebook Messenger</em> only supports <em>.mp4</em>. Different video format che be sent with the <code>Document node</code>.</p>
+<p>To programmatically send a video, in the upstream <code>Function node</code></p>
+<pre><code>msg.payload.file = new Buffer(&lt;my-buffer&gt;);
+msg.payload.filename = &#39;my-video.mp4&#39;;
 return msg;
-</pre>
-<code>.file</code> is a <code>Buffer</code> type. To pass the path of a local file from the upstream node
-<pre>
-msg.filename = '/my/local/my-video.mp4';
+</code></pre><p><code>.file</code> is a <code>Buffer</code> type. To pass the path of a local file from the upstream node</p>
+<pre><code>msg.filename = &#39;/my/local/my-video.mp4&#39;;
 return msg;
-</pre>
-</p>
+</code></pre><p><img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook">
+<img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram"></p>
 </script>
 
 
