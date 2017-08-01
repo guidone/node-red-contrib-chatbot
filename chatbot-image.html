@@ -39,24 +39,19 @@
 </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-image">
-<p>
-  Send image, prepares the payload to send an image to the chat sender using the <code>Buffer</code> as input or
-  loading the file if specified in the node config <em>[Telegram, Facebook, Slack, Smooch]</em>.
-</p>
-<p>The image can be passed through the payload by the upstream node:</p>
-<br/>
-<pre>
-msg.payload = {
-  caption: 'I am the caption',
+<script type="text/x-red" data-help-name="chatbot-image"><p>Send image, prepares the payload to send an image to the chat sender using the <code>Buffer</code> as input or loading the file if specified in the node config.</p>
+<p>The image can be passed through the payload by the upstream node:</p></p>
+<pre><code>msg.payload = {
+  caption: &#39;I am the caption&#39;,
   image: msg.payload // an instance of Buffer
 }
 return msg;
-</pre>
-<p>
-It's also possible to wire directly a file or http node (choosing "binary buffer" in the "return" drop down)
-to the <code>Image node</code>.
-</p>
+</code></pre><p>It&#39;s also possible to wire directly a file or http node (choosing <em>binary buffer</em> in the <em>return</em> drop down)
+to the <code>Image node</code>.</p>
+<p><img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram">
+<img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook">
+<img src="https://img.shields.io/badge/platform-Slack-green.svg" alt="Slack">
+<img src="https://img.shields.io/badge/platform-Smooch-orange.svg" alt="Smooch"></p>
 </script>
 
 

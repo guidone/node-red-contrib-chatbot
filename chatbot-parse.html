@@ -56,24 +56,22 @@ var my_var = chat.get('my_variable');
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-parse">
-<p>Parse the inbound chat message by type (string, number, email, location, etc) and store the value in the context flow and
-  pass through the output pin
-</p>
-<p>
-  Available parse type are:
-  <ul>
-  <li><b>string:</b> any payload of type string will be accepted</li>
-  <li><b>email:</b> parse a valid email</li>
-  <li><b>integer number:</b> parse a integer number (written in numbers or plain english)</li>
-  <li><b>integer:</b> parse a valid integer number</li>
-  <li><b>location:</b> extract the location from a <code>location</code> chat message, payload (and the
-  value stored in the variable) will be <code>{latitude: xxxx, longitude: yyyy}</code></li>
-  <li><b>contact:</b> extract the phone number from a contact type message (a user that shares a contact)</li>
-  <li><b>photo:</b> extract the image from a chat message containing a picture, the resulting payload is suitable
-  to be sent to file node</li>
-  <li><b>audio:</b> extract the audio payload from an audio chat message, the resulting payload is suitable
-  to be sent to file node. Audio format depends on platform. Telegram: <em>Ogg Vorbis (*.ogg)</em></li>
-  </ul>
-</p>
+<script type="text/x-red" data-help-name="chatbot-parse"><p>Parse the inbound chat message and extract a specific type (string, number, email, location, etc) then store the value in the context flow and pass through the output pin (in <code>msg.payload</code>)</p>
+<p>Available parse type are:</p>
+<ul>
+<li><strong>string</strong>: any payload of type string will be accepted</li>
+<li><strong>boolean</strong>: returns <code>true</code> for any words like <em>yes</em>, <em>true</em>, <em>ok</em>, etc</li>
+<li><strong>email</strong>: extract a valid email in the incoming message</li>
+<li><strong>date</strong>: extract a valid date from the incoming message</li>
+<li><strong>integer-number</strong>: extract a integer number (written in numbers or plain english)</li>
+<li><strong>location</strong>: extract the location from a <code>location</code> chat message (the one sent by the chat client when the user shares the position). The value extracted will be something like
+<code>{latitude: 45.001, longitude: 21.001}</code></li>
+<li><strong>contact</strong>: extract the phone number from a contact type message (a user that shares a contact)</li>
+<li><strong>photo</strong>: extract the image from a chat message containing a picture, the resulting payload is suitable to be sent to file node (a NodeJS Buffer)</li>
+<li><strong>audio</strong>: extract the audio payload from an audio chat message, the resulting payload is suitable to be sent to file node. Audio format depends on platform (for example <strong>Telegram</strong>: <em>Ogg Vorbis (*.ogg)</em></li>
+</ul>
+<p><img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram">
+<img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook">
+<img src="https://img.shields.io/badge/platform-Slack-green.svg" alt="Slack">
+<img src="https://img.shields.io/badge/platform-Smooch-orange.svg" alt="Smooch"></p>
 </script>
