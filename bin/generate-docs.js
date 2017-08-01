@@ -14,7 +14,12 @@ var mappings = {
   'Command-node.md': 'chatbot-command.html',
   'Analytics-node.md': 'chatbot-analytics.html',
   'Transport-node.md': 'chatbot-transport.html',
-  'Topic-node.md': 'chatbot-topic.html'
+  'Topic-node.md': 'chatbot-topic.html',
+  'Debug-node.md': 'chatbot-debug.html',
+  'Parse-node.md': 'chatbot-parse.html',
+  'Request-node.md': 'chatbot-request.html',
+  'Video-node.md': 'chatbot-video.html',
+  'Image-node.md': 'chatbot-image.html'
 };
 
 
