@@ -8,6 +8,7 @@
     "localtunnel": "lt --port 1880",
     "lint": "eslint *.js ./lib/**.js",
     "pull-wiki": "(cd ./wiki && git pull)",
+    "commit-wiki": "git add . && git commit -m \"docs\"",
     "build": "npm run pull-wiki && node ./bin/generate-docs",
     "version": "npm run pull-wiki && node ./bin/generate-docs"
   },
