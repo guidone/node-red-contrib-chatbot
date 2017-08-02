@@ -84,36 +84,30 @@
 </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-messenger-menu">
-<p>Facebook Messenger persistent menu <em>[Facebook]</em>.</p>
-<p>This will set the persistent menu next to the editable area in Facebook Messenger, there two kind of options:</p>
+<script type="text/x-red" data-help-name="chatbot-messenger-menu"><p><img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook"></p>
+<p>This node will set the persistent menu next to the editable area in Facebook Messenger, there two kind of options:</p>
 <ul>
-<li><b>Web Url:</b> it opens a specific url. In the mobile version it's possible to specify the size of the browser window<.
-Also supports <a target="_blank" href="https://developers.facebook.com/docs/messenger-platform/webview">Messenger Extensions</a>./li>
-<li><b>Postback:</b> sends the text defined in "payload" field to the chat</li>
+<li><strong>URL</strong>: it opens a specific url. In the mobile version it&#39;s possible to specify the size of the browser window.
+Also supports <a href="https://developers.facebook.com/docs/messenger-platform/webview">Messenger Extensions</a></li>
+<li><strong>Postback</strong>: sends the text defined in &quot;payload&quot; field to the chat</li>
 </ul>
-Maximum 3 menu items.
-<p>
-The menu can be passed through the payload by the upstream node:
-</p>
-<pre>
-msg.payload = [
+<p>Maximum 3 menu items.</p>
+<p>The menu can be passed through the payload by the upstream node:</p>
+<pre><code>msg.payload = [
   {
-    type: 'url',
-    title: 'JavaScript Jedi',
-    url: 'http://javascript-jedi.com',
-    webview_height_ratio: 'full' // tall|full|compact
+    type: &#39;url&#39;,
+    title: &#39;JavaScript Jedi&#39;,
+    url: &#39;http://javascript-jedi.com&#39;,
+    webview_height_ratio: &#39;full&#39; // tall|full|compact
   },
   {
-    type: 'postback',
-    title: 'Help',
-    payload: '/help'
+    type: &#39;postback&#39;,
+    title: &#39;Help&#39;,
+    payload: &#39;/help&#39;
   }
 ];
 return msg;
-</pre>
-</p>
-</script>
+</code></pre></script>
 
 
 

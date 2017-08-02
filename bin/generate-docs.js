@@ -6,6 +6,10 @@ var fs = require('fs');
 
 var mappings = {
   'Buttons-node.md': 'chatbot-inline-buttons.html',
+  'Generic-Template-node.md': 'chatbot-generic-template.html',
+  'List-Template-node.md': 'chatbot-list-template.html',
+  'Quick-Replies-node.md': 'chatbot-quick-replies.html',
+  'Messenger-Menu-node.md': 'chatbot-messenger-menu.html',
   'Document-node.md': 'chatbot-document.html',
   'Message-node.md': 'chatbot-message.html',
   'QR-Code-node.md': 'chatbot-qrcode.html',
@@ -19,7 +23,13 @@ var mappings = {
   'Parse-node.md': 'chatbot-parse.html',
   'Request-node.md': 'chatbot-request.html',
   'Video-node.md': 'chatbot-video.html',
-  'Image-node.md': 'chatbot-image.html'
+  'Audio-node.md': 'chatbot-audio.html',
+  'Voice-node.md': 'chatbot-voice.html',
+  'Image-node.md': 'chatbot-image.html',
+  'Language-node.md': 'chatbot-language.html',
+  'Authorized-node.md': 'chatbot-authorized.html',
+  'Log-node.md': 'chatbot-log.html',
+  'Listen-node.md': 'chatbot-listen.html'
 };
 
 

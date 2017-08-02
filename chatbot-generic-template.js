@@ -41,13 +41,15 @@ module.exports = function(RED) {
       if (msg.payload != null && validators.genericTemplateElements(msg.payload.elements)) {
         elements = _.union(elements, msg.payload.elements);
       }
-      // add the current one
-      elements.push({
-        title: template(title),
-        subtitle: template(subtitle),
-        imageUrl: template(imageUrl),
-        buttons: buttons
-      });
+      // add the current one if not empty
+      if (!_.isEmpty(title)) {
+        elements.push({
+          title: template(title),
+          subtitle: template(subtitle),
+          imageUrl: template(imageUrl),
+          buttons: buttons
+        });
+      }
 
       msg.payload = {
         type: 'generic-template',

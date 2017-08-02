@@ -56,9 +56,9 @@ module.exports = function(RED) {
           element.default_action = _.extend({}, defaultAction, {type: 'web_url'});
         }
         elements.push(element);
-      } else {
-        globalButtons = buttons.length !== 0 ? [buttons[0]] : null; // only 1 button allowed
-      }
+      } else if (_.isArray(buttons) && !_.isEmpty(buttons)) {
+        globalButtons = [buttons[0]]; // only 1 button allowed
+      } // else do nothing, only elements from upstream nodes
 
       msg.payload = {
         type: 'list-template',
