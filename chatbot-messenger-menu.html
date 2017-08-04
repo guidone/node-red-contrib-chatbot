@@ -3,6 +3,12 @@
     category: 'RedBot',
     color: '#FFCC66',
     defaults: {
+      composerInputDisabled: {
+        value: false
+      },
+      command: {
+        value: 'set'
+      },
       name: {
         value: ''
       },
@@ -40,6 +46,13 @@
       }
     },
     oneditprepare: function() {
+      $('#node-input-command').change(function() {
+        if ($(this).val() === 'set') {
+          $('.form-row-list, .form-row-items, .form-row-composer').show();
+        } else {
+          $('.form-row-list, .form-row-items, .form-row-composer').hide();
+        }
+      });
       $('#node-input-items-container').css('min-height','300px').css('min-width','450px').editableList({
         addButton: 'Add menu item',
         addItem: function(container, i, item) {
@@ -65,7 +78,9 @@
       var dialogForm = $('#dialog-form');
       var rowName = $('.form-row-name', dialogForm);
       var rowLabel = $('.form-row-label', dialogForm);
-      var height = dialogForm.height() - rowName.height() - rowLabel.height() - 20;
+      var rowCommand = $('.form-row-command', dialogForm);
+      var rowComposer = $('.form-row-composer', dialogForm);
+      var height = dialogForm.height() - rowName.height() - rowLabel.height() - rowCommand.height() - rowComposer.height() - 30;
       $('#node-input-items-container').editableList('height', height);
     }
   });
@@ -76,10 +91,22 @@
   <label for="node-input-name"><i class="icon-tag"></i> Name</label>
   <input type="text" id="node-input-name" placeholder="Name">
 </div>
+<div class="form-row form-row-command">
+  <label for="node-input-command"><i class="icon-cog"></i> Action</label>
+  <select id="node-input-command" placeholder="Command">
+    <option value="set">Set</option>
+    <option value="delete">Delete</option>
+  </select>
+</div>
+<div class="form-row form-row-composer">
+  <label for="node-input-track"><i class="icon-envelope"></i> Track</label>
+  <input type="checkbox" value="true" id="node-input-composerInputDisabled" style="width: 30px;">
+  Disable user input
+</div>
 <div class="form-row form-row-label" style="margin-bottom:0;">
   <label><i class="fa fa-list"></i> <span>Buttons</span></label>
 </div>
-<div class="form-row node-input-rule-container-row">
+<div class="form-row form-row-items node-input-rule-container-row">
   <ol id="node-input-items-container"></ol>
 </div>
 </script>
