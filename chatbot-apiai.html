@@ -114,81 +114,20 @@
 
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-apiai">
-  <p>
-  Use <b>Api.ai</b> NLP engine to parse user input. With Api.ai it's easy to parse sentences like <em>"I want to switch on the
-  lights of the living room"</em> and extract key variables.
-  </p>
-  <p>
-  Some <b>Api.ai</b> terminology:
-  </p>
-  <ul>
-  <li>
-  <b>Context</b>: have the same meaning of <b>topic</b> in <b>RedBot</b> (do not confuse with chat context in <b>RedBot</b>), the purpose
-  is to restrict the working area of the parsers based on a context of the sentence. For example the words <em>"the email is
-  an_email@gmail.com"</em> can trigger a particular action it the user is signing up with the chat bot (for example topic or
-  context "signup") and a different one if the user intention is to send an email to someone with the chat bot (for
-  example topic or context "send_message")
-  </li>
-  <li>
-  <b>Intent</b>: is a set of rules for parsing user's sentences and detect a set of entities in order to consider the sentence
-  complete. For example in the sentence <em>"I want to switch on the lights in the living room"</em>, the entities are
-  <em>Furniture</em> (lights), <em>OnOff</em> (on) and <em>Room</em> (living room). By setting these entities as mandatory
-  to consider the sentence complete, the Api.ai intent is able to parse them and ask question if the sentence is
-  missing some information (for example after <em>"I want to switch on the lights"</em> it could ask <em>"In which room?"</em>).
-  When the sentence is complete the Intent changes the context/topic, for example "switch_lights", in this way it's
-  possible to let <b>RedBot</b> takes action for this context.
-  </li>
-  <li>
-  <b>Entity</b>: are sets of objects of the same class. For example in a sentence like "I want to switch on the lights in the
-  living room" the entity Room can contain: living room, kitchen, lavatory, etc
-  </li>
-  </ul>
-  <p>
-  The <code>Api.ai node</code> works like a kind of loop: the first output is always connected to a message node, this
-  allows the <code>Api.ai node</code> to keep asking question to the user until all the intent requirements are met.
-  When the sentence is complete and <em>Api.ai</em> transitioned to a new topic (context) the message is forwarded to the proper
-  output based on the matched topic (just like the <code>Topic node</code>).
-  </p>
-</script>
-
-
-<script type="text/javascript">
-  RED.nodes.registerType('chatbot-apiai-token', {
-    category: 'config',
-    defaults: {
-      name: {
-        value: '',
-        required: true
-      }
-    },
-    paletteName: 'Api.ai Token',
-    credentials: {
-      token: {
-        type: 'text'
-      }
-    },
-    label: function () {
-      return this.name;
-    }
-  });
-</script>
-
-<script type="text/x-red" data-template-name="chatbot-apiai-token">
-  <div class="form-row">
-    <label for="node-config-input-botname"><i class="icon-bookmark"></i> Name</label>
-    <input type="text" id="node-config-input-name">
-  </div>
-  <div class="form-row">
-    <label for="node-config-input-token"><i class="icon-tag"></i> Token</label>
-    <input type="text" id="node-config-input-token">
-  </div>
-</script>
-
-<script type="text/x-red" data-help-name="chatbot-apiai-token">
-  <p>
-    Insert the <b>Api.ai</b> client token. Find it under the <em>agent</em> configuration.
-  </p>
+<script type="text/x-red" data-help-name="chatbot-apiai"><p>Use <strong>Api.ai</strong> NLP engine to parse user input. With <strong>Api.ai</strong> it&#39;s easy to parse sentences like <em>&quot;I want to switch on the lights of the living room&quot;</em> and extract key variables.</p>
+<p>Some <strong>Api.ai</strong> terminology:</p>
+<ul>
+<li><strong>Context</strong>: have the same meaning of <em>topic</em> in <strong>RedBot</strong> (do not confuse with chat context in <strong>RedBot</strong>), the purpose is to restrict the working area of the parsers based on a context of the sentence. For example the words _&quot;the email is an<em>email@gmail.com&quot;</em> can trigger a particular action it the user is signing up with the chat bot (for example topic or context <em>&quot;signup&quot;</em>) and a different one if the user intention is to send an email to someone with the chat bot (for example topic or context _&quot;send<em>message&quot;</em>)</li>
+<li><strong>Intent</strong>: is a set of rules for parsing user&#39;s sentences and detect a set of entities in order to consider the sentence complete. For example in the sentence <em>&quot;I want to switch on the lights in the living room&quot;</em>, the entities are <em>Furniture</em> (lights), <em>OnOff</em> (on) and <em>Room</em> (living room). By setting these entities as mandatory to consider the sentence complete, the <strong>Api.ai</strong> intent is able to parse them and ask question if the sentence is missing some information (for example after <em>&quot;I want to switch on the lights&quot;</em> it could ask <em>&quot;In which room?&quot;</em>).
+When the sentence is complete the Intent changes the context/topic, for example to _&quot;switch<em>lights&quot;</em>, in this way it&#39;s possible to let <strong>RedBot</strong> takes action for this context.</li>
+<li><strong>Entity</strong>: are sets of objects of the same class. For example in a sentence like <em>&quot;I want to switch on the lights in the living room&quot;</em> the entity <em>Room</em> can contain: living room, kitchen, lavatory, etc</li>
+</ul>
+<p>The <code>Api.ai node</code> works like a kind of loop: the first output is always connected to a message node, this allows the <code>Api.ai node</code> to keep asking question to the user until all the intent requirements are met.</p>
+<p>When the sentence is complete and <strong>Api.ai</strong> transitioned to a new topic (context) the message is forwarded to the proper output based on the matched topic (just like the <code>Topic node</code>).</p>
+<p><img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram">
+<img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook">
+<img src="https://img.shields.io/badge/platform-Slack-green.svg" alt="Slack">
+<img src="https://img.shields.io/badge/platform-Smooch-orange.svg" alt="Smooch"></p>
 </script>
 
 
