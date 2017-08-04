@@ -29,7 +29,9 @@ var mappings = {
   'Language-node.md': 'chatbot-language.html',
   'Authorized-node.md': 'chatbot-authorized.html',
   'Log-node.md': 'chatbot-log.html',
-  'Listen-node.md': 'chatbot-listen.html'
+  'Listen-node.md': 'chatbot-listen.html',
+  'Context-node.md': 'chatbot-context.html',
+  'API.ai-node.md': 'chatbot-apiai.html'
 };
 
 
