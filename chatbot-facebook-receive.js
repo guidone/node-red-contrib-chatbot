@@ -8,7 +8,7 @@ var request = require('request').defaults({ encoding: null });
 var Bot = require('./lib/facebook/messenger-bot');
 var clc = require('cli-color');
 
-var DEBUG = false;
+var DEBUG = true;
 var green = clc.greenBright;
 var white = clc.white;
 var grey = clc.blackBright;
@@ -48,7 +48,7 @@ module.exports = function(RED) {
 
        */
 
-      var facebookBot = self.bot;
+      var facebookBot = this;
 
       if (DEBUG) {
         // eslint-disable-next-line no-console
@@ -103,7 +103,6 @@ module.exports = function(RED) {
           }, self.log)
         })
         .then(function (msg) {
-
           var currentConversationNode = chatContext.get('currentConversationNode');
           // if a conversation is going on, go straight to the conversation node, otherwise if authorized
           // then first pin, if not second pin
@@ -115,7 +114,6 @@ module.exports = function(RED) {
           } else {
             facebookBot.emit('relay', msg);
           }
-
         })
         .catch(function (error) {
           facebookBot.emit('relay', null, error);
@@ -154,21 +152,29 @@ module.exports = function(RED) {
           // mount endpoints on local express
           this.bot.expressMiddleware(RED.httpNode);
 
-          this.bot.on('message', this.handleMessage);
-          this.bot.on('postback', this.handleMessage);
-          this.bot.on('account_linking', this.handleMessage);
+          this.bot.on('message', this.handleMessage.bind(this.bot));
+          this.bot.on('postback', this.handleMessage.bind(this.bot));
+          this.bot.on('account_linking', this.handleMessage.bind(this.bot));
         }
       }
     }
 
     this.on('close', function (done) {
-      var endpoints = ['/facebook', '/facebook/_status'];
+      var endpoints = ['/redbot/facebook', '/redbot/facebook/_status'];
       // remove middleware for facebook callback
-      RED.httpNode._router.stack.forEach(function(route, i, routes) {
-        if (route.route && _.contains(endpoints, route.route.path)) {
-          routes.splice(i, 1);
+      var routesCount = RED.httpNode._router.stack.length;
+      _(RED.httpNode._router.stack).each(function (route, i, routes) {
+        if (route != null && route.route != null) {
+          if (_.contains(endpoints, route.route.path)) {
+            routes.splice(i, 1);
+          }
         }
       });
+      if (RED.httpNode._router.stack.length >= routesCount) {
+        // eslint-disable-next-line no-console
+        console.log('ERROR: improperly removed Facebook messenger routes, this will cause unexpected results and tricky bugs');
+      }
+      this.bot = null;
       done();
     });
 
@@ -380,7 +386,6 @@ module.exports = function(RED) {
 
         var type = msg.payload.type;
         var bot = node.bot;
-        //var credentials = node.config.credentials;
 
         var reportError = function(err) {
           if (err) {
@@ -392,7 +397,12 @@ module.exports = function(RED) {
 
         switch (type) {
           case 'persistent-menu':
-            bot.setPersistentMenu(msg.payload.items, reportError);
+            var items = helpers.parseButtons(msg.payload.items);
+            // for some reason the called the same button as web_url and not url
+            items.forEach(function(item) {
+              item.type = item.type === 'url' ? 'web_url' : item.type;
+            });
+            bot.setPersistentMenu(items, reportError);
             break;
 
           default:
@@ -409,7 +419,7 @@ module.exports = function(RED) {
         var type = msg.payload.type;
         var bot = node.bot;
         var credentials = node.config.credentials;
-
+        var elements = null;
         var reportError = function(err) {
           if (err) {
             reject(err);
@@ -450,52 +460,99 @@ module.exports = function(RED) {
             );
             break;
 
-          case 'account-link':
-            var attachment = {
-              'type': 'template',
-              'payload': {
-                'template_type': 'button',
-                'text': msg.payload.content,
-                'buttons': [
-                  {
-                    'type': 'account_link',
-                    'url': msg.payload.authUrl
-                  }
-                ]
+          case 'list-template':
+            // translate elements into facebook format
+            elements = msg.payload.elements.map(function(item) {
+              var element = {
+                title: item.title,
+                buttons: helpers.parseButtons(item.buttons)
+              };
+              if (!_.isEmpty(item.subtitle)) {
+                element.subtitle = item.subtitle;
               }
-            };
+              if (!_.isEmpty(item.imageUrl)) {
+                element.image_url = item.imageUrl;
+              }
+              return element;
+            });
+            // sends
             bot.sendMessage(
               msg.payload.chatId,
               {
-                attachment: attachment
+                attachment: {
+                  type: 'template',
+                  payload: {
+                    template_type: 'list',
+                    image_aspect_ratio: msg.payload.aspectRatio,
+                    sharable: msg.payload.sharable,
+                    elements: elements
+                  }
+                }
+              },
+              reportError
+            );
+            break;
+
+          case 'generic-template':
+            // translate elements into facebook format
+            elements = msg.payload.elements.map(function(item) {
+              var element = {
+                title: item.title,
+                buttons: helpers.parseButtons(item.buttons)
+              };
+              if (!_.isEmpty(item.subtitle)) {
+                element.subtitle = item.subtitle;
+              }
+              if (!_.isEmpty(item.imageUrl)) {
+                element.image_url = item.imageUrl;
+              }
+              return element;
+            });
+            // sends
+            bot.sendMessage(
+              msg.payload.chatId,
+              {
+                attachment: {
+                  type: 'template',
+                  payload: {
+                    template_type: 'generic',
+                    image_aspect_ratio: msg.payload.aspectRatio,
+                    sharable: msg.payload.sharable,
+                    elements: elements
+                  }
+                }
+              },
+              reportError
+            );
+            break;
+
+          case 'quick-replies':
+            // send
+            bot.sendMessage(
+              msg.payload.chatId,
+              {
+                text: msg.payload.content,
+                quick_replies: helpers.parseButtons(msg.payload.buttons)
               },
               reportError
             );
             break;
 
           case 'inline-buttons':
-            var quickReplies = _(msg.payload.buttons).map(function(button) {
-              var quickReply = {
-                content_type: 'text',
-                title: button.label,
-                payload: !_.isEmpty(button.value) ? button.value : button.label
-              };
-              if (!_.isEmpty(button.image_url)) {
-                quickReply.image_url = button.image_url;
-              }
-              return quickReply;
-            });
-
-            // send
             bot.sendMessage(
               msg.payload.chatId,
               {
-                text: msg.payload.content,
-                quick_replies: quickReplies
+                attachment: {
+                  type: 'template',
+                  payload: {
+                    template_type: 'button',
+                    text: msg.payload.content,
+                    buttons: helpers.parseButtons(msg.payload.buttons)
+                  }
+                }
               },
               reportError
             );
-
             break;
 
           case 'message':
@@ -601,19 +658,12 @@ module.exports = function(RED) {
     };
     RED.events.on('node:' + config.id, handler);
 
-    // cleanup on close
-    this.on('close',function() {
-      RED.events.removeListener('node:' + config.id, handler);
-    });
-
     this.on('input', function (msg) {
-
       // check if the message is from facebook
       if (msg.originalMessage != null && msg.originalMessage.transport !== 'facebook') {
         // exit, it's not from facebook
         return;
       }
-
       // try to send the meta first (those messages that doesn't require a valid payload)
       sendMeta(msg)
         .then(function() {
@@ -633,7 +683,6 @@ module.exports = function(RED) {
               // payload is valid, go on
               var track = node.track;
               var chatContext = msg.chat();
-
               // check if this node has some wirings in the follow up pin, in that case
               // the next message should be redirected here
               if (chatContext != null && track && !_.isEmpty(node.wires[0])) {
@@ -645,16 +694,25 @@ module.exports = function(RED) {
 
               chatLog.log(msg, node.config.log)
                 .then(function () {
-                  sendMessage(msg);
+                  return sendMessage(msg);
+                })
+                .then(function() {
+                  // we're done
+                }, function(err) {
+                  node.error(err);
                 });
-
             } // end valid payload
           } // end no error
         }); // end then
+    });
 
-
+    // cleanup on close
+    this.on('close',function() {
+      RED.events.removeListener('node:' + config.id, handler);
     });
   }
+
+
   RED.nodes.registerType('chatbot-facebook-send', FacebookOutNode);
 
 };

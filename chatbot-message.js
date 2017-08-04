@@ -25,6 +25,7 @@ module.exports = function(RED) {
     };
 
     this.on('input', function(msg) {
+
       var message = node.message;
       var answer = node.answer;
       var parse_mode = node.parse_mode;

@@ -1,12 +1,17 @@
 {
   "name": "node-red-contrib-chatbot",
-  "version": "0.7.4",
+  "version": "0.8.0-beta-4",
   "description": "REDBot a Chat bot for a full featured chat bot for Telegram**, Facebook Messenger and Slack. Almost no coding skills required",
   "scripts": {
     "test": "mocha",
     "ngrok": "ngrok http 127.0.0.1:1880",
     "localtunnel": "lt --port 1880",
-    "lint": "eslint *.js ./lib/**.js"
+    "lint": "eslint *.js ./lib/**.js",
+    "pull-wiki": "(cd ./wiki && git pull)",
+    "commit-wiki": "git add . && git commit -m \"docs\"",
+    "build-docs": "git clone https://github.com/guidone/node-red-contrib-chatbot.wiki.git ./wiki && node ./bin/generate-docs && rm -rf ./wiki",
+    "clean": "rm -rf ./wiki",
+    "version": "git clone https://github.com/guidone/node-red-contrib-chatbot.wiki.git ./wiki && node ./bin/generate-docs && rm -rf ./wiki && git add *.html"
   },
   "repository": {
     "type": "git",
@@ -31,10 +36,12 @@
       "chatbot-location": "chatbot-location.js",
       "chatbot-ask": "chatbot-ask.js",
       "chatbot-inline-buttons": "chatbot-inline-buttons.js",
-      "chatbot-account-link": "chatbot-account-link.js",
+      "chatbot-quick-replies": "chatbot-quick-replies.js",
+      "chatbot-generic-template": "chatbot-generic-template.js",
+      "chatbot-list-template": "chatbot-list-template.js",
       "chatbot-request": "chatbot-request.js",
       "chatbot-log": "chatbot-log.js",
-      "chatbot-qrcode": "chatbot-qr-code.js",
+      "chatbot-qrcode": "chatbot-qrcode.js",
       "chatbot-conversation": "chatbot-conversation.js",
       "chatbot-debug": "chatbot-debug.js",
       "chatbot-waiting": "chatbot-waiting.js",
@@ -69,6 +76,7 @@
     "fast-levenshtein": "^1.1.3",
     "jszip": "^3.1.3",
     "languagedetect": "^1.1.1",
+    "marked": "^0.3.6",
     "mime": "^1.3.4",
     "moment": "^2.13.0",
     "nlp_compromise": "^6.5.3",

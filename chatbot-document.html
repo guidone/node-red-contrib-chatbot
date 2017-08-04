@@ -46,30 +46,17 @@
 </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-document">
-<p>
-Send a document, automatically zip it if the used platform doesn't support the file format <em>[Telegram, Facebook]</em>.
-</p>
-<p>
-The <code>Document node</code> can send a file from the local filesystem or from a Buffer payload from the upstream node or
-from a <code>File node</code>.
-</p>
-<p>
-Some file types are not supported by a specific platform, for example <em>Telegram</em> only supports <em>.zip</em>, <em>.pdf</em>, <em>.gif</em>. A file not supported is automatically zipped.<br>
-</p>
-<p>
-To programmatically send a document, in the upstream <code>Function node</code>
-<pre>
-msg.payload.file = new Buffer(<my-buffer>);
-msg.payload.filename = 'my-file-name.pdf';
+<script type="text/x-red" data-help-name="chatbot-document"><p>Send a document, automatically zip it if the used platform doesn&#39;t support the file format [Telegram, Facebook].</p>
+<p>The <code>Document node</code> can send a file from the local filesystem or from a Buffer payload from the upstream node or
+from a <code>File node</code>.</p>
+<p>Some file types are not supported by a specific platform, for example <em>Telegram</em> only supports <em>.zip</em>, <em>.pdf</em>, <em>.gif</em>. A file not supported is automatically zipped.</p>
+<p>To programmatically send a document, in the upstream <code>Function node</code></p>
+<pre><code>msg.payload.file = new Buffer(&lt;my-buffer&gt;);
+msg.payload.filename = &#39;my-file-name.pdf&#39;;
 return msg;
-</pre>
-<code>.file</code> is a <code>Buffer</code> type. To pass the path of a local file from the upstream node
-<pre>
-msg.filename = '/my/local/file.pdf';
+</code></pre><p><code>.file</code> is a <code>Buffer</code> type. To pass the path of a local file from the upstream node</p>
+<pre><code>msg.filename = &#39;/my/local/file.pdf&#39;;
 return msg;
-</pre>
-</p>
-</script>
+</code></pre></script>
 
 

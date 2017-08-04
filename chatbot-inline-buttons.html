@@ -1,4 +1,358 @@
 <script type="text/javascript">
+
+  $.RedBot = {};
+  $.RedBot.buttonTypes = [
+    {
+      type: 'url',
+      label: 'URL',
+      className: 'platform-combo-telegram-facebook',
+      platforms: ['facebook', 'telegram']
+    },
+    {
+      type: 'postback',
+      label: 'Postback',
+      className: 'platform-combo-telegram-facebook',
+      platforms: ['facebook', 'telegram']
+    },
+    {
+      type: 'quick-reply',
+      label: 'Postback',
+      className: 'platform-combo-facebook',
+      platforms: ['facebook']
+    },
+    {
+      type: 'location',
+      label: 'Location',
+      className: 'platform-combo-facebook',
+      platforms: ['facebook']
+    },
+    {
+      type: 'call',
+      label: 'Phone Call',
+      className: 'platform-combo-facebook',
+      platforms: ['facebook']
+    },
+    {
+      type: 'share',
+      label: 'Share',
+      className: 'platform-combo-facebook',
+      platforms: ['facebook']
+    },
+    {
+      type: 'login',
+      label: 'Log In',
+      className: 'platform-combo-facebook',
+      platforms: ['facebook']
+    },
+    {
+      type: 'logout',
+      label: 'Log Out',
+      className: 'platform-combo-facebook',
+      platforms: ['facebook']
+    },
+    {
+      type: 'newline',
+      label: 'New row of buttons',
+      className: 'platform-combo-telegram',
+      platforms: ['telegram']
+    }
+  ];
+  $.RedBot.validate = {};
+  $.RedBot.validate.notEmpty = function(str) {
+    return str != null && str != '';
+  };
+  $.RedBot.validate.url = function(url) {
+    return url != null && url.match(/[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi);
+  };
+  $.RedBot.validate.button = function(button) {
+    if (button == null) {
+      return false;
+    }
+    switch(button.type) {
+      case 'url':
+        return $.RedBot.validate.notEmpty(button.label) && $.RedBot.validate.url(button.url);
+      case 'postback':
+        return $.RedBot.validate.notEmpty(button.label) && $.RedBot.validate.notEmpty(button.value);
+      case 'quick-reply':
+        return $.RedBot.validate.notEmpty(button.label) && $.RedBot.validate.notEmpty(button.value);
+      case 'call':
+        return $.RedBot.validate.notEmpty(button.label) && $.RedBot.validate.notEmpty(button.number);
+      case 'newline':
+      case 'share':
+      case 'logout':
+      case 'location':
+        return true;
+      case 'login':
+        return $.RedBot.validate.url(button.url);
+      default:
+        return false;
+    }
+  };
+  $.RedBot.buttonTypes.findButton = function(type) {
+    var button = null;
+    this.forEach(function(current) {
+      if (current.type === type) {
+        button = current;
+      }
+    });
+    return button;
+  };
+  $.RedBot.platforms = function(platforms, availablePlatforms) {
+    var match = false;
+    platforms.forEach(function(platform) {
+      if (availablePlatforms.indexOf(platform) !== -1) {
+        match = true;
+      }
+    });
+    return match;
+  };
+  $.RedBot.platformClass = function(control, platforms) {
+
+    var base = null;
+    switch(control) {
+      case 'select': base = 'platform-combo'; break;
+      case 'icon': base = 'icon-platform'; break;
+      case 'text': base = 'platform'; break;
+      default:
+        console.error('Unrecognized platform icon for type "' + control + '"');
+        return '';
+    }
+
+    var platformClasses = [];
+    if (platforms.indexOf('telegram') !== -1) {
+      platformClasses.push('telegram');
+    }
+    if (platforms.indexOf('facebook') !== -1) {
+      platformClasses.push('facebook');
+    }
+    if (platforms.indexOf('smooch') !== -1) {
+      platformClasses.push('smooch');
+    }
+
+    return platformClasses.length !== 0 ? base + '-' + platformClasses.join('-') : '';
+  };
+  $.fn.RB_setButtonData = function(obj, options) {
+
+    options = options || {};
+    options.badges = options.badges !== false;
+
+    var container = $(this);
+    var select = $('select[name=type]', container).val(obj.type);
+    var panel = $('.panel-' + obj.type, container).show();
+    var button = $.RedBot.buttonTypes.findButton(obj.type);
+    if (button != null && options.badges) {
+      select.attr('class', button.className);
+    }
+
+    $('input[name=label]', panel).val(obj.label);
+    $('input[name=url]', panel).val(obj.url);
+    $('input[name=value]', panel).val(obj.value);
+    $('input[name=number]', panel).val(obj.number);
+    $('input[name=answer]', panel).val(obj.answer);
+    $('input[name=alert]', panel).attr('checked', obj.alert === true);
+    $('select[name=webview_height_ratio]', panel).val(obj.webViewHeightRatio);
+    $('input[name=messenger_extensions]').attr('checked', obj.extensions === true);
+
+    return container;
+  };
+
+  $.fn.RB_getButtonData = function() {
+
+    var container = $(this);
+
+    var type = $('select[name="type"]', container);
+    var panel = $('.panel-' + type.val(), container);
+    var label = $('input[name="label"]', panel);
+    var url = $('input[name="url"]', panel);
+    var value = $('input[name="value"]', panel);
+    var number = $('input[name="number"]', panel);
+    var answer = $('input[name="answer"]', panel);
+    var alert = $('input[name="alert"]', panel);
+    var messengerExtensions = $('input[name="messenger_extensions"]', panel);
+    var webViewHeight = $('select[name="webview_height_ratio"]', panel);
+    var result = null;
+
+    switch(type.val()) {
+      case 'url':
+        result = {
+          type: 'url',
+          label: label.val(),
+          url: url.val(),
+          webViewHeightRatio: webViewHeight.val(),
+          extensions: messengerExtensions.is(':checked'),
+          answer: answer.val(),
+          alert: alert.is(':checked')
+        };
+        break;
+      case 'call':
+        result = {
+          type: 'call',
+          label: label.val(),
+          number: number.val()
+        };
+        break;
+      case 'postback':
+        result = {
+          type: 'postback',
+          label: label.val(),
+          value: value.val(),
+          answer: answer.val(),
+          alert: alert.is(':checked')
+        };
+        break;
+      case 'quick-reply':
+        result = {
+          type: 'quick-reply',
+          label: label.val(),
+          value: value.val(),
+          url: url.val()
+        };
+        break;
+      case 'newline':
+        result = {
+          type: 'newline'
+        };
+        break;
+      case 'location':
+        result = {
+          type: 'location'
+        };
+        break;
+      case 'share':
+        result = {
+          type: 'share'
+        };
+        break;
+      case 'logout':
+        result = {
+          type: 'logout'
+        };
+        break;
+      case 'login':
+        result = {
+          type: 'login',
+          url: url.val()
+        };
+        break;
+    }
+
+    return result;
+  };
+  $.fn.RB_hasPlatform = function(platform, platforms) {
+    return platforms.indexOf(platform) !== -1 ? $(this) : $();
+  };
+  $.fn.RB_mountButtonDialog = function(options) {
+
+    options = options || {};
+    options.types = options.types != null ?
+      options.types : ['url', 'postback', 'call', 'share', 'login', 'newline', 'logout', 'location', 'quick-reply'];
+    options.platforms = options.platforms != null ? options.platforms : ['facebook', 'telegram'];
+    options.badges = options.badges !== false;
+
+    var container = $(this);
+    var main = $('<div/>').appendTo(container);
+    var cx = options.badges ? $.RedBot.platformClass : function() { return ''; };
+
+    var selectButtonType = $('<select name="type"/>', {style:"width:200px; margin-left: 5px; text-align: center;"})
+      .attr('placeholder', 'Select button type')
+      .change(function() {
+        var type = $(this).val();
+        $('.panel', container).hide();
+        $('.panel-' + type, container).show();
+        // find the right button
+        var button = $.RedBot.buttonTypes.findButton(type);
+        // store class only if badges should be shown
+        if (button != null && options.badges) {
+          $(this).attr('class', button.className);
+        } else {
+          $(this).attr('class', '');
+        }
+      })
+      .appendTo(main);
+
+    selectButtonType.append($('<option value="">Select button type</option>'));
+    $.RedBot.buttonTypes.forEach(function(button) {
+      if (options.types.indexOf(button.type) !== -1 && $.RedBot.platforms(options.platforms, button.platforms)) {
+        selectButtonType.append($('<option value="' + button.type + '">' + button.label + '</option>'));
+      }
+    });
+
+    var panelUrl = $('<div class="panel panel-url" style="display:none;"/>').appendTo(container);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="label" placeholder="Button label"/>'))
+      .appendTo(panelUrl);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="url" placeholder="Button URL"/>'))
+      .appendTo(panelUrl);
+    $('<div/>').css('marginTop','5px')
+      .RB_hasPlatform('telegram', options.platforms)
+      .append('<input class="node-input-rule-type ' + cx('text', ['telegram']) + '" type="text" name="answer" placeholder="Button feedback"/>')
+      .append('<input type="checkbox" name="alert" value="on" style="width: auto;margin:0px 10px 5px 10px;"/>')
+      .append('<span>With popup</span><span class="' + cx('icon', ['telegram']) + '"></span>')
+      .appendTo(panelUrl);
+    $('<div/>').css('marginTop','5px')
+      .RB_hasPlatform('facebook', options.platforms)
+      .append('<select name="webview_height_ratio" class="' + cx('select', ['facebook']) + '" style="width:70%">'
+        + '<option value="tall">Tall</option>'
+        + '<option value="compact">Compact</option>'
+        + '<option value="full">Full</option>'
+        + '</select>')
+      .append('<input type="checkbox" name="messenger_extensions" value="on" style="width: auto;margin:0px 10px 5px 10px;"/>')
+      .append('<span>Extensions</span><span class="' + cx('icon', ['facebook']) + '"></span>')
+      .appendTo(panelUrl);
+
+    var panelPostback = $('<div class="panel panel-postback" style="display:none;"/>').appendTo(container);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="label" placeholder="Button label"/>'))
+      .appendTo(panelPostback);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="value" placeholder="Postback value">'))
+      .appendTo(panelPostback);
+    $('<div/>').css('marginTop','5px')
+      .RB_hasPlatform('telegram', options.platforms)
+      .append('<input class="node-input-rule-type ' + cx('text', ['telegram']) + '" type="text" name="answer" placeholder="Button feedback (optional)"/>')
+      .append('<input type="checkbox" name="alert" value="on" style="width: auto;margin:0px 10px 5px 10px;"/>')
+      .append('<span>With popup</span><span class="' + cx('icon', ['telegram']) + '"></span>')
+      .appendTo(panelPostback);
+
+    var panelQuickReply = $('<div class="panel panel-quick-reply" style="display:none;"/>').appendTo(container);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="label" placeholder="Button label"/>'))
+      .appendTo(panelQuickReply);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="value" placeholder="Postback value">'))
+      .appendTo(panelQuickReply);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="url" placeholder="Image URL"/>'))
+      .appendTo(panelQuickReply);
+
+    var panelCall = $('<div class="panel panel-call" style="display:none;"/>').appendTo(container);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="label" placeholder="Button label"/>'))
+      .appendTo(panelCall);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="number" placeholder="Phone number"/>'))
+      .appendTo(panelCall);
+
+    var panelNewline = $('<div class="panel panel-newline" style="display:none;"/>').appendTo(container);
+    $('<div/>').css('marginTop','5px')
+      .html('This creates a new row of buttons')
+      .appendTo(panelNewline);
+
+    $('<div class="panel panel-share" style="display:none;"/>').appendTo(container);
+
+    $('<div class="panel panel-logout" style="display:none;"/>').appendTo(container);
+
+    $('<div class="panel panel-location" style="display:none;"/>').appendTo(container);
+
+    var panelLogin = $('<div class="panel panel-login" style="display:none;"/>').appendTo(container);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="url" placeholder="Authentication URL callback"/>'))
+      .appendTo(panelLogin);
+
+    return container;
+  };
+
   RED.nodes.registerType('chatbot-inline-buttons', {
     category: 'RedBot',
     color: '#FFCC66',
@@ -6,18 +360,13 @@
       name: {
         value: ''
       },
-      answers: {
+      buttons: {
         value: [],
-        validate: function(answers) {
+        validate: function(buttons) {
           var valid = true;
           var idx;
-          for(idx = 0; idx < answers.length; idx++) {
-            // label button must be always present
-            if ($.trim(answers[idx].label) === '') {
-              valid = false;
-            }
-            // check url
-            if ($.trim(answers[idx].url) != '' && !answers[idx].url.match(/[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi)) {
+          for(idx = 0; idx < buttons.length; idx++) {
+            if (!$.RedBot.validate.button(buttons[idx])) {
               valid = false;
             }
           }
@@ -36,144 +385,66 @@
       return this.name || 'Buttons';
     },
     oneditsave: function() {
-      var answers = $("#node-input-answers-container").editableList('items');
+      var buttons = $("#node-input-buttons-container").editableList('items');
       var node = this;
-      node.answers = [];
-
+      node.buttons = [];
       var idx;
-      for(idx = 0; idx < answers.length; idx++) {
-        var answer = {
-          value: answers[idx].find('input[name=button-value]').val(),
-          label: answers[idx].find('input[name=button-label]').val(),
-          answer: answers[idx].find('input[name=button-answer]').val(),
-          url: answers[idx].find('input[name=button-url]').val(),
-          image_url: answers[idx].find('input[name=button-image-url]').val(),
-          alert: answers[idx].find('input[name=button-alert]').is(':checked'),
-          newLine: answers[idx].find('input[name=new-line]').is(':checked')
-        };
-        if ($.trim(answer.answer) == '') {
-          answer.answer = null;
-        }
-        node.answers.push(answer);
+      for(idx = 0; idx < buttons.length; idx++) {
+        node.buttons.push($(buttons[idx]).RB_getButtonData());
       }
     },
-
     oneditprepare: function() {
+      $('#node-input-buttons-container')
+        .css('min-height','300px')
+        .css('min-width','450px')
+        .editableList({
+          addItem: function(container, i, item) {
+            $(container).RB_mountButtonDialog({
+              types: ['url', 'postback', 'call', 'login', 'newline', 'logout']
+            });
+            $(container).RB_setButtonData(item);
+          },
+          removable: true,
+          sortable: true
+        });
 
-      function resizeRule(rule) {}
-      $('#node-input-answers-container').css('min-height','300px').css('min-width','450px').editableList({
-        addItem: function(container, i, item) {
-
-          var label = item.label != null ? item.label : '';
-          var value = item.value != null ? item.value : '';
-          var answer = item.answer != null ? item.answer : '';
-          var url = item.url != null ? item.url : '';
-          var image_url = item.image_url != null ? item.image_url : '';
-
-          var row1 = $('<div/>').appendTo(container);
-          var row2 = $('<div/>').css('marginTop','5px').appendTo(container);
-          var row3 = $('<div/>').css('marginTop','5px').appendTo(container);
-          var row4 = $('<div/>').css('marginTop','5px').appendTo(container);
-          var row5 = $('<div/>').css('marginTop','5px').appendTo(container);
-          var inputLabel = $('<input class="node-input-rule-type" type="text" name="button-label" value="' + label + '" placeholder="Button label"/>')
-            .css({
-              width: '45%'
-            })
-            .appendTo(row1);
-          var inputValue = $('<input class="node-input-rule-type" type="text" name="button-value" value="' + value + '" placeholder="Button value (optional)"/>')
-            .css({
-              width: '45%',
-              marginLeft: '2%'
-            })
-            .attr('disabled', $.trim(url) !== '')
-            .on('keyup', function() {
-              var current = $(this).val();
-              inputUrl.attr('disabled', $.trim(current) !== '');
-            })
-            .appendTo(row1);
-          var inputUrl = $('<input class="node-input-rule-type platform-smooch-telegram" type="text" name="button-url" value="' + url + '" placeholder="Redirect URL (optional)"/>')
-            .css({
-              width: '92%'
-            })
-            .attr('disabled', $.trim(answer) !== '' || $.trim(value) !== '')
-            .on('keyup', function() {
-              var current = $(this).val();
-              inputValue.attr('disabled', $.trim(current) !== '');
-              inputAnswer.attr('disabled', $.trim(current) !== '');
-            })
-            .appendTo(row2);
-          var inputImageUrl = $('<input class="node-input-rule-type platform-smooch-facebook" type="text" name="button-image-url" value="' + image_url + '" placeholder="Image URL (optional)"/>')
-            .css({
-              width: '92%'
-            })
-            .appendTo(row3);
-          var inputAnswer = $('<input class="node-input-rule-type platform-telegram" type="text" name="button-answer" value="' + answer + '" placeholder="Button feedback (optional)"/>')
-            .css({
-              width: '92%'
-            })
-            .attr('disabled', $.trim(url) !== '')
-            .on('keyup', function() {
-              var current = $(this).val();
-              inputAlert.attr('disabled', $.trim(current) === '');
-              inputUrl.attr('disabled', $.trim(current) !== '');
-            })
-            .appendTo(row4);
-          var inputAlert = $('<input type="checkbox" name="button-alert" value="on"/>')
-            .css({
-              width: 'auto',
-              marginRight: '10px',
-              marginBottom: '5px'
-            })
-            .prop('checked', item.alert)
-            .attr('disabled', $.trim(answer) === '')
-            .appendTo(row5);
-          $('<span>Alert</span><span class="icon-platform-telegram"></span>').appendTo(row5);
-          var inputNewLine = $('<input type="checkbox" name="new-line" value="on"/>')
-            .css({
-              width: 'auto',
-              marginRight: '10px',
-              marginLeft: '10px',
-              marginBottom: '5px'
-            })
-            .prop('checked', item.newLine)
-            .appendTo(row5);
-          $('<span>New line</span><span class="icon-platform-telegram"></span>').appendTo(row5);
-          resizeRule(container);
-        },
-        resizeItem: resizeRule,
-        removable: true,
-        sortable: true
-      });
-
-      var answers = this.answers;
+      var buttons = this.buttons;
       var idx;
-      for (idx = 0; idx < answers.length; idx++) {
-        var answer = answers[idx];
-        $("#node-input-answers-container").editableList('addItem', answer);
+      for (idx = 0; idx < buttons.length; idx++) {
+        $('#node-input-buttons-container').editableList('addItem', buttons[idx]);
       }
+    },
+    oneditresize: function() {
+      var dialogForm = $('#dialog-form');
+      var rowName = $('.form-row-name', dialogForm);
+      var rowMessage = $('.form-row-message', dialogForm);
+      var rowLabel = $('.form-row-label', dialogForm);
+      var rowHint = $('.form-row-hint', dialogForm);
+      var height = dialogForm.height() - rowName.height() - rowMessage.height() - rowLabel.height() - rowHint.height() - 30;
+      $('#node-input-buttons-container').editableList('height', height);
     }
   });
 </script>
 
 <script type="text/x-red" data-template-name="chatbot-inline-buttons">
-<div class="form-row">
+<div class="form-row form-row-name">
   <label for="node-input-name"><i class="icon-tag"></i> Name</label>
   <input type="text" id="node-input-name" placeholder="Name">
 </div>
-<div class="form-row">
+<div class="form-row form-row-message">
   <label for="node-input-message"><i class="icon-envelope"></i> Message</label>
-  <textarea id="node-input-message" placeholder="Message" style="width:93%;height:100px;"></textarea>
+  <textarea id="node-input-message" placeholder="Message" style="width:93%;height:50px;"></textarea>
   <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;">
     Supports handlebars-like variables for chat context like {{firstName}}, {{lastName}}, etc. and emoticons (:smile:, etc.)
   </div>
 </div>
-<div class="form-row" style="margin-bottom:0;">
+<div class="form-row form-row-label" style="margin-bottom:0;">
   <label><i class="fa fa-list"></i> <span>Buttons</span></label>
 </div>
 <div class="form-row node-input-rule-container-row">
-  <ol id="node-input-answers-container"></ol>
+  <ol id="node-input-buttons-container"></ol>
 </div>
-<div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;margin-bottom:10px;">
+<div class="form-row-hint" style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;margin-bottom:10px;">
   Some attributes apply for specific platform:<br>
   <span class="icon-platform-facebook"></span> = <span style="font-size:10px">Facebook</span>
   <span class="icon-platform-telegram"></span> = <span style="font-size:10px">Telegram</span>
@@ -182,51 +453,75 @@
 </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-inline-buttons">
-<p>Present quick alternatives to the users through inline buttons (and optionally show feedback for Telegram)<em>[Telegram, Facebook, Smooch]</em>.</p>
-<p>For each button:
+<script type="text/x-red" data-help-name="chatbot-inline-buttons"><p>Available buttons:</p>
 <ul>
-  <li><em>label</em>: The label of the button</li>
-  <li><em>value (optional)</em>: The value of the button, max 64 bytes, this is the response that will re-routed the the flow
-  like a normal message (will not be shown in the chat history of the client)</li>
-  <li><em>Button feedback (optional)</em>: Show a button feedback when the user clicks the button</li>
-  <li><em>Button URL (optional)</em>: Open the browser to the specified URL (url and value cannot be used with the same button).
-  Only for Telegram.
-  </li>
-  <li><em>Image URL (optional)</em>: Show image inside the button. Only for Facebook.
-  </li>
-  <li><em>Alert (optional)</em>: Show the feedback with a modal alert in the client. Only for Telegram.</li>
-  <li><em>New Line (optional)</em>: Starts a new row of buttons after this. Only for Telegram.</li>
+<li><strong>URL</strong>: Open a URL inside the client. Button feedbacks are available for Telegram and Messenger extensions in Facebook <em>[Telegram, Facebook]</em></li>
+<li><strong>Postback</strong>: Allow the user to send a predefined message, the message will no be shown in the chat history. Button feedbacks are available for Telegram and Messenger extensions in Facebook <em>[Telegram, Facebook, Smooch]</em></li>
+<li><strong>Phone call</strong>: Starts a phone call on mobile. <em>[Facebook]</em></li>
+<li><strong>Log In</strong>: Starts the account linking flow. <em>[Facebook]</em></li>
+<li><strong>Log Out</strong>: Starts the account unlinking flow. <em>[Facebook]</em></li>
+<li><strong>New row</strong>: Telegram supports buttons layout with multiple row, this element just starts a new one. <em>[Telegram]</em></li>
 </ul>
-</p>
-<p>The button can be passed through the payload by the upstream node:</p>
-<br/>
-<pre>
-// todo add here image_url and newLine
-msg.payload = {
-  message: 'The message with the buttons',
+<p><strong>Telegram</strong> supports a visual feedback, visible in the client, when a <code>Postback</code> or <code>URL</code> buttons is pressed.
+<strong>Facebook</strong> supports some extra parameters in the <code>URL</code> button, like the size of the web view and  <a href="https://developers.facebook.com/docs/messenger-platform/webview">messenger extensions</a>.</p>
+<p>Buttons can be created programmatically by an upstream <code>Function node</code> passing array of buttons in the message payload:</p>
+<pre><code>msg.payload = [
+  {
+    type: &#39;url&#39;,
+    url: &#39;http://javascript-jedi.com&#39;,
+    label: &#39;Javascript Jedi&#39;
+  },
+  {
+    type: &#39;postback&#39;,
+    value: &#39;MY_POSTBACK_MESSAGE&#39;,
+    label: &#39;Click me!&#39;
+  },
+  {
+    type: &#39;share&#39;
+  }
+];
+return msg;
+</code></pre><p>Another way is to specify each config option as keys of an object in the message payload:</p>
+<pre><code>msg.payload = {
+  message: &#39;This is a message above the buttons&#39;,
   buttons: [
     {
-      value: 'text 1',
-      label: 'label of the button 1',
-      answer: 'this is the answer',
-      alert: true,
-      newLine: true
+      type: &#39;url&#39;,
+      url: &#39;http://javascript-jedi.com&#39;,
+      label: &#39;Javascript Jedi&#39;
     },
     {
-      value: 'text 2',
-      label: 'another label',
-      answer: 'this is the answer 2',
-      alert: false
+      type: &#39;postback&#39;,
+      value: &#39;MY_POSTBACK_MESSAGE&#39;,
+      label: &#39;Click me!&#39;
+    },
+    {
+      type: &#39;share&#39;
     }
   ]
-}
+};
 return msg;
-</pre>
+</code></pre><p>Available fields</p>
+<dl class="message-properties">
+
+
+<dt>type<span class="property-type">string</span><dd>Type of button: url, postback, quick-reply, location, call, share, login, logout, newline</dd>
+<dt>label<span class="property-type">string</span><dd>Label of the button</dd>
+<dt>value<span class="property-type">string</span><dd>Value returned as payload in <code>postback</code> buttons</dd>
+<dt>url<span class="property-type">string</span><dd>Url to redirect to for <code>url</code> buttons or authentication URL for <code>login</code> buttons</dd>
+<dt>number<span class="property-type">string</span><dd>Phone number to call for <code>call</code> buttons</dd>
+<dt>messengerExtensions<span class="property-type">boolean</span><dd>Include Messenger Extensions for <code>url</code> buttons</dd>
+<dt>answer<span class="property-type">string</span><dd>The feedback shown on Telegram client for <code>url</code> and <code>postback</code> buttons</dd>
+<dt>alert<span class="property-type">boolean</span><dd>Show the feedback as alert on Telegram client for <code>url</code> and <code>postback</code> buttons</dd>
+<dt>webViewHeightRatio<span class="property-type">string</span><dd>Aspect ratio of the webview in Facebook Messenger for <code>url buttons</code>. Valid values: <em>tall</em>, <em>compact</em>, <em>full</em></dd>
+
+</dl>
+<p><img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram">
+<img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook">
+<img src="https://img.shields.io/badge/platform-Smooch-orange.svg" alt="Smooch"></p>
 </script>
 
 <style>
-
 .icon-platform-telegram {
   display: inline-block;
   width: 9px;
@@ -273,15 +568,33 @@ return msg;
   background-repeat: no-repeat;
 }
 
+.platform-combo-facebook {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEJJREFUGBljtIqc8Z+BAGCByR9dlg5jwmnrqJlgNlwRiAcThKuCMpjQBbDxUUxCthLZVBRFyBLIJhJlHVGKGIkJJwAbVQzJXzC/gwAAAABJRU5ErkJggg==);
+  background-position: right 12px top 2px;
+  background-repeat: no-repeat;
+}
+
 .platform-telegram {
   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADRJREFUGBlj1F764D8DAcACk78SJQ9jwmmdZQ/BbLgimABIMYwNU80EY+Cjh4QidJ+BPAQAUcEMK/ZfXe8AAAAASUVORK5CYII=);
   background-position: right 2px top 2px;
   background-repeat: no-repeat;
 }
 
+.platform-combo-telegram {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADRJREFUGBlj1F764D8DAcACk78SJQ9jwmmdZQ/BbLgimABIMYwNU80EY+Cjh4QidJ+BPAQAUcEMK/ZfXe8AAAAASUVORK5CYII=);
+  background-position: right 12px top 2px;
+  background-repeat: no-repeat;
+}
+
 .platform-smooch {
   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAENJREFUGBljXOyx/T8DAcAEk4/Z7gFjgmlkPlwRSAYmAaNhulAULfHcAVYIopEBiiKQBLoCkBiGIpAgOqCeIkZiwgkAEPoRCUXTyWoAAAAASUVORK5CYII=);
   background-position: right 2px top 2px;
+  background-repeat: no-repeat;
+}
+
+.platform-combo-smooch {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAENJREFUGBljXOyx/T8DAcAEk4/Z7gFjgmlkPlwRSAYmAaNhulAULfHcAVYIopEBiiKQBLoCkBiGIpAgOqCeIkZiwgkAEPoRCUXTyWoAAAAASUVORK5CYII=);
+  background-position: right 12px top 2px;
   background-repeat: no-repeat;
 }
 
@@ -292,6 +605,13 @@ return msg;
   background-repeat: no-repeat, no-repeat;
 }
 
+.platform-combo-telegram-facebook {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADRJREFUGBlj1F764D8DAcACk78SJQ9jwmmdZQ/BbLgimABIMYwNU80EY+Cjh4QidJ+BPAQAUcEMK/ZfXe8AAAAASUVORK5CYII=),
+  url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEJJREFUGBljtIqc8Z+BAGCByR9dlg5jwmnrqJlgNlwRiAcThKuCMpjQBbDxUUxCthLZVBRFyBLIJhJlHVGKGIkJJwAbVQzJXzC/gwAAAABJRU5ErkJggg==);
+  background-position: right 12px top 2px, right 22px top 2px;
+  background-repeat: no-repeat, no-repeat;
+}
+
 .platform-smooch-facebook {
   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAENJREFUGBljXOyx/T8DAcAEk4/Z7gFjgmlkPlwRSAYmAaNhulAULfHcAVYIopEBiiKQBLoCkBiGIpAgOqCeIkZiwgkAEPoRCUXTyWoAAAAASUVORK5CYII=),
     url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEJJREFUGBljtIqc8Z+BAGCByR9dlg5jwmnrqJlgNlwRiAcThKuCMpjQBbDxUUxCthLZVBRFyBLIJhJlHVGKGIkJJwAbVQzJXzC/gwAAAABJRU5ErkJggg==);
@@ -299,10 +619,24 @@ return msg;
   background-repeat: no-repeat, no-repeat;
 }
 
+.platform-combo-smooch-facebook {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAENJREFUGBljXOyx/T8DAcAEk4/Z7gFjgmlkPlwRSAYmAaNhulAULfHcAVYIopEBiiKQBLoCkBiGIpAgOqCeIkZiwgkAEPoRCUXTyWoAAAAASUVORK5CYII=),
+  url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEJJREFUGBljtIqc8Z+BAGCByR9dlg5jwmnrqJlgNlwRiAcThKuCMpjQBbDxUUxCthLZVBRFyBLIJhJlHVGKGIkJJwAbVQzJXzC/gwAAAABJRU5ErkJggg==);
+  background-position: right 12px top 2px, right 22px top 2px;
+  background-repeat: no-repeat, no-repeat;
+}
+
 .platform-smooch-telegram {
   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAENJREFUGBljXOyx/T8DAcAEk4/Z7gFjgmlkPlwRSAYmAaNhulAULfHcAVYIopEBiiKQBLoCkBiGIpAgOqCeIkZiwgkAEPoRCUXTyWoAAAAASUVORK5CYII=),
     url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADRJREFUGBlj1F764D8DAcACk78SJQ9jwmmdZQ/BbLgimABIMYwNU80EY+Cjh4QidJ+BPAQAUcEMK/ZfXe8AAAAASUVORK5CYII=);
   background-position: right 2px top 2px, right 12px top 2px;
+  background-repeat: no-repeat, no-repeat;
+}
+
+.platform-combo-smooch-telegram {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAENJREFUGBljXOyx/T8DAcAEk4/Z7gFjgmlkPlwRSAYmAaNhulAULfHcAVYIopEBiiKQBLoCkBiGIpAgOqCeIkZiwgkAEPoRCUXTyWoAAAAASUVORK5CYII=),
+  url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADRJREFUGBlj1F764D8DAcACk78SJQ9jwmmdZQ/BbLgimABIMYwNU80EY+Cjh4QidJ+BPAQAUcEMK/ZfXe8AAAAASUVORK5CYII=);
+  background-position: right 12px top 2px, right 22px top 2px;
   background-repeat: no-repeat, no-repeat;
 }
 
@@ -314,7 +648,13 @@ return msg;
   background-repeat: no-repeat, no-repeat, no-repeat;
 }
 
-
+.platform-combo-telegram-facebook-smooch {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADRJREFUGBlj1F764D8DAcACk78SJQ9jwmmdZQ/BbLgimABIMYwNU80EY+Cjh4QidJ+BPAQAUcEMK/ZfXe8AAAAASUVORK5CYII=),
+  url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEJJREFUGBljtIqc8Z+BAGCByR9dlg5jwmnrqJlgNlwRiAcThKuCMpjQBbDxUUxCthLZVBRFyBLIJhJlHVGKGIkJJwAbVQzJXzC/gwAAAABJRU5ErkJggg==),
+  url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAENJREFUGBljXOyx/T8DAcAEk4/Z7gFjgmlkPlwRSAYmAaNhulAULfHcAVYIopEBiiKQBLoCkBiGIpAgOqCeIkZiwgkAEPoRCUXTyWoAAAAASUVORK5CYII=);
+  background-position: right 12px top 2px, right 22px top 2px, right 32px top 2px;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+}
 </style>
 
 

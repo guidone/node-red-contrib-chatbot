@@ -71,48 +71,34 @@
 </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-rivescript">
-<p>Reply to an incoming message using <b>RiveScript</b></p>
-<p>
-This node answers with a string to the first output if the script is able to elaborate a reply, otherwise a string error is sent to the second output. This node output is generally connected to a message node. The node will not try to parse command-like sentences (for example <code>/my_command</code>)
-</p>
-<p>
-A <b>RiveScript</b> looks like
-<pre>
-! version = 2.0
+<script type="text/x-red" data-help-name="chatbot-rivescript"><p>Reply to an incoming message using <strong>RiveScript</strong>.</p>
+<p>This node answers with a string to the first output if the script is able to elaborate a reply, otherwise a string error is sent to the second output. This node output is generally connected to a <code>Message Node</code>. The node will not try to parse command-like sentences (for example <code>/my_command</code>).</p>
+<p>A <strong>RiveScript</strong> file looks like</p>
+<pre><code>! version = 2.0
 
 + hello bot
 - Hello, human!
-</pre>
-It's also able to parse the sentence and store data to the chat context
-<pre>
-! version = 2.0
+</code></pre><p>It&#39;s also able to parse the sentence and store data to the chat context</p>
+<pre><code>! version = 2.0
 
 + my name is guido
-- &lt;set name=&lt;star&gt;&gt;ok, I'll remember your name as &lt;get name&gt;
-</pre>
-<b>RiveScript</b> can get/set variables in the chat context.
-</p>
-<p>
-  You can use the chat context variable <em>topic</em> to scope some <b>RiveScript</b> triggers into topics
-<p>
-<pre>
-! version = 2.0
+- &amp;lt;set name=&amp;lt;star&amp;gt;&amp;gt;ok, I&#39;ll remember your name as &amp;lt;get name&amp;gt;
+</code></pre><p><strong>RiveScript</strong> can get/set variables in the chat context.</p>
+<p>You can use the chat context variable <em>topic</em> to scope some <strong>RiveScript</strong> triggers into specific subjects</p>
+<pre><code>! version = 2.0
 
-> topic name_ok
+&gt; topic name_ok
   + *
   + hello!
-< topic
-</pre>
-<p>
-  In this case the trigger <em>"*"</em> will be executed only if the topic is <em>name_ok</em>
-  (it's possible to set the intent using a <code>Context node</code> or in <b>RiveScript</b> with
-  <code>{topic=new_topic}</code>). Note that <b>RiveScript</b>'s
-  <em>topic</em> and <b>RedBot</b>'s <em>intent</em> are the same thing.
-</p>
-<p>
-  Read a <b>RiveScript</b> tutorial <a href="https://www.rivescript.com/docs/tutorial" target="_blank">tutorial here</a>
-</p>
+&lt; topic
+</code></pre><p>In this case the trigger <em>&quot;*&quot;</em> will be executed only if the topic is _name<em>ok</em>
+(it&#39;s possible to set the intent using a <code>Context node</code> or in <strong>RiveScript</strong> with
+<code>{topic=new_topic}</code>). Note that <strong>RiveScript</strong>&#39;s <em>topic</em> and <strong>RedBot</strong>&#39;s <em>intent</em> are the same thing.</p>
+<p>Read a <strong>RiveScript</strong> tutorial <a href="https://www.rivescript.com/docs/tutorial">tutorial here</a></p>
+<p><img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram">
+<img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook">
+<img src="https://img.shields.io/badge/platform-Slack-green.svg" alt="Slack">
+<img src="https://img.shields.io/badge/platform-Smooch-orange.svg" alt="Smooch"></p>
 </script>
 
 

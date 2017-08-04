@@ -4,13 +4,12 @@ var utils = require('./lib/helpers/utils');
 
 module.exports = function(RED) {
 
-  function ChatBotRequest(config) {
+  function ChatBotQuickReplies(config) {
     RED.nodes.createNode(this, config);
     var node = this;
+    this.buttons = config.buttons;
     this.message = config.message;
-    this.buttonLabel = config.buttonLabel;
-    this.requestType = config.requestType;
-    this.transports = ['telegram', 'facebook'];
+    this.transports = ['facebook'];
 
     this.on('input', function(msg) {
 
@@ -21,19 +20,19 @@ module.exports = function(RED) {
 
       var chatId = utils.getChatId(msg);
       var messageId = utils.getMessageId(msg);
-
-      var message = utils.extractValue('string', 'message', node, msg);
-      var requestType = utils.extractValue('string', 'requestType', node, msg);
-      var buttonLabel = utils.extractValue('string', 'buttonLabel', node, msg);
       var template = MessageTemplate(msg, node);
 
+      // get values from config
+      // prepare the message, first the config, then payload
+      var buttons = utils.extractValue('buttons', 'buttons', node, msg);
+      var message = utils.extractValue('string', 'message', node, msg);
+
       msg.payload = {
-        type: 'request',
-        requestType: requestType,
-        label: buttonLabel,
+        type: 'quick-replies',
+        content: message != null ? emoji.emojify(template(message)) : null,
         chatId: chatId,
         messageId: messageId,
-        content: emoji.emojify(template(message))
+        buttons: buttons
       };
 
       node.send(msg);
@@ -41,5 +40,5 @@ module.exports = function(RED) {
 
   }
 
-  RED.nodes.registerType('chatbot-request', ChatBotRequest);
+  RED.nodes.registerType('chatbot-quick-replies', ChatBotQuickReplies);
 };
