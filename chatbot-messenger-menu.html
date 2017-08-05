@@ -111,15 +111,15 @@
 </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-messenger-menu"><p><img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook"></p>
-<p>This node will set the persistent menu next to the editable area in Facebook Messenger, there two kind of options:</p>
+<script type="text/x-red" data-help-name="chatbot-messenger-menu"><p>This node will set the persistent menu next to the editable area in Facebook Messenger, there two kind of options:</p>
 <ul>
 <li><strong>URL</strong>: it opens a specific url. In the mobile version it&#39;s possible to specify the size of the browser window.
 Also supports <a href="https://developers.facebook.com/docs/messenger-platform/webview">Messenger Extensions</a></li>
 <li><strong>Postback</strong>: sends the text defined in &quot;payload&quot; field to the chat</li>
 </ul>
-<p>Maximum 3 menu items.</p>
-<p>The menu can be passed through the payload by the upstream node:</p>
+<p>Maximum 3 menu items. If more items are needed, it&#39;s possible to create nested menus via <code>Function node</code>.</p>
+<p>It also allows the disable the text area (user will interact only with menu with the chatbot) or to delete a previous menu. <strong>On desktop, remember to reload the chat window in order to see the menu changes</strong>. </p>
+<p>The menu items can be passed through the payload by the upstream node:</p>
 <pre><code>msg.payload = [
   {
     type: &#39;url&#39;,
@@ -130,11 +130,45 @@ Also supports <a href="https://developers.facebook.com/docs/messenger-platform/w
   {
     type: &#39;postback&#39;,
     title: &#39;Help&#39;,
-    payload: &#39;/help&#39;
+    value: &#39;/help&#39;
   }
 ];
 return msg;
-</code></pre></script>
+</code></pre><p>otherwise all parameters can be passed by the upstream node</p>
+<pre><code>msg.payload = {
+  composerInputDisabled: true,
+  command: &#39;set&#39;,
+  items: [
+    {
+      type: &#39;url&#39;,
+      title: &#39;JavaScript Jedi&#39;,
+      url: &#39;http://javascript-jedi.com&#39;,
+      webview_height_ratio: &#39;full&#39; // tall|full|compact
+    },
+    {
+      type: &#39;postback&#39;,
+      title: &#39;Help&#39;,
+      value: &#39;/help&#39;
+    }
+  ]
+}
+</code></pre><p>Available parameters for the <code>msg.payload</code></p>
+<dl class="message-properties">
+
+
+<dt>type<span class="property-type">string</span><dd>Type of button: <em>url</em>, <em>postback</em>, <em>nested</em></dd>
+<dt>label<span class="property-type">string</span><dd>Label of the button</dd>
+<dt>value<span class="property-type">string</span><dd>Value returned as payload in <code>postback</code> buttons</dd>
+<dt>url<span class="property-type">string</span><dd>Url to redirect to for <code>url</code> buttons or authentication URL for <code>login</code> buttons</dd>
+<dt>messengerExtensions<span class="property-type">boolean</span><dd>Include Messenger Extensions for <code>url</code> buttons</dd>
+<dt>answer<span class="property-type">string</span><dd>The feedback shown on Telegram client for <code>url</code> and <code>postback</code> buttons</dd>
+<dt>alert<span class="property-type">boolean</span><dd>Show the feedback as alert on Telegram client for <code>url</code> and <code>postback</code> buttons</dd>
+<dt>webViewHeightRatio<span class="property-type">string</span><dd>Aspect ratio of the webview in Facebook Messenger for <code>url buttons</code>. Valid values: <em>tall</em>, <em>compact</em>, <em>full</em></dd>
+<dt>call_to_actions<span class="property-type">array of [item]</span><dd>Nested menu items</dd>
+
+</dl>
+<p><img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook"></p>
+</script>
 
 
 
