@@ -8,7 +8,7 @@ var request = require('request').defaults({ encoding: null });
 var Bot = require('./lib/facebook/messenger-bot');
 var clc = require('cli-color');
 
-var DEBUG = true;
+var DEBUG = false;
 var green = clc.greenBright;
 var white = clc.white;
 var grey = clc.blackBright;
@@ -397,12 +397,16 @@ module.exports = function(RED) {
 
         switch (type) {
           case 'persistent-menu':
-            var items = helpers.parseButtons(msg.payload.items);
-            // for some reason the called the same button as web_url and not url
-            items.forEach(function(item) {
-              item.type = item.type === 'url' ? 'web_url' : item.type;
-            });
-            bot.setPersistentMenu(items, reportError);
+            if (msg.payload.command === 'set') {
+              var items = helpers.parseButtons(msg.payload.items);
+              // for some reason the called the same button as web_url and not url
+              items.forEach(function (item) {
+                item.type = item.type === 'url' ? 'web_url' : item.type;
+              });
+              bot.setPersistentMenu(items, msg.payload.composerInputDisabled, reportError);
+            } else if (msg.payload.command === 'delete') {
+              bot.removePersistentMenu(reportError);
+            }
             break;
 
           default:
