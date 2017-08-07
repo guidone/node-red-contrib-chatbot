@@ -1,0 +1,34 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-sticker', {
+    category: 'RedBot',
+    color: '#FFCC66',
+    defaults: {
+      sticker: {
+        value: ''
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'chatbot-image.png',
+    paletteLabel: 'Sticker',
+    label: function() {
+      return this.name || 'Sticker';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-sticker">
+<div class="form-row">
+  <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+  <input type="text" id="node-input-name" placeholder="Name">
+</div>
+<div class="form-row">
+  <label for="node-input-sticker"><i class="fa fa-file"></i> Sticker</label>
+  <input type="text" id="node-input-sticker" placeholder="Sticker id or URL">
+</div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-sticker">
+</script>
+
+
