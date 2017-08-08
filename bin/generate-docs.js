@@ -63,6 +63,9 @@ _(mappings).map(function(nodeFile, markdownFile) {
     );
   });
 
+  // replace "$" or will messup with the regular expression
+  htmlSource = htmlSource.replace(/\$/g, '&#36;');
+
   // replace inline documentation
   var newDoc = '<script type="text\/x-red" data-help-name="' + nodeName + '">' + htmlSource + '</script>';
   var regexp = new RegExp('<script type=\"text\/x-red\" data-help-name=\"' + nodeName + '\">[\\s\\S]*<\/script>', 'g');
