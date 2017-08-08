@@ -72,7 +72,7 @@ module.exports = function(RED) {
           chatContext.set(result.parameters);
           // prepare output, only if it matches the context
           msg.payload = response.result.fulfillment.speech;
-          output = new Array();
+          output = [];
           output.push(null);
           rules.forEach(function(rule) {
             output.push(utils.matchContext(inboundContexts, rule.topic) ? msg : null);
