@@ -3,6 +3,8 @@ var NplMatcher = require('../lib/npl-matcher');
 var clc = require('cli-color');
 var prettyjson = require('prettyjson');
 var helpers = require('../lib/helpers/regexps');
+var utils = require('../lib/helpers/utils');
+var validators = require('../lib/helpers/validators');
 
 var green = clc.greenBright;
 var white = clc.white;
@@ -30,12 +32,13 @@ module.exports = function(RED) {
         return;
       }
 
+      var lexicon = utils.extractValue('hash', 'lexicon', node, msg);
       var output = [];
       var matched = false;
 
       // parse incoming message
       var message = msg.payload.content;
-      var terms = NplMatcher.parseSentence(message);
+      var terms = NplMatcher.parseSentence(message, lexicon);
 
       // do not try to parse if it's a command like
       if (helpers.isCommand(message)) {

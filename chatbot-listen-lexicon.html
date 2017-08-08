@@ -1,0 +1,141 @@
+<script type="text/javascript">
+
+  RED.nodes.registerType('chatbot-listen-lexicon',{
+    category: 'RedBot Parsers',
+    color: '#FFCC66',
+    defaults: {
+      name: {
+        value: ''
+      },
+      showdebug: {
+        value: false
+      },
+      rules: {
+        value: [],
+        validate: function(sentences) {
+          var valid = true;
+          /*var idx, k;
+          var re = /\{\{([A-Za-z0-9])\}\}/;
+          var allowedTags = ['email', 'number', 'url'];
+          for(idx = 0; idx < sentences.length; idx++) {
+            if (typeof sentences[idx] === 'string') {
+              var tokens = sentences[idx].split(',');
+              for (k = 0; k < tokens.length; k++) {
+                var matched = tokens[k].match(/\{\{([A-Za-z0-9]*?)\}\}/);
+                if (matched != null && allowedTags.indexOf(matched[1]) == -1) {
+                  valid = false;
+                }
+              }
+            }
+          }*/
+          return valid;
+        }
+      },
+      outputs: {
+        value: 1
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'chatbot-listen.png',
+    paletteLabel: 'Listen',
+    label: function() {
+      return this.name || 'Listen Lexicon';
+    },
+    oneditsave: function() {
+      var domRules = $('#node-input-sentences-container').editableList('items');
+      var node = this;
+      var idx;
+      // init
+      node.rules = [];
+      // move rules
+      for(idx = 0; idx < domRules.length; idx++) {
+        var selector = domRules[idx].find('input');
+        node.rules.push(selector.val());
+      }
+      this.outputs = node.rules.length;
+    },
+
+    oneditprepare: function() {
+      function resizeRule(rule) {
+      }
+
+      $('#node-input-sentences-container')
+        .css('min-height','300px').css('min-width', '450px')
+        .editableList({
+          addButton: 'Add rule',
+          addItem: function(container, i, sentence) {
+            var value = typeof sentence == 'object' ? '' : sentence;
+            var row = $('<div/>').appendTo(container);
+            var selector = $('<input/>', {
+                style: 'width:100%',
+                class: 'node-input-rule-property-name',
+                type: 'text',
+                value: value
+              })
+              .appendTo(row);
+
+            row.find('input').tagsInput({
+              defaultText: 'add a token',
+              width: '97%',
+              height: '51px',
+              placeholderColor: '#999999',
+              onChange: function() {
+                // seems ridicolous to me that there isn't a method to get the current value
+                var words = $('.tag', row).map(function() {
+                  return $.trim($('span', this).text());
+                });
+                selector.attr('value', words.get().join(','));
+              }
+            });
+          },
+          resizeItem: resizeRule,
+          removable: true,
+          sortable: true
+        });
+
+
+      var rules = this.rules || [];
+      // populate the control
+      var idx;
+      for (idx = 0; idx < rules.length; idx++) {
+        var rule = rules[idx];
+        $("#node-input-sentences-container").editableList('addItem', rule);
+      }
+
+    }
+  });
+</script>
+
+
+
+
+<script type="text/x-red" data-template-name="chatbot-listen-lexicon">
+  <div class="form-row">
+    <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row" style="margin-bottom:0;">
+    <label style="width:100%;"><i class="fa fa-list"></i> <span>Keyword rules</span></label>
+  </div>
+  <div class="form-row node-input-sentences-container-row">
+    <ol id="node-input-sentences-container"></ol>
+    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;display:block;">
+    Available types are: <em>word (catches everything), noun, verb, adjective, conjunction, adverb, symbol, date, determiner, person,
+  number, email, url, currency</em>.<br>
+    Use square brackets to match a keyword of a particular type, for example: <code>check[verb]</code> only matches the
+    a keyword "check" which is a verb in the sentence.<br>
+    Use types to extract some kind of data from the sentence, for example: <code>[email]->useremail</code> will match a
+    valid email in the sentence and store it in the chat context variable "useremail".
+    </div>
+  </div>
+  <div class="form-row">
+    <label for="node-input-answer"><i class="icon-wrench"></i> Debug</label>
+    <input type="checkbox" value="true" id="node-input-showdebug">
+    <span style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;display:block;">
+    Dump the analysis of the sentences in the console (terms, nouns, verbs, etc).</span>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-listen-lexicon">
+</script>
