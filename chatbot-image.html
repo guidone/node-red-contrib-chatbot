@@ -39,15 +39,21 @@
 </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-image"><p>Send image, prepares the payload to send an image to the chat sender using the <code>Buffer</code> as input or loading the file if specified in the node config.</p>
-<p>The image can be passed through the payload by the upstream node:</p></p>
+<script type="text/x-red" data-help-name="chatbot-image"><p>The <code>Image node</code> sends an image to the chatbot from a local file, URL or Buffer.</p>
+<p>To use this node programmatically, just connect the input to the output of a <code>File node</code> (select <em>binary buffer</em> in the <em>return</em> drop down) or send the file name or URL from a upstream <code>Function node</code></p>
+<pre><code>msg.payload = &#39;/my_dir/my_image.png&#39;
+</code></pre><p>or</p>
 <pre><code>msg.payload = {
   caption: &#39;I am the caption&#39;,
-  image: msg.payload // an instance of Buffer
+  image: &#39;http://www.my_host.com/my_dir/my_image.png&#39;
 }
-return msg;
-</code></pre><p>It&#39;s also possible to wire directly a file or http node (choosing <em>binary buffer</em> in the <em>return</em> drop down)
-to the <code>Image node</code>.</p>
+</code></pre><p>Available parameters for the <code>msg.payload</code></p>
+<dl class="message-properties">
+
+
+<dt>image<span class="property-type">string or buffer</span><dd>The image string could be ae path for a local file or a URL</dd>
+
+</dl>
 <p><img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram">
 <img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook">
 <img src="https://img.shields.io/badge/platform-Slack-green.svg" alt="Slack">
