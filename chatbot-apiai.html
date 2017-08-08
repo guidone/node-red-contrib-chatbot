@@ -1,4 +1,43 @@
 <script type="text/javascript">
+  RED.nodes.registerType('chatbot-apiai-token', {
+    category: 'config',
+    defaults: {
+      name: {
+        value: '',
+        required: true
+      }
+    },
+    oneditprepare: function() {},
+    paletteName: 'API.ai Token',
+    credentials: {
+      token: {
+        type: 'text'
+      }
+    },
+    label: function () {
+      return 'API.ai';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-apiai-token">
+<div class="form-row">
+  <label for="node-config-input-name"><i class="icon-bookmark"></i>Name</label>
+  <input type="text" id="node-config-input-name">
+</div>
+<div class="form-row">
+  <label for="node-config-input-token"><i class="icon-tag"></i> Token</label>
+  <input type="text" id="node-config-input-token">
+</div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-apiai-token">
+<p>
+  Add here personal <em>API.ai</em> access token
+</p>
+</script>
+
+<script type="text/javascript">
   RED.nodes.registerType('chatbot-apiai', {
     category: 'RedBot Flow',
     color: '#FFCC66',
@@ -10,9 +49,6 @@
       },
       rules: {
         value: []
-      },
-      name: {
-        value: ''
       },
       outputs: {
         value: 1
@@ -93,16 +129,12 @@
 
 <script type="text/x-red" data-template-name="chatbot-apiai">
   <div class="form-row">
-    <label for="node-input-bot"><i class="icon-bookmark"></i> Bot</label>
+    <label for="node-input-"><i class="icon-cog"></i> Token</label>
     <input type="text" id="node-input-apiai" placeholder="Api.ai access token">
   </div>
   <div class="form-row">
-    <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-    <input type="text" id="node-input-name" placeholder="Name">
-  </div>
-  <div class="form-row">
-    <label for="node-input-name" style="width:100%;"><i class="fa fa-tag"></i>
-    Process conversation and forward when the topic matches of:</label>
+    <label for="node-input-name" style="width:100%;">
+    Process conversation and forward when the topic matches one of:</label>
   </div>
   <div class="form-row node-input-rule-container-row">
      <ol id="node-input-rule-container"></ol>
