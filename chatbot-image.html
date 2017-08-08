@@ -23,6 +23,11 @@
     paletteLabel: 'Image',
     label: function() {
       return this.name || 'Image';
+    },
+    oneditprepare: function() {
+      if (this.filename != null && this.filename !== '' && (this.image == null || this.image === '')) {
+        $('#node-input-image').val(this.filename);
+      }
     }
   });
 </script>

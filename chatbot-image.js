@@ -14,14 +14,15 @@ module.exports = function(RED) {
     this.image = config.image;
     this.name = config.name;
     this.caption = config.caption;
+    this.filename = config.filename; // for retrocompatibility
     this.transports = ['telegram', 'slack', 'facebook', 'smooch'];
 
     this.on('input', function(msg) {
 
-      var path = node.filename;
       var name = node.name;
       var chatId = utils.getChatId(msg);
       var messageId = utils.getMessageId(msg);
+      var filename = 'image';
 
       // check transport compatibility
       if (!utils.matchTransport(node, msg)) {
@@ -29,18 +30,10 @@ module.exports = function(RED) {
       }
 
       var content = utils.extractValue('string', 'image', node, msg)
-        || utils.extractValue('buffer', 'image', node, msg);
-
-      // get filename
-      /*var filename = 'image';
-      if (_.!_.isEmpty(path)) {
-        filename = Path.basename(path);
-      } else if (!_.isEmpty(name)) {
-        filename = sanitize(name);
-      }*/
-
+        || utils.extractValue('buffer', 'image', node, msg)
+        || utils.extractValue('string', 'filename', node, msg); // for retrocompatibility
       var caption = utils.extractValue('string', 'caption', node, msg);
-
+      // get the content
       var fetcher = null;
       if (validators.filepath(content)) {
         fetcher = fetchers.file;
@@ -73,9 +66,7 @@ module.exports = function(RED) {
           },
           node.error
         );
-
     });
-
   }
 
   RED.nodes.registerType('chatbot-image', ChatBotImage);
