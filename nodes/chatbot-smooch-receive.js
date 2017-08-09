@@ -1,9 +1,9 @@
 var _ = require('underscore');
 var moment = require('moment');
-var SmoochBot = require('./lib/smooch/smooch-bot');
-var ChatContextStore = require('./lib/chat-context-store');
-var ChatLog = require('./lib/chat-log');
-var helpers = require('./lib/smooch/helpers');
+var SmoochBot = require('../lib/smooch/smooch-bot');
+var ChatContextStore = require('../lib/chat-context-store');
+var ChatLog = require('../lib/chat-log');
+var helpers = require('../lib/smooch/helpers');
 var clc = require('cli-color');
 
 var DEBUG = false;

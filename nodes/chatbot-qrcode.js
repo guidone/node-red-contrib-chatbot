@@ -1,6 +1,6 @@
 var qr = require('qr-image');
-var MessageTemplate = require('./lib/message-template.js');
-var utils = require('./lib/helpers/utils');
+var MessageTemplate = require('../lib/message-template.js');
+var utils = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
 

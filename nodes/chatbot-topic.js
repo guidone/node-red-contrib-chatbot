@@ -1,4 +1,4 @@
-var utils = require('./lib/helpers/utils');
+var utils = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
 

@@ -1,7 +1,7 @@
 var _ = require('underscore');
 var assert = require('chai').assert;
 var RED = require('./lib/red-stub')();
-var InlineButtonsBlock = require('../chatbot-inline-buttons');
+var InlineButtonsBlock = require('../nodes/chatbot-inline-buttons');
 
 describe('Chat inline buttons node', function() {
 

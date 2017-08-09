@@ -1,7 +1,7 @@
 var _ = require('underscore');
 var RiveScript = require('rivescript');
-var helpers = require('./lib/helpers/regexps');
-var utils = require('./lib/helpers/utils');
+var helpers = require('../lib/helpers/regexps');
+var utils = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
 

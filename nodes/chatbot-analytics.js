@@ -1,5 +1,5 @@
 var analytics = {
-  dashbot: require('./lib/analytics/dashbot')
+  dashbot: require('../lib/analytics/dashbot')
 };
 
 module.exports = function(RED) {

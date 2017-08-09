@@ -1,11 +1,11 @@
 var _ = require('underscore');
 var moment = require('moment');
-var ChatLog = require('./lib/chat-log');
-var ChatContextStore = require('./lib/chat-context-store');
-var helpers = require('./lib/facebook/facebook');
-var utils = require('./lib/helpers/utils');
+var ChatLog = require('../lib/chat-log');
+var ChatContextStore = require('../lib/chat-context-store');
+var helpers = require('../lib/facebook/facebook');
+var utils = require('../lib/helpers/utils');
 var request = require('request').defaults({ encoding: null });
-var Bot = require('./lib/facebook/messenger-bot');
+var Bot = require('../lib/facebook/messenger-bot');
 var clc = require('cli-color');
 
 var DEBUG = false;
