@@ -42,7 +42,7 @@ _(mappings).map(function(nodeFile, markdownFile) {
 
   var markdownSource = fs.readFileSync(__dirname + '/../wiki/' + markdownFile, 'utf8');
   var htmlSource = marked(markdownSource);
-  var nodeSource = fs.readFileSync(__dirname + '/../' + nodeFile, 'utf8');
+  var nodeSource = fs.readFileSync(__dirname + '/../nodes/' + nodeFile, 'utf8');
   var nodeName = nodeFile.replace('.html', '');
 
   // reformat tables with dl, dt, dd, Node-RED standard
@@ -72,10 +72,13 @@ _(mappings).map(function(nodeFile, markdownFile) {
   var regexp = new RegExp('<script type=\"text\/x-red\" data-help-name=\"' + nodeName + '\">[\\s\\S]*<\/script>', 'g');
   nodeSource = nodeSource.replace(regexp, newDoc);
 
-  fs.writeFileSync(__dirname + '/../' + nodeFile, nodeSource, 'utf8');
+  fs.writeFileSync(__dirname + '/../nodes/' + nodeFile, nodeSource, 'utf8');
 });
 
+console.log('Writing changelog');
+var changelog = fs.readFileSync(__dirname + '/../wiki/Changelog.md', 'utf8');
+fs.writeFileSync(__dirname + '/../CHANGELOG.md', changelog, 'utf8');
 
-
+console.log('All done.');
 
 
