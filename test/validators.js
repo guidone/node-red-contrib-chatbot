@@ -59,5 +59,47 @@ describe('Validators', function() {
     ]));
   });
 
+  it ('validates a file path', function() {
+    assert.isFalse(validators.filepath('not a real path'));
+    assert.isTrue(validators.filepath('/dir/file.mp3'));
+    assert.isTrue(validators.filepath('/dir/test'));
+    assert.isTrue(validators.filepath('./dir/test'));
+    assert.isTrue(validators.filepath('../dir/test'));
+  });
+
+  it ('validates a url', function() {
+    assert.isFalse(validators.url('not a real url'));
+    assert.isTrue(validators.url('http://host.com//dir/file.mp3'));
+    assert.isTrue(validators.url('https://hots.com/dir/file.mp3'));
+  });
+
+  it ('validates a buffer', function() {
+    assert.isFalse(validators.buffer('not a real buffer'));
+    assert.isTrue(validators.buffer(new Buffer('just a buffer')));
+  });
+
+  it ('validates a string', function() {
+    assert.isFalse(validators.string(42));
+    assert.isFalse(validators.string(''));
+    assert.isFalse(validators.string({}));
+    assert.isTrue(validators.string('test string'));
+  });
+
+  it ('validates a boolean', function() {
+    assert.isFalse(validators.boolean(42));
+    assert.isFalse(validators.boolean(''));
+    assert.isFalse(validators.boolean('true'));
+    assert.isTrue(validators.boolean(true));
+    assert.isTrue(validators.boolean(false));
+  });
+
+  it ('validates an array', function() {
+    assert.isFalse(validators.array(42));
+    assert.isFalse(validators.array('[]'));
+    assert.isFalse(validators.array([]));
+    assert.isTrue(validators.array([1]));
+    assert.isTrue(validators.array([1, 2]));
+  });
+
 });
 

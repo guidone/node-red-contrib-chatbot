@@ -32,6 +32,7 @@
       "chatbot-document": "chatbot-document.js",
       "chatbot-video": "chatbot-video.js",
       "chatbot-image": "chatbot-image.js",
+      "chatbot-sticker": "chatbot-sticker.js",
       "chatbot-audio": "chatbot-audio.js",
       "chatbot-location": "chatbot-location.js",
       "chatbot-ask": "chatbot-ask.js",
