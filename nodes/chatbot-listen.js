@@ -1,8 +1,8 @@
 var _ = require('underscore');
-var NplMatcher = require('./lib/npl-matcher');
+var NplMatcher = require('../lib/npl-matcher');
 var clc = require('cli-color');
 var prettyjson = require('prettyjson');
-var helpers = require('./lib/helpers/regexps');
+var helpers = require('../lib/helpers/regexps');
 
 var green = clc.greenBright;
 var white = clc.white;

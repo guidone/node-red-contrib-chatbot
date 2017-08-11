@@ -1,7 +1,7 @@
 var _ = require('underscore');
 var assert = require('chai').assert;
 var RED = require('./lib/red-stub')();
-var StickerBlock = require('../chatbot-sticker');
+var StickerBlock = require('../nodes/chatbot-sticker');
 var fs = require('fs');
 
 describe('Chat image node', function() {

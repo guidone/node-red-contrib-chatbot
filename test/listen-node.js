@@ -1,7 +1,7 @@
 var _ = require('underscore');
 var assert = require('chai').assert;
 var RED = require('./lib/red-stub')();
-var ListenBlock = require('../chatbot-listen');
+var ListenBlock = require('../nodes/chatbot-listen');
 
 describe('Chat listen node', function() {
 

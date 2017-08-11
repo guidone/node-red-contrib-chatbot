@@ -1,5 +1,5 @@
 var _ = require('underscore');
-var ChatContextStore = require('./lib/chat-context-store');
+var ChatContextStore = require('../lib/chat-context-store');
 
 
 module.exports = function(RED) {

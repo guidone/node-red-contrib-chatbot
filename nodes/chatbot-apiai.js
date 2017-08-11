@@ -1,7 +1,7 @@
 var _ = require('underscore');
 var apiai = require('apiai');
 var moment = require('moment');
-var utils = require('./lib/helpers/utils');
+var utils = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
 

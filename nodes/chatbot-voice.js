@@ -1,7 +1,7 @@
 var _ = require('underscore');
-var MessageTemplate = require('./lib/message-template.js');
+var MessageTemplate = require('../lib/message-template.js');
 var request = require('request').defaults({ encoding: null });
-var utils = require('./lib/helpers/utils');
+var utils = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
 

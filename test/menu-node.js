@@ -1,7 +1,7 @@
 var _ = require('underscore');
 var assert = require('chai').assert;
 var RED = require('./lib/red-stub')();
-var MenuBlock = require('../chatbot-messenger-menu');
+var MenuBlock = require('../nodes/chatbot-messenger-menu');
 
 describe('Chat menu node', function() {
 

@@ -1,10 +1,10 @@
 var _ = require('underscore');
 var TelegramBot = require('node-telegram-bot-api');
 var moment = require('moment');
-var ChatLog = require('./lib/chat-log');
-var ChatContextStore = require('./lib/chat-context-store');
-var helpers = require('./lib/telegram/telegram');
-var utils = require('./lib/helpers/utils');
+var ChatLog = require('../lib/chat-log');
+var ChatContextStore = require('../lib/chat-context-store');
+var helpers = require('../lib/telegram/telegram');
+var utils = require('../lib/helpers/utils');
 var DEBUG = false;
 
 module.exports = function(RED) {

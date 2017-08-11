@@ -1,7 +1,7 @@
 var _ = require('underscore');
 var assert = require('chai').assert;
 var RED = require('./lib/red-stub')();
-var GenericTemplateBlock = require('../chatbot-generic-template');
+var GenericTemplateBlock = require('../nodes/chatbot-generic-template');
 
 describe('Chat generic template node', function() {
 

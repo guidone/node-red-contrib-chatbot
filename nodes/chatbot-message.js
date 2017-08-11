@@ -1,6 +1,6 @@
 var _ = require('underscore');
-var utils = require('./lib/helpers/utils');
-var MessageTemplate = require('./lib/message-template');
+var utils = require('../lib/helpers/utils');
+var MessageTemplate = require('../lib/message-template');
 var emoji = require('node-emoji');
 
 module.exports = function(RED) {

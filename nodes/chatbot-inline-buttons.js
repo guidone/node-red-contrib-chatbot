@@ -1,15 +1,15 @@
-var MessageTemplate = require('./lib/message-template.js');
+var MessageTemplate = require('../lib/message-template.js');
 var emoji = require('node-emoji');
-var utils = require('./lib/helpers/utils');
+var utils = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
 
-  function ChatBotQuickReplies(config) {
+  function ChatBotInlineButtons(config) {
     RED.nodes.createNode(this, config);
     var node = this;
     this.buttons = config.buttons;
     this.message = config.message;
-    this.transports = ['facebook'];
+    this.transports = ['telegram', 'facebook', 'smooch'];
 
     this.on('input', function(msg) {
 
@@ -22,13 +22,12 @@ module.exports = function(RED) {
       var messageId = utils.getMessageId(msg);
       var template = MessageTemplate(msg, node);
 
-      // get values from config
-      // prepare the message, first the config, then payload
+      // prepare buttons, first the config, then payload
       var buttons = utils.extractValue('buttons', 'buttons', node, msg);
       var message = utils.extractValue('string', 'message', node, msg);
 
       msg.payload = {
-        type: 'quick-replies',
+        type: 'inline-buttons',
         content: message != null ? emoji.emojify(template(message)) : null,
         chatId: chatId,
         messageId: messageId,
@@ -40,5 +39,5 @@ module.exports = function(RED) {
 
   }
 
-  RED.nodes.registerType('chatbot-quick-replies', ChatBotQuickReplies);
+  RED.nodes.registerType('chatbot-inline-buttons', ChatBotInlineButtons);
 };

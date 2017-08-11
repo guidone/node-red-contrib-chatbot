@@ -1,4 +1,4 @@
-var ChatLog = require('./lib/chat-log.js');
+var ChatLog = require('../lib/chat-log.js');
 
 module.exports = function(RED) {
 
