@@ -1,3 +1,4 @@
+* **0.8.4** - Added CHANGELOG.md
 * **0.8.3** - Added `Sticker node` for Telegram
 * **0.8.2** - Fixed API.ai node
 * **0.8.1** - Added delete and disable input box in `Messenger menu node`
