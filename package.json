@@ -11,7 +11,7 @@
     "commit-wiki": "git add . && git commit -m \"docs\"",
     "build-docs": "git clone https://github.com/guidone/node-red-contrib-chatbot.wiki.git ./wiki && node ./bin/generate-docs && rm -rf ./wiki",
     "clean": "rm -rf ./wiki",
-    "version": "git clone https://github.com/guidone/node-red-contrib-chatbot.wiki.git ./wiki && node ./bin/generate-docs && rm -rf ./wiki && git add *.html"
+    "version": "git clone https://github.com/guidone/node-red-contrib-chatbot.wiki.git ./wiki && node ./bin/generate-docs && rm -rf ./wiki && git add *.html && git add *.md"
   },
   "repository": {
     "type": "git",
@@ -27,6 +27,7 @@
       "chatbot-voice": "./nodes/chatbot-voice.js",
       "chatbot-language": "./nodes/chatbot-language.js",
       "chatbot-listen": "./nodes/chatbot-listen.js",
+      "chatbot-listen-lexicon": "./nodes/chatbot-listen-lexicon.js",
       "chatbot-parse": "./nodes/chatbot-parse.js",
       "chatbot-command": "./nodes/chatbot-command.js",
       "chatbot-document": "./nodes/chatbot-document.js",

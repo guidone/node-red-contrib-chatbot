@@ -965,5 +965,52 @@ describe('NLP matcher', function() {
 
   });
 
+  it('should match witch custom lexicon with composite words', function() {
+
+    var message = 'switch on lights dining room now';
+    var terms = NplMatcher.parseSentence(message, {
+      'dining room': 'Room',
+      'kitchen': 'Room',
+      'toilette': 'Room',
+      'lavatory': 'Room',
+      'basement': 'Room'
+    });
+    var rules = new NplMatcher.MatchRules([
+      {
+        type: 'verb',
+        text: 'switch on'
+      },
+      {
+        text: 'lights'
+      },
+      {
+        type: 'room',
+        variable: 'room'
+      }
+    ]);
+    var matchedRules = NplMatcher.matchRules(terms, rules);
+
+    /*matchedRules.forEach(function(rules, idx) {
+     console.log('');
+     console.log('Rule #' + (idx + 1));
+     console.log(rules.toJSON());
+     });*/
+
+    assert.equal(matchedRules[0].count(), 3);
+
+    assert.equal(matchedRules[0].at(0).text, 'switch on');
+    assert.equal(matchedRules[0].at(0).distance, 0);
+
+    assert.equal(matchedRules[0].at(1).text, 'lights');
+    assert.equal(matchedRules[0].at(1).distance, 0);
+
+    assert.equal(matchedRules[0].at(2).text, null);
+    assert.equal(matchedRules[0].at(2).value, 'dining room');
+    assert.equal(matchedRules[0].at(2).variable, 'room');
+    assert.equal(matchedRules[0].at(2).distance, 0);
+
+  });
+
+
 });
 

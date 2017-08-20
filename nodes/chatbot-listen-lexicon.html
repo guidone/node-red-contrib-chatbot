@@ -7,10 +7,7 @@
       name: {
         value: ''
       },
-      showdebug: {
-        value: false
-      },
-      rules: {
+      values: {
         value: [],
         validate: function(sentences) {
           var valid = true;
@@ -38,56 +35,46 @@
     inputs: 1,
     outputs: 1,
     icon: 'chatbot-listen.png',
-    paletteLabel: 'Listen',
+    paletteLabel: 'Listen Lexicon',
     label: function() {
       return this.name || 'Listen Lexicon';
     },
     oneditsave: function() {
-      var domRules = $('#node-input-sentences-container').editableList('items');
+      var domRules = $('#node-input-values-container').editableList('items');
       var node = this;
       var idx;
       // init
-      node.rules = [];
+      node.values = [];
+      console.log('quanti??', domRules);
       // move rules
       for(idx = 0; idx < domRules.length; idx++) {
         var selector = domRules[idx].find('input');
-        node.rules.push(selector.val());
+        node.values.push(selector.val());
       }
-      this.outputs = node.rules.length;
+      console.log('save', node.values);
     },
 
     oneditprepare: function() {
       function resizeRule(rule) {
       }
 
-      $('#node-input-sentences-container')
+      $('#node-input-values-container')
         .css('min-height','300px').css('min-width', '450px')
         .editableList({
-          addButton: 'Add rule',
-          addItem: function(container, i, sentence) {
-            var value = typeof sentence == 'object' ? '' : sentence;
+          addButton: 'Add element',
+          addItem: function(container, i, entity) {
+
+            console.log('value----', entity);
+
+            var value = typeof entity == 'object' ? '' : entity;
             var row = $('<div/>').appendTo(container);
-            var selector = $('<input/>', {
+            $('<input/>', {
                 style: 'width:100%',
                 class: 'node-input-rule-property-name',
                 type: 'text',
                 value: value
-              })
-              .appendTo(row);
+              }).appendTo(row);
 
-            row.find('input').tagsInput({
-              defaultText: 'add a token',
-              width: '97%',
-              height: '51px',
-              placeholderColor: '#999999',
-              onChange: function() {
-                // seems ridicolous to me that there isn't a method to get the current value
-                var words = $('.tag', row).map(function() {
-                  return $.trim($('span', this).text());
-                });
-                selector.attr('value', words.get().join(','));
-              }
-            });
           },
           resizeItem: resizeRule,
           removable: true,
@@ -95,12 +82,12 @@
         });
 
 
-      var rules = this.rules || [];
+      var values = this.values || [];
+      console.log('metto', values);
       // populate the control
       var idx;
-      for (idx = 0; idx < rules.length; idx++) {
-        var rule = rules[idx];
-        $("#node-input-sentences-container").editableList('addItem', rule);
+      for (idx = 0; idx < values.length; idx++) {
+        $("#node-input-values-container").editableList('addItem', values[idx]);
       }
 
     }
@@ -119,21 +106,7 @@
     <label style="width:100%;"><i class="fa fa-list"></i> <span>Keyword rules</span></label>
   </div>
   <div class="form-row node-input-sentences-container-row">
-    <ol id="node-input-sentences-container"></ol>
-    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;display:block;">
-    Available types are: <em>word (catches everything), noun, verb, adjective, conjunction, adverb, symbol, date, determiner, person,
-  number, email, url, currency</em>.<br>
-    Use square brackets to match a keyword of a particular type, for example: <code>check[verb]</code> only matches the
-    a keyword "check" which is a verb in the sentence.<br>
-    Use types to extract some kind of data from the sentence, for example: <code>[email]->useremail</code> will match a
-    valid email in the sentence and store it in the chat context variable "useremail".
-    </div>
-  </div>
-  <div class="form-row">
-    <label for="node-input-answer"><i class="icon-wrench"></i> Debug</label>
-    <input type="checkbox" value="true" id="node-input-showdebug">
-    <span style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;display:block;">
-    Dump the analysis of the sentences in the console (terms, nouns, verbs, etc).</span>
+    <ol id="node-input-values-container"></ol>
   </div>
 </script>
 
