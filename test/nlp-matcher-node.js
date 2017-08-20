@@ -1011,6 +1011,84 @@ describe('NLP matcher', function() {
 
   });
 
+  it('should match a car lexicon', function() {
+
+    var message = 'my car is a Lamborghini';
+    var terms = NplMatcher.parseSentence(message, {
+      'lamborghini': 'Car',
+      'ferrari': 'Car',
+      'fiat': 'Car',
+      'audi': 'Car',
+      'bmw': 'Car',
+      'toyota': 'Car',
+      'chrisler': 'Car'
+    }, true);
+    var rules = new NplMatcher.MatchRules([
+      {
+        text: 'my'
+      },
+      {
+        text: 'car',
+        type: 'noun'
+      },
+      {
+        text: 'is'
+      },
+      {
+        type: 'Car',
+        variable: 'my_car'
+      }
+    ]);
+
+    var matchedRules = NplMatcher.matchRules(terms, rules);
+
+    assert.equal(matchedRules[0].count(), 4);
+    assert.equal(matchedRules[0].at(0).text, 'my');
+    assert.equal(matchedRules[0].at(0).distance, 0);
+
+
+
+    assert.equal(matchedRules[0].at(1).text, 'car');
+    assert.equal(matchedRules[0].at(1).distance, 0);
+    assert.equal(matchedRules[0].at(2).text, 'is');
+    assert.equal(matchedRules[0].at(2).distance, 0);
+
+
+    assert.equal(matchedRules[0].at(3).value, 'lamborghini');
+    assert.equal(matchedRules[0].at(3).distance, 1);
+
+  });
+
+  it.only('should match a car lexicon while driving', function() {
+
+    var message = 'I am driving a Lamborghini';
+    var terms = NplMatcher.parseSentence(message, {
+      'lamborghini': 'Car',
+      'ferrari': 'Car',
+      'fiat': 'Car',
+      'audi': 'Car',
+      'bmw': 'Car',
+      'toyota': 'Car',
+      'chrisler': 'Car'
+    });
+    var rules = new NplMatcher.MatchRules([
+      'I',
+      'drive[verb]',
+      '[car]->my_car'
+    ]);
+
+    var matchedRules = NplMatcher.matchRules(terms, rules);
+
+    assert.equal(matchedRules[0].count(), 3);
+    assert.equal(matchedRules[0].at(0).text, 'I');
+    assert.equal(matchedRules[0].at(0).distance, 0);
+    assert.equal(matchedRules[0].at(1).text, 'drive');
+    assert.equal(matchedRules[0].at(1).raw, 'am driving');
+    assert.equal(matchedRules[0].at(1).distance, 0);
+    assert.equal(matchedRules[0].at(2).value, 'lamborghini');
+    assert.equal(matchedRules[0].at(2).distance, 1);
+  });
+
 
 });
 

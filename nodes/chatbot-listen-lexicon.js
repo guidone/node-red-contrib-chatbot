@@ -29,7 +29,7 @@ module.exports = function(RED) {
       var name = utils.extractValue('string', 'name', node, msg);
 
       var currentLexicon = msg.payload != null && _.isObject(msg.payload.lexicon) ? msg.payload.lexicon : {};
-
+      // collect the lexicon of the node and mix with the one of the incoming payload
       if (_.isArray(values) && !_.isEmpty(values)) {
         var partial = {};
         _(values).each(function(value) {

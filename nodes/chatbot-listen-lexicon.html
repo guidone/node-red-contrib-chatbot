@@ -5,27 +5,15 @@
     color: '#FFCC66',
     defaults: {
       name: {
-        value: ''
+        value: '',
+        validate: function(name) {
+          return $.RedBot.validate.notEmpty(name);
+        }
       },
       values: {
         value: [],
-        validate: function(sentences) {
-          var valid = true;
-          /*var idx, k;
-          var re = /\{\{([A-Za-z0-9])\}\}/;
-          var allowedTags = ['email', 'number', 'url'];
-          for(idx = 0; idx < sentences.length; idx++) {
-            if (typeof sentences[idx] === 'string') {
-              var tokens = sentences[idx].split(',');
-              for (k = 0; k < tokens.length; k++) {
-                var matched = tokens[k].match(/\{\{([A-Za-z0-9]*?)\}\}/);
-                if (matched != null && allowedTags.indexOf(matched[1]) == -1) {
-                  valid = false;
-                }
-              }
-            }
-          }*/
-          return valid;
+        validate: function(terms) {
+          return $.RedBot.validate.arrayNotEmpty(terms);
         }
       },
       outputs: {
@@ -45,27 +33,27 @@
       var idx;
       // init
       node.values = [];
-      console.log('quanti??', domRules);
-      // move rules
+      // store terms, all lowercase
       for(idx = 0; idx < domRules.length; idx++) {
         var selector = domRules[idx].find('input');
-        node.values.push(selector.val());
+        node.values.push(selector.val().toLowerCase());
       }
-      console.log('save', node.values);
     },
 
     oneditprepare: function() {
-      function resizeRule(rule) {
-      }
-
+      $('#node-input-name')
+        .blur(function() {
+          var lexiconName = $(this).val();
+          lexiconName = lexiconName.replace(/\b\w/g, function(str) {
+            return str.toUpperCase();
+          }).replace(/ /, '');
+          $(this).val(lexiconName);
+        });
       $('#node-input-values-container')
-        .css('min-height','300px').css('min-width', '450px')
+        .css('min-width', '450px')
         .editableList({
-          addButton: 'Add element',
+          addButton: 'Add term',
           addItem: function(container, i, entity) {
-
-            console.log('value----', entity);
-
             var value = typeof entity == 'object' ? '' : entity;
             var row = $('<div/>').appendTo(container);
             $('<input/>', {
@@ -74,40 +62,39 @@
                 type: 'text',
                 value: value
               }).appendTo(row);
-
           },
-          resizeItem: resizeRule,
           removable: true,
           sortable: true
         });
-
-
       var values = this.values || [];
-      console.log('metto', values);
       // populate the control
       var idx;
       for (idx = 0; idx < values.length; idx++) {
         $("#node-input-values-container").editableList('addItem', values[idx]);
       }
-
+    },
+    oneditresize: function() {
+      var dialogForm = $('#dialog-form');
+      var rowName = $('.form-row-name', dialogForm);
+      var rowLabel = $('.form-row-label', dialogForm);
+      var height = dialogForm.height() - rowName.height() - rowLabel.height() - 20;
+      $('#node-input-values-container').editableList('height', height);
     }
   });
 </script>
 
 
-
-
 <script type="text/x-red" data-template-name="chatbot-listen-lexicon">
-  <div class="form-row">
-    <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-    <input type="text" id="node-input-name" placeholder="Name">
-  </div>
-  <div class="form-row" style="margin-bottom:0;">
-    <label style="width:100%;"><i class="fa fa-list"></i> <span>Keyword rules</span></label>
-  </div>
-  <div class="form-row node-input-sentences-container-row">
-    <ol id="node-input-values-container"></ol>
-  </div>
+<div class="form-row form-row-name">
+  <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+  <input type="text" id="node-input-name" placeholder="Name">
+</div>
+<div class="form-row form-row-label" style="margin-bottom:0;">
+  <label style="width:100%;"><i class="fa fa-list"></i> <span>Lexicon terms</span></label>
+</div>
+<div class="form-row node-input-values-container-row">
+  <ol id="node-input-values-container"></ol>
+</div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-listen-lexicon">
