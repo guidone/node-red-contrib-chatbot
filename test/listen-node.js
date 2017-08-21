@@ -38,21 +38,21 @@ describe('Chat listen node', function() {
     assert.isNull(RED.node.message(1));
   });
 
-  /*it('should detect a simple phrase send curriculum', function () {
+  it('should detect a simple phrase send curriculum', function () {
     var msg = RED.createMessage({content: 'can you send your curriculum vitae'});
     RED.node.config({
-      sentences: ['send,curriculum,vitae']
+      rules: ['send,curriculum,vitae']
     });
     ListenBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'can you send your curriculum vitae');
-    assert.equal(RED.node.message().originalMessage.chat.id, 42);
+    assert.equal(RED.node.message(0).payload.content, 'can you send your curriculum vitae');
+    assert.equal(RED.node.message(0).originalMessage.chat.id, 42);
   });
 
   it('should detect a composed phrase send curriculum', function () {
     var msg = RED.createMessage({content: 'can you send your curriculum vitae'});
     RED.node.config({
-      sentences: ['send,curriculum,vitae', 'send,curriculum']
+      rules: ['send,curriculum,vitae', 'send,curriculum']
     });
     ListenBlock(RED);
     RED.node.get().emit('input', msg);
@@ -63,7 +63,7 @@ describe('Chat listen node', function() {
   it('should not detect a composed phrase send curriculum', function () {
     var msg = RED.createMessage({content: 'can you send your cv'});
     RED.node.config({
-      sentences: ['send,curriculum,vitae', 'send,curriculum']
+      rules: ['send,curriculum,vitae', 'send,curriculum']
     });
     ListenBlock(RED);
     RED.node.get().emit('input', msg);
@@ -73,7 +73,7 @@ describe('Chat listen node', function() {
   it('should detect a composed phrase send curriculum and extract email', function () {
     var msg = RED.createMessage({content: 'can you send your curriculum vitae to guido.bellomo@gmail.com'});
     RED.node.config({
-      sentences: ['send,curriculum,vitae,{{email}}', 'send,curriculum,{{email}}']
+      rules: ['send,curriculum,vitae,[email]->email', 'send,curriculum,[email]->email']
     });
     RED.environment.chat(msg.originalMessage.chat.id, {authorized: true});
     ListenBlock(RED);
@@ -86,12 +86,12 @@ describe('Chat listen node', function() {
   it('should NOT detect a composed phrase send curriculum and extract email', function () {
     var msg = RED.createMessage({content: 'can you send your curriculum vitae to guido.bellomoATgmail.com'});
     RED.node.config({
-      sentences: ['send,curriculum,vitae,{{email}}', 'send,curriculum,{{email}}']
+      rules: ['send,curriculum,vitae,[email]->email', 'send,curriculum,[email]->email']
     });
     RED.environment.chat(msg.originalMessage.chat.id, {authorized: true});
     ListenBlock(RED);
     RED.node.get().emit('input', msg);
     assert.equal(RED.node.message(), null);
-  });*/
+  });
 
 });

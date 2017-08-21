@@ -12,7 +12,8 @@ describe('Chat listen lexicon node', function() {
     'audi': 'Car',
     'bmw': 'Car',
     'toyota': 'Car',
-    'chrisler': 'Car'
+    'chrisler': 'Car',
+    'peugeout talbot': 'Car'
   };
   var CarRules = [
     'drive[verb],[car]->my_car',
@@ -53,6 +54,60 @@ describe('Chat listen lexicon node', function() {
     assert.equal(RED.node.message(0).payload.content, 'I am driving a chrisler');
     assert.equal(RED.node.message(0).originalMessage.chat.id, 42);
     assert.equal(msg.chat().get('my_car'), 'chrisler');
+  });
+
+  it('should use a car lexicon with Listen driving perfect', function () {
+    var msg = RED.createMessage({
+      content: 'I am driving a chrisler',
+      lexicon: CarLexicon
+    });
+    RED.node.config({
+      rules: [
+        'am driving[verb],[car]->my_car',
+        'my,car[noun],is,[car]->my_car'
+      ]
+    });
+    ListenBlock(RED);
+    RED.node.get().emit('input', msg);
+
+    assert.isNull(RED.node.message(1));
+    assert.isObject(RED.node.message(0));
+    assert.equal(RED.node.message(0).payload.content, 'I am driving a chrisler');
+    assert.equal(RED.node.message(0).originalMessage.chat.id, 42);
+    assert.equal(msg.chat().get('my_car'), 'chrisler');
+  });
+
+  it('should not match a china motors car', function () {
+    var msg = RED.createMessage({
+      content: 'I am driving a china motors',
+      lexicon: CarLexicon
+    });
+    RED.node.config({
+      rules: CarRules
+    });
+    ListenBlock(RED);
+    RED.node.get().emit('input', msg);
+
+    assert.isNull(RED.node.message(1));
+    assert.isNull(RED.node.message(0));
+  });
+
+  it('should use a car with composite names', function () {
+    var msg = RED.createMessage({
+      content: 'my car is a Peugeout Talbot and I am happy',
+      lexicon: CarLexicon
+    });
+    RED.node.config({
+      rules: CarRules
+    });
+    ListenBlock(RED);
+    RED.node.get().emit('input', msg);
+
+    assert.isNull(RED.node.message(0));
+    assert.isObject(RED.node.message(1));
+    assert.equal(RED.node.message(1).payload.content, 'my car is a Peugeout Talbot and I am happy');
+    assert.equal(RED.node.message(1).originalMessage.chat.id, 42);
+    assert.equal(msg.chat().get('my_car'), 'peugeout talbot');
   });
 
 });

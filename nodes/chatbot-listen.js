@@ -25,20 +25,21 @@ module.exports = function(RED) {
       var chatContext = msg.chat();
 
       var rules = node.rules;
-      var debug = node.showdebug;
+
+      var debug = utils.extractValue('boolean', 'showdebug', node, msg);
+      var lexicon = utils.extractValue('hash', 'lexicon', node, msg);
 
       // do nothing if it's not a chat message
       if (originalMessage == null || _.isEmpty(rules)) {
         return;
       }
 
-      var lexicon = utils.extractValue('hash', 'lexicon', node, msg);
       var output = [];
       var matched = false;
 
       // parse incoming message
       var message = msg.payload.content;
-      var terms = NplMatcher.parseSentence(message, lexicon);
+      var terms = NplMatcher.parseSentence(message, lexicon, debug);
 
       // do not try to parse if it's a command like
       if (helpers.isCommand(message)) {
@@ -46,7 +47,7 @@ module.exports = function(RED) {
       }
 
       // debug the terms
-      if (debug) {
+      /*if (debug) {
         // eslint-disable-next-line no-console
         console.log('');
         // eslint-disable-next-line no-console
@@ -59,7 +60,7 @@ module.exports = function(RED) {
         } catch(e) {
           // pretty json may breaks
         }
-      }
+      }*/
 
       rules.forEach(function(rule) {
         var matchedRule = null;
