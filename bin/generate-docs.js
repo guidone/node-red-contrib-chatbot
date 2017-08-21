@@ -1,8 +1,17 @@
-var markdown = require( "markdown" ).markdown;
+var request = require('request').defaults({ encoding: null });
 var marked = require('marked');
-
+var clc = require('cli-color');
 var _ = require('underscore');
 var fs = require('fs');
+var green = clc.greenBright;
+var white = clc.white;
+var grey = clc.blackBright;
+var orange = clc.xterm(214);
+
+var tasks = new Promise(function(resolve) {
+  resolve();
+});
+
 
 var mappings = {
   'Buttons-node.md': 'chatbot-inline-buttons.html',
@@ -32,53 +41,143 @@ var mappings = {
   'Listen-node.md': 'chatbot-listen.html',
   'Context-node.md': 'chatbot-context.html',
   'API.ai-node.md': 'chatbot-apiai.html',
-  'Sticker-node.md': 'chatbot-sticker.html'
+  'Sticker-node.md': 'chatbot-sticker.html',
+  'Waiting-node.md': 'chatbot-waiting.html'
 };
 
+function collectImages(html) {
+  var found = html.match(/<img src="(.*?)" .*?>/g);
+  if (found == null) {
+    return [];
+  } else {
+    return _(found).chain()
+      .map(function(img) {
+        if (img.indexOf('img.shields.io') !== -1) {
+          return null;
+        } else {
+          var matchUrl = img.match(/src="(.*?)"/);
+          return {
+            html: img,
+            url: matchUrl[1]
+          };
+        }
+      })
+      .compact()
+      .value();
+  }
+}
 
-console.log('Generating inline documentation...');
-_(mappings).map(function(nodeFile, markdownFile) {
-  console.log('- ' + markdownFile);
-
-  var markdownSource = fs.readFileSync(__dirname + '/../wiki/' + markdownFile, 'utf8');
-  var htmlSource = marked(markdownSource);
-  var nodeSource = fs.readFileSync(__dirname + '/../nodes/' + nodeFile, 'utf8');
-  var nodeName = nodeFile.replace('.html', '');
-
-  // reformat tables with dl, dt, dd, Node-RED standard
-  // table always 3 cell: name of field, type, description
-  htmlSource = htmlSource.replace(/<table>/g, '<dl class="message-properties">');
-  htmlSource = htmlSource.replace(/<\/table>/g, '</dl>');
-  htmlSource = htmlSource.replace(/<thead>[\s\S]*<\/thead>/g, '');
-  htmlSource = htmlSource.replace(/<tbody>/g, '');
-  htmlSource = htmlSource.replace(/<\/tbody>/g, '');
-  var matches = htmlSource.match(/<tr>([\s\S]*?)<\/tr>/g);
-  _(matches).each(function(row) {
-    var cells = row.match(/<td>([\s\S]*?)<\/td>/g);
-    cells = _(cells).map(function(cell) {
-      return cell.replace('<td>', '').replace('</td>', '');
+function fetchImageBase64(url) {
+  return new Promise(function(resolve, reject) {
+    // convert url to github raw
+    url = url.replace('github.com', 'raw.githubusercontent.com');
+    url = url.replace('/blob/', '/');
+    request.get(url, function(err, res, body) {
+      resolve('data:image/png;base64,' + body.toString('base64'));
     });
-    htmlSource = htmlSource.replace(row,
-      '<dt>' + cells[0] + '<span class="property-type">' + cells[1] +'</span>' +
-      '<dd>' + cells[2] + '</dd>'
+  });
+}
+
+function fetchImagesBase64(images) {
+
+  var chain = new Promise(function(resolve) {
+    resolve();
+  });
+
+  _(images).map(function(image) {
+    chain = chain.then(
+      function() {
+        console.log('    fetching ' + white(image.url));
+        return fetchImageBase64(image.url).then(function(base64) {
+          console.log(green('    fetched ') + Math.floor(base64.length / 1024) + white('kb'));
+          image.base64 = base64;
+        });
+      }
     );
   });
 
-  // replace "$" or will messup with the regular expression
-  htmlSource = htmlSource.replace(/\$/g, '&#36;');
+  return chain.then(function() {
+    return images;
+  });
+}
 
-  // replace inline documentation
-  var newDoc = '<script type="text\/x-red" data-help-name="' + nodeName + '">' + htmlSource + '</script>';
-  var regexp = new RegExp('<script type=\"text\/x-red\" data-help-name=\"' + nodeName + '\">[\\s\\S]*<\/script>', 'g');
-  nodeSource = nodeSource.replace(regexp, newDoc);
 
-  fs.writeFileSync(__dirname + '/../nodes/' + nodeFile, nodeSource, 'utf8');
+console.log(orange('Generating inline documentation...'));
+
+_(mappings).map(function(nodeFile, markdownFile) {
+
+  tasks = tasks.then(function() {
+
+    return new Promise(function(resolve, reject) {
+
+      console.log('- ' + grey(markdownFile));
+
+      var markdownSource = fs.readFileSync(__dirname + '/../wiki/' + markdownFile, 'utf8');
+      var htmlSource = marked(markdownSource);
+      var nodeSource = fs.readFileSync(__dirname + '/../nodes/' + nodeFile, 'utf8');
+      var nodeName = nodeFile.replace('.html', '');
+
+      // reformat tables with dl, dt, dd, Node-RED standard
+      // table always 3 cell: name of field, type, description
+      htmlSource = htmlSource.replace(/<table>/g, '<dl class="message-properties">');
+      htmlSource = htmlSource.replace(/<\/table>/g, '</dl>');
+      htmlSource = htmlSource.replace(/<thead>[\s\S]*<\/thead>/g, '');
+      htmlSource = htmlSource.replace(/<tbody>/g, '');
+      htmlSource = htmlSource.replace(/<\/tbody>/g, '');
+      var matches = htmlSource.match(/<tr>([\s\S]*?)<\/tr>/g);
+      _(matches).each(function(row) {
+        var cells = row.match(/<td>([\s\S]*?)<\/td>/g);
+        cells = _(cells).map(function(cell) {
+          return cell.replace('<td>', '').replace('</td>', '');
+        });
+        htmlSource = htmlSource.replace(row,
+          '<dt>' + cells[0] + '<span class="property-type">' + cells[1] +'</span>' +
+          '<dd>' + cells[2] + '</dd>'
+        );
+      });
+
+      // get all images and transform them into base64 (GitHub will deny images in iframe)
+      var images = collectImages(htmlSource);
+
+      fetchImagesBase64(images)
+        .then(function(images64) {
+
+          // now replace all fetched images in base64
+          _(images64).each(function(image) {
+            htmlSource = htmlSource.replace(image.html, '<img src="' + image.base64 + '">');
+          });
+
+          // replace "$" or will mess up with the regular expression
+          htmlSource = htmlSource.replace(/\$/g, '&#36;');
+
+          // replace inline documentation
+          var newDoc = '<script type="text\/x-red" data-help-name="' + nodeName + '">' + htmlSource + '</script>';
+          var regexp = new RegExp('<script type=\"text\/x-red\" data-help-name=\"' + nodeName + '\">[\\s\\S]*<\/script>', 'g');
+          nodeSource = nodeSource.replace(regexp, newDoc);
+
+          fs.writeFileSync(__dirname + '/../nodes/' + nodeFile, nodeSource, 'utf8');
+          // finally resolve
+          resolve();
+        });
+    });
+  });
+
+
 });
 
-console.log('Writing changelog');
-var changelog = fs.readFileSync(__dirname + '/../wiki/Changelog.md', 'utf8');
-fs.writeFileSync(__dirname + '/../CHANGELOG.md', changelog, 'utf8');
 
-console.log('All done.');
+tasks.then(
+  function() {
+    console.log('Writing changelog ' + grey(__dirname + '/../CHANGELOG.md'));
+    var changelog = fs.readFileSync(__dirname + '/../wiki/Changelog.md', 'utf8');
+    fs.writeFileSync(__dirname + '/../CHANGELOG.md', changelog, 'utf8');
+    console.log(green('All done.'));
+  },
+  function() {
+    clc.red('Something went wrong');
+  }
+);
+
+
 
 
