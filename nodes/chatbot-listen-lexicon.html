@@ -22,7 +22,7 @@
     },
     inputs: 1,
     outputs: 1,
-    icon: 'chatbot-listen.png',
+    icon: 'chatbot-listen-lexicon.png',
     paletteLabel: 'Listen Lexicon',
     label: function() {
       return this.name || 'Listen Lexicon';
@@ -39,14 +39,11 @@
         node.values.push(selector.val().toLowerCase());
       }
     },
-
     oneditprepare: function() {
       $('#node-input-name')
         .blur(function() {
           var lexiconName = $(this).val();
-          lexiconName = lexiconName.replace(/\b\w/g, function(str) {
-            return str.toUpperCase();
-          }).replace(/ /, '');
+          lexiconName = lexiconName.replace(/ /g, '');
           $(this).val(lexiconName);
         });
       $('#node-input-values-container')

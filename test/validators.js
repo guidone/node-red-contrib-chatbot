@@ -59,7 +59,7 @@ describe('Validators', function() {
     ]));
   });
 
-  it ('validates a file path', function() {
+  it('validates a file path', function() {
     assert.isFalse(validators.filepath('not a real path'));
     assert.isTrue(validators.filepath('/dir/file.mp3'));
     assert.isTrue(validators.filepath('/dir/test'));
@@ -67,25 +67,25 @@ describe('Validators', function() {
     assert.isTrue(validators.filepath('../dir/test'));
   });
 
-  it ('validates a url', function() {
+  it('validates a url', function() {
     assert.isFalse(validators.url('not a real url'));
     assert.isTrue(validators.url('http://host.com//dir/file.mp3'));
     assert.isTrue(validators.url('https://hots.com/dir/file.mp3'));
   });
 
-  it ('validates a buffer', function() {
+  it('validates a buffer', function() {
     assert.isFalse(validators.buffer('not a real buffer'));
     assert.isTrue(validators.buffer(new Buffer('just a buffer')));
   });
 
-  it ('validates a string', function() {
+  it('validates a string', function() {
     assert.isFalse(validators.string(42));
     assert.isFalse(validators.string(''));
     assert.isFalse(validators.string({}));
     assert.isTrue(validators.string('test string'));
   });
 
-  it ('validates a boolean', function() {
+  it('validates a boolean', function() {
     assert.isFalse(validators.boolean(42));
     assert.isFalse(validators.boolean(''));
     assert.isFalse(validators.boolean('true'));
@@ -93,12 +93,30 @@ describe('Validators', function() {
     assert.isTrue(validators.boolean(false));
   });
 
-  it ('validates an array', function() {
+  it('validates an array', function() {
     assert.isFalse(validators.array(42));
     assert.isFalse(validators.array('[]'));
     assert.isFalse(validators.array([]));
     assert.isTrue(validators.array([1]));
     assert.isTrue(validators.array([1, 2]));
+  });
+
+  it('validates NLP token', function() {
+    assert.isTrue(validators.nlpToken('is[verb]'));
+    assert.isTrue(validators.nlpToken('[noun]->my_var'));
+    assert.isTrue(validators.nlpToken('is[verb]->verb'));
+    assert.isFalse(validators.nlpToken('is[verb'));
+    assert.isFalse(validators.nlpToken('[verb]-'));
+    assert.isFalse(validators.nlpToken('[verb]->['));
+    assert.isFalse(validators.nlpToken('[verb]->'));
+    assert.isFalse(validators.nlpToken('[]->var'));
+  });
+
+  it('validates NLP tokens', function() {
+    assert.isTrue(validators.nlpTokens('is[verb],[noun]->my_var'));
+    assert.isTrue(validators.nlpTokens('[noun]->my_var'));
+    assert.isFalse(validators.nlpTokens('[noun->my_var'));
+    assert.isFalse(validators.nlpTokens('is[verb],[noun->my_var'));
   });
 
 });

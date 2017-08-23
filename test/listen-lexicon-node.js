@@ -2,6 +2,7 @@ var _ = require('underscore');
 var assert = require('chai').assert;
 var RED = require('./lib/red-stub')();
 var ListenBlock = require('../nodes/chatbot-listen');
+var ListenLexiconBlock = require('../nodes/chatbot-listen-lexicon');
 
 describe('Chat listen lexicon node', function() {
 
@@ -108,6 +109,46 @@ describe('Chat listen lexicon node', function() {
     assert.equal(RED.node.message(1).payload.content, 'my car is a Peugeout Talbot and I am happy');
     assert.equal(RED.node.message(1).originalMessage.chat.id, 42);
     assert.equal(msg.chat().get('my_car'), 'peugeout talbot');
+  });
+
+  it('should add a lexicon inline', function () {
+    var msg = RED.createMessage({
+      content: 'my car is a Peugeout Talbot and I am happy'
+    });
+    RED.node.config({
+      name: 'car',
+      values: ['lamborghini', 'fiat']
+    });
+    ListenLexiconBlock(RED);
+    RED.node.get().emit('input', msg);
+
+    assert.equal(RED.node.message().payload.content, 'my car is a Peugeout Talbot and I am happy');
+    assert.isObject(RED.node.message().payload.lexicon);
+    assert.equal(RED.node.message().payload.lexicon['lamborghini'], 'car');
+    assert.equal(RED.node.message().payload.lexicon['fiat'], 'car');
+  });
+
+  it('should chain two lexicons inline', function () {
+    var msg = RED.createMessage({
+      content: 'my car is a Peugeout Talbot and I am happy',
+      lexicon: {
+        'toyota': 'car',
+        'obama': 'president'
+      }
+    });
+    RED.node.config({
+      name: 'car',
+      values: ['lamborghini', 'fiat']
+    });
+    ListenLexiconBlock(RED);
+    RED.node.get().emit('input', msg);
+
+    assert.equal(RED.node.message().payload.content, 'my car is a Peugeout Talbot and I am happy');
+    assert.isObject(RED.node.message().payload.lexicon);
+    assert.equal(RED.node.message().payload.lexicon['lamborghini'], 'car');
+    assert.equal(RED.node.message().payload.lexicon['fiat'], 'car');
+    assert.equal(RED.node.message().payload.lexicon['toyota'], 'car');
+    assert.equal(RED.node.message().payload.lexicon['obama'], 'president');
   });
 
 });

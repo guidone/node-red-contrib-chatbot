@@ -858,6 +858,25 @@ describe('NLP matcher', function() {
 
   });
 
+  it('should not match bad a url', function() {
+
+    var message = 'I am reading http:javascript-jedi.com';
+    var terms = NplMatcher.parseSentence(message);
+    var rules = new NplMatcher.MatchRules([
+      {
+        type: 'verb',
+        text: 'am reading'
+      },
+      {
+        type: 'url',
+        variable: 'address'
+      }
+    ]);
+    var matchedRules = NplMatcher.matchRules(terms, rules);
+
+    assert.isEmpty(matchedRules);
+  });
+
   it('should match a verb with preposition', function() {
 
     var message = 'switch on lights dining room';
@@ -893,7 +912,6 @@ describe('NLP matcher', function() {
     var rules = new NplMatcher.MatchRules([
       'send', 'cv', 'to', '->email'
     ]);
-
 
     var matchedRules = NplMatcher.matchRules(terms, rules);
 
@@ -1022,7 +1040,7 @@ describe('NLP matcher', function() {
       'bmw': 'Car',
       'toyota': 'Car',
       'chrisler': 'Car'
-    }, true);
+    });
     var rules = new NplMatcher.MatchRules([
       {
         text: 'my'
@@ -1046,20 +1064,17 @@ describe('NLP matcher', function() {
     assert.equal(matchedRules[0].at(0).text, 'my');
     assert.equal(matchedRules[0].at(0).distance, 0);
 
-
-
     assert.equal(matchedRules[0].at(1).text, 'car');
     assert.equal(matchedRules[0].at(1).distance, 0);
     assert.equal(matchedRules[0].at(2).text, 'is');
     assert.equal(matchedRules[0].at(2).distance, 0);
-
 
     assert.equal(matchedRules[0].at(3).value, 'lamborghini');
     assert.equal(matchedRules[0].at(3).distance, 1);
 
   });
 
-  it.only('should match a car lexicon while driving', function() {
+  it('should match a car lexicon while driving', function() {
 
     var message = 'I am driving a Lamborghini';
     var terms = NplMatcher.parseSentence(message, {
@@ -1088,7 +1103,6 @@ describe('NLP matcher', function() {
     assert.equal(matchedRules[0].at(2).value, 'lamborghini');
     assert.equal(matchedRules[0].at(2).distance, 1);
   });
-
 
 });
 

@@ -55,7 +55,9 @@
       }
       this.outputs = node.rules.length;
     },
-
+    outputLabels: function(index) {
+      return this.rules[index];
+    },
     oneditprepare: function() {
       function resizeRule(rule) {
       }

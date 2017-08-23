@@ -1,17 +1,5 @@
 var _ = require('underscore');
-
-var clc = require('cli-color');
-var prettyjson = require('prettyjson');
-var helpers = require('../lib/helpers/regexps');
-
-var green = clc.greenBright;
-var white = clc.white;
-var grey = clc.blackBright;
-
 var utils = require('../lib/helpers/utils');
-var fetchers = require('../lib/helpers/fetchers');
-var validators = require('../lib/helpers/validators');
-
 
 module.exports = function(RED) {
 
@@ -40,7 +28,7 @@ module.exports = function(RED) {
           msg.payload = {};
         }
         msg.payload.lexicon = currentLexicon;
-      };
+      }
 
       node.send(msg);
     });

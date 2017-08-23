@@ -1,14 +1,7 @@
 var _ = require('underscore');
 var NplMatcher = require('../lib/npl-matcher');
-var clc = require('cli-color');
-var prettyjson = require('prettyjson');
 var helpers = require('../lib/helpers/regexps');
 var utils = require('../lib/helpers/utils');
-var validators = require('../lib/helpers/validators');
-
-var green = clc.greenBright;
-var white = clc.white;
-var grey = clc.blackBright;
 
 module.exports = function(RED) {
 
@@ -45,22 +38,6 @@ module.exports = function(RED) {
       if (helpers.isCommand(message)) {
         return;
       }
-
-      // debug the terms
-      /*if (debug) {
-        // eslint-disable-next-line no-console
-        console.log('');
-        // eslint-disable-next-line no-console
-        console.log(grey('------ Sentence Analysis ----------------'));
-        // eslint-disable-next-line no-console
-        console.log(green('Message:'), white(message));
-        try {
-          // eslint-disable-next-line no-console
-          console.log(prettyjson.render(terms._terms));
-        } catch(e) {
-          // pretty json may breaks
-        }
-      }*/
 
       rules.forEach(function(rule) {
         var matchedRule = null;
