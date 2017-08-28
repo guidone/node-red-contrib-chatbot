@@ -12,7 +12,6 @@ var tasks = new Promise(function(resolve) {
   resolve();
 });
 
-
 var mappings = {
   'Buttons-node.md': 'chatbot-inline-buttons.html',
   'Generic-Template-node.md': 'chatbot-generic-template.html',
