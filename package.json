@@ -11,7 +11,7 @@
     "commit-wiki": "git add . && git commit -m \"docs\"",
     "build-docs": "git clone https://github.com/guidone/node-red-contrib-chatbot.wiki.git ./wiki && node ./bin/generate-docs && rm -rf ./wiki",
     "clean": "rm -rf ./wiki",
-    "version": "git clone https://github.com/guidone/node-red-contrib-chatbot.wiki.git ./wiki && node ./bin/generate-docs && rm -rf ./wiki && git add *.html"
+    "version": "git clone https://github.com/guidone/node-red-contrib-chatbot.wiki.git ./wiki && node ./bin/generate-docs && rm -rf ./wiki && git add *.html && git add *.md"
   },
   "repository": {
     "type": "git",
@@ -27,6 +27,7 @@
       "chatbot-voice": "./nodes/chatbot-voice.js",
       "chatbot-language": "./nodes/chatbot-language.js",
       "chatbot-listen": "./nodes/chatbot-listen.js",
+      "chatbot-listen-lexicon": "./nodes/chatbot-listen-lexicon.js",
       "chatbot-parse": "./nodes/chatbot-parse.js",
       "chatbot-command": "./nodes/chatbot-command.js",
       "chatbot-document": "./nodes/chatbot-document.js",
@@ -72,7 +73,7 @@
     "@slack/client": "^3.5.1",
     "apiai": "^3.0.0",
     "cli-color": "^1.1.0",
-    "compromise": "^7.0.28",
+    "compromise": "^10.7.1",
     "cookie-parser": "^1.4.3",
     "fast-levenshtein": "^1.1.3",
     "jszip": "^3.1.3",
@@ -80,7 +81,7 @@
     "marked": "^0.3.6",
     "mime": "^1.3.4",
     "moment": "^2.13.0",
-    "nlp_compromise": "^6.5.3",
+    "nlp_compromise": "^6.5.5",
     "node-emoji": "^1.3.1",
     "node-telegram-bot-api": "^0.27.1",
     "prettyjson": "^1.2.1",
@@ -94,7 +95,7 @@
     "underscore.string": "^3.3.4"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
+    "chai": "^4.1.1",
     "eslint": "^3.19.0",
     "mocha": "^3.2.0"
   }

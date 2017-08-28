@@ -79,17 +79,14 @@ module.exports = {
         ],
         "lines-around-comment": "off",
         "lines-around-directive": "error",
-        "max-depth": "error",
+        "max-depth": ["error", 5],
         "max-len": "off",
         "max-lines": "off",
         "max-nested-callbacks": "error",
         "max-params": "error",
         "max-statements": "off",
         "max-statements-per-line": "error",
-        "multiline-ternary": [
-            "error",
-            "never"
-        ],
+        "multiline-ternary": "off",
         "new-parens": "off",
         "newline-after-var": "off",
         "newline-before-return": "off",
@@ -213,7 +210,8 @@ module.exports = {
         "operator-assignment": "error",
         "operator-linebreak": [
             "error",
-            "before"
+            "before",
+            {"overrides": {"?": "after"}}
         ],
         "padded-blocks": "off",
         "prefer-arrow-callback": "off",

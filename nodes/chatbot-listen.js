@@ -1,12 +1,7 @@
 var _ = require('underscore');
 var NplMatcher = require('../lib/npl-matcher');
-var clc = require('cli-color');
-var prettyjson = require('prettyjson');
 var helpers = require('../lib/helpers/regexps');
-
-var green = clc.greenBright;
-var white = clc.white;
-var grey = clc.blackBright;
+var utils = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
 
@@ -23,7 +18,9 @@ module.exports = function(RED) {
       var chatContext = msg.chat();
 
       var rules = node.rules;
-      var debug = node.showdebug;
+
+      var debug = utils.extractValue('boolean', 'showdebug', node, msg);
+      var lexicon = utils.extractValue('hash', 'lexicon', node, msg);
 
       // do nothing if it's not a chat message
       if (originalMessage == null || _.isEmpty(rules)) {
@@ -35,27 +32,11 @@ module.exports = function(RED) {
 
       // parse incoming message
       var message = msg.payload.content;
-      var terms = NplMatcher.parseSentence(message);
+      var terms = NplMatcher.parseSentence(message, lexicon, debug);
 
       // do not try to parse if it's a command like
       if (helpers.isCommand(message)) {
         return;
-      }
-
-      // debug the terms
-      if (debug) {
-        // eslint-disable-next-line no-console
-        console.log('');
-        // eslint-disable-next-line no-console
-        console.log(grey('------ Sentence Analysis ----------------'));
-        // eslint-disable-next-line no-console
-        console.log(green('Message:'), white(message));
-        try {
-          // eslint-disable-next-line no-console
-          console.log(prettyjson.render(terms._terms));
-        } catch(e) {
-          // pretty json may breaks
-        }
       }
 
       rules.forEach(function(rule) {

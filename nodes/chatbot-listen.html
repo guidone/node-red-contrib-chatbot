@@ -55,7 +55,9 @@
       }
       this.outputs = node.rules.length;
     },
-
+    outputLabels: function(index) {
+      return this.rules[index];
+    },
     oneditprepare: function() {
       function resizeRule(rule) {
       }
@@ -590,8 +592,8 @@
 <p>If a rule is matched, the following rules are skipped and not evaluated. A rule with just a <code>*</code> matches everything and it&#39;s generally used as a catch-all at the end if every other rules are not matched. The node will not try to parse command-like sentences (for example <code>/my_command</code>)</p>
 <p>Given these two set of tokens
 :ke</p>
-<pre><code>1 - ⌘send⌘ ⌘curriculum⌘ ⌘vitae⌘
-2 - ⌘send⌘ ⌘cv⌘
+<pre><code>1 - |send| |curriculum| |vitae|
+2 - |send| |cv|
 </code></pre><p>then the inbound messages:</p>
 <pre><code>&quot;can you send your curriculum vitae&quot;
 // MATCH
@@ -602,11 +604,11 @@
 &quot;please send your curriculum&quot;
 // DOESN&#39;T MATCH
 </code></pre><p>Listen node is also capable of a basic simple language processing of the sentence (only available for English) and for a more specific match is possible to specify also the type for a keyword</p>
-<pre><code>1 - __send[verb]__ __curriculum[noun]__ __vitae__
-2 - __send[verb]__ __cv__
+<pre><code>1 - |send[verb]| |curriculum[noun]| |vitae|
+2 - |send[verb]| |cv|
 </code></pre><p>Available types are: <em>word</em> (catches everything), <em>noun</em>, <em>verb</em>, <em>adjective</em>, <em>conjunction</em>, <em>adverb</em>, <em>symbol</em>, <em>date</em>, <em>determiner</em>, <em>person</em>, <em>number</em>, <em>email</em>, <em>url</em>, <em>currency</em>.</p>
 <p>Keyword types are particularly useful to search for patterns in the user&#39;s input and store them in the chat context, for example to match a sentence like <em>&quot;send you curriculum vitae to Peter at peter.something@gmail.com&quot;</em></p>
-<pre><code>1 - __send[verb]__ _curriculum__ __to__ __[person]-&gt;name__ __at__ __[email]-&gt;toemail__
+<pre><code>1 - |send[verb]| |curriculum| |to| |[person]-&gt;name| |at| |[email]-&gt;toemail|
 </code></pre><p>then the inbound messages:</p>
 <pre><code>&quot;can you send your curriculum vitae to John at my-email@email.com&quot;
 // MATCH
