@@ -1,3 +1,4 @@
+* **0.8.5** - Added `Listen Lexicon node` for `Listen node`
 * **0.8.4** - Added CHANGELOG.md
 * **0.8.3** - Added `Sticker node` for Telegram
 * **0.8.2** - Fixed API.ai node
