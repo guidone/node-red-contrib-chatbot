@@ -108,21 +108,6 @@ describe('Chat message node', function() {
     assert.equal(RED.node.message().payload.chatId, 42);
   });
 
-
-  it('should send a message with markdown formatting', function() {
-    var msg = RED.createMessage();
-    RED.node.config({
-      message: 'this is *bold*',
-      track: false,
-      answer: false,
-      parse_mode: 'Markdown'
-    });
-    MessageBlock(RED);
-    RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'this is *bold*');
-    assert.equal(RED.node.message().payload.options.parse_mode, 'Markdown');
-  });
-
   it('should convert a emojii in unicode', function() {
     var msg = RED.createMessage();
     RED.node.config({

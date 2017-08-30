@@ -321,6 +321,7 @@ module.exports = function(RED) {
     var node = this;
     this.bot = config.bot;
     this.track = config.track;
+    this.parseMode = config.parseMode;
 
     this.config = RED.nodes.getNode(this.bot);
     if (this.config) {
@@ -403,6 +404,7 @@ module.exports = function(RED) {
       //var context = node.context();
       var buttons = null;
       var track = node.track;
+      var parseMode = !_.isEmpty(node.parseMode) ? node.parseMode : null;
       var chatId = utils.getChatId(msg);
       var chatContext = utils.getChatContext(msg);
       var type = msg.payload.type;
@@ -435,8 +437,11 @@ module.exports = function(RED) {
                 }).then(messageOk, messageError);
 
               } else {
-                node.telegramBot.sendMessage(chatId, msg.payload.content, msg.payload.options)
-                  .then(messageOk, messageError);
+                node.telegramBot.sendMessage(
+                  chatId,
+                  msg.payload.content,
+                  _.extend({}, msg.payload.options, {parse_mode: parseMode})
+                ).then(messageOk, messageError);
               }
               break;
             case 'photo':
@@ -552,7 +557,8 @@ module.exports = function(RED) {
                 node.telegramBot.sendMessage(chatId, msg.payload.content, {
                   reply_markup: JSON.stringify({
                     inline_keyboard: inlineKeyboard
-                  })
+                  }),
+                  parse_mode: parseMode
                 }).then(messageOk, messageError);
               }
               break;
@@ -568,7 +574,8 @@ module.exports = function(RED) {
                   }),
                   resize_keyboard: true,
                   one_time_keyboard: true
-                })
+                }),
+                parse_mode: parseMode
               };
               // finally send
               node.telegramBot.sendMessage(
