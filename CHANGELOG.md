@@ -1,3 +1,4 @@
+* **0.8.6** - Moved *parse mode* parameter to `Message node` to `Telegram Sender node`. Parsing is now also available in `Inline Buttons node` and `Keyboard node`
 * **0.8.5** - Added `Listen Lexicon node` for `Listen node`
 * **0.8.4** - Added CHANGELOG.md
 * **0.8.3** - Added `Sticker node` for Telegram
