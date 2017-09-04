@@ -28,7 +28,6 @@ module.exports = function(RED) {
 
       var message = node.message;
       var answer = node.answer;
-      var parse_mode = node.parse_mode;
       var chatId = utils.getChatId(msg);
       var messageId = utils.getMessageId(msg);
       var template = MessageTemplate(msg, node);
@@ -62,10 +61,6 @@ module.exports = function(RED) {
       };
 
       msg.payload.options = {};
-      // parse mode
-      if (!_.isEmpty(parse_mode)) {
-        msg.payload.options.parse_mode = parse_mode;
-      }
       // reply flag
       if (answer) {
         msg.payload.options.reply_to_message_id = messageId;
