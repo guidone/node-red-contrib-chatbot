@@ -8,6 +8,10 @@ var RtmClient = require('@slack/client').RtmClient;
 var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
 
 
+
+
+var SlackServer = require('../lib/slack/slack-chat');
+
 module.exports = function(RED) {
 
   function SlackBotNode(n) {
@@ -34,8 +38,14 @@ module.exports = function(RED) {
         if (!this.rtm) {
           // add realtime wrapper
           //this.rtm = new RtmClient(this.token, {logLevel: 'debug'});
-          this.rtm = new RtmClient(this.token);
-          this.rtm.start();
+          console.log('Init slack rtm con ', this.token);
+          var rtm = new RtmClient(this.token);
+          rtm.start();
+
+          this.chat = SlackServer.createServer({
+            connector: rtm
+          });
+
         }
       }
     }
