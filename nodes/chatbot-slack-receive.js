@@ -46,6 +46,9 @@ module.exports = function(RED) {
             connector: rtm
           });
 
+          this.chat.on('message', function(message) {
+            console.log('VEDI CHE RICEVO', message);
+          })
         }
       }
     }
