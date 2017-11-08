@@ -47,6 +47,10 @@ module.exports = function(RED) {
             connector: rtm,
             store: ChatContextStore
           });
+          // handle error on slack chat server
+          this.chat.on('error', function(error) {
+            self.error('[SLACK] ' + error);
+          });
         }
       }
     }
@@ -119,9 +123,9 @@ module.exports = function(RED) {
     if (this.config) {
       this.status({fill: 'red', shape: 'ring', text: 'disconnected'});
 
-      node.rtm = this.config.rtm;
+      node.chat = this.config.chat;
 
-      if (node.rtm) {
+      if (node.chat) {
         this.status({fill: 'green', shape: 'ring', text: 'connected'});
       } else {
         node.warn("no bot in config.");
@@ -130,7 +134,7 @@ module.exports = function(RED) {
       node.warn("no config.");
     }
 
-    function prepareMessage(msg) {
+    /*function prepareMessage(msg) {
 
       return new Promise(function(resolve, reject) {
 
@@ -194,12 +198,14 @@ module.exports = function(RED) {
         }
 
       });
-    }
+    }*/
 
 
-    this.on('input', function (msg) {
+    this.on('input', function (message) {
 
-      if (msg.payload == null) {
+      node.chat.send(message);
+
+      /*if (msg.payload == null) {
         node.warn("msg.payload is empty");
         return;
       }
@@ -210,7 +216,7 @@ module.exports = function(RED) {
       if (msg.payload.type == null) {
         node.warn("msg.payload.type is empty");
         return;
-      }
+      }*/
 
       //var channelId = msg.payload.chatId;
 
@@ -221,10 +227,10 @@ module.exports = function(RED) {
        return;
        }*/
 
-      prepareMessage(msg)
-        .then(function() {
+      //prepareMessage(msg)
+        //.then(function() {
           //node.slackBot.postMessage(channelId, obj.content, obj.params, noop);
-        });
+        //});
 
 
 
