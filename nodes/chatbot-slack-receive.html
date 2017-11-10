@@ -94,23 +94,40 @@
         value: '',
         type: 'chatbot-slack-node',
         required: true
+      },
+      track: {
+        value: false
+      },
+      outputs: {
+        value: 0
       }
     },
     inputs: 1,
-    outputs: 1,
+    outputs: 0,
     icon: 'chatbot-sender.png',
     paletteLabel: 'Slack Out',
     label: function () {
       return 'Slack Sender';
+    },
+    oneditsave: function() {
+      var track = $('#node-input-track').is(':checked');
+      this.outputs = track ? 1 : 0;
     }
   });
 </script>
 
 <script type="text/x-red" data-template-name="chatbot-slack-send">
-    <div class="form-row">
-        <label for="node-input-bot"><i class="icon-bookmark"></i> Bot</label>
-        <input type="text" id="node-input-bot" placeholder="Bot">
-    </div>
+<div class="form-row">
+    <label for="node-input-bot"><i class="icon-bookmark"></i> Bot</label>
+    <input type="text" id="node-input-bot" placeholder="Bot">
+</div>
+<div class="form-row">
+  <label for="node-input-track"><i class="icon-envelope"></i> Track</label>
+  <input type="checkbox" value="true" id="node-input-track">
+  <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+  Track response of the user for this message, any further answer will be redirect to the output pin.
+  </div>
+</div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-slack-send">
