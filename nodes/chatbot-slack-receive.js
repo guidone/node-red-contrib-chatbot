@@ -1,18 +1,18 @@
 var _ = require('underscore');
-var WebClient = require('@slack/client').WebClient;
+
 var ChatContextStore = require('../lib/chat-context-store');
-var helpers = require('../lib/slack/slack');
-var fs = require('fs');
-var os = require('os');
+
 var RtmClient = require('@slack/client').RtmClient;
-var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
-
-
-
-
+var WebClient = require('@slack/client').WebClient;
 var SlackServer = require('../lib/slack/slack-chat');
 
 module.exports = function(RED) {
+
+  // register Slack server
+  if (RED.chatPlatforms == null) {
+    RED.chatPlatforms = {};
+  }
+  RED.chatPlatforms.slack = SlackServer;
 
   function SlackBotNode(n) {
 
@@ -42,8 +42,10 @@ module.exports = function(RED) {
           console.log('Init slack rtm con ', this.token);
           var rtm = new RtmClient(this.token);
           rtm.start();
+          var client = new WebClient(this.token);
 
           this.chat = SlackServer.createServer({
+            client: client,
             connector: rtm,
             store: ChatContextStore
           });
@@ -203,7 +205,21 @@ module.exports = function(RED) {
 
     this.on('input', function (message) {
 
-      node.chat.send(message);
+      var chatContext = message.chat();
+      var currentConversationNode = chatContext.get('currentConversationNode');
+      // if a conversation is going on, go straight to the conversation node, otherwise if authorized
+      // then first pin, if not second pin
+      if (currentConversationNode != null) {
+        // void the current conversation
+        chatContext.set('currentConversationNode', null);
+        // emit message directly the node where the conversation stopped
+        RED.events.emit('node:' + currentConversationNode, message);
+      } else {
+        node.chat.send(message);
+      }
+
+
+
 
       /*if (msg.payload == null) {
         node.warn("msg.payload is empty");
