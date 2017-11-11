@@ -91,6 +91,7 @@
     "sanitize-filename": "^1.6.0",
     "smooch-core": "^2.0.0",
     "speakeasy-nlp": "^0.2.2",
+    "stream-buffers": "^3.0.1",
     "underscore": "^1.8.3",
     "underscore.string": "^3.3.4"
   },
