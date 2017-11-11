@@ -1,4 +1,5 @@
 var _ = require('underscore');
+var moment = require('moment');
 
 var ChatContextStore = require('../lib/chat-context-store');
 
@@ -96,10 +97,21 @@ module.exports = function(RED) {
 
         node.chat.on('message', function (message) {
           var context = message.chat();
-          context.dump();
+          //context.dump();
           // todo jump to node
-          node.send(message);
+          //node.send(message);
 
+          // if a conversation is going on, go straight to the conversation node, otherwise if authorized
+          // then first pin, if not second pin
+          var currentConversationNode = context.get('currentConversationNode');
+          if (currentConversationNode != null) {
+            // void the current conversation
+            context.set('currentConversationNode', null);
+            // emit message directly the node where the conversation stopped
+            RED.events.emit('node:' + currentConversationNode, message);
+          } else {
+            node.send(message);
+          }
         });
 
 
@@ -119,7 +131,7 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
     var node = this;
     this.bot = config.bot;
-
+    this.track = config.track;
 
     this.config = RED.nodes.getNode(this.bot);
     if (this.config) {
@@ -203,24 +215,33 @@ module.exports = function(RED) {
     }*/
 
 
+    // relay message
+    var handler = function(msg) {
+      node.send(msg);
+    };
+    RED.events.on('node:' + config.id, handler);
+
+    // cleanup on close
+    this.on('close',function() {
+      RED.events.removeListener('node:' + config.id, handler);
+    });
+
     this.on('input', function (message) {
 
-      var chatContext = message.chat();
-      var currentConversationNode = chatContext.get('currentConversationNode');
-      // if a conversation is going on, go straight to the conversation node, otherwise if authorized
-      // then first pin, if not second pin
-      if (currentConversationNode != null) {
-        // void the current conversation
-        chatContext.set('currentConversationNode', null);
-        // emit message directly the node where the conversation stopped
-        RED.events.emit('node:' + currentConversationNode, message);
-      } else {
-        node.chat.send(message);
+      var context = message.chat();
+
+      // check if this node has some wirings in the follow up pin, in that case
+      // the next message should be redirected here
+      if (context != null && node.track && !_.isEmpty(node.wires[0])) {
+        console.log('set tracking', node.id);
+        context.set('currentConversationNode', node.id);
+        context.set('currentConversationNode_at', moment());
       }
 
+      node.chat.send(message);
 
 
-
+      // todo move this to chat platform
       /*if (msg.payload == null) {
         node.warn("msg.payload is empty");
         return;
