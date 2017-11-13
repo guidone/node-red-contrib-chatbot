@@ -7,7 +7,8 @@ var mime = require('mime');
 
 var ValidExtensions = {
   'facebook': ['.mp4'],
-  'telegram': ['.mp4']
+  'telegram': ['.mp4'],
+  'slack': ['.mp4']
 };
 
 module.exports = function(RED) {
@@ -18,7 +19,7 @@ module.exports = function(RED) {
     this.filename = config.filename;
     this.name = config.name;
     this.caption = config.caption;
-    this.transports = ['facebook', 'telegram'];
+    this.transports = ['facebook', 'telegram', 'slack'];
 
     this.on('input', function(msg) {
 
