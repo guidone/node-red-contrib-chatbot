@@ -44,8 +44,8 @@ module.exports = function(RED) {
           var rtm = new RtmClient(this.token);
           rtm.start();
           var client = new WebClient(this.token);
-
           this.chat = SlackServer.createServer({
+            botname: this.botname,
             client: client,
             connector: rtm,
             store: ChatContextStore
@@ -59,8 +59,11 @@ module.exports = function(RED) {
     }
 
     this.on('close', function (done) {
-      self.rtm.disconnect();
-      done();
+      self.chat.close()
+        .then(function() {
+          self.chat = null;
+          done();
+        });
     });
 
     this.isAuthorized = function (username, userId) {
@@ -97,10 +100,6 @@ module.exports = function(RED) {
 
         node.chat.on('message', function (message) {
           var context = message.chat();
-          //context.dump();
-          // todo jump to node
-          //node.send(message);
-
           // if a conversation is going on, go straight to the conversation node, otherwise if authorized
           // then first pin, if not second pin
           var currentConversationNode = context.get('currentConversationNode');
@@ -136,9 +135,7 @@ module.exports = function(RED) {
     this.config = RED.nodes.getNode(this.bot);
     if (this.config) {
       this.status({fill: 'red', shape: 'ring', text: 'disconnected'});
-
       node.chat = this.config.chat;
-
       if (node.chat) {
         this.status({fill: 'green', shape: 'ring', text: 'connected'});
       } else {
@@ -233,7 +230,6 @@ module.exports = function(RED) {
       // check if this node has some wirings in the follow up pin, in that case
       // the next message should be redirected here
       if (context != null && node.track && !_.isEmpty(node.wires[0])) {
-        console.log('set tracking', node.id);
         context.set('currentConversationNode', node.id);
         context.set('currentConversationNode_at', moment());
       }
@@ -254,22 +250,6 @@ module.exports = function(RED) {
         node.warn("msg.payload.type is empty");
         return;
       }*/
-
-      //var channelId = msg.payload.chatId;
-
-      //var noop = function() {};
-
-      /*if (msg.payload.content == null) {
-       node.warn("msg.payload.content is empty");
-       return;
-       }*/
-
-      //prepareMessage(msg)
-        //.then(function() {
-          //node.slackBot.postMessage(channelId, obj.content, obj.params, noop);
-        //});
-
-
 
 
 
