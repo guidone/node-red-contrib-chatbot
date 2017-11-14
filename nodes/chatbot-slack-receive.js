@@ -6,6 +6,7 @@ var ChatContextStore = require('../lib/chat-context-store');
 var RtmClient = require('@slack/client').RtmClient;
 var WebClient = require('@slack/client').WebClient;
 var SlackServer = require('../lib/slack/slack-chat');
+var ContextProviders = require('../lib/chat-platform/chat-context-factory');
 
 module.exports = function(RED) {
 
@@ -18,14 +19,18 @@ module.exports = function(RED) {
   }
   RED.redbot.platforms.slack = SlackServer;
 
+  var contextProviders = ContextProviders(RED);
+  console.log('context providers -> ', contextProviders.getProviders());
+
+
   function SlackBotNode(n) {
-
     RED.nodes.createNode(this, n);
+    var node = this;
 
-    var self = this;
     this.botname = n.botname;
     this.store = n.store;
 
+    // todo move this
     this.usernames = [];
     if (n.usernames) {
       this.usernames = _(n.usernames.split(',')).chain()
@@ -41,42 +46,53 @@ module.exports = function(RED) {
       if (this.token) {
         this.token = this.token.trim();
         if (!this.chat) {
-
-
-
+          // get the context storage node
           var contextStorageNode = RED.nodes.getNode(this.store);
-          console.log('>>>>>>', contextStorageNode);
+          // check if provider exisst
+          if (!contextProviders.hasProvider(contextStorageNode.contextStorage)) {
+            node.error('Error creating chatbot ' + this.botname+ '. The context provider '
+              + contextStorageNode.contextStorage + ' doesn\'t exist.');
+            return;
+          }
+          // create a factory for the context provider
+          node.contextProvider = contextProviders.getProvider(
+            contextStorageNode.contextStorage,
+            contextStorageNode.contextParams
+          );
+          console.log('Init slack rtm con ', node.token);
 
-
-          console.log('Init slack rtm con ', this.token);
-          var rtm = new RtmClient(this.token);
-          rtm.start();
-          var client = new WebClient(this.token);
-          this.chat = SlackServer.createServer({
-            botname: this.botname,
+          var rtm = new RtmClient(node.token);
+          rtm.start(); // todo move this on start
+          var client = new WebClient(node.token);
+          node.chat = SlackServer.createServer({
+            botname: node.botname,
             client: client,
             connector: rtm,
-            store: ChatContextStore
+            contextProvider: node.contextProvider,
+
+            store: ChatContextStore // todo remove
           });
-          // handle error on slack chat server
-          this.chat.on('error', function(error) {
-            self.error('[SLACK] ' + error);
-          });
+
+          node.contextProvider.start();
         }
       }
     }
 
     this.on('close', function (done) {
-      self.chat.close()
+      node.chat.close()
         .then(function() {
-          self.chat = null;
+          return node.contextProvider.stop();
+        })
+        .then(function() {
+          node.chat = null;
           done();
         });
     });
 
+    // todo move this inside the slack chat
     this.isAuthorized = function (username, userId) {
-      if (self.usernames.length > 0) {
-        return self.usernames.indexOf(username) != -1 || self.usernames.indexOf(String(userId)) != -1;
+      if (node.usernames.length > 0) {
+        return node.usernames.indexOf(username) != -1 || node.usernames.indexOf(String(userId)) != -1;
       }
       return true;
     }
@@ -119,6 +135,11 @@ module.exports = function(RED) {
           } else {
             node.send(message);
           }
+        });
+
+        // handle error on sl6teack chat server
+        node.chat.on('error', function(error) {
+          node.error('[SLACK] ' + error);
         });
 
 
