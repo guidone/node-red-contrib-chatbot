@@ -1,11 +1,5 @@
 var _ = require('underscore');
 var moment = require('moment');
-
-var ChatContextStore = require('../lib/chat-context-store');
-
-var RtmClient = require('@slack/client').RtmClient;
-var WebClient = require('@slack/client').WebClient;
-
 var SlackServer = require('../lib/slack/slack-chat');
 var ContextProviders = require('../lib/chat-platform/chat-context-factory');
 
@@ -61,13 +55,14 @@ module.exports = function(RED) {
           );
           console.log('Init slack rtm con ', node.token);
 
-          var rtm = new RtmClient(node.token);
-          rtm.start(); // todo move this on start
-          var client = new WebClient(node.token);
+          //var rtm = new RtmClient(node.token);
+          //rtm.start(); // todo move this on start
+          //var client = new WebClient(node.token);
           node.chat = SlackServer.createServer({
             botname: node.botname,
-            client: client,
-            connector: rtm,
+            token: node.token,
+            //client: client,
+            //connector: rtm,
             contextProvider: node.contextProvider
           });
 
