@@ -2,6 +2,18 @@ var _ = require('underscore');
 
 module.exports = function(RED) {
 
+  // register Slack server
+  if (RED.redbot == null) {
+    RED.redbot = {};
+  }
+  if (RED.redbot.contexts == null) {
+    RED.redbot.contexts = {};
+  }
+  RED.redbot.contexts.memory = function() {
+    console.log('context memory factory');
+  };
+
+
   function ChatBotContext(config) {
     RED.nodes.createNode(this, config);
     var node = this;

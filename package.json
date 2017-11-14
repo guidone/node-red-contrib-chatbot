@@ -54,7 +54,8 @@
       "chatbot-slack-receive": "./nodes/chatbot-slack-receive.js",
       "chatbot-messenger-menu": "./nodes/chatbot-messenger-menu.js",
       "chatbot-facebook-receive": "./nodes/chatbot-facebook-receive.js",
-      "chatbot-smooch-receive": "./nodes/chatbot-smooch-receive.js"
+      "chatbot-smooch-receive": "./nodes/chatbot-smooch-receive.js",
+      "chatbot-context-store": "./nodes/chatbot-context-store.js"
     }
   },
   "maintainers": [

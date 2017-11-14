@@ -10,10 +10,13 @@ var SlackServer = require('../lib/slack/slack-chat');
 module.exports = function(RED) {
 
   // register Slack server
-  if (RED.chatPlatforms == null) {
-    RED.chatPlatforms = {};
+  if (RED.redbot == null) {
+    RED.redbot = {};
   }
-  RED.chatPlatforms.slack = SlackServer;
+  if (RED.redbot.platforms == null) {
+    RED.redbot.platforms = {};
+  }
+  RED.redbot.platforms.slack = SlackServer;
 
   function SlackBotNode(n) {
 
@@ -21,10 +24,10 @@ module.exports = function(RED) {
 
     var self = this;
     this.botname = n.botname;
+    this.store = n.store;
 
     this.usernames = [];
     if (n.usernames) {
-
       this.usernames = _(n.usernames.split(',')).chain()
         .map(function(userId) {
           return userId.match(/^[a-zA-Z0-9_]+?$/) ? userId : null
@@ -38,8 +41,13 @@ module.exports = function(RED) {
       if (this.token) {
         this.token = this.token.trim();
         if (!this.chat) {
-          // add realtime wrapper
-          //this.rtm = new RtmClient(this.token, {logLevel: 'debug'});
+
+
+
+          var contextStorageNode = RED.nodes.getNode(this.store);
+          console.log('>>>>>>', contextStorageNode);
+
+
           console.log('Init slack rtm con ', this.token);
           var rtm = new RtmClient(this.token);
           rtm.start();

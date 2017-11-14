@@ -1,0 +1,57 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-context-store', {
+    category: 'config',
+    color: '#FFCC66',
+    defaults: {
+      name: {
+        value: ''
+      },
+      contextStorage: {
+        value: ''
+      },
+      contextParams: {
+        value: ''
+      }
+    },
+    paletteLabel: 'Context',
+    label: function() {
+      return this.name || "Context Store";
+    },
+    oneditsave: function() {
+      this.contextParams = $('#node-config-input-contextParams').typedInput('value');
+      console.log('+++', this.contextParams);
+    },
+    oneditprepare: function() {
+      var widget = $('#node-config-input-contextParams');
+      widget.typedInput({
+        default: 'json',
+        types: ['json']
+      });
+      console.log('setto', this.contextParams);
+      widget.typedInput('value', this.contextParams);
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-context-store">
+<div class="form-row">
+  <label for="node-config-input-name"><i class="icon-tag"></i> Name</label>
+  <input type="text" id="node-config-input-name" placeholder="Name" style="width:250px;">
+</div>
+<div class="form-row">
+  <label for="node-config-input-contextStorage">Type</label>
+  <select id="node-config-input-contextStorage">
+    <option value="memory">Memory (volatile)</option>
+    <option value="plain-file">Plain file</option>
+  </select>
+</div>
+<div class="form-row">
+  <label for="node-config-input-params">Params</label>
+  <input type="text" id="node-config-input-contextParams" placeholder="Params">
+</div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-context-store">
+  Bla bla
+</script>
+
