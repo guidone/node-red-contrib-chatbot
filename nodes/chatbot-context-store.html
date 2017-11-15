@@ -19,16 +19,28 @@
     },
     oneditsave: function() {
       this.contextParams = $('#node-config-input-contextParams').typedInput('value');
-      console.log('+++', this.contextParams);
     },
     oneditprepare: function() {
+      var node = this;
       var widget = $('#node-config-input-contextParams');
       widget.typedInput({
-        default: 'json',
+        'default': 'json',
         types: ['json']
       });
-      console.log('setto', this.contextParams);
       widget.typedInput('value', this.contextParams);
+      // fetch available context providers
+      $.get('/redbot/context-providers')
+        .done(function(response) {
+          var select = $('#node-config-input-contextStorage');
+          var idx;
+          var providers = {};
+          for(idx = 0; idx < response.length; idx++) {
+            select.append('<option value="' + response[idx].type + '">' + response[idx].name + '</option>');
+            providers[response[idx].type] = response[idx];
+          }
+          select.data('providers', providers);
+          select.val(node.contextStorage);
+        });
     }
   });
 </script>
@@ -41,8 +53,6 @@
 <div class="form-row">
   <label for="node-config-input-contextStorage">Type</label>
   <select id="node-config-input-contextStorage">
-    <option value="memory">Memory (volatile)</option>
-    <option value="plain-file">Plain file</option>
   </select>
 </div>
 <div class="form-row">
