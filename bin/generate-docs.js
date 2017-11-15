@@ -42,7 +42,8 @@ var mappings = {
   'API.ai-node.md': 'chatbot-apiai.html',
   'Sticker-node.md': 'chatbot-sticker.html',
   'Waiting-node.md': 'chatbot-waiting.html',
-  'Listen-Lexicon-node.md': 'chatbot-listen-lexicon.html'
+  'Listen-Lexicon-node.md': 'chatbot-listen-lexicon.html',
+  'Context-Provider-node.md': 'chatbot-context-store.html'
 };
 
 function collectImages(html) {
