@@ -15,4 +15,20 @@ module.exports = function(RED) {
   }
 
   RED.nodes.registerType('chatbot-context-store', ChatBotContextStore);
+
+
+
+  RED.httpNode.get('/redbot/context-providers', function(req, res) {
+
+    var contextProviders = RED.settings.get('contextProviders');
+
+    res.send(_(contextProviders).map(function(obj, name) {
+      return {
+        type: name,
+        name: obj.prototype != null && !_.isEmpty(obj.prototype.name) ? obj.prototype.name : name,
+        description: obj.prototype != null && !_.isEmpty(obj.prototype.description) ? obj.prototype.description : null
+      }
+    }));
+  });
+
 };
