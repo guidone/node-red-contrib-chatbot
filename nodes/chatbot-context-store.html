@@ -38,8 +38,14 @@
             select.append('<option value="' + response[idx].type + '">' + response[idx].name + '</option>');
             providers[response[idx].type] = response[idx];
           }
-          select.data('providers', providers);
           select.val(node.contextStorage);
+          $('#provider-documentation')
+            .html(providers[node.contextStorage] != null ? providers[node.contextStorage].description : '');
+          // on change
+          select.change(function() {
+            var providerName = select.val();
+            $('#provider-documentation').html(providers[providerName] != null ? providers[providerName].description : '');
+          });
         });
     }
   });
@@ -59,9 +65,11 @@
   <label for="node-config-input-params">Params</label>
   <input type="text" id="node-config-input-contextParams" placeholder="Params">
 </div>
+<div id="provider-documentation" style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;margin-bottom:10px;">
+</div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-context-store">
-  Bla bla
+<script type="text/x-red" data-help-name="chatbot-context-store"><p>Docs for context provider</p>
+<p>tbd</p>
 </script>
 
