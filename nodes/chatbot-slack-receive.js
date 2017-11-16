@@ -71,12 +71,13 @@ module.exports = function(RED) {
     }
 
     this.on('close', function (done) {
-      node.chat.close()
+      node.chat.stop()
         .then(function() {
           return node.contextProvider.stop();
         })
         .then(function() {
           node.chat = null;
+          node.contextProvider = null;
           done();
         });
     });
