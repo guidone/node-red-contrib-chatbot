@@ -25,7 +25,7 @@ module.exports = function(RED) {
     this.store = n.store;
 
     // todo move this
-    this.usernames = [];
+    /*this.usernames = [];
     if (n.usernames) {
       this.usernames = _(n.usernames.split(',')).chain()
         .map(function(userId) {
@@ -33,7 +33,7 @@ module.exports = function(RED) {
         })
         .compact()
         .value();
-    }
+    }*/
 
     if (this.credentials) {
       this.token = this.credentials.token;
@@ -54,20 +54,18 @@ module.exports = function(RED) {
             contextStorageNode.contextParams
           );
           console.log('Init slack rtm con ', node.token);
-
-          //var rtm = new RtmClient(node.token);
-          //rtm.start(); // todo move this on start
-          //var client = new WebClient(node.token);
-          node.chat = SlackServer.createServer({
-            botname: node.botname,
-            token: node.token,
-            //client: client,
-            //connector: rtm,
-            contextProvider: node.contextProvider
-          });
-
-          node.contextProvider.start();
-          node.chat.start();
+          // try to start the servers
+          try {
+            node.contextProvider.start();
+            node.chat = SlackServer.createServer({
+              botname: node.botname,
+              token: node.token,
+              contextProvider: node.contextProvider
+            });
+            node.chat.start();
+          } catch(e) {
+            node.error(e);
+          }
         }
       }
     }
@@ -84,12 +82,12 @@ module.exports = function(RED) {
     });
 
     // todo move this inside the slack chat
-    this.isAuthorized = function (username, userId) {
+    /*this.isAuthorized = function (username, userId) {
       if (node.usernames.length > 0) {
         return node.usernames.indexOf(username) != -1 || node.usernames.indexOf(String(userId)) != -1;
       }
       return true;
-    }
+    }*/
   }
   RED.nodes.registerType('chatbot-slack-node', SlackBotNode, {
     credentials: {
@@ -109,10 +107,7 @@ module.exports = function(RED) {
 
     if (this.config) {
       this.status({fill: 'red', shape: 'ring', text: 'disconnected'});
-
-      //node.slackBot = this.config.slackBot;
       node.chat = this.config.chat;
-
       if (node.chat) {
         this.status({fill: 'green', shape: 'ring', text: 'connected'});
 
@@ -148,9 +143,6 @@ module.exports = function(RED) {
     }
   }
   RED.nodes.registerType('chatbot-slack-receive', SlackInNode);
-
-
-
 
   function SlackOutNode(config) {
     RED.nodes.createNode(this, config);
