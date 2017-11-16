@@ -43,7 +43,8 @@ var mappings = {
   'Sticker-node.md': 'chatbot-sticker.html',
   'Waiting-node.md': 'chatbot-waiting.html',
   'Listen-Lexicon-node.md': 'chatbot-listen-lexicon.html',
-  'Context-Provider-node.md': 'chatbot-context-store.html'
+  'Context-Provider-node.md': 'chatbot-context-store.html',
+  'Slack-Receiver-node.md': 'chatbot-slack-receive.html|chatbot-slack-node'
 };
 
 function collectImages(html) {
@@ -111,12 +112,18 @@ _(mappings).map(function(nodeFile, markdownFile) {
 
     return new Promise(function(resolve, reject) {
 
-      console.log('- ' + grey(markdownFile));
+      var nodeName = null;
+      if (nodeFile.indexOf('|') !== -1) {
+        nodeName = nodeFile.split('|')[1];
+        nodeFile = nodeFile.split('|')[0];
+      } else {
+        nodeName = nodeFile.replace('.html', '');
+      }
+      console.log('- ' + grey(markdownFile) + ' (' + nodeName + ')');
 
       var markdownSource = fs.readFileSync(__dirname + '/../wiki/' + markdownFile, 'utf8');
       var htmlSource = marked(markdownSource);
       var nodeSource = fs.readFileSync(__dirname + '/../nodes/' + nodeFile, 'utf8');
-      var nodeName = nodeFile.replace('.html', '');
 
       // reformat tables with dl, dt, dd, Node-RED standard
       // table always 3 cell: name of field, type, description
@@ -153,7 +160,7 @@ _(mappings).map(function(nodeFile, markdownFile) {
 
           // replace inline documentation
           var newDoc = '<script type="text\/x-red" data-help-name="' + nodeName + '">' + htmlSource + '</script>';
-          var regexp = new RegExp('<script type=\"text\/x-red\" data-help-name=\"' + nodeName + '\">[\\s\\S]*<\/script>', 'g');
+          var regexp = new RegExp('<script type=\"text\/x-red\" data-help-name=\"' + nodeName + '\">[\\s\\S]*?<\/script>', 'g');
           nodeSource = nodeSource.replace(regexp, newDoc);
 
           fs.writeFileSync(__dirname + '/../nodes/' + nodeFile, nodeSource, 'utf8');
