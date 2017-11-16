@@ -1,5 +1,5 @@
 var qr = require('qr-image');
-var MessageTemplate = require('../lib/message-template.js');
+var MessageTemplate = require('../lib/message-template-async');
 var utils = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
@@ -16,18 +16,19 @@ module.exports = function(RED) {
       var template = MessageTemplate(msg, node);
       var message = utils.extractValue('string', 'message', node, msg);
 
-      var buffer = qr.imageSync(template(message));
-
-      // send out the picture with the qr
-      msg.payload = {
-        type: 'photo',
-        content: buffer,
-        chatId: chatId,
-        messageId: messageId,
-        inbound: false
-      };
-
-      node.send(msg);
+      template(message)
+        .then(function(translated) {
+          var buffer = qr.imageSync(translated);
+          // send out the picture with the qr
+          msg.payload = {
+            type: 'photo',
+            content: buffer,
+            chatId: chatId,
+            messageId: messageId,
+            inbound: false
+          };
+          node.send(msg);
+        });
     });
   }
   RED.nodes.registerType('chatbot-qrcode', ChatBotQRCode);

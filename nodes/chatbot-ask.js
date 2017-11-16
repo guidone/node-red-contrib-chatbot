@@ -1,6 +1,6 @@
 var _ = require('underscore');
 var utils = require('../lib/helpers/utils');
-var MessageTemplate = require('../lib/message-template.js');
+var MessageTemplate = require('../lib/message-template-async');
 var emoji = require('node-emoji');
 
 module.exports = function(RED) {
@@ -39,17 +39,18 @@ module.exports = function(RED) {
         message = msg.payload.message;
       }
 
-      msg.payload = {
-        type: 'buttons',
-        content: message != null ? emoji.emojify(template(message)) : null,
-        chatId: chatId,
-        messageId: messageId,
-        buttons: answers
-      };
-
-      node.send(msg);
+      template(message)
+        .then(function(translated) {
+          msg.payload = {
+            type: 'buttons',
+            content: message != null ? emoji.emojify(translated) : null,
+            chatId: chatId,
+            messageId: messageId,
+            buttons: answers
+          };
+          node.send(msg);
+        });
     });
-
   }
 
   RED.nodes.registerType('chatbot-ask', ChatBotAsk);

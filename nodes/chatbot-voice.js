@@ -1,5 +1,5 @@
 var _ = require('underscore');
-var MessageTemplate = require('../lib/message-template.js');
+var MessageTemplate = require('../lib/message-template-async');
 var request = require('request').defaults({ encoding: null });
 var utils = require('../lib/helpers/utils');
 
@@ -33,31 +33,32 @@ module.exports = function(RED) {
         node.error('Empty message');
       }
 
-      var parsedMessage = template(message);
-      var voiceUrl = 'http://www.voicerss.org/controls/speech.ashx?'
-        + 'hl=' + language
-        + '&src=' + encodeURI(parsedMessage) + '&c=mp3'
-        + '&rnd=' + Math.random();
+      template(message)
+        .then(function(parsedMessage) {
+          var voiceUrl = 'http://www.voicerss.org/controls/speech.ashx?'
+            + 'hl=' + language
+            + '&src=' + encodeURI(parsedMessage) + '&c=mp3'
+            + '&rnd=' + Math.random();
 
-      request.get({
-        url: voiceUrl,
-        headers: {}
-      }, function(err, response, buffer) {
-        if (err) {
-          node.error('Error contacting VoiceRSS');
-        } else {
-          msg.payload = {
-            type: 'audio',
-            content: buffer,
-            filename: 'audio.mp3',
-            chatId: chatId,
-            messageId: messageId,
-            inbound: false
-          };
-          node.send(msg);
-        }
-      });
-
+          request.get({
+            url: voiceUrl,
+            headers: {}
+          }, function(err, response, buffer) {
+            if (err) {
+              node.error('Error contacting VoiceRSS');
+            } else {
+              msg.payload = {
+                type: 'audio',
+                content: buffer,
+                filename: 'audio.mp3',
+                chatId: chatId,
+                messageId: messageId,
+                inbound: false
+              };
+              node.send(msg);
+            }
+          });
+        });
     });
   }
 

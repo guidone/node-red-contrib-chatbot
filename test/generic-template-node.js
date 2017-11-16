@@ -33,7 +33,13 @@ describe('Chat generic template node', function() {
     });
     GenericTemplateBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.isNull(RED.node.message());
+    return RED.node.get().await()
+      .then(
+        function() {},
+        function () {
+          assert.isNull(RED.node.message());
+        }
+      );
   });
 
   it('should not pass through with Smooch', function() {
@@ -64,7 +70,13 @@ describe('Chat generic template node', function() {
     });
     GenericTemplateBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.isNull(RED.node.message());
+    return RED.node.get().await()
+      .then(
+        function() {},
+        function () {
+          assert.isNull(RED.node.message());
+        }
+      );
   });
 
   it('should create a generic template with Facebook', function() {
@@ -95,27 +107,30 @@ describe('Chat generic template node', function() {
     });
     GenericTemplateBlock(RED);
     RED.node.get().emit('input', msg);
-    var payload = RED.node.message().payload;
+    return RED.node.get().await()
+      .then(function () {
+        var payload = RED.node.message().payload;
 
-    assert.equal(payload.type, 'generic-template');
-    assert.equal(payload.chatId, 42);
-    assert.isArray(payload.elements);
-    assert.lengthOf(payload.elements, 1);
-    assert.equal(payload.elements[0].title, 'message for the template');
-    assert.equal(payload.elements[0].subtitle, 'I am a subtitle');
-    assert.equal(payload.elements[0].imageUrl, 'http://the.image.png');
-    assert.isArray(payload.elements[0].buttons);
-    assert.lengthOf(payload.elements[0].buttons, 3);
-    var buttons = payload.elements[0].buttons;
-    assert.equal(buttons[0].type, 'postback');
-    assert.equal(buttons[0].value, 'value 1');
-    assert.equal(buttons[0].label, 'Value 1');
-    assert.equal(buttons[1].type, 'url');
-    assert.equal(buttons[1].url, 'http://javascript-jedi.com');
-    assert.equal(buttons[1].label, 'Value 2');
-    assert.equal(buttons[2].type, 'call');
-    assert.equal(buttons[2].value, '+39347123456');
-    assert.equal(buttons[2].label, 'Call me');
+        assert.equal(payload.type, 'generic-template');
+        assert.equal(payload.chatId, 42);
+        assert.isArray(payload.elements);
+        assert.lengthOf(payload.elements, 1);
+        assert.equal(payload.elements[0].title, 'message for the template');
+        assert.equal(payload.elements[0].subtitle, 'I am a subtitle');
+        assert.equal(payload.elements[0].imageUrl, 'http://the.image.png');
+        assert.isArray(payload.elements[0].buttons);
+        assert.lengthOf(payload.elements[0].buttons, 3);
+        var buttons = payload.elements[0].buttons;
+        assert.equal(buttons[0].type, 'postback');
+        assert.equal(buttons[0].value, 'value 1');
+        assert.equal(buttons[0].label, 'Value 1');
+        assert.equal(buttons[1].type, 'url');
+        assert.equal(buttons[1].url, 'http://javascript-jedi.com');
+        assert.equal(buttons[1].label, 'Value 2');
+        assert.equal(buttons[2].type, 'call');
+        assert.equal(buttons[2].value, '+39347123456');
+        assert.equal(buttons[2].label, 'Call me');
+      });
   });
 
   it('should create a generic template with Facebook passing the buttons as payload in upstream node', function() {
@@ -145,27 +160,30 @@ describe('Chat generic template node', function() {
     });
     GenericTemplateBlock(RED);
     RED.node.get().emit('input', msg);
-    var payload = RED.node.message().payload;
+    return RED.node.get().await()
+      .then(function () {
+        var payload = RED.node.message().payload;
 
-    assert.equal(payload.type, 'generic-template');
-    assert.equal(payload.chatId, 42);
-    assert.isArray(payload.elements);
-    assert.lengthOf(payload.elements, 1);
-    assert.equal(payload.elements[0].title, 'message for the template');
-    assert.equal(payload.elements[0].subtitle, 'I am a subtitle');
-    assert.equal(payload.elements[0].imageUrl, 'http://the.image.png');
-    assert.isArray(payload.elements[0].buttons);
-    assert.lengthOf(payload.elements[0].buttons, 3);
-    var buttons = payload.elements[0].buttons;
-    assert.equal(buttons[0].type, 'postback');
-    assert.equal(buttons[0].value, 'value 1');
-    assert.equal(buttons[0].label, 'Value 1');
-    assert.equal(buttons[1].type, 'url');
-    assert.equal(buttons[1].url, 'http://javascript-jedi.com');
-    assert.equal(buttons[1].label, 'Value 2');
-    assert.equal(buttons[2].type, 'call');
-    assert.equal(buttons[2].value, '+39347123456');
-    assert.equal(buttons[2].label, 'Call me');
+        assert.equal(payload.type, 'generic-template');
+        assert.equal(payload.chatId, 42);
+        assert.isArray(payload.elements);
+        assert.lengthOf(payload.elements, 1);
+        assert.equal(payload.elements[0].title, 'message for the template');
+        assert.equal(payload.elements[0].subtitle, 'I am a subtitle');
+        assert.equal(payload.elements[0].imageUrl, 'http://the.image.png');
+        assert.isArray(payload.elements[0].buttons);
+        assert.lengthOf(payload.elements[0].buttons, 3);
+        var buttons = payload.elements[0].buttons;
+        assert.equal(buttons[0].type, 'postback');
+        assert.equal(buttons[0].value, 'value 1');
+        assert.equal(buttons[0].label, 'Value 1');
+        assert.equal(buttons[1].type, 'url');
+        assert.equal(buttons[1].url, 'http://javascript-jedi.com');
+        assert.equal(buttons[1].label, 'Value 2');
+        assert.equal(buttons[2].type, 'call');
+        assert.equal(buttons[2].value, '+39347123456');
+        assert.equal(buttons[2].label, 'Call me');
+      });
   });
 
   it('should create a generic template with Facebook passing all params in the payload of upstream node', function() {
@@ -196,27 +214,30 @@ describe('Chat generic template node', function() {
     RED.node.config({});
     GenericTemplateBlock(RED);
     RED.node.get().emit('input', msg);
-    var payload = RED.node.message().payload;
+    return RED.node.get().await()
+      .then(function () {
+        var payload = RED.node.message().payload;
 
-    assert.equal(payload.type, 'generic-template');
-    assert.equal(payload.chatId, 42);
-    assert.isArray(payload.elements);
-    assert.lengthOf(payload.elements, 1);
-    assert.equal(payload.elements[0].title, 'message for the template');
-    assert.equal(payload.elements[0].subtitle, 'I am a subtitle');
-    assert.equal(payload.elements[0].imageUrl, 'http://the.image.png');
-    assert.isArray(payload.elements[0].buttons);
-    assert.lengthOf(payload.elements[0].buttons, 3);
-    var buttons = payload.elements[0].buttons;
-    assert.equal(buttons[0].type, 'postback');
-    assert.equal(buttons[0].value, 'value 1');
-    assert.equal(buttons[0].label, 'Value 1');
-    assert.equal(buttons[1].type, 'url');
-    assert.equal(buttons[1].url, 'http://javascript-jedi.com');
-    assert.equal(buttons[1].label, 'Value 2');
-    assert.equal(buttons[2].type, 'call');
-    assert.equal(buttons[2].value, '+39347123456');
-    assert.equal(buttons[2].label, 'Call me');
+        assert.equal(payload.type, 'generic-template');
+        assert.equal(payload.chatId, 42);
+        assert.isArray(payload.elements);
+        assert.lengthOf(payload.elements, 1);
+        assert.equal(payload.elements[0].title, 'message for the template');
+        assert.equal(payload.elements[0].subtitle, 'I am a subtitle');
+        assert.equal(payload.elements[0].imageUrl, 'http://the.image.png');
+        assert.isArray(payload.elements[0].buttons);
+        assert.lengthOf(payload.elements[0].buttons, 3);
+        var buttons = payload.elements[0].buttons;
+        assert.equal(buttons[0].type, 'postback');
+        assert.equal(buttons[0].value, 'value 1');
+        assert.equal(buttons[0].label, 'Value 1');
+        assert.equal(buttons[1].type, 'url');
+        assert.equal(buttons[1].url, 'http://javascript-jedi.com');
+        assert.equal(buttons[1].label, 'Value 2');
+        assert.equal(buttons[2].type, 'call');
+        assert.equal(buttons[2].value, '+39347123456');
+        assert.equal(buttons[2].label, 'Call me');
+      });
   });
 
   it('should create a carousel generic template chaining two generic template', function() {
@@ -266,37 +287,40 @@ describe('Chat generic template node', function() {
     });
     GenericTemplateBlock(RED);
     RED.node.get().emit('input', msg);
-    var payload = RED.node.message().payload;
-    var buttons = null;
+    return RED.node.get().await()
+      .then(function () {
+        var payload = RED.node.message().payload;
+        var buttons = null;
 
-    assert.equal(payload.type, 'generic-template');
-    assert.equal(payload.chatId, 42);
-    assert.isArray(payload.elements);
-    assert.lengthOf(payload.elements, 2);
-    assert.equal(payload.elements[0].title, 'message for the template');
-    assert.equal(payload.elements[0].subtitle, 'I am a subtitle');
-    assert.equal(payload.elements[0].imageUrl, 'http://the.image.png');
-    assert.isArray(payload.elements[0].buttons);
-    assert.lengthOf(payload.elements[0].buttons, 3);
-    buttons = payload.elements[0].buttons;
-    assert.equal(buttons[0].type, 'postback');
-    assert.equal(buttons[0].value, 'value 1');
-    assert.equal(buttons[0].label, 'Value 1');
-    assert.equal(buttons[1].type, 'url');
-    assert.equal(buttons[1].url, 'http://javascript-jedi.com');
-    assert.equal(buttons[1].label, 'Value 2');
-    assert.equal(buttons[2].type, 'call');
-    assert.equal(buttons[2].value, '+39347123456');
-    assert.equal(buttons[2].label, 'Call me');
-    assert.equal(payload.elements[1].title, 'Hello I am the second template');
-    assert.equal(payload.elements[1].subtitle, 'More subtitle');
-    assert.equal(payload.elements[1].imageUrl, 'http://a.different.image.png');
-    buttons = payload.elements[1].buttons;
-    assert.equal(buttons[0].type, 'share');
-    assert.equal(buttons[1].type, 'logout');
-    assert.equal(buttons[2].type, 'call');
-    assert.equal(buttons[2].value, '+39347654321');
-    assert.equal(buttons[2].label, 'Call me!');
+        assert.equal(payload.type, 'generic-template');
+        assert.equal(payload.chatId, 42);
+        assert.isArray(payload.elements);
+        assert.lengthOf(payload.elements, 2);
+        assert.equal(payload.elements[0].title, 'message for the template');
+        assert.equal(payload.elements[0].subtitle, 'I am a subtitle');
+        assert.equal(payload.elements[0].imageUrl, 'http://the.image.png');
+        assert.isArray(payload.elements[0].buttons);
+        assert.lengthOf(payload.elements[0].buttons, 3);
+        buttons = payload.elements[0].buttons;
+        assert.equal(buttons[0].type, 'postback');
+        assert.equal(buttons[0].value, 'value 1');
+        assert.equal(buttons[0].label, 'Value 1');
+        assert.equal(buttons[1].type, 'url');
+        assert.equal(buttons[1].url, 'http://javascript-jedi.com');
+        assert.equal(buttons[1].label, 'Value 2');
+        assert.equal(buttons[2].type, 'call');
+        assert.equal(buttons[2].value, '+39347123456');
+        assert.equal(buttons[2].label, 'Call me');
+        assert.equal(payload.elements[1].title, 'Hello I am the second template');
+        assert.equal(payload.elements[1].subtitle, 'More subtitle');
+        assert.equal(payload.elements[1].imageUrl, 'http://a.different.image.png');
+        buttons = payload.elements[1].buttons;
+        assert.equal(buttons[0].type, 'share');
+        assert.equal(buttons[1].type, 'logout');
+        assert.equal(buttons[2].type, 'call');
+        assert.equal(buttons[2].value, '+39347654321');
+        assert.equal(buttons[2].label, 'Call me!');
+      });
   });
 
 });

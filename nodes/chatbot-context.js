@@ -13,7 +13,6 @@ module.exports = function(RED) {
     console.log('context memory factory');
   };
 
-
   function ChatBotContext(config) {
     RED.nodes.createNode(this, config);
     var node = this;
