@@ -49,7 +49,8 @@
     <input type="text" id="node-config-input-store" placeholder="Select storage for chat context">
   </div>
   <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
-    Select which type of storage for the chat context, if none is selected then non-persisten "memory" will be selected
+    Select the chat context provider to use with this bot, if none is selected then non-persistent "memory" will be used.<br>
+    To extend <strong>RedBot</strong> with a new chat context provider see <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Creating-a-Chat-Context-Provider" target="_blank">this tutorial</a>.
   </div>
 </script>
 
@@ -59,7 +60,6 @@
     token with <code>/token</code>.
   </p>
 </script>
-
 
 <script type="text/javascript">
   RED.nodes.registerType('chatbot-slack-receive', {
