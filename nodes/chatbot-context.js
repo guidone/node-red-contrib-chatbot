@@ -1,17 +1,7 @@
 var _ = require('underscore');
+var when = require('../lib/helpers/utils').when;
 
 module.exports = function(RED) {
-
-  // register Slack server
-  if (RED.redbot == null) {
-    RED.redbot = {};
-  }
-  if (RED.redbot.contexts == null) {
-    RED.redbot.contexts = {};
-  }
-  RED.redbot.contexts.memory = function() {
-    console.log('context memory factory');
-  };
 
   function ChatBotContext(config) {
     RED.nodes.createNode(this, config);
@@ -42,42 +32,41 @@ module.exports = function(RED) {
         return;
       }
 
-      switch(command) {
+      var task = when(true);
 
-        case 'get':
-          msg.payload = chatContext.get(fieldName);
-          node.send(msg);
-          break;
-
-        case 'delete':
-          chatContext.remove(fieldName);
-          node.send(msg);
-          break;
-
-        case 'set':
-
-          switch (fieldType) {
-            case 'str':
-              chatContext.set(fieldName, fieldValue);
-              break;
-            case 'num':
-              chatContext.set(fieldName, Number(fieldValue));
-              break;
-            case 'bol':
-              chatContext.set(fieldName, /^true$/i.test(fieldValue));
-              break;
-            case 'json':
-              try {
-                chatContext.set(fieldName, JSON.parse(fieldValue));
-              } catch(e) {
-                node.error('Unable to parse json in context node');
-              }
-              break;
-          }
-          node.send(msg);
-          break;
+      if (command === 'get') {
+        when(chatContext.get(fieldName))
+          .then(function(value) {
+            msg.payload = value;
+            node.send(msg);
+          });
+        return;
+      } else if (command === 'delete') {
+        task = when(chatContext.remove(fieldName));
+      } else if (command === 'set') {
+        switch (fieldType) {
+          case 'str':
+            task = when(chatContext.set(fieldName, fieldValue));
+            break;
+          case 'num':
+            task = when(chatContext.set(fieldName, Number(fieldValue)));
+            break;
+          case 'bol':
+            task = when(chatContext.set(fieldName, /^true$/i.test(fieldValue)));
+            break;
+          case 'json':
+            try {
+              task = when(chatContext.set(fieldName, JSON.parse(fieldValue)));
+            } catch(e) {
+              node.error('Unable to parse json in context node');
+            }
+            break;
+        }
       }
-
+      // finally
+      task.then(function() {
+          node.send(msg);
+        });
     });
   }
   RED.nodes.registerType('chatbot-context', ChatBotContext);
