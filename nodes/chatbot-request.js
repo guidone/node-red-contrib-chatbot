@@ -1,4 +1,4 @@
-var MessageTemplate = require('../lib/message-template.js');
+var MessageTemplate = require('../lib/message-template-async');
 var emoji = require('node-emoji');
 var utils = require('../lib/helpers/utils');
 
@@ -27,18 +27,19 @@ module.exports = function(RED) {
       var buttonLabel = utils.extractValue('string', 'buttonLabel', node, msg);
       var template = MessageTemplate(msg, node);
 
-      msg.payload = {
-        type: 'request',
-        requestType: requestType,
-        label: buttonLabel,
-        chatId: chatId,
-        messageId: messageId,
-        content: emoji.emojify(template(message))
-      };
-
-      node.send(msg);
+      template(message)
+        .then(function(translated) {
+          msg.payload = {
+            type: 'request',
+            requestType: requestType,
+            label: buttonLabel,
+            chatId: chatId,
+            messageId: messageId,
+            content: emoji.emojify(translated)
+          };
+          node.send(msg);
+        });
     });
-
   }
 
   RED.nodes.registerType('chatbot-request', ChatBotRequest);

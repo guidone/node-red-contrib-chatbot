@@ -17,11 +17,9 @@ module.exports = function(RED) {
   RED.nodes.registerType('chatbot-context-store', ChatBotContextStore);
 
 
-
+  // add an endpoint to get a list of context providers
   RED.httpNode.get('/redbot/context-providers', function(req, res) {
-
     var contextProviders = RED.settings.get('contextProviders');
-
     res.send(_(contextProviders).map(function(obj, name) {
       return {
         type: name,
