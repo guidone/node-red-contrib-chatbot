@@ -14,9 +14,12 @@ describe('Chat request node', function() {
     });
     RequestBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'i am the request');
-    assert.equal(RED.node.message().payload.type, 'request');
-    assert.equal(RED.node.message().payload.requestType, 'location');
+    return RED.node.get().await()
+      .then(function () {
+        assert.equal(RED.node.message().payload.content, 'i am the request');
+        assert.equal(RED.node.message().payload.type, 'request');
+        assert.equal(RED.node.message().payload.requestType, 'location');
+      });
   });
 
   it('should be a request phone', function() {
@@ -28,9 +31,12 @@ describe('Chat request node', function() {
     });
     RequestBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'i am the request');
-    assert.equal(RED.node.message().payload.type, 'request');
-    assert.equal(RED.node.message().payload.requestType, 'phone-number');
+    return RED.node.get().await()
+      .then(function () {
+        assert.equal(RED.node.message().payload.content, 'i am the request');
+        assert.equal(RED.node.message().payload.type, 'request');
+        assert.equal(RED.node.message().payload.requestType, 'phone-number');
+      });
   });
 
   it('should be a request phone with emojii', function() {
@@ -42,11 +48,13 @@ describe('Chat request node', function() {
     });
     RequestBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'i am the request ☕️');
-    assert.equal(RED.node.message().payload.type, 'request');
-    assert.equal(RED.node.message().payload.requestType, 'phone-number');
+    return RED.node.get().await()
+      .then(function () {
+        assert.equal(RED.node.message().payload.content, 'i am the request ☕️');
+        assert.equal(RED.node.message().payload.type, 'request');
+        assert.equal(RED.node.message().payload.requestType, 'phone-number');
+      });
   });
-
 
 });
 

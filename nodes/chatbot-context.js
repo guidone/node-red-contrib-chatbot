@@ -1,5 +1,6 @@
 var _ = require('underscore');
-var when = require('../lib/helpers/utils').when;
+var utils = require('../lib/helpers/utils');
+var when = utils.when;
 
 module.exports = function(RED) {
 
@@ -19,8 +20,7 @@ module.exports = function(RED) {
       var fieldValue = this.fieldValue;
       var fieldType = this.fieldType;
       var fieldName = this.fieldName;
-      var originalMessage = msg.originalMessage;
-      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
+      var chatId = utils.getChatId(msg);
 
       var chatContext = msg.chat();
       if (chatContext == null) {
@@ -33,7 +33,6 @@ module.exports = function(RED) {
       }
 
       var task = when(true);
-
       if (command === 'get') {
         when(chatContext.get(fieldName))
           .then(function(value) {
