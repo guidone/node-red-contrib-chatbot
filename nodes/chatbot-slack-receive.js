@@ -23,17 +23,7 @@ module.exports = function(RED) {
 
     this.botname = n.botname;
     this.store = n.store;
-
-    // todo move this
-    /*this.usernames = [];
-    if (n.usernames) {
-      this.usernames = _(n.usernames.split(',')).chain()
-        .map(function(userId) {
-          return userId.match(/^[a-zA-Z0-9_]+?$/) ? userId : null
-        })
-        .compact()
-        .value();
-    }*/
+    this.usernames = n.usernames != null ? n.usernames.split(',') : [];
 
     if (this.credentials) {
       this.token = this.credentials.token;
@@ -59,6 +49,7 @@ module.exports = function(RED) {
             node.contextProvider.start();
             node.chat = SlackServer.createServer({
               botname: node.botname,
+              authorizedUsernames: node.usernames,
               token: node.token,
               contextProvider: node.contextProvider
             });
@@ -81,14 +72,6 @@ module.exports = function(RED) {
           done();
         });
     });
-
-    // todo move this inside the slack chat
-    /*this.isAuthorized = function (username, userId) {
-      if (node.usernames.length > 0) {
-        return node.usernames.indexOf(username) != -1 || node.usernames.indexOf(String(userId)) != -1;
-      }
-      return true;
-    }*/
   }
   RED.nodes.registerType('chatbot-slack-node', SlackBotNode, {
     credentials: {
