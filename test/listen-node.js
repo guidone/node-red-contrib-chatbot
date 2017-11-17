@@ -75,7 +75,7 @@ describe('Chat listen node', function() {
     RED.node.config({
       rules: ['send,curriculum,vitae,[email]->email', 'send,curriculum,[email]->email']
     });
-    RED.environment.chat(msg.originalMessage.chat.id, {authorized: true});
+    msg.chat().set({authorized: true});
     ListenBlock(RED);
     RED.node.get().emit('input', msg);
     assert.equal(RED.node.message().payload.content, 'can you send your curriculum vitae to guido.bellomo@gmail.com');
@@ -88,7 +88,7 @@ describe('Chat listen node', function() {
     RED.node.config({
       rules: ['send,curriculum,vitae,[email]->email', 'send,curriculum,[email]->email']
     });
-    RED.environment.chat(msg.originalMessage.chat.id, {authorized: true});
+    msg.chat().set({authorized: true});
     ListenBlock(RED);
     RED.node.get().emit('input', msg);
     assert.equal(RED.node.message(), null);
