@@ -18,8 +18,11 @@ describe('Chat log node', function() {
     });
     LogBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.include(RED.node.message(), '42 [Javascript Jedi] <');
-    assert.include(RED.node.message(), '- I am the message');
+    return RED.node.get().await()
+      .then(function () {
+        assert.include(RED.node.message(), '42 [Javascript Jedi] <');
+        assert.include(RED.node.message(), '- I am the message');
+      });
   });
 
   it('should log the image message', function() {
@@ -35,8 +38,11 @@ describe('Chat log node', function() {
     });
     LogBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.include(RED.node.message(), '42 [Javascript Jedi] <');
-    assert.include(RED.node.message(), 'image: <buffer>');
+    return RED.node.get().await()
+      .then(function () {
+        assert.include(RED.node.message(), '42 [Javascript Jedi] <');
+        assert.include(RED.node.message(), 'image: <buffer>');
+      });
   });
 
   it('should log the location message', function() {
@@ -56,8 +62,11 @@ describe('Chat log node', function() {
     });
     LogBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.include(RED.node.message(), '42 [Javascript Jedi] <');
-    assert.include(RED.node.message(), '- latitude: 123 longitude: 123');
+    return RED.node.get().await()
+      .then(function () {
+        assert.include(RED.node.message(), '42 [Javascript Jedi] <');
+        assert.include(RED.node.message(), '- latitude: 123 longitude: 123');
+      });
   });
 
   it('should log the document message', function() {
@@ -73,8 +82,11 @@ describe('Chat log node', function() {
     });
     LogBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.include(RED.node.message(), '42 [Javascript Jedi] <');
-    assert.include(RED.node.message(), 'document: <buffer>');
+    return RED.node.get().await()
+      .then(function () {
+        assert.include(RED.node.message(), '42 [Javascript Jedi] <');
+        assert.include(RED.node.message(), 'document: <buffer>');
+      });
   });
 
   it('should log the audio message', function() {
@@ -90,11 +102,14 @@ describe('Chat log node', function() {
     });
     LogBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.include(RED.node.message(), '42 [Javascript Jedi] <');
-    assert.include(RED.node.message(), 'audio: <buffer>');
+    return RED.node.get().await()
+      .then(function () {
+        assert.include(RED.node.message(), '42 [Javascript Jedi] <');
+        assert.include(RED.node.message(), 'audio: <buffer>');
+      });
   });
 
-  it.only('should log the inline buttons', function() {
+  it('should log the inline buttons', function() {
     var msg = RED.createMessage({
       type: 'inline-buttons',
       content: 'these are buttons',

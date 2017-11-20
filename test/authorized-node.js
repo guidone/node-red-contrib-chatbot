@@ -11,12 +11,14 @@ describe('Chat authorized node', function() {
       command: 'start'
     });
     AuthorizedBlock(RED);
-    RED.environment.chat(msg.originalMessage.chat.id, {authorized: false});
+    msg.chat().set({authorized: false});
     RED.node.get().emit('input', msg);
-
-    assert.equal(RED.node.message(0), null);
-    assert.equal(RED.node.message(1).originalMessage.chat.id, 42);
-    assert.equal(RED.node.message(1).payload.content, 'I am the input message');
+    return RED.node.get().await()
+      .then(function () {
+        assert.equal(RED.node.message(0), null);
+        assert.equal(RED.node.message(1).originalMessage.chat.id, 42);
+        assert.equal(RED.node.message(1).payload.content, 'I am the input message');
+      });
   });
 
   it('should pass to the first output for authorized nodes', function () {
@@ -25,14 +27,14 @@ describe('Chat authorized node', function() {
       command: 'start'
     });
     AuthorizedBlock(RED);
-    RED.environment.chat(msg.originalMessage.chat.id, {authorized: true});
+    msg.chat().set({authorized: true});
     RED.node.get().emit('input', msg);
-
-    assert.equal(RED.node.message(0).originalMessage.chat.id, 42);
-    assert.equal(RED.node.message(0).payload.content, 'I am the input message');
-    assert.equal(RED.node.message(1), null);
+    return RED.node.get().await()
+      .then(function () {
+        assert.equal(RED.node.message(0).originalMessage.chat.id, 42);
+        assert.equal(RED.node.message(0).payload.content, 'I am the input message');
+        assert.equal(RED.node.message(1), null);
+      });
   });
-
-
 
 });

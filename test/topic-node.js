@@ -16,7 +16,7 @@ describe('Chat topic node', function() {
       ]
     });
     TopicBlock(RED);
-    RED.environment.chat(msg.originalMessage.chat.id, {
+    msg.chat().set({
       chatId: msg.originalMessage.chat.id,
       topic: 'ask_name'
     });
@@ -39,7 +39,7 @@ describe('Chat topic node', function() {
       ]
     });
     TopicBlock(RED);
-    RED.environment.chat(msg.originalMessage.chat.id, {
+    msg.chat().set({
       chatId: msg.originalMessage.chat.id
     });
     RED.node.get().emit('input', msg);
@@ -74,7 +74,7 @@ describe('Chat topic node', function() {
       ]
     });
     TopicBlock(RED);
-    RED.environment.chat(msg.originalMessage.chat.id, {
+    msg.chat().set({
       chatId: msg.originalMessage.chat.id,
       topic: 'ask_email'
     });
@@ -105,7 +105,7 @@ describe('Chat topic node', function() {
       ]
     });
     TopicBlock(RED);
-    RED.environment.chat(msg.originalMessage.chat.id, {
+    msg.chat().set({
       chatId: msg.originalMessage.chat.id,
       topic: 'ask_name'
     });
