@@ -12,11 +12,15 @@ describe('Chat conversation node', function() {
     });
     ConversationBlock(RED);
     RED.node.get().emit('input', {});
-    assert.equal(RED.node.message().originalMessage.chat.id, '4242');
-    assert.equal(RED.node.message().originalMessage.transport, 'telegram');
-    assert.isFunction(RED.node.message().chat);
-    assert.equal(RED.node.message().chat().get('transport'), 'telegram');
-    assert.equal(RED.node.message().chat().get('chatId'), '4242');
+    return RED.node.get().await()
+      .then(function () {
+        assert.equal(RED.node.message().originalMessage.chat.id, '4242');
+        assert.equal(RED.node.message().originalMessage.transport, 'telegram');
+        assert.isFunction(RED.node.message().chat);
+        assert.equal(RED.node.message().chat().get('transport'), 'telegram');
+        assert.equal(RED.node.message().chat().get('chatId'), '4242');
+      });
+
   });
 
   it('should start a conversation passing parameters in the payload', function() {
@@ -30,11 +34,14 @@ describe('Chat conversation node', function() {
     });
     ConversationBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().originalMessage.chat.id, '4242');
-    assert.equal(RED.node.message().originalMessage.transport, 'telegram');
-    assert.isFunction(RED.node.message().chat);
-    assert.equal(RED.node.message().chat().get('transport'), 'telegram');
-    assert.equal(RED.node.message().chat().get('chatId'), '4242');
+    return RED.node.get().await()
+      .then(function () {
+        assert.equal(RED.node.message().originalMessage.chat.id, '4242');
+        assert.equal(RED.node.message().originalMessage.transport, 'telegram');
+        assert.isFunction(RED.node.message().chat);
+        assert.equal(RED.node.message().chat().get('transport'), 'telegram');
+        assert.equal(RED.node.message().chat().get('chatId'), '4242');
+      });
   });
 
   it('should edit a message given the message id in the config panel', function() {
@@ -49,12 +56,15 @@ describe('Chat conversation node', function() {
     });
     ConversationBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().originalMessage.chat.id, '4242');
-    assert.equal(RED.node.message().originalMessage.transport, 'telegram');
-    assert.equal(RED.node.message().originalMessage.modify_message_id, '6262');
-    assert.isFunction(RED.node.message().chat);
-    assert.equal(RED.node.message().chat().get('transport'), 'telegram');
-    assert.equal(RED.node.message().chat().get('chatId'), '4242');
+    return RED.node.get().await()
+      .then(function () {
+        assert.equal(RED.node.message().originalMessage.chat.id, '4242');
+        assert.equal(RED.node.message().originalMessage.transport, 'telegram');
+        assert.equal(RED.node.message().originalMessage.modify_message_id, '6262');
+        assert.isFunction(RED.node.message().chat);
+        assert.equal(RED.node.message().chat().get('transport'), 'telegram');
+        assert.equal(RED.node.message().chat().get('chatId'), '4242');
+      });
   });
 
   it('should edit a message given the message id in payload', function() {
@@ -69,32 +79,15 @@ describe('Chat conversation node', function() {
     });
     ConversationBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().originalMessage.chat.id, '4242');
-    assert.equal(RED.node.message().originalMessage.transport, 'telegram');
-    assert.equal(RED.node.message().originalMessage.modify_message_id, '6262');
-    assert.isFunction(RED.node.message().chat);
-    assert.equal(RED.node.message().chat().get('transport'), 'telegram');
-    assert.equal(RED.node.message().chat().get('chatId'), '4242');
-  });
-
-  it('should edit a message using the message id in the chat context', function() {
-    var msg = RED.createMessage({
-    });
-    RED.node.config({
-      chatId: '42',
-      transport: 'telegram',
-      contextMessageId: true
-    });
-    RED.environment.chat(msg.originalMessage.chat.id, {
-      messageId: '6262'
-    });
-    ConversationBlock(RED);
-    RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().originalMessage.chat.id, '42');
-
-    assert.equal(RED.node.message().originalMessage.modify_message_id, '6262');
-    assert.equal(RED.node.message().originalMessage.transport, 'telegram');
-    assert.isFunction(RED.node.message().chat);
+    return RED.node.get().await()
+      .then(function () {
+        assert.equal(RED.node.message().originalMessage.chat.id, '4242');
+        assert.equal(RED.node.message().originalMessage.transport, 'telegram');
+        assert.equal(RED.node.message().originalMessage.modify_message_id, '6262');
+        assert.isFunction(RED.node.message().chat);
+        assert.equal(RED.node.message().chat().get('transport'), 'telegram');
+        assert.equal(RED.node.message().chat().get('chatId'), '4242');
+      });
   });
 
 });

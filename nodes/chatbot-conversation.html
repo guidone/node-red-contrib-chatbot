@@ -17,6 +17,11 @@
       },
       contextMessageId: {
         value: false
+      },
+      store: {
+        value: '',
+        type: 'chatbot-context-store',
+        required: false
       }
     },
     inputs: 1,
@@ -73,6 +78,14 @@
     Specify a <code>messageId</code> to edit a message already sent to the user. Use context <code>messageId</code> to
      edit the last sent message.
   </div>
+</div>
+<div class="form-row">
+  <label for="node-input-bot"><i class="icon-bookmark"></i> Context</label>
+  <input type="text" id="node-input-store" placeholder="Select storage for chat context">
+</div>
+<div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+  Select the chat context provider to use with this message, if none is selected then non-persistent "memory" will be used.<br>
+  To extend <strong>RedBot</strong> with a new chat context provider see <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Creating-a-Chat-Context-Provider" target="_blank">this tutorial</a>.
 </div>
 <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:30px;margin-bottom:10px;">
   Some attributes apply for specific platform:<br>
