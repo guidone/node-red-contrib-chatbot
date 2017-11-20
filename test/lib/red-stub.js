@@ -52,6 +52,7 @@ module.exports = function() {
       };
       //_chatContext = ChatContext(chatId);
       //_chatContext.clear();
+      msg.chat().clear();
       // store it
       //ChatContextStore.set(chatId, _chatContext);
       if (payload != null) {

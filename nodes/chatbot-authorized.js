@@ -1,3 +1,6 @@
+var utils = require('../lib/helpers/utils');
+var when = utils.when;
+
 module.exports = function(RED) {
 
   function ChatBotAuthorized(config) {
@@ -6,12 +9,16 @@ module.exports = function(RED) {
 
     this.on('input', function(msg) {
       var chatContext = msg.chat();
-      // check
-      if (chatContext != null && chatContext.get('authorized')) {
-        node.send([msg, null]);
-      } else {
-        node.send([null, msg]);
-      }
+      when(chatContext.get('authorized'))
+        .then(function(authorized) {
+          // check
+          if (authorized === true) {
+            node.send([msg, null]);
+          } else {
+            node.send([null, msg]);
+          }
+        });
+
     });
   }
 

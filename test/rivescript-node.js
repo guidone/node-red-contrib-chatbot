@@ -2,6 +2,9 @@ var _ = require('underscore');
 var assert = require('chai').assert;
 var RED = require('./lib/red-stub')();
 var RiveScriptBlock = require('../nodes/chatbot-rivescript');
+var utils = require('../lib/helpers/utils');
+var when = utils.when;
+
 
 describe('Chat RiveScript node', function() {
 
@@ -52,13 +55,13 @@ describe('Chat RiveScript node', function() {
     assert.isNull(RED.node.message(1));
   });
 
-  it('should grab the name and store it', function() {
+  it.only('should grab the name and store it', function() {
     var msg = RED.createMessage({content: 'my name is guido'});
     RED.node.clear();
     RED.node.config({
       script: '! version = 2.0\n\n+ my name is *\n- <set name=<formal>>ok, I will ll remember your name as <get name>'
     });
-    RED.environment.chat(msg.originalMessage.chat.id, {});
+    //RED.environment.chat(msg.originalMessage.chat.id, {});
     RiveScriptBlock(RED);
     RED.node.get().emit('input', msg);
     assert.equal(RED.node.message().payload, 'ok, I will ll remember your name as Guido');
@@ -71,11 +74,15 @@ describe('Chat RiveScript node', function() {
     RED.node.config({
       script: '! version = 2.0\n\n+ what is my name\n- your name is <get name>'
     });
-    RED.environment.chat(msg.originalMessage.chat.id, {name: 'guido'});
+    msg.chat().set({name: 'guido'});
     RiveScriptBlock(RED);
     RED.node.get().emit('input', msg);
     assert.equal(RED.node.message().payload, 'your name is guido');
-    assert.equal(RED.node.context().chat.get('name'), 'guido');
+    return when(msg.chat().get('name'))
+      .then(function(name) {
+        assert.equal(name, 'guido');
+      });
+
   });
 
   it('should follow up the discussion', function() {
@@ -85,7 +92,7 @@ describe('Chat RiveScript node', function() {
       script: '! version = 2.0\n\n+ i have a dog\n- What color is it?\n\n'
         + '+ (red|blue)\n% what color is it\n- That\'s a silly color for a dog!\n'
     });
-    RED.environment.chat(msg.originalMessage.chat.id, {name: 'guido'});
+    msg.chat().set({name: 'guido'});
     RiveScriptBlock(RED);
     RED.node.get().emit('input', msg);
     assert.equal(RED.node.message().payload, 'What color is it?');
