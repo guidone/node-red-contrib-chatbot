@@ -117,7 +117,7 @@ var ApiAiMessage2 = {
 };
 
 
-describe('Chat Api.ai node', function() {
+/*describe('Chat Api.ai node', function() {
 
   it('should pass through 1 need refinement', function() {
     var msg = RED.createMessage({
@@ -178,5 +178,5 @@ describe('Chat Api.ai node', function() {
 
   });
 
-});
+});*/
 
