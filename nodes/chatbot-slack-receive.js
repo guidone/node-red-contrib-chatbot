@@ -2,6 +2,8 @@ var _ = require('underscore');
 var moment = require('moment');
 var SlackServer = require('../lib/slack/slack-chat');
 var ContextProviders = require('../lib/chat-platform/chat-context-factory');
+var utils = require('../lib/helpers/utils');
+var when = utils.when;
 
 module.exports = function(RED) {
 
@@ -15,7 +17,6 @@ module.exports = function(RED) {
   RED.redbot.platforms.slack = SlackServer;
 
   var contextProviders = ContextProviders(RED);
-  var when = RED.redbot.utils.when;
 
   function SlackBotNode(n) {
     RED.nodes.createNode(this, n);
@@ -23,8 +24,9 @@ module.exports = function(RED) {
 
     this.botname = n.botname;
     this.store = n.store;
+    this.log = n.log;
     this.usernames = n.usernames != null ? n.usernames.split(',') : [];
-
+console.log('metto sta roba', n.log);
     if (this.credentials) {
       this.token = this.credentials.token;
       if (this.token) {
@@ -51,7 +53,8 @@ module.exports = function(RED) {
               botname: node.botname,
               authorizedUsernames: node.usernames,
               token: node.token,
-              contextProvider: node.contextProvider
+              contextProvider: node.contextProvider,
+              logfile: node.log
             });
             node.chat.start();
           } catch(e) {
