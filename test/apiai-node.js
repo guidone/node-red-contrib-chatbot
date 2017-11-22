@@ -117,7 +117,7 @@ var ApiAiMessage2 = {
 };
 
 
-/*describe('Chat Api.ai node', function() {
+describe('Chat Api.ai node', function() {
 
   it('should pass through 1 need refinement', function() {
     var msg = RED.createMessage({
@@ -136,7 +136,7 @@ var ApiAiMessage2 = {
     RED.nodes.setNode(nodeId, ApiAi(ApiAiMessage1));
 
     ApiAiBlock(RED);
-    RED.environment.chat(msg.originalMessage.chat.id, {
+    msg.chat().set({
       chatId: msg.originalMessage.chat.id,
       topic: 'ask_name'
     });
@@ -164,7 +164,7 @@ var ApiAiMessage2 = {
     RED.nodes.setNode(nodeId, ApiAi(ApiAiMessage2));
 
     ApiAiBlock(RED);
-    RED.environment.chat(msg.originalMessage.chat.id, {
+    msg.chat().set({
       chatId: msg.originalMessage.chat.id,
       topic: 'ask_name'
     });
@@ -178,5 +178,5 @@ var ApiAiMessage2 = {
 
   });
 
-});*/
+});
 
