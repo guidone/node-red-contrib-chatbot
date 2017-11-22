@@ -14,6 +14,9 @@
         value: '',
         type: 'chatbot-context-store',
         required: false
+      },
+      log: {
+        value: null
       }
     },
     paletteName: 'Slack Bot',
@@ -34,23 +37,30 @@
     <input type="text" id="node-config-input-botname">
   </div>
   <div class="form-row">
-    <label for="node-config-input-token"><i class="icon-tag"></i> Token</label>
+    <label for="node-config-input-token">Token</label>
     <input type="text" id="node-config-input-token">
   </div>
   <div class="form-row">
-    <label for="node-config-input-usernames"><i class="icon-user"></i> Users</label>
+    <label for="node-config-input-usernames">Users</label>
     <input type="text" id="node-config-input-usernames">
     <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
       Comma separated list of userId authorized to use the chatBot
     </div>
   </div>
   <div class="form-row">
-    <label for="node-input-bot"><i class="icon-bookmark"></i> Context</label>
-    <input type="text" id="node-config-input-store" placeholder="Select storage for chat context">
+    <label for="node-config-input-log">Log file</label>
+    <input type="text" id="node-config-input-log">
+    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+      Store inbound and outbound messages to file
+    </div>
   </div>
-  <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
-    Select the chat context provider to use with this bot, if none is selected then non-persistent "memory" will be used.<br>
-    To extend <strong>RedBot</strong> with a new chat context provider see <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Creating-a-Chat-Context-Provider" target="_blank">this tutorial</a>.
+  <div class="form-row">
+    <label for="node-input-bot">Context</label>
+    <input type="text" id="node-config-input-store" placeholder="Select storage for chat context">
+    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+      Select the chat context provider to use with this bot, if none is selected then non-persistent "memory" will be used.<br>
+      To extend <strong>RedBot</strong> with a new chat context provider see <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Creating-a-Chat-Context-Provider" target="_blank">this tutorial</a>.
+    </div>
   </div>
 </script>
 
