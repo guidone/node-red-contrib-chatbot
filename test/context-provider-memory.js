@@ -13,11 +13,11 @@ describe('Chat context provider memory', function() {
 
     var contextProviders = ContextProviders(RED);
     assert.isTrue(contextProviders.hasProvider('memory'));
-    var provider = contextProviders.getProvider('memory', { path: os.tmpdir() });
+    var provider = contextProviders.getProvider('memory');
     assert.isFunction(provider.getOrCreate);
     assert.isFunction(provider.get);
 
-    return when(provider.getOrCreate(42, { myVariable: 'initial value'}))
+    return when(provider.getOrCreate(43, { myVariable: 'initial value'}))
       .then(function(chatContext) {
         assert.isFunction(chatContext.get);
         assert.isFunction(chatContext.set);
@@ -33,7 +33,7 @@ describe('Chat context provider memory', function() {
   it('should set some value and then get and remove it', function() {
 
     var contextProviders = ContextProviders(RED);
-    var provider = contextProviders.getProvider('memory', { path: os.tmpdir() });
+    var provider = contextProviders.getProvider('memory');
 
     return when(provider.getOrCreate(42, {}))
       .then(function(chatContext) {
@@ -61,7 +61,7 @@ describe('Chat context provider memory', function() {
   it('should set some values and then get and remove it', function() {
 
     var contextProviders = ContextProviders(RED);
-    var provider = contextProviders.getProvider('memory', { path: os.tmpdir() });
+    var provider = contextProviders.getProvider('memory');
 
     return when(provider.getOrCreate(42, {}))
       .then(function(chatContext) {
@@ -92,7 +92,7 @@ describe('Chat context provider memory', function() {
   it('should set some values and get the dump', function() {
 
     var contextProviders = ContextProviders(RED);
-    var provider = contextProviders.getProvider('memory', { path: os.tmpdir() });
+    var provider = contextProviders.getProvider('memory');
 
     return when(provider.getOrCreate(42, {}))
       .then(function(chatContext) {
@@ -112,7 +112,7 @@ describe('Chat context provider memory', function() {
   it('should set some values and remove all', function() {
 
     var contextProviders = ContextProviders(RED);
-    var provider = contextProviders.getProvider('memory', { path: os.tmpdir() });
+    var provider = contextProviders.getProvider('memory');
 
     return when(provider.getOrCreate(42, {}))
       .then(function(chatContext) {
