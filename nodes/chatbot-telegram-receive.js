@@ -417,7 +417,9 @@ module.exports = function(RED) {
       }
 
       var messageOk = function (response) {
-        chatContext.set('messageId', response.message_id)
+        if (chatContext != null) {
+          chatContext.set('messageId', response.message_id);
+        }
       };
       var messageError = function (error) {
         node.handleError(error, msg);
