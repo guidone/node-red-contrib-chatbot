@@ -10,6 +10,7 @@ module.exports = function(RED) {
     try {
       node.contextParams = JSON.parse(config.contextParams);
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.log('Invalid JSON in context storage params (' + this.name + ')');
     }
   }

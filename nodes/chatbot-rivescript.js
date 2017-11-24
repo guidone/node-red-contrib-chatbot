@@ -58,14 +58,7 @@ module.exports = function(RED) {
         context.set('rivebot', bot);
       }
 
-      var task = new Promise(function(resolve) { resolve({})});
-      if (chatContext != null) {
-        task = task.then(function() {
-          return when(chatContext.all());
-        });
-      }
-
-      when(chatContext.all())
+      when(chatContext != null ? chatContext.all() : {})
         .then(function(variables) {
           // anything that is not string printable
           var printableVariables = _(variables).mapObject(function(value) {

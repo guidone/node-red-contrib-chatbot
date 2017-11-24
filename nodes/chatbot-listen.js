@@ -17,7 +17,9 @@ module.exports = function(RED) {
 
       var originalMessage = msg.originalMessage;
       var chatContext = msg.chat();
-      var task = new Promise(function(resolve) { resolve(); });
+      var task = new Promise(function(resolve) {
+        resolve();
+      });
       var rules = node.rules;
       var output = [];
       var matched = false;

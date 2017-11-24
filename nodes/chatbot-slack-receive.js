@@ -26,7 +26,7 @@ module.exports = function(RED) {
     this.store = n.store;
     this.log = n.log;
     this.usernames = n.usernames != null ? n.usernames.split(',') : [];
-console.log('metto sta roba', n.log);
+
     if (this.credentials) {
       this.token = this.credentials.token;
       if (this.token) {
@@ -45,7 +45,6 @@ console.log('metto sta roba', n.log);
             contextStorageNode.contextStorage,
             contextStorageNode.contextParams
           );
-          console.log('Init slack rtm con ', node.token);
           // try to start the servers
           try {
             node.contextProvider.start();

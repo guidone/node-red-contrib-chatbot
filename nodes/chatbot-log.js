@@ -10,7 +10,9 @@ module.exports = function(RED) {
 
     this.on('input', function(msg) {
 
-      var task = new Promise(function(resolve) { resolve(); });
+      var task = new Promise(function(resolve) {
+        resolve();
+      });
       var chatContext = msg.chat();
 
       if (chatContext != null) {
