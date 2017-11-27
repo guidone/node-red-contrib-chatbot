@@ -56,7 +56,10 @@ describe('Chat platform framework', function() {
       });
       chatServer.on('message', function(message) {
         assert.equal(message.originalMessage.myChatIdKey, '52');
+        assert.equal(message.originalMessage.chatId, '52');
         assert.equal(message.originalMessage.myUserIdKey, '62');
+        assert.equal(message.originalMessage.userId, '62');
+        assert.equal(message.originalMessage.transport, 'generic');
         assert.equal(message.originalMessage.type, 'a_kind_of_magic');
         assert.equal(message.payload.type, 'a_kind_of_magic');
         assert.equal(message.payload.chatId, '52');
@@ -65,7 +68,6 @@ describe('Chat platform framework', function() {
         assert.equal(message.payload.transport, 'generic');
         assert.isFunction(message.chat);
         var variables = message.chat().all();
-        console.log('quale??', variables);
         assert.equal(variables.chatId, '52');
         assert.equal(variables.userId, '62');
         assert.equal(variables.transport, 'generic');
