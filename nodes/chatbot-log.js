@@ -1,4 +1,6 @@
 var ChatLog = require('../lib/chat-log.js');
+var utils = require('../lib/helpers/utils');
+var when = utils.when;
 
 module.exports = function(RED) {
 
@@ -8,13 +10,22 @@ module.exports = function(RED) {
 
     this.on('input', function(msg) {
 
+      var task = new Promise(function(resolve) {
+        resolve();
+      });
       var chatContext = msg.chat();
 
       if (chatContext != null) {
-        var chatLog = new ChatLog(chatContext);
-        node.send(chatLog.message(msg));
+        task = task.then(function() {
+          return chatContext.get('firstName', 'lastName', 'chatId');
+        });
       }
 
+      when(task)
+        .then(function(jsonContext) {
+          var chatLog = new ChatLog(jsonContext);
+          node.send(chatLog.message(msg));
+        });
     });
   }
   RED.nodes.registerType('chatbot-log', ChatBotLog);

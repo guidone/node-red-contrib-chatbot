@@ -27,16 +27,19 @@ describe('Chat keyword node', function() {
     KeyboardBlock(RED);
     RED.node.get().emit('input', msg);
 
-    assert.equal(RED.node.message().payload.type, 'buttons');
-    assert.equal(RED.node.message().payload.content, 'message for the buttons');
-    assert.equal(RED.node.message().payload.chatId, 42);
-    assert.isArray(RED.node.message().payload.buttons);
-    assert.equal(RED.node.message().payload.buttons[0].value, 'value 1');
-    assert.equal(RED.node.message().payload.buttons[0].label, 'Value 1');
-    assert.equal(RED.node.message().payload.buttons[1].value, 'value 2');
-    assert.equal(RED.node.message().payload.buttons[1].label, 'Value 2');
-    assert.equal(RED.node.message().payload.buttons[2].value, 'value 3');
-    assert.equal(RED.node.message().payload.buttons[2].label, 'Value 3');
+    return RED.node.get().await()
+      .then(function () {
+        assert.equal(RED.node.message().payload.type, 'buttons');
+        assert.equal(RED.node.message().payload.content, 'message for the buttons');
+        assert.equal(RED.node.message().payload.chatId, 42);
+        assert.isArray(RED.node.message().payload.buttons);
+        assert.equal(RED.node.message().payload.buttons[0].value, 'value 1');
+        assert.equal(RED.node.message().payload.buttons[0].label, 'Value 1');
+        assert.equal(RED.node.message().payload.buttons[1].value, 'value 2');
+        assert.equal(RED.node.message().payload.buttons[1].label, 'Value 2');
+        assert.equal(RED.node.message().payload.buttons[2].value, 'value 3');
+        assert.equal(RED.node.message().payload.buttons[2].label, 'Value 3');
+      });
 
   });
 

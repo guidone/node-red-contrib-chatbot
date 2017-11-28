@@ -32,19 +32,22 @@ describe('Chat inline buttons node', function() {
     });
     InlineButtonsBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.type, 'inline-buttons');
-    assert.equal(RED.node.message().payload.content, 'message for the buttons');
-    assert.equal(RED.node.message().payload.chatId, 42);
-    assert.isArray(RED.node.message().payload.buttons);
-    assert.equal(RED.node.message().payload.buttons[0].type, 'postback');
-    assert.equal(RED.node.message().payload.buttons[0].value, 'value 1');
-    assert.equal(RED.node.message().payload.buttons[0].label, 'Value 1');
-    assert.equal(RED.node.message().payload.buttons[1].type, 'url');
-    assert.equal(RED.node.message().payload.buttons[1].url, 'http://javascript-jedi.com');
-    assert.equal(RED.node.message().payload.buttons[1].label, 'Value 2');
-    assert.equal(RED.node.message().payload.buttons[2].type, 'call');
-    assert.equal(RED.node.message().payload.buttons[2].value, '+39347123456');
-    assert.equal(RED.node.message().payload.buttons[2].label, 'Call me');
+    return RED.node.get().await()
+      .then(function () {
+        assert.equal(RED.node.message().payload.type, 'inline-buttons');
+        assert.equal(RED.node.message().payload.content, 'message for the buttons');
+        assert.equal(RED.node.message().payload.chatId, 42);
+        assert.isArray(RED.node.message().payload.buttons);
+        assert.equal(RED.node.message().payload.buttons[0].type, 'postback');
+        assert.equal(RED.node.message().payload.buttons[0].value, 'value 1');
+        assert.equal(RED.node.message().payload.buttons[0].label, 'Value 1');
+        assert.equal(RED.node.message().payload.buttons[1].type, 'url');
+        assert.equal(RED.node.message().payload.buttons[1].url, 'http://javascript-jedi.com');
+        assert.equal(RED.node.message().payload.buttons[1].label, 'Value 2');
+        assert.equal(RED.node.message().payload.buttons[2].type, 'call');
+        assert.equal(RED.node.message().payload.buttons[2].value, '+39347123456');
+        assert.equal(RED.node.message().payload.buttons[2].label, 'Call me');
+      });
   });
 
 
@@ -74,19 +77,22 @@ describe('Chat inline buttons node', function() {
     });
     InlineButtonsBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.type, 'inline-buttons');
-    assert.equal(RED.node.message().payload.content, 'message for the buttons');
-    assert.equal(RED.node.message().payload.chatId, 42);
-    assert.isArray(RED.node.message().payload.buttons);
-    assert.equal(RED.node.message().payload.buttons[0].type, 'postback');
-    assert.equal(RED.node.message().payload.buttons[0].value, 'value 1');
-    assert.equal(RED.node.message().payload.buttons[0].label, 'Value 1');
-    assert.equal(RED.node.message().payload.buttons[1].type, 'url');
-    assert.equal(RED.node.message().payload.buttons[1].url, 'http://javascript-jedi.com');
-    assert.equal(RED.node.message().payload.buttons[1].label, 'Value 2');
-    assert.equal(RED.node.message().payload.buttons[2].type, 'call');
-    assert.equal(RED.node.message().payload.buttons[2].value, '+39347123456');
-    assert.equal(RED.node.message().payload.buttons[2].label, 'Call me');
+    return RED.node.get().await()
+      .then(function () {
+        assert.equal(RED.node.message().payload.type, 'inline-buttons');
+        assert.equal(RED.node.message().payload.content, 'message for the buttons');
+        assert.equal(RED.node.message().payload.chatId, 42);
+        assert.isArray(RED.node.message().payload.buttons);
+        assert.equal(RED.node.message().payload.buttons[0].type, 'postback');
+        assert.equal(RED.node.message().payload.buttons[0].value, 'value 1');
+        assert.equal(RED.node.message().payload.buttons[0].label, 'Value 1');
+        assert.equal(RED.node.message().payload.buttons[1].type, 'url');
+        assert.equal(RED.node.message().payload.buttons[1].url, 'http://javascript-jedi.com');
+        assert.equal(RED.node.message().payload.buttons[1].label, 'Value 2');
+        assert.equal(RED.node.message().payload.buttons[2].type, 'call');
+        assert.equal(RED.node.message().payload.buttons[2].value, '+39347123456');
+        assert.equal(RED.node.message().payload.buttons[2].label, 'Call me');
+      });
 
   });
 
@@ -193,19 +199,22 @@ describe('Chat inline buttons node', function() {
     RED.node.config({});
     InlineButtonsBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.type, 'inline-buttons');
-    assert.equal(RED.node.message().payload.content, 'message for the buttons');
-    assert.equal(RED.node.message().payload.chatId, 42);
-    assert.isArray(RED.node.message().payload.buttons);
-    assert.equal(RED.node.message().payload.buttons[0].type, 'postback');
-    assert.equal(RED.node.message().payload.buttons[0].value, 'value 1');
-    assert.equal(RED.node.message().payload.buttons[0].label, 'Value 1');
-    assert.equal(RED.node.message().payload.buttons[1].type, 'url');
-    assert.equal(RED.node.message().payload.buttons[1].url, 'http://javascript-jedi.com');
-    assert.equal(RED.node.message().payload.buttons[1].label, 'Value 2');
-    assert.equal(RED.node.message().payload.buttons[2].type, 'call');
-    assert.equal(RED.node.message().payload.buttons[2].value, '+39347123456');
-    assert.equal(RED.node.message().payload.buttons[2].label, 'Call me');
+    return RED.node.get().await()
+      .then(function () {
+        assert.equal(RED.node.message().payload.type, 'inline-buttons');
+        assert.equal(RED.node.message().payload.content, 'message for the buttons');
+        assert.equal(RED.node.message().payload.chatId, 42);
+        assert.isArray(RED.node.message().payload.buttons);
+        assert.equal(RED.node.message().payload.buttons[0].type, 'postback');
+        assert.equal(RED.node.message().payload.buttons[0].value, 'value 1');
+        assert.equal(RED.node.message().payload.buttons[0].label, 'Value 1');
+        assert.equal(RED.node.message().payload.buttons[1].type, 'url');
+        assert.equal(RED.node.message().payload.buttons[1].url, 'http://javascript-jedi.com');
+        assert.equal(RED.node.message().payload.buttons[1].label, 'Value 2');
+        assert.equal(RED.node.message().payload.buttons[2].type, 'call');
+        assert.equal(RED.node.message().payload.buttons[2].value, '+39347123456');
+        assert.equal(RED.node.message().payload.buttons[2].label, 'Call me');
+      });
   });
 
   it('should send inline buttons in Telegram, buttons from upstream node', function () {
@@ -234,19 +243,22 @@ describe('Chat inline buttons node', function() {
     });
     InlineButtonsBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.type, 'inline-buttons');
-    assert.equal(RED.node.message().payload.content, 'message for the buttons');
-    assert.equal(RED.node.message().payload.chatId, 42);
-    assert.isArray(RED.node.message().payload.buttons);
-    assert.equal(RED.node.message().payload.buttons[0].type, 'postback');
-    assert.equal(RED.node.message().payload.buttons[0].value, 'value 1');
-    assert.equal(RED.node.message().payload.buttons[0].label, 'Value 1');
-    assert.equal(RED.node.message().payload.buttons[1].type, 'url');
-    assert.equal(RED.node.message().payload.buttons[1].url, 'http://javascript-jedi.com');
-    assert.equal(RED.node.message().payload.buttons[1].label, 'Value 2');
-    assert.equal(RED.node.message().payload.buttons[2].type, 'call');
-    assert.equal(RED.node.message().payload.buttons[2].value, '+39347123456');
-    assert.equal(RED.node.message().payload.buttons[2].label, 'Call me');
+    return RED.node.get().await()
+      .then(function () {
+        assert.equal(RED.node.message().payload.type, 'inline-buttons');
+        assert.equal(RED.node.message().payload.content, 'message for the buttons');
+        assert.equal(RED.node.message().payload.chatId, 42);
+        assert.isArray(RED.node.message().payload.buttons);
+        assert.equal(RED.node.message().payload.buttons[0].type, 'postback');
+        assert.equal(RED.node.message().payload.buttons[0].value, 'value 1');
+        assert.equal(RED.node.message().payload.buttons[0].label, 'Value 1');
+        assert.equal(RED.node.message().payload.buttons[1].type, 'url');
+        assert.equal(RED.node.message().payload.buttons[1].url, 'http://javascript-jedi.com');
+        assert.equal(RED.node.message().payload.buttons[1].label, 'Value 2');
+        assert.equal(RED.node.message().payload.buttons[2].type, 'call');
+        assert.equal(RED.node.message().payload.buttons[2].value, '+39347123456');
+        assert.equal(RED.node.message().payload.buttons[2].label, 'Call me');
+      });
 
   });
 
@@ -276,19 +288,22 @@ describe('Chat inline buttons node', function() {
     });
     InlineButtonsBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.type, 'inline-buttons');
-    assert.equal(RED.node.message().payload.content, 'message for the buttons');
-    assert.equal(RED.node.message().payload.chatId, 42);
-    assert.isArray(RED.node.message().payload.buttons);
-    assert.equal(RED.node.message().payload.buttons[0].type, 'postback');
-    assert.equal(RED.node.message().payload.buttons[0].value, 'value 1');
-    assert.equal(RED.node.message().payload.buttons[0].label, 'Value 1');
-    assert.equal(RED.node.message().payload.buttons[1].type, 'url');
-    assert.equal(RED.node.message().payload.buttons[1].url, 'http://javascript-jedi.com');
-    assert.equal(RED.node.message().payload.buttons[1].label, 'Value 2');
-    assert.equal(RED.node.message().payload.buttons[2].type, 'call');
-    assert.equal(RED.node.message().payload.buttons[2].value, '+39347123456');
-    assert.equal(RED.node.message().payload.buttons[2].label, 'Call me');
+    return RED.node.get().await()
+      .then(function () {
+        assert.equal(RED.node.message().payload.type, 'inline-buttons');
+        assert.equal(RED.node.message().payload.content, 'message for the buttons');
+        assert.equal(RED.node.message().payload.chatId, 42);
+        assert.isArray(RED.node.message().payload.buttons);
+        assert.equal(RED.node.message().payload.buttons[0].type, 'postback');
+        assert.equal(RED.node.message().payload.buttons[0].value, 'value 1');
+        assert.equal(RED.node.message().payload.buttons[0].label, 'Value 1');
+        assert.equal(RED.node.message().payload.buttons[1].type, 'url');
+        assert.equal(RED.node.message().payload.buttons[1].url, 'http://javascript-jedi.com');
+        assert.equal(RED.node.message().payload.buttons[1].label, 'Value 2');
+        assert.equal(RED.node.message().payload.buttons[2].type, 'call');
+        assert.equal(RED.node.message().payload.buttons[2].value, '+39347123456');
+        assert.equal(RED.node.message().payload.buttons[2].label, 'Call me');
+      });
 
   });
 

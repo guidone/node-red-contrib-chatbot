@@ -1,5 +1,7 @@
 var _ = require('underscore');
 var clc = require('cli-color');
+var utils = require('../lib/helpers/utils');
+var when = utils.when;
 
 var green = clc.greenBright;
 var white = clc.white;
@@ -59,7 +61,11 @@ module.exports = function(RED) {
       // eslint-disable-next-line no-console
       console.log('');
       // show on console
-      node.warn(chatContext.all());
+      when(chatContext.all())
+        .then(function(dump) {
+          node.warn(dump);
+        })
+
     });
 
   }

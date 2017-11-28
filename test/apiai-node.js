@@ -136,7 +136,7 @@ describe('Chat Api.ai node', function() {
     RED.nodes.setNode(nodeId, ApiAi(ApiAiMessage1));
 
     ApiAiBlock(RED);
-    RED.environment.chat(msg.originalMessage.chat.id, {
+    msg.chat().set({
       chatId: msg.originalMessage.chat.id,
       topic: 'ask_name'
     });
@@ -164,7 +164,7 @@ describe('Chat Api.ai node', function() {
     RED.nodes.setNode(nodeId, ApiAi(ApiAiMessage2));
 
     ApiAiBlock(RED);
-    RED.environment.chat(msg.originalMessage.chat.id, {
+    msg.chat().set({
       chatId: msg.originalMessage.chat.id,
       topic: 'ask_name'
     });

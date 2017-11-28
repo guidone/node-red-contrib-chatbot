@@ -3,6 +3,8 @@ var assert = require('chai').assert;
 var RED = require('./lib/red-stub')();
 var ListenBlock = require('../nodes/chatbot-listen');
 var ListenLexiconBlock = require('../nodes/chatbot-listen-lexicon');
+var utils = require('../lib/helpers/utils');
+var when = utils.when;
 
 describe('Chat listen lexicon node', function() {
 
@@ -32,11 +34,14 @@ describe('Chat listen lexicon node', function() {
     ListenBlock(RED);
     RED.node.get().emit('input', msg);
 
-    assert.isNull(RED.node.message(0));
-    assert.isObject(RED.node.message(1));
-    assert.equal(RED.node.message(1).payload.content, 'my car is a Lamborghini');
-    assert.equal(RED.node.message(1).originalMessage.chat.id, 42);
-    assert.equal(msg.chat().get('my_car'), 'lamborghini');
+    return RED.node.get().await()
+      .then(function () {
+        assert.isNull(RED.node.message(0));
+        assert.isObject(RED.node.message(1));
+        assert.equal(RED.node.message(1).payload.content, 'my car is a Lamborghini');
+        assert.equal(RED.node.message(1).originalMessage.chat.id, 42);
+        assert.equal(msg.chat().get('my_car'), 'lamborghini');
+      });
   });
 
   it('should use a car lexicon with Listen driving', function () {
@@ -49,12 +54,14 @@ describe('Chat listen lexicon node', function() {
     });
     ListenBlock(RED);
     RED.node.get().emit('input', msg);
-
-    assert.isNull(RED.node.message(1));
-    assert.isObject(RED.node.message(0));
-    assert.equal(RED.node.message(0).payload.content, 'I am driving a chrisler');
-    assert.equal(RED.node.message(0).originalMessage.chat.id, 42);
-    assert.equal(msg.chat().get('my_car'), 'chrisler');
+    return RED.node.get().await()
+      .then(function () {
+        assert.isNull(RED.node.message(1));
+        assert.isObject(RED.node.message(0));
+        assert.equal(RED.node.message(0).payload.content, 'I am driving a chrisler');
+        assert.equal(RED.node.message(0).originalMessage.chat.id, 42);
+        assert.equal(msg.chat().get('my_car'), 'chrisler');
+      });
   });
 
   it('should use a car lexicon with Listen driving perfect', function () {
@@ -70,12 +77,14 @@ describe('Chat listen lexicon node', function() {
     });
     ListenBlock(RED);
     RED.node.get().emit('input', msg);
-
-    assert.isNull(RED.node.message(1));
-    assert.isObject(RED.node.message(0));
-    assert.equal(RED.node.message(0).payload.content, 'I am driving a chrisler');
-    assert.equal(RED.node.message(0).originalMessage.chat.id, 42);
-    assert.equal(msg.chat().get('my_car'), 'chrisler');
+    return RED.node.get().await()
+      .then(function () {
+        assert.isNull(RED.node.message(1));
+        assert.isObject(RED.node.message(0));
+        assert.equal(RED.node.message(0).payload.content, 'I am driving a chrisler');
+        assert.equal(RED.node.message(0).originalMessage.chat.id, 42);
+        assert.equal(msg.chat().get('my_car'), 'chrisler');
+      });
   });
 
   it('should not match a china motors car', function () {
@@ -103,12 +112,14 @@ describe('Chat listen lexicon node', function() {
     });
     ListenBlock(RED);
     RED.node.get().emit('input', msg);
-
-    assert.isNull(RED.node.message(0));
-    assert.isObject(RED.node.message(1));
-    assert.equal(RED.node.message(1).payload.content, 'my car is a Peugeout Talbot and I am happy');
-    assert.equal(RED.node.message(1).originalMessage.chat.id, 42);
-    assert.equal(msg.chat().get('my_car'), 'peugeout talbot');
+    return RED.node.get().await()
+      .then(function () {
+        assert.isNull(RED.node.message(0));
+        assert.isObject(RED.node.message(1));
+        assert.equal(RED.node.message(1).payload.content, 'my car is a Peugeout Talbot and I am happy');
+        assert.equal(RED.node.message(1).originalMessage.chat.id, 42);
+        assert.equal(msg.chat().get('my_car'), 'peugeout talbot');
+      });
   });
 
   it('should add a lexicon inline', function () {

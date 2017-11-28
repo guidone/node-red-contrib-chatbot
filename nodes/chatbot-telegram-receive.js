@@ -205,7 +205,7 @@ module.exports = function(RED) {
       // decode the message
       self.getMessageDetails(botMsg)
         .then(function(payload) {
-          var chatLog = new ChatLog(chatContext);
+          var chatLog = new ChatLog(chatContext.all());
           return chatLog.log({
             payload: payload,
             originalMessage: botMsg,
@@ -214,9 +214,6 @@ module.exports = function(RED) {
             }
           }, self.log)
         })
-        /*.then(function(msg) {
-          return analytics.dashbot.inbound(msg);
-        })*/
         .then(function(msg) {
           var currentConversationNode = chatContext.get('currentConversationNode');
           // if a conversation is going on, go straight to the conversation node, otherwise if authorized
@@ -425,7 +422,7 @@ module.exports = function(RED) {
         node.handleError(error, msg);
       };
 
-      var chatLog = new ChatLog(chatContext);
+      var chatLog = new ChatLog(chatContext.all());
 
       chatLog.log(msg, this.config.log)
         .then(function() {

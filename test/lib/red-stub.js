@@ -1,6 +1,6 @@
 var _ = require('underscore');
-var ChatContext = require('../../lib/chat-context.js');
-var ChatContextStore = require('../../lib/chat-context-store');
+var ChatContextFactory = require('../../lib/chat-platform/chat-context-factory')({});
+var ChatContextProvider = ChatContextFactory.getProvider('memory', {});
 
 module.exports = function() {
 
@@ -36,7 +36,7 @@ module.exports = function() {
     createMessage: function(payload, transport) {
       var chatId = 42;
       // create a chat context if doesn't exists
-      //var context = ChatContextStore.getOrCreateChatContext(null, chatId);
+
       var msg = {
         originalMessage: {
           transport: transport != null ? transport : 'telegram',
@@ -46,14 +46,15 @@ module.exports = function() {
           message_id: 72
         },
         chat: function() {
-          return ChatContextStore.getChatContext(null, chatId);
+          return ChatContextProvider.getOrCreate(chatId);
         },
         payload: payload != null ? payload : 'I am the original message'
       };
-      _chatContext = ChatContext(chatId);
-      _chatContext.clear();
+      //_chatContext = ChatContext(chatId);
+      //_chatContext.clear();
+      msg.chat().clear();
       // store it
-      ChatContextStore.set(chatId, _chatContext);
+      //ChatContextStore.set(chatId, _chatContext);
       if (payload != null) {
         msg.payload = payload;
       }
@@ -106,6 +107,10 @@ module.exports = function() {
         _nodes[nodeId] = node;
       },
 
+      /**
+       * @method createNode
+       * Mock createdNode called when initializing a custom node
+       */
       createNode: function(node, config) {
 
         node.on = function(eventName, cb) {
@@ -130,13 +135,13 @@ module.exports = function() {
               } else if (_error != null) {
                 clearInterval(intervalId);
                 reject(_error);
-              } else if (retries > 10) {
+              } else if (retries > 20) {
                 clearInterval(intervalId);
                 reject();
               } else {
                 retries++;
               }
-            }, 100);
+            }, 30);
           });
         };
         node.send = function(msg) {

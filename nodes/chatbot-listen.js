@@ -2,6 +2,7 @@ var _ = require('underscore');
 var NplMatcher = require('../lib/npl-matcher');
 var helpers = require('../lib/helpers/regexps');
 var utils = require('../lib/helpers/utils');
+var when = utils.when;
 
 module.exports = function(RED) {
 
@@ -16,8 +17,12 @@ module.exports = function(RED) {
 
       var originalMessage = msg.originalMessage;
       var chatContext = msg.chat();
-
+      var task = new Promise(function(resolve) {
+        resolve();
+      });
       var rules = node.rules;
+      var output = [];
+      var matched = false;
 
       var debug = utils.extractValue('boolean', 'showdebug', node, msg);
       var lexicon = utils.extractValue('hash', 'lexicon', node, msg);
@@ -26,9 +31,6 @@ module.exports = function(RED) {
       if (originalMessage == null || _.isEmpty(rules)) {
         return;
       }
-
-      var output = [];
-      var matched = false;
 
       // parse incoming message
       var message = msg.payload.content;
@@ -49,19 +51,29 @@ module.exports = function(RED) {
           // mark as matched, only the first wins
           matched = true;
           // store variables
+          var storeVariables = {};
           matchedRule.forEach(function(rule) {
             if (!_.isEmpty(rule.variable)) {
-              chatContext.set(rule.variable, rule.value);
+              //chatContext.set(rule.variable, rule.value);
+              storeVariables[rule.variable] = rule.value;
             }
           });
-
+          // store async
+          if (!_.isEmpty(storeVariables)) {
+            task = task.then(function () {
+              return when(chatContext.set(storeVariables));
+            });
+          }
+          // push out the message in the right route
           output.push(msg);
         } else {
           output.push(null);
         }
       });
-      node.send(output);
-
+      // finally send
+      task.then(function() {
+        node.send(output);
+      });
     });
   }
 

@@ -1,0 +1,75 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-context-store', {
+    category: 'config',
+    color: '#FFCC66',
+    defaults: {
+      name: {
+        value: ''
+      },
+      contextStorage: {
+        value: ''
+      },
+      contextParams: {
+        value: ''
+      }
+    },
+    paletteLabel: 'Context',
+    label: function() {
+      return this.name || "Context Store";
+    },
+    oneditsave: function() {
+      this.contextParams = $('#node-config-input-contextParams').typedInput('value');
+    },
+    oneditprepare: function() {
+      var node = this;
+      var widget = $('#node-config-input-contextParams');
+      widget.typedInput({
+        'default': 'json',
+        types: ['json']
+      });
+      widget.typedInput('value', this.contextParams);
+      // fetch available context providers
+      $.get('/redbot/context-providers')
+        .done(function(response) {
+          var select = $('#node-config-input-contextStorage');
+          var idx;
+          var providers = {};
+          for(idx = 0; idx < response.length; idx++) {
+            select.append('<option value="' + response[idx].type + '">' + response[idx].name + '</option>');
+            providers[response[idx].type] = response[idx];
+          }
+          select.val(node.contextStorage);
+          $('#provider-documentation')
+            .html(providers[node.contextStorage] != null ? providers[node.contextStorage].description : '');
+          // on change
+          select.change(function() {
+            var providerName = select.val();
+            $('#provider-documentation').html(providers[providerName] != null ? providers[providerName].description : '');
+          });
+        });
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-context-store">
+<div class="form-row">
+  <label for="node-config-input-name"><i class="icon-tag"></i> Name</label>
+  <input type="text" id="node-config-input-name" placeholder="Name" style="width:250px;">
+</div>
+<div class="form-row">
+  <label for="node-config-input-contextStorage">Type</label>
+  <select id="node-config-input-contextStorage">
+  </select>
+</div>
+<div class="form-row">
+  <label for="node-config-input-params">Params</label>
+  <input type="text" id="node-config-input-contextParams" placeholder="Params">
+</div>
+<div id="provider-documentation" style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;margin-bottom:10px;">
+</div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-context-store"><p>Docs for context provider</p>
+<p>tbd</p>
+</script>
+

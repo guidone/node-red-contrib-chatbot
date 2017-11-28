@@ -11,15 +11,18 @@ describe('Chat log node', function() {
       content: 'I am the message'
     });
     RED.node.config({});
-    RED.environment.chat(msg.originalMessage.chat.id, {
+    msg.chat().set({
       firstName: 'Javascript',
       lastName: 'Jedi',
       chatId: 42
     });
     LogBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.include(RED.node.message(), '42 [Javascript Jedi] <');
-    assert.include(RED.node.message(), '- I am the message');
+    return RED.node.get().await()
+      .then(function () {
+        assert.include(RED.node.message(), '42 [Javascript Jedi] <');
+        assert.include(RED.node.message(), '- I am the message');
+      });
   });
 
   it('should log the image message', function() {
@@ -28,15 +31,18 @@ describe('Chat log node', function() {
       content: new Buffer('123')
     });
     RED.node.config({});
-    RED.environment.chat(msg.originalMessage.chat.id, {
+    msg.chat().set({
       firstName: 'Javascript',
       lastName: 'Jedi',
       chatId: 42
     });
     LogBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.include(RED.node.message(), '42 [Javascript Jedi] <');
-    assert.include(RED.node.message(), 'image: <buffer>');
+    return RED.node.get().await()
+      .then(function () {
+        assert.include(RED.node.message(), '42 [Javascript Jedi] <');
+        assert.include(RED.node.message(), 'image: <buffer>');
+      });
   });
 
   it('should log the location message', function() {
@@ -49,15 +55,18 @@ describe('Chat log node', function() {
       place: 'jedi\'s home'
     });
     RED.node.config({});
-    RED.environment.chat(msg.originalMessage.chat.id, {
+    msg.chat().set({
       firstName: 'Javascript',
       lastName: 'Jedi',
       chatId: 42
     });
     LogBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.include(RED.node.message(), '42 [Javascript Jedi] <');
-    assert.include(RED.node.message(), '- latitude: 123 longitude: 123');
+    return RED.node.get().await()
+      .then(function () {
+        assert.include(RED.node.message(), '42 [Javascript Jedi] <');
+        assert.include(RED.node.message(), '- latitude: 123 longitude: 123');
+      });
   });
 
   it('should log the document message', function() {
@@ -66,15 +75,18 @@ describe('Chat log node', function() {
       content: new Buffer('123')
     });
     RED.node.config({});
-    RED.environment.chat(msg.originalMessage.chat.id, {
+    msg.chat().set({
       firstName: 'Javascript',
       lastName: 'Jedi',
       chatId: 42
     });
     LogBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.include(RED.node.message(), '42 [Javascript Jedi] <');
-    assert.include(RED.node.message(), 'document: <buffer>');
+    return RED.node.get().await()
+      .then(function () {
+        assert.include(RED.node.message(), '42 [Javascript Jedi] <');
+        assert.include(RED.node.message(), 'document: <buffer>');
+      });
   });
 
   it('should log the audio message', function() {
@@ -83,15 +95,18 @@ describe('Chat log node', function() {
       content: new Buffer('123')
     });
     RED.node.config({});
-    RED.environment.chat(msg.originalMessage.chat.id, {
+    msg.chat().set({
       firstName: 'Javascript',
       lastName: 'Jedi',
       chatId: 42
     });
     LogBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.include(RED.node.message(), '42 [Javascript Jedi] <');
-    assert.include(RED.node.message(), 'audio: <buffer>');
+    return RED.node.get().await()
+      .then(function () {
+        assert.include(RED.node.message(), '42 [Javascript Jedi] <');
+        assert.include(RED.node.message(), 'audio: <buffer>');
+      });
   });
 
   it('should log the inline buttons', function() {
@@ -104,15 +119,18 @@ describe('Chat log node', function() {
       ]
     });
     RED.node.config({});
-    RED.environment.chat(msg.originalMessage.chat.id, {
+    msg.chat().set({
       firstName: 'Javascript',
       lastName: 'Jedi',
       chatId: 42
     });
     LogBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.include(RED.node.message(), '42 [Javascript Jedi] <');
-    assert.include(RED.node.message(), 'these are buttons [Button 1] [Another button]');
+    return RED.node.get().await()
+      .then(function () {
+        assert.include(RED.node.message(), '42 [Javascript Jedi] <');
+        assert.include(RED.node.message(), 'these are buttons [Button 1] [Another button]');
+      });
   });
 
 });

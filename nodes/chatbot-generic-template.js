@@ -1,5 +1,5 @@
 var _ = require('underscore');
-var MessageTemplate = require('../lib/message-template.js');
+var MessageTemplate = require('../lib/message-template-async');
 var utils = require('../lib/helpers/utils');
 var validators = require('../lib/helpers/validators');
 
@@ -41,28 +41,30 @@ module.exports = function(RED) {
       if (msg.payload != null && validators.genericTemplateElements(msg.payload.elements)) {
         elements = _.union(elements, msg.payload.elements);
       }
-      // add the current one if not empty
-      if (!_.isEmpty(title)) {
-        elements.push({
-          title: template(title),
-          subtitle: template(subtitle),
-          imageUrl: template(imageUrl),
-          buttons: buttons
+
+      template(title, subtitle, imageUrl)
+        .then(function(translated) {
+          // add the current one if not empty
+          if (!_.isEmpty(translated[0])) {
+            elements.push({
+              title: translated[0],
+              subtitle: translated[1],
+              imageUrl: translated[2],
+              buttons: buttons
+            });
+          }
+          // prep payload
+          msg.payload = {
+            type: 'generic-template',
+            aspectRatio: !_.isEmpty(aspectRatio) ? aspectRatio : 'horizontal',
+            sharable: _.isBoolean(sharable) ? sharable : true,
+            elements: elements,
+            chatId: chatId,
+            messageId: messageId
+          };
+          node.send(msg);
         });
-      }
-
-      msg.payload = {
-        type: 'generic-template',
-        aspectRatio: !_.isEmpty(aspectRatio) ? aspectRatio : 'horizontal',
-        sharable: _.isBoolean(sharable) ? sharable : true,
-        elements: elements,
-        chatId: chatId,
-        messageId: messageId
-      };
-
-      node.send(msg);
     });
-
   }
 
   RED.nodes.registerType('chatbot-generic-template', ChatBotGenericTemplate);

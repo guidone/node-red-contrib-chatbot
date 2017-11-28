@@ -11,14 +11,17 @@ describe('Chat context node', function() {
       command: 'get',
       fieldName: 'chatId'
     });
-    RED.environment.chat(msg.originalMessage.chat.id, {
+    msg.chat().set({
       authorized: true,
       chatId: msg.originalMessage.chat.id
     });
     ContextBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload, 42);
-    assert.equal(RED.node.message().originalMessage.chat.id, 42);
+    return RED.node.get().await()
+      .then(function () {
+        assert.equal(RED.node.message().payload, 42);
+        assert.equal(RED.node.message().originalMessage.chat.id, 42);
+      });
   });
 
   it('should delete a context value', function () {
@@ -27,15 +30,18 @@ describe('Chat context node', function() {
       command: 'delete',
       fieldName: 'chatId'
     });
-    RED.environment.chat(msg.originalMessage.chat.id, {
+    msg.chat().set({
       authorized: true,
       chatId: msg.originalMessage.chat.id
     });
     ContextBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'I am a useless message');
-    assert.equal(RED.node.message().originalMessage.chat.id, 42);
-    assert.equal(msg.chat().get('chatId'), undefined);
+    return RED.node.get().await()
+      .then(function () {
+        assert.equal(RED.node.message().payload.content, 'I am a useless message');
+        assert.equal(RED.node.message().originalMessage.chat.id, 42);
+        assert.equal(msg.chat().get('chatId'), undefined);
+      });
   });
 
   it('should set a context value string', function () {
@@ -46,15 +52,18 @@ describe('Chat context node', function() {
       fieldType: 'str',
       fieldValue: 'I am a string value'
     });
-    RED.environment.chat(msg.originalMessage.chat.id, {
+    msg.chat().set({
       authorized: true,
       chatId: msg.originalMessage.chat.id
     });
     ContextBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'I am a useless message');
-    assert.equal(RED.node.message().originalMessage.chat.id, 42);
-    assert.equal(msg.chat().get('myValue'), 'I am a string value');
+    return RED.node.get().await()
+      .then(function () {
+        assert.equal(RED.node.message().payload.content, 'I am a useless message');
+        assert.equal(RED.node.message().originalMessage.chat.id, 42);
+        assert.equal(msg.chat().get('myValue'), 'I am a string value');
+      });
   });
 
   it('should set a context number string', function () {
@@ -65,15 +74,18 @@ describe('Chat context node', function() {
       fieldType: 'num',
       fieldValue: '4242'
     });
-    RED.environment.chat(msg.originalMessage.chat.id, {
+    msg.chat().set({
       authorized: true,
       chatId: msg.originalMessage.chat.id
     });
     ContextBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'I am a useless message');
-    assert.equal(RED.node.message().originalMessage.chat.id, 42);
-    assert.equal(msg.chat().get('myValue'), 4242);
+    return RED.node.get().await()
+      .then(function () {
+        assert.equal(RED.node.message().payload.content, 'I am a useless message');
+        assert.equal(RED.node.message().originalMessage.chat.id, 42);
+        assert.equal(msg.chat().get('myValue'), 4242);
+      });
   });
 
   it('should set a context boolean string', function () {
@@ -84,15 +96,18 @@ describe('Chat context node', function() {
       fieldType: 'bol',
       fieldValue: 'true'
     });
-    RED.environment.chat(msg.originalMessage.chat.id, {
+    msg.chat().set({
       authorized: true,
       chatId: msg.originalMessage.chat.id
     });
     ContextBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'I am a useless message');
-    assert.equal(RED.node.message().originalMessage.chat.id, 42);
-    assert.equal(msg.chat().get('myValue'), true);
+    return RED.node.get().await()
+      .then(function () {
+        assert.equal(RED.node.message().payload.content, 'I am a useless message');
+        assert.equal(RED.node.message().originalMessage.chat.id, 42);
+        assert.equal(msg.chat().get('myValue'), true);
+      });
   });
 
   it('should set a context json string', function () {
@@ -103,16 +118,19 @@ describe('Chat context node', function() {
       fieldType: 'json',
       fieldValue: '{"key_1": 42, "key_2": "yes"}'
     });
-    RED.environment.chat(msg.originalMessage.chat.id, {
+    msg.chat().set({
       authorized: true,
       chatId: msg.originalMessage.chat.id
     });
     ContextBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'I am a useless message');
-    assert.equal(RED.node.message().originalMessage.chat.id, 42);
-    assert.equal(msg.chat().get('myValue').key_1, 42);
-    assert.equal(msg.chat().get('myValue').key_2, 'yes');
+    return RED.node.get().await()
+      .then(function () {
+        assert.equal(RED.node.message().payload.content, 'I am a useless message');
+        assert.equal(RED.node.message().originalMessage.chat.id, 42);
+        assert.equal(msg.chat().get('myValue').key_1, 42);
+        assert.equal(msg.chat().get('myValue').key_2, 'yes');
+      });
   });
 
 });

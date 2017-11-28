@@ -1,4 +1,4 @@
-var MessageTemplate = require('../lib/message-template.js');
+var MessageTemplate = require('../lib/message-template-async');
 var emoji = require('node-emoji');
 var utils = require('../lib/helpers/utils');
 
@@ -27,17 +27,18 @@ module.exports = function(RED) {
       var buttons = utils.extractValue('buttons', 'buttons', node, msg);
       var message = utils.extractValue('string', 'message', node, msg);
 
-      msg.payload = {
-        type: 'quick-replies',
-        content: message != null ? emoji.emojify(template(message)) : null,
-        chatId: chatId,
-        messageId: messageId,
-        buttons: buttons
-      };
-
-      node.send(msg);
+      template(message)
+        .then(function(translated) {
+          msg.payload = {
+            type: 'quick-replies',
+            content: message != null ? emoji.emojify(translated) : null,
+            chatId: chatId,
+            messageId: messageId,
+            buttons: buttons
+          };
+          node.send(msg);
+        });
     });
-
   }
 
   RED.nodes.registerType('chatbot-quick-replies', ChatBotQuickReplies);

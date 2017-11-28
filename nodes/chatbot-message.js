@@ -1,6 +1,6 @@
 var _ = require('underscore');
 var utils = require('../lib/helpers/utils');
-var MessageTemplate = require('../lib/message-template');
+var MessageTemplate = require('../lib/message-template-async');
 var emoji = require('node-emoji');
 
 module.exports = function(RED) {
@@ -51,22 +51,24 @@ module.exports = function(RED) {
         node.error('Empty message');
       }
 
-      // payload
-      msg.payload = {
-        type: 'message',
-        content: emoji.emojify(template(message)),
-        chatId: chatId,
-        messageId: messageId,
-        inbound: false
-      };
-
-      msg.payload.options = {};
-      // reply flag
-      if (answer) {
-        msg.payload.options.reply_to_message_id = messageId;
-      }
-      // send out reply
-      node.send(msg);
+      template(message)
+        .then(function(message) {
+          // payload
+          msg.payload = {
+            type: 'message',
+            content: emoji.emojify(message),
+            chatId: chatId,
+            messageId: messageId,
+            inbound: false
+          };
+          // reply flag
+          msg.payload.options = {};
+          if (answer) {
+            msg.payload.options.reply_to_message_id = messageId;
+          }
+          // send out reply
+          node.send(msg);
+        });
     });
   }
 

@@ -23,6 +23,26 @@ describe('Chat image node', function() {
       });
   });
 
+  it('should send a image message with buffer from payload and new chatId', function () {
+    var msg = RED.createMessage(new Buffer('image'), 'telegram');
+    RED.node.config({
+      name: 'my file name: test'
+    });
+    msg.originalMessage.chat = null;
+    msg.originalMessage.chatId = 42;
+    ImageBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(function() {
+        assert.equal(RED.node.message().payload.type, 'photo');
+        assert.equal(RED.node.message().payload.inbound, false);
+        assert.instanceOf(RED.node.message().payload.content, Buffer);
+        assert.equal(RED.node.message().payload.filename, 'my file name test');
+        assert.equal(RED.node.message().originalMessage.chatId, 42);
+      });
+  });
+
+
   it('should send a image message with filename from payload', function () {
     var msg = RED.createMessage(__dirname + '/dummy/file.mp4', 'telegram');
     RED.node.config({

@@ -8,7 +8,8 @@ var BufferTransformers = require('../lib/buffer-transformers');
 
 var ValidExtensions = {
   'facebook': ['.pdf', '.png', '.jpg', '.zip', '.gif'],
-  'telegram': ['.pdf', '.gif', '.zip']
+  'telegram': ['.pdf', '.gif', '.zip'],
+  'slack': ['.pdf', '.zip']
 };
 
 
@@ -20,7 +21,7 @@ module.exports = function(RED) {
     this.filename = config.filename;
     this.name = config.name;
     this.caption = config.caption;
-    this.transports = ['telegram', 'facebook'];
+    this.transports = ['telegram', 'facebook', 'slack'];
 
     this.on('input', function(msg) {
 
