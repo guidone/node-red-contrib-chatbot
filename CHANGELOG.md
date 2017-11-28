@@ -1,3 +1,5 @@
+* **0.9.0** - Added support for Slack, added persistent chat storage (json file), open architecture to implement third party chat context provider 
+* **0.8.7** - Bug fixing
 * **0.8.6** - Moved *parse mode* parameter to `Message node` to `Telegram Sender node`. Parsing is now also available in `Inline Buttons node` and `Keyboard node`
 * **0.8.5** - Added `Listen Lexicon node` for `Listen node`
 * **0.8.4** - Added CHANGELOG.md
