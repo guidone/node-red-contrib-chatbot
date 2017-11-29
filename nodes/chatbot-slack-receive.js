@@ -53,7 +53,8 @@ module.exports = function(RED) {
               authorizedUsernames: node.usernames,
               token: node.token,
               contextProvider: node.contextProvider,
-              logfile: node.log
+              logfile: node.log,
+              http: RED.httpNode
             });
             node.chat.start();
           } catch(e) {
