@@ -157,6 +157,7 @@
     $('input[name=answer]', panel).val(obj.answer);
     $('input[name=alert]', panel).attr('checked', obj.alert === true);
     $('select[name=webview_height_ratio]', panel).val(obj.webViewHeightRatio);
+    $('select[name=style]', panel).val(obj.style);
     $('input[name=messenger_extensions]').attr('checked', obj.extensions === true);
 
     return container;
@@ -174,6 +175,7 @@
     var number = $('input[name="number"]', panel);
     var answer = $('input[name="answer"]', panel);
     var alert = $('input[name="alert"]', panel);
+    var style = $('select[name="style"]', panel);
     var messengerExtensions = $('input[name="messenger_extensions"]', panel);
     var webViewHeight = $('select[name="webview_height_ratio"]', panel);
     var result = null;
@@ -203,7 +205,8 @@
           label: label.val(),
           value: value.val(),
           answer: answer.val(),
-          alert: alert.is(':checked')
+          alert: alert.is(':checked'),
+          style: style.val()
         };
         break;
       case 'quick-reply':
@@ -319,6 +322,14 @@
       .append('<input class="node-input-rule-type ' + cx('text', ['telegram', 'slack']) + '" type="text" name="answer" placeholder="Button feedback (optional)"/>')
       .append('<input type="checkbox" name="alert" value="on" style="width: auto;margin:0px 10px 5px 10px;"/>')
       .append('<span>With popup</span><span class="' + cx('icon', ['telegram']) + '"></span>')
+      .appendTo(panelPostback);
+    $('<div/>').css('marginTop','5px')
+      .append('<select name="style" class="' + cx('select', ['slack']) + '" style="width:70%">'
+        + '<option value="">Select button style</option>'
+        + '<option value="default">Default</option>'
+        + '<option value="primary">Primary</option>'
+        + '<option value="danger">Danger</option>'
+        + '</select>')
       .appendTo(panelPostback);
 
     var panelQuickReply = $('<div class="panel panel-quick-reply" style="display:none;"/>').appendTo(container);
@@ -588,6 +599,12 @@ return msg;
 
 .platform-combo-telegram {
   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADRJREFUGBlj1F764D8DAcACk78SJQ9jwmmdZQ/BbLgimABIMYwNU80EY+Cjh4QidJ+BPAQAUcEMK/ZfXe8AAAAASUVORK5CYII=);
+  background-position: right 12px top 2px;
+  background-repeat: no-repeat;
+}
+
+.platform-combo-slack {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEtJREFUGBljDNvW/Z+BAGBBll/pWYLMZQjf3gPmwxWBFMAEUVQCOUzoAtj4cJNApiBbh2wqXBHIBGQJZOtJsw7ZKnRT4dYhW4XueACZqRaCOTsvfwAAAABJRU5ErkJggg==);
   background-position: right 12px top 2px;
   background-repeat: no-repeat;
 }
