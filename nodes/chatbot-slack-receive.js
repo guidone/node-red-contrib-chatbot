@@ -57,6 +57,13 @@ module.exports = function(RED) {
               RED: RED
             });
             node.chat.start();
+            // handle error on sl6teack chat server
+            node.chat.on('error', function(error) {
+              node.error(error);
+            });
+            node.chat.on('warning', function(warning) {
+              node.warn(warning);
+            });
           } catch(e) {
             node.error(e);
           }
@@ -117,10 +124,6 @@ module.exports = function(RED) {
             });
         });
 
-        // handle error on sl6teack chat server
-        node.chat.on('error', function(error) {
-          node.error('[SLACK] ' + error);
-        });
 
       } else {
         node.warn("no bot in config.");
