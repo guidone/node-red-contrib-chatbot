@@ -54,7 +54,7 @@ module.exports = function(RED) {
               token: node.token,
               contextProvider: node.contextProvider,
               logfile: node.log,
-              http: RED.httpNode
+              RED: RED
             });
             node.chat.start();
           } catch(e) {

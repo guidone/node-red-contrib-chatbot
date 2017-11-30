@@ -7,6 +7,7 @@ module.exports = function(RED) {
   function ChatBotInlineButtons(config) {
     RED.nodes.createNode(this, config);
     var node = this;
+    this.name = config.name;
     this.buttons = config.buttons;
     this.message = config.message;
     this.transports = ['telegram', 'facebook', 'smooch', 'slack'];
@@ -25,11 +26,13 @@ module.exports = function(RED) {
       // prepare buttons, first the config, then payload
       var buttons = utils.extractValue('buttons', 'buttons', node, msg);
       var message = utils.extractValue('string', 'message', node, msg);
+      var name = utils.extractValue('string', 'name', node, msg);
 
       template(message)
         .then(function(message) {
           msg.payload = {
             type: 'inline-buttons',
+            name: name,
             content: message != null ? emoji.emojify(message) : null,
             chatId: chatId,
             messageId: messageId,
