@@ -1,3 +1,4 @@
+* **0.9.3** - Added support to buttons for Slack 
 * **0.9.2** - Fixed regression and reverted **0.9.1** 
 * **0.9.1** - Slack: listen messages from other bots 
 * **0.9.0** - Added support for Slack, added persistent chat storage (json file), open architecture to implement third party chat context provider 
