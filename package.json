@@ -6,7 +6,7 @@
     "test": "mocha",
     "ngrok": "ngrok http 127.0.0.1:1880",
     "localtunnel": "lt --port 1880",
-    "lint": "eslint ./nodes/*.js ./lib/**.js",
+    "lint": "eslint ./nodes/*.js ./lib",
     "pull-wiki": "(cd ./wiki && git pull)",
     "commit-wiki": "git add . && git commit -m \"docs\"",
     "build-docs": "git clone https://github.com/guidone/node-red-contrib-chatbot.wiki.git ./wiki && node ./bin/generate-docs && rm -rf ./wiki",
@@ -98,7 +98,7 @@
   },
   "devDependencies": {
     "chai": "^4.1.1",
-    "eslint": "^3.19.0",
+    "eslint": "^4.12.1",
     "mocha": "^3.2.0"
   }
 }
