@@ -15,6 +15,11 @@
         required: true,
         validate: RED.validators.number()
       },
+      store: {
+        value: '',
+        type: 'chatbot-context-store',
+        required: false
+      },
       log: {
         value: null
       }
@@ -59,6 +64,14 @@
     <input type="text" id="node-config-input-log">
     <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
       Store inbound and outbound messages to file
+    </div>
+  </div>
+  <div class="form-row">
+    <label for="node-input-bot">Context</label>
+    <input type="text" id="node-config-input-store" placeholder="Select storage for chat context">
+    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+      Select the chat context provider to use with this bot, if none is selected then non-persistent "memory" will be used.<br>
+      To extend <strong>RedBot</strong> with a new chat context provider see <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Creating-a-Chat-Context-Provider" target="_blank">this tutorial</a>.
     </div>
   </div>
 </script>
