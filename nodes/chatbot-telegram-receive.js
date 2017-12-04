@@ -27,6 +27,7 @@ module.exports = function(RED) {
     this.log = n.log;
     this.usernames = n.usernames != null ? n.usernames.split(',') : [];
     this.polling = n.polling;
+    this.parseMode = n.parseMode;
 
     if (this.credentials) {
       this.token = this.credentials.token;
@@ -58,6 +59,7 @@ module.exports = function(RED) {
               authorizedUsernames: node.usernames,
               token: node.token,
               polling: node.polling,
+              parseMode: node.parseMode,
               contextProvider: node.contextProvider,
               logfile: node.log,
               RED: RED
