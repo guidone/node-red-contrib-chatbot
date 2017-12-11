@@ -55,7 +55,9 @@
       "chatbot-messenger-menu": "./nodes/chatbot-messenger-menu.js",
       "chatbot-facebook-receive": "./nodes/chatbot-facebook-receive.js",
       "chatbot-smooch-receive": "./nodes/chatbot-smooch-receive.js",
-      "chatbot-context-store": "./nodes/chatbot-context-store.js"
+      "chatbot-context-store": "./nodes/chatbot-context-store.js",
+      "chatbot-inline-query": "./nodes/chatbot-inline-query.js",
+      "chatbot-switch": "./nodes/chatbot-switch.js"
     }
   },
   "maintainers": [
