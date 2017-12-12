@@ -1,4 +1,18 @@
 <script type="text/javascript">
+  var ChatbotSwitchTypes = [
+    {value: '*', label: 'Any'},
+    {value: 'action', label: 'Action'},
+    {value: 'audio', label: 'Audio'},
+    {value: 'buttons', label: 'Buttons'},
+    {value: 'contact', label: 'Contact'},
+    {value: 'document', label: 'Document'},
+    {value: 'inline-buttons', label: 'Inline buttons'},
+    {value: 'inline_query', label: 'Inline Query'},
+    {value: 'location', label: 'Location'},
+    {value: 'photo', label: 'Photo'},
+    {value: 'request', label: 'Request'},
+    {value: 'video', label: 'Video'}
+  ];
   RED.nodes.registerType('chatbot-switch', {
     category: 'RedBot Flow',
     color: '#FFCC66',
@@ -30,30 +44,31 @@
       });
       this.outputs = node.rules.length;
     },
+    outputLabels: function(index) {
+      if (this.rules[index] != null && this.rules[index].type != null) {
+        var rule = null;
+        for(var idx = 0; idx < ChatbotSwitchTypes.length; idx++) {
+          if (ChatbotSwitchTypes[idx].value === this.rules[index].type) {
+            rule = ChatbotSwitchTypes[idx];
+          }
+        }
+        if (rule != null) {
+          return rule.label;
+        }
+      }
+      return '';
+    },
     oneditprepare: function() {
       var node = this;
-      var types = [
-        {value: '*', label: 'Any'},
-        {value: 'action', label: 'Action'},
-        {value: 'audio', label: 'Audio'},
-        {value: 'buttons', label: 'Buttons'},
-        {value: 'contact', label: 'Contact'},
-        {value: 'document', label: 'Document'},
-        {value: 'inline-buttons', label: 'Inline buttons'},
-        {value: 'inline_query', label: 'Inline Query'},
-        {value: 'location', label: 'Location'},
-        {value: 'photo', label: 'Photo'},
-        {value: 'request', label: 'Request'},
-        {value: 'video', label: 'Video'}
-      ];
-      $("#node-input-rules-container").css('min-height','250px').css('min-width','450px').editableList({
+      var rulesContainer = $('#node-input-rules-container');
+      rulesContainer.css('min-height','250px').css('min-width','450px').editableList({
         addItem: function (container, i, opt) {
           var rule = opt;
           var idx;
           var row = $('<div/>').appendTo(container);
           var selectField = $('<select/>', {style:"width:80%; margin-left: 5px; text-align: left;"})
-          for(idx = 0; idx < types.length; idx++) {
-            selectField.append('<option value="' + types[idx].value + '">' + types[idx].label + '</option>');
+          for(idx = 0; idx < ChatbotSwitchTypes.length; idx++) {
+            selectField.append('<option value="' + ChatbotSwitchTypes[idx].value + '">' + ChatbotSwitchTypes[idx].label + '</option>');
           }
           selectField.appendTo(row);
           if (rule.type != null) {
@@ -80,7 +95,7 @@
 
       for (var i=0; i < node.rules.length; i++) {
         var rule = this.rules[i];
-        $('#node-input-rules-container').editableList('addItem', rule);
+        rulesContainer.editableList('addItem', rule);
       }
 
     }
