@@ -288,7 +288,7 @@ describe('Chat message node', function() {
   it('should send a message from payload even with the default value for message', function() {
     var msg = RED.createMessage('Test context for message');
     RED.node.config({
-      message: ['']
+      message: [{message: ''}]
     });
     MessageBlock(RED);
     RED.node.get().emit('input', msg);
@@ -301,7 +301,7 @@ describe('Chat message node', function() {
   it('should send a message from payload even with an empty array of messages', function() {
     var msg = RED.createMessage('Test context for message');
     RED.node.config({
-      message: ['', '', '']
+      message: [{message: ''}, {message: ''}, {message: ''}]
     });
     MessageBlock(RED);
     RED.node.get().emit('input', msg);
