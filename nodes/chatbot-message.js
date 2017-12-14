@@ -20,7 +20,8 @@ module.exports = function(RED) {
 
     this.emptyMessages = function(messages) {
       return _.isEmpty(messages) || _(messages).all(function(message) {
-        return _.isEmpty(message);
+        // in node config elements are object, in payload are just strings
+        return _.isObject(message) ? _.isEmpty(message.message) : _.isEmpty(message);
       });
     };
 

@@ -22,9 +22,9 @@ module.exports = function(RED) {
       var task = new Promise(function(resolve) {
         resolve();
       });
-      var chatId = utils.extractValue('string', 'chatId', node, msg);
-      var transport = utils.extractValue('string', 'transport', node, msg);
-      var messageId = utils.extractValue('string', 'messageId', node, msg);
+      var chatId = utils.extractValue('string', 'chatId', node, msg, false);
+      var transport = utils.extractValue('string', 'transport', node, msg, false);
+      var messageId = utils.extractValue('string', 'messageId', node, msg, false);
 
       if (transport === 'slack') {
         var store = RED.nodes.getNode(node.store);
