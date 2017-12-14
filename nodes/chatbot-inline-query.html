@@ -3,18 +3,42 @@
     category: 'RedBot',
     color: '#FFCC66',
     defaults: {
+      personal: {
+        value: false
+      },
+      caching: {
+        value: 300
+      }
     },
     inputs: 1,
     outputs: 1,
-    icon: 'chatbot-log.png',
+    icon: 'chatbot-inline-query.png',
     paletteLabel: 'Inline Query',
     label: function() {
       return 'Inline Query';
+    },
+    oneditprepare: function() {
+      $("#node-input-caching").spinner({min: 0, step: 100});
     }
   });
 </script>
 
+<script type="text/x-red" data-template-name="chatbot-inline-query">
+  <div class="form-row">
+    <label for="node-input-caching">Cache</label>
+    <input type="text" id="node-input-caching" style="text-align:end; width:60px !important"> seconds
+  </div>
+  <div class="form-row">
+    <label for="node-input-personal">Personal</label>
+    <input type="checkbox" value="true" id="node-input-personal">
+    <span style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;display:block;">
+    True if results may be cached on the server side only for the user that sent the query..</span>
+  </div>
+</script>
 
-<script type="text/x-red" data-help-name="chatbot-log">
+
+<script type="text/x-red" data-help-name="chatbot-inline-query">
 
 </script>
+
+
