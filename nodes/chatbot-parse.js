@@ -1,5 +1,5 @@
 var _ = require('underscore');
-var nlp = require('nlp_compromise');
+var nlp = require('compromise');
 var moment = require('moment');
 
 module.exports = function(RED) {
@@ -25,7 +25,6 @@ module.exports = function(RED) {
       var parseVariable = this.parseVariable;
       var chatContext = msg.chat();
       var parsedSentence = null;
-
       var parsedValue = null;
 
       if (_.isObject(msg.payload)) {
@@ -58,11 +57,16 @@ module.exports = function(RED) {
             } else if (_.isString(msg.payload.content) && msg.payload.content.match(/^[0-9]+$/)) {
               parsedValue = parseInt(msg.payload.content, 10);
             } else {
-              parsedSentence = nlp.text(msg.payload.content);
-              var term = _(parsedSentence.terms()).find(function(term) {
-                return term.pos.Value;
-              });
-              parsedValue = term != null ? term.number : null;
+              parsedSentence = nlp(msg.payload.content);
+              if (parsedSentence.values(0)) {
+                parsedValue = parsedSentence.values(0).toNumber().out();
+                if (!isNaN(parseInt(parsedValue, 10))) {
+                  parsedValue = parseInt(parsedValue, 10);
+                } else {
+                  parsedValue = null;
+                }
+              }
+              parsedValue =_.isNumber(parsedValue) ? parsedValue : null;
             }
             break;
           case 'boolean':

@@ -65,7 +65,7 @@ describe('Chat parse node', function() {
     assert.isNull(RED.node.message(1));
   });
 
-  it('should parse number written in plain english', function() {
+  it.only('should parse number written in plain english', function() {
     var msg = RED.createMessage({
       content: 'forty two'
     });
