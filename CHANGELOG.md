@@ -1,3 +1,4 @@
+* **0.9.4** - Fixed bug with `Message node` + `Conversation node`, update libraries 
 * **0.9.3** - Added support to buttons for Slack 
 * **0.9.2** - Fixed regression and reverted **0.9.1** 
 * **0.9.1** - Slack: listen messages from other bots 
