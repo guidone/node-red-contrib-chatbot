@@ -8,6 +8,9 @@
       },
       caching: {
         value: 300
+      },
+      inlineQueryAnswer: {
+        value: ''
       }
     },
     inputs: 1,
@@ -17,8 +20,17 @@
     label: function() {
       return 'Inline Query';
     },
+    oneditsave: function() {
+      this.inlineQueryAnswer = $('#node-input-inlineQueryAnswer').typedInput('value');
+    },
     oneditprepare: function() {
       $("#node-input-caching").spinner({min: 0, step: 100});
+      var widget = $('#node-input-inlineQueryAnswer');
+      widget.typedInput({
+        'default': 'json',
+        types: ['json']
+      });
+      widget.typedInput('value', this.inlineQueryAnswer);
     }
   });
 </script>
@@ -31,11 +43,18 @@
   <div class="form-row">
     <label for="node-input-personal">Personal</label>
     <input type="checkbox" value="true" id="node-input-personal">
-    <span style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;display:block;">
-    True if results may be cached on the server side only for the user that sent the query..</span>
+    <div class="redbot-form-hint">
+      True if results may be cached on the server side only for the user that sent the query.
+    </div>
+  </div>
+  <div class="form-row">
+    <label for="node-input-inlineQueryAnswer">Response</label>
+    <input type="text" id="node-input-inlineQueryAnswer" placeholder="Inline Query Answer">
+    <div class="redbot-form-hint">
+      Consult Telegram API <a href="https://core.telegram.org/bots/api#inline-mode" target="_blank">inline query</a> on how to build query results.
+    </div>
   </div>
 </script>
-
 
 <script type="text/x-red" data-help-name="chatbot-inline-query"><p>Inline mode allows the user to query a chatbot from a different chat, it&#39;s a powerful tool to make your chatbot go viral, read more <a href="https://core.telegram.org/bots/inline">here</a>.</p>
 <p>Every query invoked with a line like <code>@mychatbot how are you?</code> are routed through the <code>Telegram Receiver node</code> as a message of type <code>inline_query</code>, it will look like</p>

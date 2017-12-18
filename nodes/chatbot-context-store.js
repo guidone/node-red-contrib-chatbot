@@ -14,9 +14,7 @@ module.exports = function(RED) {
       console.log('Invalid JSON in context storage params (' + this.name + ')');
     }
   }
-
   RED.nodes.registerType('chatbot-context-store', ChatBotContextStore);
-
 
   // add an endpoint to get a list of context providers
   RED.httpNode.get('/redbot/context-providers', function(req, res) {

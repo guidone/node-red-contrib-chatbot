@@ -8,13 +8,19 @@ module.exports = function(RED) {
     var node = this;
     node.personal = config.personal;
     node.caching = config.caching;
+    // just store the information
+    node.inlineQueryAnswer = config.inlineQueryAnswer;
+    try {
+      node.inlineQueryAnswer = JSON.parse(config.inlineQueryAnswer);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log('Invalid JSON for inline query answer (' + this.name + ')');
+    }
 
     this.on('input', function(msg) {
 
-
       var inlineQueryId = msg.originalMessage != null ? msg.originalMessage.inlineQueryId : null;
-
-      if (_.isEmpty(inlineQueryId)) {
+      if (inlineQueryId == null) {
         node.error('The inline query id (inlineQueryId) is empty.');
         return;
       }
