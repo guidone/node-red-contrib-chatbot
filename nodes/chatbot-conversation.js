@@ -1,12 +1,9 @@
 var _ = require('underscore');
 var ChatContextStore = require('../lib/chat-context-store');
-var ContextProviders = require('../lib/chat-platform/chat-context-factory');
 var utils = require('../lib/helpers/utils');
-var when = utils.when;
 
 module.exports = function(RED) {
 
-  var contextProviders = ContextProviders(RED);
 
   function ChatBotConversation(config) {
     RED.nodes.createNode(this, config);

@@ -1,5 +1,4 @@
 var utils = require('../lib/helpers/utils');
-var _ = require('underscore');
 
 module.exports = function(RED) {
 

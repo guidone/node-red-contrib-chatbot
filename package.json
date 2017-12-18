@@ -88,7 +88,7 @@
     "node-telegram-bot-api": "^0.28.0",
     "prettyjson": "^1.2.1",
     "qr-image": "^3.1.0",
-    "request": "2.83.0",
+    "request": "^2.83.0",
     "rivescript": "1.17.2",
     "sanitize-filename": "^1.6.0",
     "smooch-core": "^2.0.0",
