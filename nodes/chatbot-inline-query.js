@@ -25,9 +25,9 @@ module.exports = function(RED) {
         return;
       }
 
-      var inlineQueryAnswer = utils.extractValue('arrayOfObject', 'inlineQueryAnswer', node, msg);
-      var caching = utils.extractValue('integer', 'caching', node, msg);
-      var personal = utils.extractValue('boolean', 'personal', node, msg);
+      var inlineQueryAnswer = utils.extractValue('arrayOfObject', 'inlineQueryAnswer', node, msg, true);
+      var caching = utils.extractValue('integer', 'caching', node, msg, false);
+      var personal = utils.extractValue('boolean', 'personal', node, msg, false);
 
       msg.payload = {
         type: 'inline_query_answer',
