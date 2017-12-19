@@ -42,7 +42,9 @@ module.exports = function(RED) {
 
           request.get({
             url: voiceUrl,
-            headers: {}
+            headers: {
+              'Referer': 'http://www.voicerss.org/api/demo.aspx'
+            }
           }, function(err, response, buffer) {
             if (err) {
               node.error('Error contacting VoiceRSS');

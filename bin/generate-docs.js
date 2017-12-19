@@ -45,7 +45,9 @@ var mappings = {
   'Listen-Lexicon-node.md': 'chatbot-listen-lexicon.html',
   'Context-Provider-node.md': 'chatbot-context-store.html',
   'Slack-Receiver-node.md': 'chatbot-slack-receive.html|chatbot-slack-node',
-  'Telegram-Receiver-node.md': 'chatbot-telegram-receive.html|chatbot-telegram-node'
+  'Telegram-Receiver-node.md': 'chatbot-telegram-receive.html|chatbot-telegram-node',
+  'Switch-node.md': 'chatbot-switch.html',
+  'Inline-Query-node.md': 'chatbot-inline-query.html'
 };
 
 function collectImages(html) {

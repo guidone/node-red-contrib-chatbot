@@ -55,7 +55,9 @@
       "chatbot-messenger-menu": "./nodes/chatbot-messenger-menu.js",
       "chatbot-facebook-receive": "./nodes/chatbot-facebook-receive.js",
       "chatbot-smooch-receive": "./nodes/chatbot-smooch-receive.js",
-      "chatbot-context-store": "./nodes/chatbot-context-store.js"
+      "chatbot-context-store": "./nodes/chatbot-context-store.js",
+      "chatbot-inline-query": "./nodes/chatbot-inline-query.js",
+      "chatbot-switch": "./nodes/chatbot-switch.js"
     }
   },
   "maintainers": [
@@ -86,7 +88,7 @@
     "node-telegram-bot-api": "^0.28.0",
     "prettyjson": "^1.2.1",
     "qr-image": "^3.1.0",
-    "request": "2.83.0",
+    "request": "^2.83.0",
     "rivescript": "1.17.2",
     "sanitize-filename": "^1.6.0",
     "smooch-core": "^2.0.0",

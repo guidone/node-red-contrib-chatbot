@@ -114,12 +114,12 @@ module.exports = function() {
       createNode: function(node, config) {
 
         node.on = function(eventName, cb) {
-          if (eventName == 'input') {
+          if (eventName === 'input') {
             _cbInput = cb;
           }
         };
         node.emit = function(eventName, msg) {
-          if (eventName == 'input') {
+          if (eventName === 'input') {
             _message = null;
             _cbInput(msg);
           }

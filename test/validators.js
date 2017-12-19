@@ -119,5 +119,12 @@ describe('Validators', function() {
     assert.isFalse(validators.nlpTokens('is[verb],[noun->my_var'));
   });
 
+  it('validates an integer', function() {
+    assert.isTrue(validators.integer('42'));
+    assert.isTrue(validators.integer('12'));
+    assert.isFalse(validators.integer(''));
+    assert.isFalse(validators.integer('fortytwo'));
+  });
+
 });
 
