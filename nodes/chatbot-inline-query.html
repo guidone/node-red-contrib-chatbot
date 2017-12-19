@@ -57,7 +57,7 @@
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-inline-query"><p>Inline mode allows the user to query a chatbot from a different chat, it&#39;s a powerful tool to make your chatbot go viral, read more <a href="https://core.telegram.org/bots/inline">here</a>.</p>
-<p>Every query invoked with a line like <code>@mychatbot how are you?</code> are routed through the <code>Telegram Receiver node</code> as a message of type <code>inline_query</code>, it will look like</p>
+<p>Every query invoked with a line like <code>@mychatbot how are you?</code> are routed through the <code>Telegram Receiver node</code> as a message of type <code>inline-query</code>, it will look like</p>
 <pre><code>{
   originalMessage: {
     // ...
@@ -93,6 +93,15 @@
 ]
 return msg;
 </code></pre><p>Learn more <a href="https://core.telegram.org/bots/api#inline-mode">here</a> about what kind of message it&#39;s possible to send as inline query answer.</p>
+<p>Available parameters for <code>msg.payload</code>:</p>
+<dl class="message-properties">
+
+
+<dt>inlineQueryAnswer<span class="property-type">array of obj</span><dd>The query results to show to the client</dd>
+<dt>caching<span class="property-type">integer</span><dd>How long results are cached, in seconds</dd>
+<dt>personal<span class="property-type">boolean</span><dd>If the results should be presented privately to the user</dd>
+
+</dl>
 <p><img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram"></p>
 </script>
 
