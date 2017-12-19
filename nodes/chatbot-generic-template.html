@@ -65,8 +65,8 @@
           addItem: function(container, i, item) {
             $(container).RB_mountButtonDialog({
               types: ['url', 'postback', 'call', 'login', 'newline', 'logout', 'share'],
-              platforms: ['facebook'],
-              badges: false
+              platforms: ['facebook', 'slack'],
+              badges: true
             });
             $(container).RB_setButtonData(item, {
               badges: false
@@ -122,12 +122,19 @@
 </div>
 <div class="form-row form-row-carousel">
   <label for="node-input-aspectRatio">Carousel</label>
-  <select id="node-input-aspectRatio" style="width: 150px;" placeholder="Image Aspect Ratio">
+  <select id="node-input-aspectRatio" class="platform-combo-facebook" style="width: 150px;" placeholder="Image Aspect Ratio">
     <option value="horizontal">Horizontal</option>
     <option value="square">Square</option>
    </select>
    <input type="checkbox" value="true" id="node-input-sharable" style="width: 20px; margin:0px 0px 0px 15px;">
    <span>Sharable</span>
+</div>
+<div class="redbot-form-legend">
+  Some attributes apply for specific platform:<br>
+  <span class="icon-platform-facebook"></span> = <span style="font-size:10px">Facebook</span>
+  <span class="icon-platform-telegram"></span> = <span style="font-size:10px">Telegram</span>
+  <span class="icon-platform-smooch"></span> = <span style="font-size:10px">Smooch</span>
+  <span class="icon-platform-slack"></span> = <span style="font-size:10px">Slack</span>
 </div>
 </script>
 
@@ -179,7 +186,7 @@
         }
       ]
     }
-  ]      
+  ]
 }
 </code></pre><p>Available parameters for the <code>msg.payload</code></p>
 <dl class="message-properties">

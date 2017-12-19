@@ -15,7 +15,7 @@ module.exports = function(RED) {
     this.imageUrl = config.imageUrl;
     this.aspectRatio = config.aspectRatio;
     this.sharable = config.sharable;
-    this.transports = ['facebook'];
+    this.transports = ['facebook', 'slack'];
 
     this.on('input', function(msg) {
 
