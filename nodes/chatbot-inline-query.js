@@ -13,7 +13,7 @@ module.exports = function(RED) {
       node.inlineQueryAnswer = JSON.parse(config.inlineQueryAnswer);
     } catch (e) {
       // eslint-disable-next-line no-console
-      console.log('Invalid JSON for inline query answer (' + this.name + ')');
+      node.error('Invalid JSON for inline query answer (' + this.name + ')');
     }
 
     this.on('input', function(msg) {
