@@ -7,7 +7,7 @@
     {value: 'contact', label: 'Contact'},
     {value: 'document', label: 'Document'},
     {value: 'inline-buttons', label: 'Inline buttons'},
-    {value: 'inline_query', label: 'Inline Query'},
+    {value: 'inline-query', label: 'Inline Query'},
     {value: 'location', label: 'Location'},
     {value: 'photo', label: 'Photo'},
     {value: 'request', label: 'Request'},
@@ -120,12 +120,12 @@
 <p>The first matched topic skips the rest of the matching. To get a else-like behaviour, use the default value <code>Any</code> at the end of the list to capture all messages that don&#39;t match any type.</p>
 <p>The message type is stored in the <code>payload</code> of the message</p>
 <pre><code>{
-  originalMessage: { 
+  originalMessage: {
   // ...
   },
   payload: {
     type: &#39;document&#39;,
-    // ... 
+    // ...
   }
 }
 </code></pre><p>This is useful for example when a <strong>Telegram</strong> and inline queries: since the inline query comes out a <code>Telegram Receiver node</code> with the type <code>inline_query</code>, id could be useful to intercept this kind of messages and redirect to a proper parser.</p>

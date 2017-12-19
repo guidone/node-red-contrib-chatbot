@@ -291,12 +291,6 @@ module.exports = function(RED) {
       if (node.telegramBot) {
         this.status({fill: 'green', shape: 'ring', text: 'connected'});
 
-        /*
-        todo implement inline
-        node.telegramBot.on('inline_query', function(botMsg) {
-          console.log('inline request', botMsg);
-        });*/
-
         node.telegramBot.on('relay', function(message, error) {
           if (error != null) {
             node.error(error);

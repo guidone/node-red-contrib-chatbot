@@ -29,7 +29,7 @@ module.exports = function(RED) {
       var personal = utils.extractValue('boolean', 'personal', node, msg, false);
 
       msg.payload = {
-        type: 'inline_query_answer',
+        type: 'inline-query-answer',
         content: inlineQueryAnswer,
         caching: caching,
         personal: personal
