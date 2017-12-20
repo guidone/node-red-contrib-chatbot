@@ -1,0 +1,107 @@
+<script type="text/javascript">
+
+  RED.nodes.registerType('chatbot-dialog', {
+    category: 'RedBot',
+    color: '#FFCC66',
+    defaults: {
+      submitLabel: {
+        value: ''
+      },
+      title: {
+        value: '',
+        validate: function(title) {
+          return $.RedBot.validate.notEmpty(title) && title.length <= 80 ;
+        }
+      },
+      elements: {
+        value: [{}],
+        /*validate: function(buttons) {
+          var valid = true;
+          var idx;
+          for(idx = 0; idx < buttons.length; idx++) {
+            if (!$.RedBot.validate.button(buttons[idx])) {
+              valid = false;
+            }
+          }
+          return valid && buttons.length <= 3 && buttons.length > 0;
+        }*/
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'Dialog',
+    icon: 'chatbot-generic-template.png',
+    label: function() {
+      return this.title || 'Dialog';
+    },
+    oneditsave: function() {
+      var elements = $("#node-input-elements-container").editableList('items');
+      var node = this;
+      node.elements = [];
+      var idx;
+      for(idx = 0; idx < elements.length; idx++) {
+        console.log('SAVE----', $(elements[idx]).RB_getElementData());
+        node.elements.push($(elements[idx]).RB_getElementData());
+      }
+    },
+    oneditprepare: function() {
+      $('#node-input-elements-container')
+        .css('min-width','450px')
+        .editableList({
+          addItem: function(container, i, item) {
+            $(container).RB_mountElementDialog({
+              //types: ['url', 'postback', 'call', 'login', 'newline', 'logout', 'share'],
+              //platforms: ['facebook', 'slack'],
+              //badges: true
+            });
+            $(container).RB_setElementData(item, {
+              badges: false
+            });
+          },
+          removable: true,
+          sortable: true
+        });
+
+      if (this.elements != null) {
+        this.elements.forEach(function(element) {
+          $('#node-input-elements-container').editableList('addItem', element);
+        });
+      }
+    },
+    oneditresize: function() {
+      var dialogForm = $('#dialog-form');
+      var rowName = $('.form-row-name', dialogForm);
+      var rowTitle = $('.form-row-title', dialogForm);
+      var rowSubtitle = $('.form-row-subtitle', dialogForm);
+      var rowImageUrl = $('.form-row-imageUrl', dialogForm);
+      var rowLabel = $('.form-row-label', dialogForm);
+      var rowCarousel = $('.form-row-carousel', dialogForm);
+      var height = dialogForm.height() - rowName.height() - rowTitle.height() - rowSubtitle.height()
+        - rowImageUrl.height() - rowLabel.height() - rowCarousel.height() - 40;
+      $('#node-input-buttons-container').editableList('height', height);
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-dialog">
+<div class="form-row form-row-title">
+  <label for="node-input-title">Title</label>
+  <input type="text" id="node-input-title" placeholder="Title">
+</div>
+<div class="form-row form-row-submitLabel">
+  <label for="node-input-subtitle">Submit label</label>
+  <input type="text" id="node-input-submitLabel" placeholder="Submit label">
+</div>
+
+<div class="form-row node-input-rule-container-row">
+  <ol id="node-input-elements-container"></ol>
+</div>
+
+
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-dialog">
+</script>
+
+
+
