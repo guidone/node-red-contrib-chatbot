@@ -1,3 +1,4 @@
+* **0.9.6** - Fix firstName, lastName, authorized in Telegram
 * **0.9.5** - New context engine available for Telegram, added support for inline queries in Telegram, added `Switch node`
 * **0.9.4** - Fixed bug with `Message node` + `Conversation node`, update libraries 
 * **0.9.3** - Added support to buttons for Slack 
