@@ -39,7 +39,7 @@ module.exports = function(RED) {
         }
 
         var message = null;
-        platformNode.createMessage(chatId, null, messageId)
+        platformNode.createMessage(chatId, null, messageId, msg)
           .then(function(createdMessage) {
             message = createdMessage;
             if (contextMessageId === true) {

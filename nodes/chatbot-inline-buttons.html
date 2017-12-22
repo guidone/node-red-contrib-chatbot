@@ -248,7 +248,14 @@
     return result;
   };
   $.fn.RB_hasPlatform = function(platform, platforms) {
-    return platforms.indexOf(platform) !== -1 ? $(this) : $();
+    platform = platform instanceof Array ? platform : [platform];
+    var hasMatch = false;
+    for(var idx = 0; idx < platform.length; idx++) {
+      if (platforms.indexOf(platform[idx]) !== -1) {
+        hasMatch = true;
+      }
+    }
+    return hasMatch ? $(this) : $();
   };
   $.fn.RB_mountButtonDialog = function(options) {
 
@@ -318,7 +325,7 @@
       .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="value" placeholder="Postback value">'))
       .appendTo(panelPostback);
     $('<div/>').css('marginTop','5px')
-      .RB_hasPlatform('telegram', options.platforms)
+      .RB_hasPlatform(['telegram', 'slack'], options.platforms)
       .append('<input class="node-input-rule-type ' + cx('text', ['telegram', 'slack']) + '" type="text" name="answer" placeholder="Button feedback (optional)"/>')
       .append('<input type="checkbox" name="alert" value="on" style="width: auto;margin:0px 10px 5px 10px;"/>')
       .append('<span>With popup</span><span class="' + cx('icon', ['telegram']) + '"></span>')
