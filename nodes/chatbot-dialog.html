@@ -30,7 +30,7 @@
     inputs: 1,
     outputs: 1,
     paletteLabel: 'Dialog',
-    icon: 'chatbot-generic-template.png',
+    icon: 'chatbot-dialog.png',
     label: function() {
       return this.title || 'Dialog';
     },
@@ -50,9 +50,7 @@
         .editableList({
           addItem: function(container, i, item) {
             $(container).RB_mountElementDialog({
-              //types: ['url', 'postback', 'call', 'login', 'newline', 'logout', 'share'],
-              //platforms: ['facebook', 'slack'],
-              //badges: true
+              badges: false
             });
             $(container).RB_setElementData(item, {
               badges: false

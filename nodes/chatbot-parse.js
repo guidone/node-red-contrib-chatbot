@@ -50,7 +50,11 @@ module.exports = function(RED) {
               }
             }
             break;
-
+          case 'response':
+            if (msg.payload != null && msg.payload.type === 'response' && _.isObject(msg.payload.content)) {
+              parsedValue = msg.payload.content;
+            }
+            break;
           case 'number-integer':
             if (_.isNumber(msg.payload.content)) {
               parsedValue = Math.round(msg.payload.content);
