@@ -1,4 +1,5 @@
 var utils = require('../lib/helpers/utils');
+var _ = require('underscore');
 
 module.exports = function(RED) {
 
@@ -6,7 +7,7 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
     var node = this;
     this.name = config.name;
-    this.elements = config.elements;
+    this.elements = _.isArray(config.elements) && !_.isEmpty(config.elements) ? config.elements : null;
     this.title = config.title;
     this.submitLabel = config.submitLabel;
     this.transports = ['slack'];
