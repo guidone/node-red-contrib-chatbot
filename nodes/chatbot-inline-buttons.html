@@ -16,7 +16,7 @@
     },
     {
       type: 'dialog',
-      label: 'Dialog',
+      label: 'Open Dialog',
       className: 'platform-combo-slack',
       platforms: ['slack']
     },
@@ -92,6 +92,34 @@
   };
   $.RedBot.validate.arrayNotEmpty = function(array) {
     return array != null && array.length !== 0;
+  };
+  $.RedBot.validate.element = function(element) {
+    if (element == null) {
+      return false;
+    }
+    switch(element.type) {
+      case 'text':
+      case 'textarea':
+        return $.RedBot.validate.notEmpty(element.name) && $.RedBot.validate.notEmpty(element.label);
+      case 'select':
+        return $.RedBot.validate.notEmpty(element.name) && $.RedBot.validate.notEmpty(element.label)
+          && $.RedBot.validate.options(element.options);
+      default:
+        return false;
+    }
+  };
+  $.RedBot.validate.options = function(options) {
+    if (options == null || options.length == null || options.length === 0) {
+      return false;
+    }
+    var idx;
+    var result = true;
+    for(idx = 0; idx < options.length; idx++) {
+      if (!($.RedBot.validate.notEmpty(options[idx].value) && $.RedBot.validate.notEmpty(options[idx].label))) {
+        result = false;
+      }
+    }
+    return result;
   };
   $.RedBot.validate.button = function(button) {
     if (button == null) {
@@ -328,7 +356,7 @@
       case 'text':
       case 'textarea':
         result = {
-          type: 'text',
+          type: type.val(),
           label: label.val(),
           name: name.val(),
           value: value.val(),
@@ -551,13 +579,11 @@
       .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="label" placeholder="Button label"/>'))
       .appendTo(panelDialog);
     $('<div/>').css('marginTop','5px')
-      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="value" placeholder="Postback value">'))
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="value" placeholder="Dialog Id">'))
       .appendTo(panelDialog);
     $('<div/>').css('marginTop','5px')
       .RB_hasPlatform(['telegram', 'slack'], options.platforms)
-      .append('<input class="node-input-rule-type ' + cx('text', ['telegram', 'slack']) + '" type="text" name="answer" placeholder="Button feedback (optional)"/>')
-      .append('<input type="checkbox" name="alert" value="on" style="width: auto;margin:0px 10px 5px 10px;"/>')
-      .append('<span>With popup</span><span class="' + cx('icon', ['telegram']) + '"></span>')
+      .append('<input class="node-input-rule-type ' + cx('text', ['slack']) + '" type="text" name="answer" placeholder="Button feedback (optional)"/>')
       .appendTo(panelDialog);
     $('<div/>').css('marginTop','5px')
       .append('<select name="style" class="' + cx('select', ['slack']) + '" style="width:70%">'

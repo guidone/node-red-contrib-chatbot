@@ -1,5 +1,4 @@
 <script type="text/javascript">
-
   RED.nodes.registerType('chatbot-dialog', {
     category: 'RedBot',
     color: '#FFCC66',
@@ -10,21 +9,21 @@
       title: {
         value: '',
         validate: function(title) {
-          return $.RedBot.validate.notEmpty(title) && title.length <= 80 ;
+          return $.RedBot.validate.notEmpty(title);
         }
       },
       elements: {
         value: [{}],
-        /*validate: function(buttons) {
+        validate: function(elements) {
           var valid = true;
           var idx;
-          for(idx = 0; idx < buttons.length; idx++) {
-            if (!$.RedBot.validate.button(buttons[idx])) {
+          for(idx = 0; idx < elements.length; idx++) {
+            if (!$.RedBot.validate.element(elements[idx])) {
               valid = false;
             }
           }
-          return valid && buttons.length <= 3 && buttons.length > 0;
-        }*/
+          return valid && elements.length > 0;
+        }
       }
     },
     inputs: 1,
@@ -40,7 +39,6 @@
       node.elements = [];
       var idx;
       for(idx = 0; idx < elements.length; idx++) {
-        console.log('SAVE----', $(elements[idx]).RB_getElementData());
         node.elements.push($(elements[idx]).RB_getElementData());
       }
     },
@@ -90,12 +88,9 @@
   <label for="node-input-subtitle">Submit label</label>
   <input type="text" id="node-input-submitLabel" placeholder="Submit label">
 </div>
-
 <div class="form-row node-input-rule-container-row">
   <ol id="node-input-elements-container"></ol>
 </div>
-
-
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-dialog">
