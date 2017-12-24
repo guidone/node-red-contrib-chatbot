@@ -1,7 +1,7 @@
 var _ = require('underscore');
 var moment = require('moment');
 // todo change here
-var FacebookServer = require('../lib/telegram/telegram-chat');
+var FacebookServer = require('../lib/facebook/facebook-chat');
 var ContextProviders = require('../lib/chat-platform/chat-context-factory');
 var utils = require('../lib/helpers/utils');
 var when = utils.when;
@@ -32,6 +32,8 @@ module.exports = function(RED) {
 
     if (this.credentials) {
       this.token = this.credentials.token;
+      this.verify_token = this.credentials.verify_token;
+      this.app_secret = this.credentials.app_secret;
       if (this.token) {
         this.token = this.token.trim();
         if (!this.chat) {
@@ -58,9 +60,11 @@ module.exports = function(RED) {
             node.contextProvider.start();
             node.chat = FacebookServer.createServer({
               authorizedUsernames: node.usernames,
+
               token: node.token,
-              polling: node.polling,
-              parseMode: node.parseMode,
+              verifyToken: node.verify_token,
+              appSecret: node.app_secret,
+
               contextProvider: node.contextProvider,
               logfile: node.log,
               RED: RED

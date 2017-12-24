@@ -10,11 +10,6 @@
         value: '',
         required: false
       },
-      polling: {
-        value: 1000,
-        required: true,
-        validate: RED.validators.number()
-      },
       store: {
         value: '',
         type: 'chatbot-context-store',
@@ -22,17 +17,17 @@
       },
       log: {
         value: null
-      },
-      parseMode: {
-        value: ''
       }
-    },
-    oneditprepare: function() {
-      $("#node-config-input-polling").spinner({min: 0, step: 100});
     },
     paletteName: 'Facebook Bot',
     credentials: {
       token: {
+        type: 'text'
+      },
+      verify_token: {
+        type: 'text'
+      },
+      app_secret: {
         type: 'text'
       }
     },
@@ -48,22 +43,36 @@
     <input type="text" id="node-config-input-botname">
   </div>
   <div class="form-row">
-    <label for="node-config-input-token"><i class="icon-tag"></i> Token</label>
-    <input type="text" id="node-config-input-token">
+    <label for="node-config-input-token">Token</label>
+    <input type="text" id="node-config-input-token" placeholder="Access Token">
+    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+      The access token that is generated when the Facebook app is connected to a Facebook page
+    </div>
+  </div>
+    <div class="form-row">
+    <label for="node-config-input-app_secret">App Secret</label>
+    <input type="text" id="node-config-input-app_secret" placeholder="App secret">
+    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+      This is the app secret, find it in the "dashboard" section of the Facebook app
+    </div>
   </div>
   <div class="form-row">
-    <label for="node-config-input-polling"><i class="icon-time"></i> Polling</label>
-    <input type="text" id="node-config-input-polling" style="text-align:end; width:60px !important"> ms
+    <label for="node-config-input-verify_token">Verify</label>
+    <input type="text" id="node-config-input-verify_token" placeholder="Verify token">
+    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+      The verify token is an arbitrary string, must match the same string in the "Webhooks" section in the
+      Facebook app
+    </div>
   </div>
   <div class="form-row">
-    <label for="node-config-input-usernames"><i class="icon-user"></i> Users</label>
-    <input type="text" id="node-config-input-usernames">
+    <label for="node-config-input-usernames">Users</label>
+    <input type="text" id="node-config-input-usernames" placeholder="Authorized users">
     <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
       Comma separated list of userId authorized to use the chatBot
     </div>
   </div>
   <div class="form-row">
-    <label for="node-config-input-log"><i class="icon-file"></i> Log file</label>
+    <label for="node-config-input-log">Log file</label>
     <input type="text" id="node-config-input-log">
     <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
       Store inbound and outbound messages to file
@@ -77,20 +86,12 @@
       To extend <strong>RedBot</strong> with a new chat context provider see <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Creating-a-Chat-Context-Provider" target="_blank">this tutorial</a>.
     </div>
   </div>
-  <div class="form-row">
-    <label for="node-input-parse_mode"><i class="icon-cog"></i> Parse</label>
-    <select id="node-input-parseMode" placeholder="Select parse mode">
-      <option value="">None</option>
-      <option value="Markdown">Markdown</option>
-      <option value="HTML">HTML</option>
-    </select>
-    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;">
-    Render the text content of messages, inline buttons and keywords with Markdown or HTML
-    </div>
-  </div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-facebook-node">
+  <p>
+    Configure the Facebook chat bot
+  </p>
 </script>
 
 
@@ -117,7 +118,7 @@
 
 <script type="text/x-red" data-template-name="chatbot-facebook-receive">
   <div class="form-row">
-    <label for="node-input-bot">Bot</label>
+    <label for="node-input-bot">Bot TEST TEST TEST</label>
     <input type="text" id="node-input-bot" placeholder="Bot">
   </div>
 </script>

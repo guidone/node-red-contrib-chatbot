@@ -559,6 +559,7 @@ module.exports = function(RED) {
             );
             break;
 
+            // ok
           case 'message':
             bot.sendMessage(
               msg.payload.chatId,
