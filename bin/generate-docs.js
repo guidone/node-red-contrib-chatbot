@@ -47,7 +47,8 @@ var mappings = {
   'Slack-Receiver-node.md': 'chatbot-slack-receive.html|chatbot-slack-node',
   'Telegram-Receiver-node.md': 'chatbot-telegram-receive.html|chatbot-telegram-node',
   'Switch-node.md': 'chatbot-switch.html',
-  'Inline-Query-node.md': 'chatbot-inline-query.html'
+  'Inline-Query-node.md': 'chatbot-inline-query.html',
+  'Dialog-node.md': 'chatbot-dialog.html'
 };
 
 function collectImages(html) {

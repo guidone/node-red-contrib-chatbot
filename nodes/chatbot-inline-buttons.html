@@ -15,6 +15,12 @@
       platforms: ['facebook', 'telegram', 'slack']
     },
     {
+      type: 'dialog',
+      label: 'Open Dialog',
+      className: 'platform-combo-slack',
+      platforms: ['slack']
+    },
+    {
       type: 'quick-reply',
       label: 'Postback',
       className: 'platform-combo-facebook',
@@ -57,6 +63,26 @@
       platforms: ['telegram']
     }
   ];
+  $.RedBot.elementTypes = [
+    {
+      type: 'text',
+      label: 'Text',
+      className: 'platform-slack',
+      platforms: ['slack']
+    },
+    {
+      type: 'textarea',
+      label: 'Textarea',
+      className: 'platform-slack',
+      platforms: ['slack']
+    },
+    {
+      type: 'select',
+      label: 'Select',
+      className: 'platform-slack',
+      platforms: ['slack']
+    }
+  ];
   $.RedBot.validate = {};
   $.RedBot.validate.notEmpty = function(str) {
     return str != null && str != '';
@@ -67,6 +93,34 @@
   $.RedBot.validate.arrayNotEmpty = function(array) {
     return array != null && array.length !== 0;
   };
+  $.RedBot.validate.element = function(element) {
+    if (element == null) {
+      return false;
+    }
+    switch(element.type) {
+      case 'text':
+      case 'textarea':
+        return $.RedBot.validate.notEmpty(element.name) && $.RedBot.validate.notEmpty(element.label);
+      case 'select':
+        return $.RedBot.validate.notEmpty(element.name) && $.RedBot.validate.notEmpty(element.label)
+          && $.RedBot.validate.options(element.options);
+      default:
+        return false;
+    }
+  };
+  $.RedBot.validate.options = function(options) {
+    if (options == null || options.length == null || options.length === 0) {
+      return false;
+    }
+    var idx;
+    var result = true;
+    for(idx = 0; idx < options.length; idx++) {
+      if (!($.RedBot.validate.notEmpty(options[idx].value) && $.RedBot.validate.notEmpty(options[idx].label))) {
+        result = false;
+      }
+    }
+    return result;
+  };
   $.RedBot.validate.button = function(button) {
     if (button == null) {
       return false;
@@ -75,6 +129,8 @@
       case 'url':
         return $.RedBot.validate.notEmpty(button.label) && $.RedBot.validate.url(button.url);
       case 'postback':
+        return $.RedBot.validate.notEmpty(button.label) && $.RedBot.validate.notEmpty(button.value);
+      case 'dialog':
         return $.RedBot.validate.notEmpty(button.label) && $.RedBot.validate.notEmpty(button.value);
       case 'quick-reply':
         return $.RedBot.validate.notEmpty(button.label) && $.RedBot.validate.notEmpty(button.value);
@@ -99,6 +155,15 @@
       }
     });
     return button;
+  };
+  $.RedBot.elementTypes.findElement = function(type) {
+    var element = null;
+    this.forEach(function(current) {
+      if (current.type === type) {
+        element = current;
+      }
+    });
+    return element;
   };
   $.RedBot.platforms = function(platforms, availablePlatforms) {
     var match = false;
@@ -137,6 +202,114 @@
 
     return platformClasses.length !== 0 ? base + '-' + platformClasses.join('-') : '';
   };
+
+  $.fn.RB_OptionsEditor = function(command, options) {
+
+    var container = $(this);
+    var defaultOptions = {
+      label: 'Options',
+      labelAdd: 'add'
+    };
+    if (arguments.length === 1 && typeof arguments[0] === 'object') {
+      options = $.extend({}, defaultOptions, arguments[0]);
+      command = 'init';
+    } else if (arguments.length === 0) {
+      command = 'init';
+      options = $.extend({}, defaultOptions);
+    } else if (arguments.length === 1 && arguments[0] === 'value') {
+      command = 'get_value';
+    } else if (arguments.length === 2 && arguments[0] === 'value') {
+      command = 'set_value';
+    }
+
+    var addRow = function(value, label) {
+      var count = $('.option', container);
+      $('<div class="option"/>').css('marginTop','5px')
+        .append('<div style="display:inline-block;width:6%;" class="order">' + (count.length + 1) + '.</div>')
+        .append($('<input style="width:35%" class="node-input-rule-type" type="text" name="value" placeholder="Value" value="' + value + '"/>'))
+        .append($('<input style="width:48%;margin-left: 5%" class="node-input-rule-type" type="text" name="label" placeholder="Label" value="' + label + '"/>'))
+        .append('<a href="#" class="btn-remove" style="width:5%;display:inline-block;"><i class="fa fa-times"></i></a>')
+        .appendTo($('.options', container));
+    };
+
+    switch(command) {
+      case 'init':
+        container
+          .addClass('rb-options-editor')
+          .on('click', '.btn-remove', function() {
+            $(this).parents('.option').remove();
+            $('.option', container).each(function(idx, item) {
+              $('.order', item).html(idx + 1);
+            });
+          });
+        $('<div class="control-description"/>')
+          .html(options.label)
+          .appendTo(container);
+        $('<div class="options"/>')
+          .appendTo(container);
+        $('<div class="button"/>')
+          .append('<a class="btn-add" href="#">' + options.labelAdd+ '</a>')
+          .appendTo(container);
+        $('a.btn-add', container)
+          .click(function(e) {
+            e.preventDefault();
+            addRow('', '');
+          });
+        break;
+      case 'get_value':
+        var values = [];
+        $('.option', container).each(function(idx, item) {
+          var value = $('input[name=value]', item).val();
+          var label = $('input[name=label]', item).val();
+          if (value === '' && label !== '') {
+            value = label;
+          } else if (value !== '' && label === '') {
+            label = value;
+          }
+          if (value !== '' && label !== '') {
+            values.push({
+              value: value,
+              label: label
+            });
+          }
+        });
+        return values;
+      case 'set_value':
+        $('.options').empty();
+        $(arguments[1]).each(function(idx, option) {
+          addRow(option.value, option.label);
+        });
+        break;
+    }
+
+    return container;
+  };
+
+  $.fn.RB_setElementData = function(obj, options) {
+    options = options || {};
+    options.badges = options.badges !== false;
+
+    var container = $(this);
+    var select = $('select[name=type]', container).val(obj.type);
+    var panel = $('.panel-' + obj.type, container).show();
+    var element = $.RedBot.elementTypes.findElement(obj.type);
+    if (element != null && options.badges) {
+      select.attr('class', element.className);
+    }
+
+    $('input[name="label"]', panel).val(obj.label);
+    $('input[name="name"]', panel).val(obj.name);
+    $('input[name="value"]', panel).val(obj.value);
+    $('input[name="placeholder"]', panel).val(obj.placeholder);
+    $('input[name="hint"]', panel).val(obj.hint);
+    $('select[name="subtype"]', panel).val(obj.subtype);
+    $('input[name="max_length"]', panel).val(obj.maxLength);
+    $('input[name="min_length"]', panel).val(obj.minLength);
+    $('input[name="optional"]', panel).attr('checked', obj.optional === true);
+    $('.container-options', panel).RB_OptionsEditor('value', obj.options);
+
+    return container;
+  };
   $.fn.RB_setButtonData = function(obj, options) {
 
     options = options || {};
@@ -161,6 +334,58 @@
     $('input[name=messenger_extensions]').attr('checked', obj.extensions === true);
 
     return container;
+  };
+  $.fn.RB_getElementData = function() {
+    var container = $(this);
+    var type = $('select[name="type"]', container);
+    var panel = $('.panel-' + type.val(), container);
+    var label = $('input[name="label"]', panel);
+    var name = $('input[name="name"]', panel);
+    var value = $('input[name="value"]', panel);
+    var placeholder = $('input[name="placeholder"]', panel);
+    var hint = $('input[name="hint"]', panel);
+    var subtype = $('select[name="subtype"]', panel);
+    var maxLength = $('input[name="max_length"]', panel);
+    var minLength = $('input[name="min_length"]', panel);
+    var optional = $('input[name="optional"]', panel);
+    var options = $('.container-options', panel);
+
+    var result = null;
+
+    switch(type.val()) {
+      case 'text':
+      case 'textarea':
+        result = {
+          type: type.val(),
+          label: label.val(),
+          name: name.val(),
+          value: value.val(),
+          placeholder: placeholder.val(),
+          hint: hint.val(),
+          optional: optional.is(':checked')
+        };
+        if (subtype.val() !== '') {
+          result.subtype = subtype.val();
+        }
+        if (!isNaN(parseInt(maxLength.val(), 10))) {
+          result.maxLength = parseInt(maxLength.val(), 10);
+        }
+        if (!isNaN(parseInt(minLength.val(), 10))) {
+          result.minLength = parseInt(minLength.val(), 10);
+        }
+
+        break;
+      case 'select':
+        result = {
+          type: 'select',
+          label: label.val(),
+          name: name.val(),
+          options: options.RB_OptionsEditor('value')
+        };
+        break;
+    }
+
+    return result;
   };
 
   $.fn.RB_getButtonData = function() {
@@ -202,6 +427,16 @@
       case 'postback':
         result = {
           type: 'postback',
+          label: label.val(),
+          value: value.val(),
+          answer: answer.val(),
+          alert: alert.is(':checked'),
+          style: style.val()
+        };
+        break;
+      case 'dialog':
+        result = {
+          type: 'dialog',
           label: label.val(),
           value: value.val(),
           answer: answer.val(),
@@ -261,7 +496,7 @@
 
     options = options || {};
     options.types = options.types != null ?
-      options.types : ['url', 'postback', 'call', 'share', 'login', 'newline', 'logout', 'location', 'quick-reply'];
+      options.types : ['url', 'postback', 'call', 'share', 'login', 'newline', 'logout', 'location', 'quick-reply', 'dialog'];
     options.platforms = options.platforms != null ? options.platforms : ['facebook', 'telegram'];
     options.badges = options.badges !== false;
 
@@ -339,6 +574,26 @@
         + '</select>')
       .appendTo(panelPostback);
 
+    var panelDialog = $('<div class="panel panel-dialog" style="display:none;"/>').appendTo(container);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="label" placeholder="Button label"/>'))
+      .appendTo(panelDialog);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="value" placeholder="Dialog Id">'))
+      .appendTo(panelDialog);
+    $('<div/>').css('marginTop','5px')
+      .RB_hasPlatform(['telegram', 'slack'], options.platforms)
+      .append('<input class="node-input-rule-type ' + cx('text', ['slack']) + '" type="text" name="answer" placeholder="Button feedback (optional)"/>')
+      .appendTo(panelDialog);
+    $('<div/>').css('marginTop','5px')
+      .append('<select name="style" class="' + cx('select', ['slack']) + '" style="width:70%">'
+        + '<option value="">Select button style</option>'
+        + '<option value="default">Default</option>'
+        + '<option value="primary">Primary</option>'
+        + '<option value="danger">Danger</option>'
+        + '</select>')
+      .appendTo(panelDialog);
+
     var panelQuickReply = $('<div class="panel panel-quick-reply" style="display:none;"/>').appendTo(container);
     $('<div/>').css('marginTop','5px')
       .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="label" placeholder="Button label"/>'))
@@ -375,6 +630,124 @@
       .appendTo(panelLogin);
 
     return container;
+  };
+
+  $.fn.RB_mountElementDialog = function(options) {
+    options = options || {};
+    options.types = options.types != null ?
+      options.types : ['text', 'textarea', 'select'];
+    options.platforms = options.platforms != null ? options.platforms : ['slack'];
+    options.badges = options.badges !== false;
+
+    var container = $(this);
+    var main = $('<div/>').appendTo(container);
+    var cx = options.badges ? $.RedBot.platformClass : function() { return ''; };
+
+    var selectElementType = $('<select name="type"/>', {style:"width:200px; margin-left: 5px; text-align: center;"})
+      .attr('placeholder', 'Select element type')
+      .change(function() {
+        var type = $(this).val();
+        $('.panel', container).hide();
+        $('.panel-' + type, container).show();
+        // find the right button
+        var button = $.RedBot.buttonTypes.findButton(type);
+        // store class only if badges should be shown
+        if (button != null && options.badges) {
+          $(this).attr('class', button.className);
+        } else {
+          $(this).attr('class', '');
+        }
+      })
+      .appendTo(main);
+
+    selectElementType.append($('<option value="">Select element type</option>'));
+    $.RedBot.elementTypes.forEach(function(button) {
+      if (options.types.indexOf(button.type) !== -1 && $.RedBot.platforms(options.platforms, button.platforms)) {
+        selectElementType.append($('<option value="' + button.type + '">' + button.label + '</option>'));
+      }
+    });
+
+    var panelText = $('<div class="panel panel-text" style="display:none;"/>').appendTo(container);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="label" placeholder="Label"/>'))
+      .appendTo(panelText);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="name" placeholder="Name"/>'))
+      .appendTo(panelText);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="value" placeholder="Initial value"/>'))
+      .appendTo(panelText);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="placeholder" placeholder="Placeholder"/>'))
+      .appendTo(panelText);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="hint" placeholder="Hint"/>'))
+      .appendTo(panelText);
+    $('<div/>').css('marginTop','5px')
+      .append('<select name="subtype" class="' + cx('select', ['']) + '" style="width:60%">'
+        + '<option value="">Select sub-type</option>'
+        + '<option value="email">Email</option>'
+        + '<option value="number">Number</option>'
+        + '<option value="tel">Telephone</option>'
+        + '<option value="url">URL</option>'
+        + '</select>')
+      .append('<input type="checkbox" name="optional" value="on" style="width: auto;margin:0px 10px 5px 10px;"/>')
+      .append('<span>Optional</span>')
+      .appendTo(panelText);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:45%" class="node-input-rule-type" type="number" name="min_length" placeholder="Min Length"/>'))
+      .append($('<input style="width:45%;margin-left: 10%" class="node-input-rule-type" type="number" name="max_length" placeholder="Max Length"/>'))
+      .appendTo(panelText);
+
+    var panelTextarea = $('<div class="panel panel-textarea" style="display:none;"/>').appendTo(container);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="label" placeholder="Label"/>'))
+      .appendTo(panelTextarea);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="name" placeholder="Name"/>'))
+      .appendTo(panelTextarea);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="value" placeholder="Initial value"/>'))
+      .appendTo(panelTextarea);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="placeholder" placeholder="Placeholder"/>'))
+      .appendTo(panelTextarea);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="hint" placeholder="Hint"/>'))
+      .appendTo(panelTextarea);
+    $('<div/>').css('marginTop','5px')
+      .append('<select name="subtype" class="' + cx('select', ['']) + '" style="width:60%">'
+        + '<option value="">Subtype</option>'
+        + '<option value="email">Email</option>'
+        + '<option value="number">Number</option>'
+        + '<option value="tel">Telephone</option>'
+        + '<option value="url">URL</option>'
+        + '</select>')
+      .append('<input type="checkbox" name="optional" value="on" style="width: auto;margin:0px 10px 5px 10px;"/>')
+      .append('<span>Optional</span>')
+      .appendTo(panelTextarea);
+
+    var panelSelect = $('<div class="panel panel-select" style="display:none;"/>').appendTo(container);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="label" placeholder="Label"/>'))
+      .appendTo(panelSelect);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="name" placeholder="Name"/>'))
+      .appendTo(panelSelect);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="value" placeholder="Initial value"/>'))
+      .appendTo(panelSelect);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="placeholder" placeholder="Placeholder"/>'))
+      .appendTo(panelSelect);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="hint" placeholder="Hint"/>'))
+      .appendTo(panelSelect);
+    $('<div/>').css('marginTop','5px')
+      .append('<div class="container-options"/>')
+      .appendTo(panelSelect);
+    panelSelect.find('.container-options').RB_OptionsEditor({ label: 'Combo box options'});
+
   };
 
   RED.nodes.registerType('chatbot-inline-buttons', {
@@ -424,7 +797,8 @@
         .editableList({
           addItem: function(container, i, item) {
             $(container).RB_mountButtonDialog({
-              types: ['url', 'postback', 'call', 'login', 'newline', 'logout']
+              types: ['url', 'postback', 'call', 'login', 'newline', 'logout', 'dialog'],
+              platforms: ['facebook', 'telegram', 'slack']
             });
             $(container).RB_setButtonData(item);
           },
@@ -733,6 +1107,56 @@ return msg;
     clear:both;
     margin-top:30px;
     margin-bottom:10px;
+  }
+
+  .rb-options-editor {
+
+  }
+  .rb-options-editor .btn-add {
+    user-select: none;
+    box-sizing: border-box;
+    display: inline-block;
+    color: #888 !important;
+    background: #fff;
+    border: 1px solid #ccc;
+    text-align: center;
+    margin: 0;
+    text-decoration: none;
+    cursor: pointer;
+    height: 20px;
+    line-height: 18px;
+    font-size: 10px;
+    border-radius: 2px;
+    padding: 0 5px;
+  }
+
+  .rb-options-editor .node-input-rule-type {
+    width: 45%;
+    font-size: 12px;
+    height: 30px;
+    padding: 3px 3px;
+    border-radius: 2px;
+  }
+
+  .rb-options-editor .control-description {
+    color: #888 !important;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .rb-options-editor .fa-times {
+    margin-left: 5px;
+    color: #888 !important;
+  }
+
+  .rb-options-editor .order {
+    font-size: 12px;
+    color: #888 !important;
+
+  }
+
+  .rb-options-editor .button {
+    margin-top: 8px;
   }
 
 </style>

@@ -1,6 +1,7 @@
 var _ = require('underscore');
 var nlp = require('compromise');
 var moment = require('moment');
+var utils = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
 
@@ -26,6 +27,7 @@ module.exports = function(RED) {
       var chatContext = msg.chat();
       var parsedSentence = null;
       var parsedValue = null;
+      var messageType = utils.getType(msg);
 
       if (_.isObject(msg.payload)) {
         switch (parseType) {
@@ -50,7 +52,11 @@ module.exports = function(RED) {
               }
             }
             break;
-
+          case 'response':
+            if (messageType === 'response' && _.isObject(msg.payload.content)) {
+              parsedValue = msg.payload.content;
+            }
+            break;
           case 'number-integer':
             if (_.isNumber(msg.payload.content)) {
               parsedValue = Math.round(msg.payload.content);
@@ -77,8 +83,22 @@ module.exports = function(RED) {
             }
             break;
           case 'photo':
+            if (messageType === 'photo' && msg.payload.content instanceof Buffer) {
+              parsedValue = msg.payload.content;
+            }
+            break;
           case 'audio':
-            if (msg.payload.content instanceof Buffer) {
+            if (messageType === 'audio' && msg.payload.content instanceof Buffer) {
+              parsedValue = msg.payload.content;
+            }
+            break;
+          case 'document':
+            if (messageType === 'document' && msg.payload.content instanceof Buffer) {
+              parsedValue = msg.payload.content;
+            }
+            break;
+          case 'video':
+            if (messageType === 'audio' && msg.payload.content instanceof Buffer) {
               parsedValue = msg.payload.content;
             }
             break;

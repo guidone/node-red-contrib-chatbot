@@ -8,6 +8,7 @@ describe('Chat parse node', function() {
 
   it('should parse an image into a buffer', function() {
     var msg = RED.createMessage({
+      type: 'photo',
       content: new Buffer('image-bytecode')
     });
     RED.node.config({
@@ -21,6 +22,20 @@ describe('Chat parse node', function() {
     var chat = msg.chat();
     assert.instanceOf(chat.get('photo'), Buffer);
     assert.equal(chat.get('photo').toString(), 'image-bytecode');
+  });
+
+  it('should not parse an image without type', function() {
+    var msg = RED.createMessage({
+      content: new Buffer('image-bytecode')
+    });
+    RED.node.config({
+      parseType: 'photo',
+      parseVariable: 'photo'
+    });
+    ParseBlock(RED);
+    RED.node.get().emit('input', msg);
+    assert.isNull(RED.node.message(0));
+    assert.isObject(RED.node.message(1).payload);
   });
 
   it('should parse an email into the payload', function() {

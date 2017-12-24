@@ -1,3 +1,4 @@
+* **0.9.8** - Added support for client dialogs in Slack with `Dialog node`
 * **0.9.7** - `Generic template node` works also in Slack, fixed empty payload in `Conversation node`
 * **0.9.6** - Fix firstName, lastName, authorized in Telegram
 * **0.9.5** - New context engine available for Telegram, added support for inline queries in Telegram, added `Switch node`
