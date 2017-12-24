@@ -14,7 +14,7 @@ module.exports = function(RED) {
   if (RED.redbot.platforms == null) {
     RED.redbot.platforms = {};
   }
-  RED.redbot.platforms.slack = TelegramServer;
+  RED.redbot.platforms.telegram = TelegramServer;
 
   var contextProviders = ContextProviders(RED);
 

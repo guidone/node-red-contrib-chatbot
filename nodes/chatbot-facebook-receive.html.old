@@ -10,29 +10,19 @@
         value: '',
         required: false
       },
-      polling: {
-        value: 1000,
-        required: true,
-        validate: RED.validators.number()
-      },
-      store: {
-        value: '',
-        type: 'chatbot-context-store',
-        required: false
-      },
       log: {
         value: null
-      },
-      parseMode: {
-        value: ''
       }
-    },
-    oneditprepare: function() {
-      $("#node-config-input-polling").spinner({min: 0, step: 100});
     },
     paletteName: 'Facebook Bot',
     credentials: {
       token: {
+        type: 'text'
+      },
+      verify_token: {
+        type: 'text'
+      },
+      app_secret: {
         type: 'text'
       }
     },
@@ -48,16 +38,30 @@
     <input type="text" id="node-config-input-botname">
   </div>
   <div class="form-row">
-    <label for="node-config-input-token"><i class="icon-tag"></i> Token</label>
-    <input type="text" id="node-config-input-token">
+    <label for="node-config-input-token"><i class="icon-cog"></i> Token</label>
+    <input type="text" id="node-config-input-token" placeholder="Access Token">
+    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+      The access token that is generated when the Facebook app is connected to a Facebook page
+    </div>
+  </div>
+    <div class="form-row">
+    <label for="node-config-input-app_secret"><i class="icon-cog"></i> App Secret</label>
+    <input type="text" id="node-config-input-app_secret" placeholder="App secret">
+    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+      This is the app secret, find it in the "dashboard" section of the Facebook app
+    </div>
   </div>
   <div class="form-row">
-    <label for="node-config-input-polling"><i class="icon-time"></i> Polling</label>
-    <input type="text" id="node-config-input-polling" style="text-align:end; width:60px !important"> ms
+    <label for="node-config-input-verify_token"><i class="icon-random"></i> Verify</label>
+    <input type="text" id="node-config-input-verify_token" placeholder="Verify token">
+    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+      The verify token is an arbitrary string, must match the same string in the "Webhooks" section in the
+      Facebook app
+    </div>
   </div>
   <div class="form-row">
     <label for="node-config-input-usernames"><i class="icon-user"></i> Users</label>
-    <input type="text" id="node-config-input-usernames">
+    <input type="text" id="node-config-input-usernames" placeholder="Authorized users">
     <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
       Comma separated list of userId authorized to use the chatBot
     </div>
@@ -69,28 +73,12 @@
       Store inbound and outbound messages to file
     </div>
   </div>
-  <div class="form-row">
-    <label for="node-input-bot">Context</label>
-    <input type="text" id="node-config-input-store" placeholder="Select storage for chat context">
-    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
-      Select the chat context provider to use with this bot, if none is selected then non-persistent "memory" will be used.<br>
-      To extend <strong>RedBot</strong> with a new chat context provider see <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Creating-a-Chat-Context-Provider" target="_blank">this tutorial</a>.
-    </div>
-  </div>
-  <div class="form-row">
-    <label for="node-input-parse_mode"><i class="icon-cog"></i> Parse</label>
-    <select id="node-input-parseMode" placeholder="Select parse mode">
-      <option value="">None</option>
-      <option value="Markdown">Markdown</option>
-      <option value="HTML">HTML</option>
-    </select>
-    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;">
-    Render the text content of messages, inline buttons and keywords with Markdown or HTML
-    </div>
-  </div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-facebook-node">
+  <p>
+    Configure the Facebook chat bot
+  </p>
 </script>
 
 
@@ -110,27 +98,25 @@
     icon: 'chatbot-receiver.png',
     paletteLabel: 'Facebook In',
     label: function () {
-      return 'Facebook Receiver';
+      return "Facebook Receiver";
     }
   });
 </script>
 
 <script type="text/x-red" data-template-name="chatbot-facebook-receive">
   <div class="form-row">
-    <label for="node-input-bot">Bot</label>
-    <input type="text" id="node-input-bot" placeholder="Bot">
+      <label for="node-input-bot"><i class="icon-bookmark"></i> Bot</label>
+      <input type="text" id="node-input-bot" placeholder="Bot">
   </div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-facebook-receive">
-  <p>Receive a message (text, audio, video, image, etc) from a Telegram bot.</p>
-  <p>The message is stored in <code>msg.payload</code>, this node also stores in the context flow:
-  <code>username</code>, <code>firstName</code>, <code>lastName</code>, <code>chatId</code>, <code>authorized</code>,
-  <code>transport</code> and <code>messageId</code>.
-  </p>
+    <p>Receive a message (text, audio, video, image, etc) from a Facebook Messenger bot.</p>
+    <p>The message is stored in <code>msg.payload</code>, this node also stores in the context flow:
+    <code>username</code>, <code>firstName</code>, <code>lastName</code>, <code>chatId</code>, <code>authorized</code>,
+    <code>transport</code> and <code>messageId</code>.
+    </p>
 </script>
-
-
 
 <script type="text/javascript">
   RED.nodes.registerType('chatbot-facebook-send', {
@@ -154,7 +140,7 @@
     icon: 'chatbot-sender.png',
     paletteLabel: 'Facebook Out',
     label: function () {
-      return 'Facebook Sender';
+      return "Facebook Sender";
     },
     oneditsave: function() {
       var track = $('#node-input-track').is(':checked');
@@ -165,11 +151,11 @@
 
 <script type="text/x-red" data-template-name="chatbot-facebook-send">
 <div class="form-row">
-  <label for="node-input-bot">Bot</label>
+  <label for="node-input-bot"><i class="icon-bookmark"></i> Bot</label>
   <input type="text" id="node-input-bot" placeholder="Bot">
 </div>
 <div class="form-row">
-  <label for="node-input-track">Track</label>
+  <label for="node-input-track"><i class="icon-envelope"></i> Track</label>
   <input type="checkbox" value="true" id="node-input-track">
   <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
   Track response of the user for this message, any further answer will be redirect to the output pin.
@@ -179,7 +165,7 @@
 
 <script type="text/x-red" data-help-name="chatbot-facebook-send">
 <p>
-  Send a message (text, audio, video, image, etc) from a Telegram bot. In order to create complex conversations, it
+  Send a message (text, audio, video, image, etc) from a Facebook Messenger bot. In order to create complex conversations, it
   can track answers from the user using output pin.
 </p>
 </script>
