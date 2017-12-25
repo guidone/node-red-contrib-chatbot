@@ -270,6 +270,7 @@ module.exports = function(RED) {
                   reject('Unable to download ' + attachment.payload.url);
                 });
               break;
+              // ok
             case 'file':
               // download the image into a buffer
               helpers.downloadFile(attachment.payload.url)
@@ -446,6 +447,7 @@ module.exports = function(RED) {
             }, reportError);
             break;
 
+            // ok
           case 'request':
 
             // todo error if not location
@@ -542,6 +544,7 @@ module.exports = function(RED) {
             );
             break;
 
+            // ok
           case 'inline-buttons':
             bot.sendMessage(
               msg.payload.chatId,
@@ -570,6 +573,7 @@ module.exports = function(RED) {
             );
             break;
 
+            // ok
           case 'location':
             var lat = msg.payload.content.latitude;
             var lon = msg.payload.content.longitude;
@@ -598,6 +602,7 @@ module.exports = function(RED) {
             );
             break;
 
+            //ok
           case 'audio':
             var audio = msg.payload.content;
             helpers.uploadBuffer({
@@ -611,6 +616,7 @@ module.exports = function(RED) {
             });
             break;
 
+            // ok
           case 'document':
             helpers.uploadBuffer({
               recipient: msg.payload.chatId,
@@ -624,6 +630,7 @@ module.exports = function(RED) {
             });
             break;
 
+            // ok
           case 'video':
             helpers.uploadBuffer({
               recipient: msg.payload.chatId,
@@ -637,6 +644,7 @@ module.exports = function(RED) {
             });
             break;
 
+            // ok
           case 'photo':
             var image = msg.payload.content;
             helpers.uploadBuffer({
