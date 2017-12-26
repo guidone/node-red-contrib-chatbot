@@ -253,6 +253,7 @@ module.exports = function(RED) {
                   reject('Unable to download ' + attachment.payload.url);
                 });
               break;
+              // ok
             case 'image':
               // download the image into a buffer
               helpers.downloadFile(attachment.payload.url)
@@ -288,6 +289,7 @@ module.exports = function(RED) {
                   reject('Unable to download ' + attachment.payload.url);
                 });
               break;
+              // ok
             case 'location':
               resolve({
                 chatId: chatId,
@@ -532,6 +534,7 @@ module.exports = function(RED) {
             );
             break;
 
+            // ok
           case 'quick-replies':
             // send
             bot.sendMessage(
