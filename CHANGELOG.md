@@ -1,3 +1,4 @@
+* **0.9.9** - Fix blocking bug with memory context provider and Telegram or Slack
 * **0.9.8** - Added support for client dialogs in Slack with `Dialog node`
 * **0.9.7** - `Generic template node` works also in Slack, fixed empty payload in `Conversation node`
 * **0.9.6** - Fix firstName, lastName, authorized in Telegram
