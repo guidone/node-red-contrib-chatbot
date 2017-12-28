@@ -399,6 +399,7 @@ module.exports = function(RED) {
         };
 
         switch (type) {
+          // ok
           case 'persistent-menu':
             if (msg.payload.command === 'set') {
               var items = helpers.parseButtons(msg.payload.items);
@@ -436,6 +437,7 @@ module.exports = function(RED) {
         };
 
         switch (type) {
+          // ok
           case 'action':
             request({
               method: 'POST',

@@ -178,7 +178,7 @@ module.exports = function(RED) {
     });
 
     this.on('input', function (message) {
-      var context = message.chat();
+      var context = _.isFunction(message.chat) ? message.chat() : null;
       var stack = when(true);
       // check if this node has some wirings in the follow up pin, in that case
       // the next message should be redirected here

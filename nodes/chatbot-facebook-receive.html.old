@@ -1,5 +1,5 @@
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-facebook-node', {
+  RED.nodes.registerType('chatbot-facebook-node-bak', {
     category: 'config',
     defaults: {
       botname: {
@@ -32,7 +32,7 @@
   });
 </script>
 
-<script type="text/x-red" data-template-name="chatbot-facebook-node">
+<script type="text/x-red" data-template-name="chatbot-facebook-node-bak">
   <div class="form-row">
     <label for="node-config-input-botname"><i class="icon-bookmark"></i> Bot-Name</label>
     <input type="text" id="node-config-input-botname">
@@ -75,7 +75,7 @@
   </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-facebook-node">
+<script type="text/x-red" data-help-name="chatbot-facebook-node-bak">
   <p>
     Configure the Facebook chat bot
   </p>
@@ -83,7 +83,7 @@
 
 
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-facebook-receive', {
+  RED.nodes.registerType('chatbot-facebook-receive-bak', {
     category: 'RedBot Platforms',
     color: '#FFCC66',
     defaults: {
@@ -103,14 +103,14 @@
   });
 </script>
 
-<script type="text/x-red" data-template-name="chatbot-facebook-receive">
+<script type="text/x-red" data-template-name="chatbot-facebook-receive-bak">
   <div class="form-row">
       <label for="node-input-bot"><i class="icon-bookmark"></i> Bot</label>
       <input type="text" id="node-input-bot" placeholder="Bot">
   </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-facebook-receive">
+<script type="text/x-red" data-help-name="chatbot-facebook-receive-bak">
     <p>Receive a message (text, audio, video, image, etc) from a Facebook Messenger bot.</p>
     <p>The message is stored in <code>msg.payload</code>, this node also stores in the context flow:
     <code>username</code>, <code>firstName</code>, <code>lastName</code>, <code>chatId</code>, <code>authorized</code>,
@@ -119,7 +119,7 @@
 </script>
 
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-facebook-send', {
+  RED.nodes.registerType('chatbot-facebook-send-bak', {
     category: 'RedBot Platforms',
     color: '#FFCC66',
     defaults: {
@@ -149,7 +149,7 @@
   });
 </script>
 
-<script type="text/x-red" data-template-name="chatbot-facebook-send">
+<script type="text/x-red" data-template-name="chatbot-facebook-send-bak">
 <div class="form-row">
   <label for="node-input-bot"><i class="icon-bookmark"></i> Bot</label>
   <input type="text" id="node-input-bot" placeholder="Bot">
@@ -163,7 +163,7 @@
 </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-facebook-send">
+<script type="text/x-red" data-help-name="chatbot-facebook-send-bak">
 <p>
   Send a message (text, audio, video, image, etc) from a Facebook Messenger bot. In order to create complex conversations, it
   can track answers from the user using output pin.
