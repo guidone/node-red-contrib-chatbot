@@ -1,6 +1,5 @@
 var _ = require('underscore');
 var moment = require('moment');
-// todo change here
 var FacebookServer = require('../lib/facebook/facebook-chat');
 var ContextProviders = require('../lib/chat-platform/chat-context-factory');
 var utils = require('../lib/helpers/utils');
@@ -27,8 +26,8 @@ module.exports = function(RED) {
     this.store = n.store;
     this.log = n.log;
     this.usernames = n.usernames != null ? n.usernames.split(',') : [];
-    this.polling = n.polling;
-    this.parseMode = n.parseMode;
+
+    console.log('--', this.credentials);
 
     if (this.credentials) {
       this.token = this.credentials.token;
@@ -60,11 +59,9 @@ module.exports = function(RED) {
             node.contextProvider.start();
             node.chat = FacebookServer.createServer({
               authorizedUsernames: node.usernames,
-
               token: node.token,
               verifyToken: node.verify_token,
               appSecret: node.app_secret,
-
               contextProvider: node.contextProvider,
               logfile: node.log,
               RED: RED
@@ -99,6 +96,12 @@ module.exports = function(RED) {
   RED.nodes.registerType('chatbot-facebook-node', FacebookBotNode, {
     credentials: {
       token: {
+        type: 'text'
+      },
+      app_secret: {
+        type: 'text'
+      },
+      verify_token: {
         type: 'text'
       }
     }
