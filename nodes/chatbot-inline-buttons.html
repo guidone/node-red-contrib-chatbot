@@ -566,6 +566,7 @@
       .append('<span>With popup</span><span class="' + cx('icon', ['telegram']) + '"></span>')
       .appendTo(panelPostback);
     $('<div/>').css('marginTop','5px')
+      .RB_hasPlatform('slack', options.platforms)
       .append('<select name="style" class="' + cx('select', ['slack']) + '" style="width:70%">'
         + '<option value="">Select button style</option>'
         + '<option value="default">Default</option>'
