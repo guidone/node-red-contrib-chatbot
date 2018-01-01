@@ -27,8 +27,6 @@ module.exports = function(RED) {
     this.log = n.log;
     this.usernames = n.usernames != null ? n.usernames.split(',') : [];
 
-    console.log('--', this.credentials);
-
     if (this.credentials) {
       this.token = this.credentials.token;
       this.verify_token = this.credentials.verify_token;
