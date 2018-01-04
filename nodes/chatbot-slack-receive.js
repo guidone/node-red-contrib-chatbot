@@ -34,17 +34,25 @@ module.exports = function(RED) {
         if (!this.chat) {
           // get the context storage node
           var contextStorageNode = RED.nodes.getNode(this.store);
+          var contextStorage = null;
+          var contextParams = null;
+          // check if context node
+          if (contextStorageNode != null) {
+            contextStorage = contextStorageNode.contextStorage;
+            contextParams = contextStorageNode.contextParams;
+          } else {
+            contextStorage = 'memory';
+            contextParams = {};
+            node.error('No context provider specified for chatbot ' + this.botname + '. Defaulting to "memory"');
+          }
           // check if provider exisst
-          if (!contextProviders.hasProvider(contextStorageNode.contextStorage)) {
+          if (!contextProviders.hasProvider(contextStorage)) {
             node.error('Error creating chatbot ' + this.botname+ '. The context provider '
-              + contextStorageNode.contextStorage + ' doesn\'t exist.');
+              + contextStorage + ' doesn\'t exist.');
             return;
           }
           // create a factory for the context provider
-          node.contextProvider = contextProviders.getProvider(
-            contextStorageNode.contextStorage,
-            contextStorageNode.contextParams
-          );
+          node.contextProvider = contextProviders.getProvider(contextStorage, contextParams);
           // try to start the servers
           try {
             node.contextProvider.start();
