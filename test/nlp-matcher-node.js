@@ -1029,6 +1029,89 @@ describe('NLP matcher', function() {
 
   });
 
+  it('should match a switching off phrasal verb', function() {
+
+    var message = 'switch off lights dining room now';
+    var terms = NplMatcher.parseSentence(message, {
+      'dining room': 'Room',
+      'kitchen': 'Room',
+      'toilette': 'Room',
+      'lavatory': 'Room',
+      'basement': 'Room'
+    });
+    var rules = new NplMatcher.MatchRules([
+      {
+        type: 'verb',
+        text: 'switch off'
+      },
+      {
+        text: 'lights'
+      },
+      {
+        type: 'room',
+        variable: 'room'
+      }
+    ]);
+    var matchedRules = NplMatcher.matchRules(terms, rules);
+
+    /*matchedRules.forEach(function(rules, idx) {
+     console.log('');
+     console.log('Rule #' + (idx + 1));
+     console.log(rules.toJSON());
+     });*/
+
+    assert.equal(matchedRules[0].count(), 3);
+
+    assert.equal(matchedRules[0].at(0).text, 'switch off');
+    assert.equal(matchedRules[0].at(0).distance, 0);
+
+    assert.equal(matchedRules[0].at(1).text, 'lights');
+    assert.equal(matchedRules[0].at(1).distance, 0);
+
+    assert.equal(matchedRules[0].at(2).text, null);
+    assert.equal(matchedRules[0].at(2).value, 'dining room');
+    assert.equal(matchedRules[0].at(2).variable, 'room');
+    assert.equal(matchedRules[0].at(2).distance, 0);
+
+  });
+
+  it('should not match switch on when saying switch on', function() {
+
+    var message = 'switch off lights dining room now';
+    var terms = NplMatcher.parseSentence(message, {
+      'dining room': 'Room',
+      'kitchen': 'Room',
+      'toilette': 'Room',
+      'lavatory': 'Room',
+      'basement': 'Room'
+    });
+    var rules = new NplMatcher.MatchRules(
+      [
+        {
+          type: 'verb',
+          text: 'switch on'
+        },
+        {
+          text: 'lights'
+        },
+        {
+          type: 'room',
+          variable: 'room'
+        }
+      ]
+    );
+    var matchedRules = NplMatcher.matchRules(terms, rules);
+
+    /*matchedRules.forEach(function(rules, idx) {
+     console.log('');
+     console.log('Rule #' + (idx + 1));
+     console.log(rules.toJSON());
+     });*/
+
+    assert.lengthOf(matchedRules, 0);
+  });
+
+
   it('should match a car lexicon', function() {
 
     var message = 'my car is a Lamborghini';
