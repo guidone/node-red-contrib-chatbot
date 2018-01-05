@@ -1,3 +1,4 @@
+* **0.9.11** - Fix context provider drop down in hosted environments 
 * **0.9.10** - If no context provider is specified, defaults to "memory". Fix error 409 with Telegram
 * **0.9.9** - Fix blocking bug with memory context provider and Telegram or Slack
 * **0.9.8** - Added support for client dialogs in Slack with `Dialog node`
