@@ -16,6 +16,7 @@ module.exports = function(RED) {
     this.store = config.store;
     this.botTelegram = config.botTelegram;
     this.botSlack = config.botSlack;
+    this.botFacebook = config.botFacebook;
 
     this.on('input', function(msg) {
 
@@ -25,13 +26,16 @@ module.exports = function(RED) {
       var contextMessageId = utils.extractValue('boolean', 'contextMessageId', node, msg, false);
       var botTelegram = node.botTelegram;
       var botSlack = node.botSlack;
+      var botFacebook = node.botFacebook;
 
-      if (transport === 'slack' || transport === 'telegram') {
+      if (transport === 'slack' || transport === 'telegram' || transport === 'facebook') {
         //var store = RED.nodes.getNode(node.store);
         var platformNode = null;
         if (transport === 'slack' && RED.nodes.getNode(botSlack) != null) {
           platformNode = RED.nodes.getNode(botSlack).chat;
         } else if (transport === 'telegram' && RED.nodes.getNode(botTelegram) != null) {
+          platformNode = RED.nodes.getNode(botTelegram).chat;
+        } else if (transport === 'facebook' && RED.nodes.getNode(botFacebook) != null) {
           platformNode = RED.nodes.getNode(botTelegram).chat;
         } else {
           node.error('Chatbot not found or not configured properly');
@@ -55,18 +59,6 @@ module.exports = function(RED) {
             }
             node.send(message);
           });
-
-        /*var contextProvider = contextProviders.getProvider(
-          store.contextStorage,
-          store.contextParams
-        );
-        task = task.then(function() {
-          return contextProvider.getOrCreate(chatId, {
-            chatId: chatId,
-            transport: transport,
-            authorized: false
-          });
-        });*/
       } else {
 
         var task = new Promise(function(resolve) {
