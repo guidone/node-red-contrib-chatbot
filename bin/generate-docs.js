@@ -46,6 +46,7 @@ var mappings = {
   'Context-Provider-node.md': 'chatbot-context-store.html',
   'Slack-Receiver-node.md': 'chatbot-slack-receive.html|chatbot-slack-node',
   'Telegram-Receiver-node.md': 'chatbot-telegram-receive.html|chatbot-telegram-node',
+  'Facebook-Receiver-node.md': 'chatbot-facebook-receive.html|chatbot-facebook-node',
   'Switch-node.md': 'chatbot-switch.html',
   'Inline-Query-node.md': 'chatbot-inline-query.html',
   'Dialog-node.md': 'chatbot-dialog.html'

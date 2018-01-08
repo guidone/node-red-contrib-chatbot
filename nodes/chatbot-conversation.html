@@ -16,6 +16,11 @@
         type: 'chatbot-slack-node',
         required: false
       },
+      botFacebook: {
+        value: '',
+        type: 'chatbot-facebook-node',
+        required: false
+      },
       chatId: {
         value: ''
       },
@@ -86,7 +91,11 @@
   <label for="node-input-botSlack">Slack Bot</label>
   <input type="text" id="node-input-botSlack" placeholder="Slack Bot">
 </div>
-<div class="form-row form-row-bot form-row-bot-facebook form-row-bot-smooch">
+<div class="form-row form-row-bot form-row-bot-facebook">
+  <label for="node-input-botFacebook">Facebook Bot</label>
+  <input type="text" id="node-input-botFacebook" placeholder="Facebook Bot">
+</div>
+<div class="form-row form-row-bot form-row-bot-smooch">
   <label for="node-input-bot">Context</label>
   <input type="text" id="node-input-store" placeholder="Select storage for chat context">
   <div class="redbot-form-hint">

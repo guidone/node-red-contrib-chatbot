@@ -13,7 +13,8 @@ module.exports = function(RED) {
     this.title = config.title;
     this.subtitle = config.subtitle;
     this.imageUrl = config.imageUrl;
-    this.aspectRatio = config.aspectRatio;
+    //this.aspectRatio = config.aspectRatio;
+    this.topElementStyle = config.topElementStyle;
     this.sharable = config.sharable;
     this.transports = ['facebook'];
 
