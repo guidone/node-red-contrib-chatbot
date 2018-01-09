@@ -22,6 +22,39 @@ describe('Chat listen lexicon node', function() {
     'drive[verb],[car]->my_car',
     'my,car[noun],is,[car]->my_car'
   ];
+  var RoomLexicon = {
+    'single room': 'Room',
+    'double room': 'Room',
+    'triple room': 'Room',
+    'half room': 'Room'
+  };
+  var RoomRules = [
+    'want,[room]->room',
+    'book,[room]->room'
+  ];
+
+  it.only('should use a room lexicon with Listen owning', function () {
+    var msg = RED.createMessage({
+      content: 'I want a single room',
+      lexicon: RoomLexicon,
+      debug: true
+    });
+    RED.node.config({
+      rules: RoomRules
+    });
+    ListenBlock(RED);
+    RED.node.get().emit('input', msg);
+
+    return RED.node.get().await()
+      .then(function () {
+        assert.isNull(RED.node.message(1));
+        assert.isObject(RED.node.message(0));
+        assert.equal(RED.node.message(0).payload.content, 'I want a single room');
+        assert.equal(RED.node.message(0).originalMessage.chat.id, 42);
+        assert.equal(msg.chat().get('room'), 'single room');
+      });
+  });
+
 
   it('should use a car lexicon with Listen owning', function () {
     var msg = RED.createMessage({

@@ -58,7 +58,8 @@
       "chatbot-context-store": "./nodes/chatbot-context-store.js",
       "chatbot-inline-query": "./nodes/chatbot-inline-query.js",
       "chatbot-switch": "./nodes/chatbot-switch.js",
-      "chatbot-dialog": "./nodes/chatbot-dialog.js"
+      "chatbot-dialog": "./nodes/chatbot-dialog.js",
+      "chatbot-rules": "./nodes/chatbot-rules.js"
     }
   },
   "maintainers": [

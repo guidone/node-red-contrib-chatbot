@@ -1,0 +1,95 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-rules', {
+    category: 'RedBot Flow',
+    color: '#FFCC66',
+    defaults: {
+      rules: {
+        value: [{topic: ''}]
+      },
+      outputs: {
+        value: 5
+      }
+    },
+    inputs: 1,
+    outputs: 5,
+    paletteLabel: 'Rules',
+    icon: 'chatbot-topic.png',
+    label: function() {
+      return 'Rules';
+    },
+    oneditsave: function() {
+      var rules = $('#node-input-rule-container').editableList('items');
+      var node = this;
+      node.rules = [];
+      rules.each(function(i) {
+        var rule = $(this);
+        var topic = rule.find('input').val();
+        if (topic != null && topic != '') {
+          node.rules.push({topic: topic});
+        }
+      });
+      //this.outputs = node.rules.length;
+      this.outputs = 5;
+    },
+    oneditprepare: function() {
+      var node = this;
+      $("#node-input-rule-container").css('min-height','250px').css('min-width','450px').editableList({
+        addItem: function (container, i, opt) {
+          var rule = opt;
+          var row = $('<div/>').appendTo(container);
+          var selectField = $('<input/>', {style:"width:80%; margin-left: 5px; text-align: left;"})
+            .attr('placeholder', 'Insert topic')
+            .attr('type', 'text')
+            .appendTo(row);
+          if (rule.topic != null) {
+            selectField.val(rule.topic);
+          }
+          var finalspan = $('<span/>',{style:"float: right;margin-top: 6px;"}).appendTo(row);
+          finalspan.append('&nbsp;&#8594; <span class="node-input-rule-index">' + (i + 1) + '</span>');
+        },
+        removeItem: function(opt) {
+          var rules = $('#node-input-rule-container').editableList('items');
+          rules.each(function(i) {
+            $(this).find('.node-input-rule-index').html(i + 1);
+          });
+        },
+        sortItems: function() {
+          var rules = $('#node-input-rule-container').editableList('items');
+          rules.each(function(i) {
+            $(this).find('.node-input-rule-index').html(i + 1);
+          });
+        },
+        sortable: true,
+        removable: true
+      });
+
+      for (var i=0; i < node.rules.length; i++) {
+        var rule = this.rules[i];
+        $('#node-input-rule-container').editableList('addItem', rule);
+      }
+
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-rules">
+  <div class="form-row">
+    <label for="node-input-name" style="width:100%;"><i class="fa fa-tag"></i> Forward message based on topic:</label>
+  </div>
+  <div class="form-row node-input-rule-container-row">
+      <ol id="node-input-rule-container"></ol>
+  </div>
+  <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;">
+    Insert the topic to match (or a comma delimited list of topics).<br>
+    The first matched topic skips the rest of the matching strings. To get a else-like behaviour, use a <code>*</code>
+    at the end of the list to capture all messages that don't match any topic.
+  </p>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-rules">
+  RULES
+
+</script>
+
+
