@@ -41,6 +41,8 @@ module.exports = function(RED) {
         return;
       }
 
+      console.log('start listen');
+
       rules.forEach(function(rule) {
         var matchedRule = null;
         if (!matched && rule === '*') {
@@ -58,6 +60,9 @@ module.exports = function(RED) {
               storeVariables[rule.variable] = rule.value;
             }
           });
+          if (debug) {
+            console.log('WINS: ---> ', rule, storeVariables);
+          }
           // store async
           if (!_.isEmpty(storeVariables)) {
             task = task.then(function () {

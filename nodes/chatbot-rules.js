@@ -22,6 +22,13 @@ var Types = {
 
   },
 
+  catch_all: function(rule, chatContext) {
+    return new Promise(function (resolve, reject) {
+      resolve(rule);
+    });
+  },
+
+
   is_not_topic: function(rule, chatContext) {
     return new Promise(function (resolve, reject) {
       when(chatContext.get('topic'))
@@ -138,8 +145,8 @@ module.exports = function(RED) {
 
       var rules = node.rules;
 
-
-      rules = [
+      console.log('+++++', rules);
+      /*rules = [
         {
           type: 'is_topic_empty'
         },
@@ -153,14 +160,13 @@ module.exports = function(RED) {
         },
         {
           type: 'has_not_variable',
-          name: 'date'
+          name: 'from'
         },
         {
-          type: 'set_topic',
-          topic: 'selected'
+          type: 'has_not_variable',
+          name: 'to'
         }
-
-      ];
+      ];*/
 
 
       executeRules(rules, chatContext)

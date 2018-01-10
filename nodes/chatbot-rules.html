@@ -4,7 +4,7 @@
     color: '#FFCC66',
     defaults: {
       rules: {
-        value: [{topic: ''}]
+        value: []
       },
       outputs: {
         value: 5
@@ -23,29 +23,62 @@
       node.rules = [];
       rules.each(function(i) {
         var rule = $(this);
-        var topic = rule.find('input').val();
-        if (topic != null && topic != '') {
-          node.rules.push({topic: topic});
+        var type = rule.find('select[name=type]').val();
+        if (type != null && type !== '') {
+          var obj = {
+            type: type
+          };
+          if (type === 'has_not_variable') {
+            obj.name = rule.find('input[name=name]').val();
+          }
+          if (type === 'is_not_topic') {
+            obj.topic = rule.find('input[name=topic]').val();
+          }
+          node.rules.push(obj);
         }
       });
-      //this.outputs = node.rules.length;
-      this.outputs = 5;
+      console.log('---->', node.rules);
+      this.outputs = node.rules.length;
     },
     oneditprepare: function() {
       var node = this;
       $("#node-input-rule-container").css('min-height','250px').css('min-width','450px').editableList({
         addItem: function (container, i, opt) {
+          // build rule row
           var rule = opt;
+          console.log('metto--->', rule);
           var row = $('<div/>').appendTo(container);
-          var selectField = $('<input/>', {style:"width:80%; margin-left: 5px; text-align: left;"})
-            .attr('placeholder', 'Insert topic')
-            .attr('type', 'text')
-            .appendTo(row);
-          if (rule.topic != null) {
-            selectField.val(rule.topic);
-          }
+          row
+            .append('<select name="type" style="width:40%">'
+              + '<option value="">Select rule</option>'
+              + '<option value="is_topic_empty">There is not topic</option>'
+              + '<option value="is_not_topic">Is not topic</option>'
+              + '<option value="has_not_variable">Variable not defined</option>'
+              + '<option value="catch_all">If nothing of above applies</option>'
+              + '</select>')
+            .change(function() {
+              var type = $('select[name=type]', container).val();
+              container.find('input').hide();
+              container.find('.' + type).show();
+            });
+          row
+            .append('<input class="has_not_variable" style="display:none;width:40%;margin-left:10px;" type="text" name="name" placeholder="Context variable"/>')
+            .append('<input class="is_not_topic" style="display:none;width:40%;margin-left:10px;" type="text" name="topic" placeholder="Topic"/>');
           var finalspan = $('<span/>',{style:"float: right;margin-top: 6px;"}).appendTo(row);
           finalspan.append('&nbsp;&#8594; <span class="node-input-rule-index">' + (i + 1) + '</span>');
+
+          // finally set data
+          if (rule.type != null) {
+            $('select[name=type]', container).val(rule.type);
+            container.find('input').hide();
+            container.find('.' + rule.type).show();
+          }
+          if (rule.name != null) {
+            $('input[name=name]', container).val(rule.name);
+          }
+          if (rule.topic != null) {
+            $('input[name=topic]', container).val(rule.topic);
+          }
         },
         removeItem: function(opt) {
           var rules = $('#node-input-rule-container').editableList('items');

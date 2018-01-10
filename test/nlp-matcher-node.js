@@ -1029,6 +1029,32 @@ describe('NLP matcher', function() {
 
   });
 
+  it('should not match witch custom lexicon and a date', function() {
+
+    var message = 'from 16 january';
+    var terms = NplMatcher.parseSentence(message, {
+      'dining room': 'Room',
+      'kitchen': 'Room',
+      'toilette': 'Room',
+      'lavatory': 'Room',
+      'basement': 'Room'
+    });
+    var rules = new NplMatcher.MatchRules([
+      '[rooms]->room'
+    ]);
+    var matchedRules = NplMatcher.matchRules(terms, rules);
+
+    /*matchedRules.forEach(function(rules, idx) {
+     console.log('');
+     console.log('Rule #' + (idx + 1));
+     console.log(rules.toJSON());
+     });*/
+
+    assert.isEmpty(matchedRules);
+
+  });
+
+
   it('should match a switching off phrasal verb', function() {
 
     var message = 'switch off lights dining room now';
