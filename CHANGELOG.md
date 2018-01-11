@@ -1,3 +1,4 @@
+* **0.9.13** - Fixed dropdown "parse mode" for Telegram
 * **0.9.12** - New context engine available for Facebook Messenger 
 * **0.9.11** - Fix context provider drop down in hosted environments 
 * **0.9.10** - If no context provider is specified, defaults to "memory". Fix error 409 with Telegram
