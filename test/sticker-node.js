@@ -23,7 +23,7 @@ describe('Chat image node', function() {
   });
 
   it('should send a sticker message with filename from payload', function () {
-    var msg = RED.createMessage(__dirname + '/dummy/file.mp4', 'telegram');
+    var msg = RED.createMessage('./' + __dirname + '/dummy/file.mp4', 'telegram');
     RED.node.config({
       name: 'my file name: test'
     });
@@ -40,7 +40,7 @@ describe('Chat image node', function() {
 
   it('should send a sticker message with filename from payload (named parameter)', function () {
     var msg = RED.createMessage({
-      sticker: __dirname + '/dummy/file.mp4'
+      sticker: './' + __dirname + '/dummy/file.mp4'
     }, 'telegram');
     RED.node.config({
       name: 'my file name: test'
@@ -58,7 +58,7 @@ describe('Chat image node', function() {
 
   it('should send a sticker message with buffer from payload (named parameter)', function () {
     var msg = RED.createMessage({
-      sticker: fs.readFileSync(__dirname + '/dummy/image.png')
+      sticker: fs.readFileSync('./' + __dirname + '/dummy/image.png')
     }, 'telegram');
     RED.node.config({
       name: 'my file name: test'
@@ -77,7 +77,7 @@ describe('Chat image node', function() {
   it('should send a sticker message with filename from config', function () {
     var msg = RED.createMessage({}, 'telegram');
     RED.node.config({
-      sticker: __dirname + '/dummy/file.mp4'
+      sticker: './' + __dirname + '/dummy/file.mp4'
     });
     StickerBlock(RED);
     RED.node.get().emit('input', msg);

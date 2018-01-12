@@ -3,7 +3,8 @@
   "version": "0.9.14",
   "description": "REDBot a Chat bot for a full featured chat bot for Telegram**, Facebook Messenger and Slack. Almost no coding skills required",
   "scripts": {
-    "test": "mocha",
+    "test": "jest test/*.js",
+    "test-ci": "jest test/*.js --watch",
     "ngrok": "ngrok http 127.0.0.1:1880",
     "localtunnel": "lt --port 1880",
     "lint": "eslint ./nodes/*.js ./lib",
@@ -102,6 +103,6 @@
   "devDependencies": {
     "chai": "^4.1.1",
     "eslint": "^4.12.1",
-    "mocha": "^3.2.0"
+    "jest": "^22.0.6"
   }
 }
