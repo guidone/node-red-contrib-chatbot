@@ -121,7 +121,6 @@ module.exports = function(RED) {
       node.chat = this.config.chat;
       if (node.chat) {
         this.status({fill: 'green', shape: 'ring', text: 'connected'});
-
         node.chat.on('message', function (message) {
           var context = message.chat();
           // if a conversation is going on, go straight to the conversation node, otherwise if authorized
@@ -140,14 +139,19 @@ module.exports = function(RED) {
               }
             });
         });
-
-
       } else {
         node.warn("no bot in config.");
       }
     } else {
       node.warn('Missing configuration in Facebook Receiver');
     }
+
+    this.on('close', function (done) {
+      if (node.chat != null) {
+        node.chat.off('message');
+      }
+      done();
+    });
   }
   RED.nodes.registerType('chatbot-facebook-receive', FacebookInNode);
 

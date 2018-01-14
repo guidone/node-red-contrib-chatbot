@@ -7,8 +7,11 @@ module.exports = function(RED) {
     var node = this;
     // just store the information
     node.contextStorage = config.contextStorage;
+    node.contextParams = {};
     try {
-      node.contextParams = JSON.parse(config.contextParams);
+      if (!_.isEmpty(config.contextParams)) {
+        node.contextParams = JSON.parse(config.contextParams);
+      }
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log('Invalid JSON in context storage params (' + this.name + ')');

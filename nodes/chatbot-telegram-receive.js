@@ -142,6 +142,13 @@ module.exports = function(RED) {
     } else {
       node.warn('Missing configuration in Telegram Receiver');
     }
+
+    this.on('close', function (done) {
+      if (node.chat != null) {
+        node.chat.off('message');
+      }
+      done();
+    });
   }
   RED.nodes.registerType('chatbot-telegram-receive', TelegramInNode);
 
