@@ -78,6 +78,7 @@
   "dependencies": {
     "@slack/client": "^3.14.1",
     "apiai": "^3.0.0",
+    "chrono-node": "^1.3.5",
     "cli-color": "^1.1.0",
     "compromise": "^10.7.1",
     "cookie-parser": "^1.4.3",

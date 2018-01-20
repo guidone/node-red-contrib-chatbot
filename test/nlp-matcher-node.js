@@ -526,7 +526,7 @@ describe('NLP matcher', function() {
 
   });
 
-  it('I should parse I weight 48.7 kg', function() {
+  it('should parse I weight 48.7 kg', function() {
 
     var message = 'I weight 48.7 kg';
     var terms = NplMatcher.parseSentence(message);
@@ -1211,6 +1211,41 @@ describe('NLP matcher', function() {
     assert.equal(matchedRules[0].at(1).distance, 0);
     assert.equal(matchedRules[0].at(2).value, 'lamborghini');
     assert.equal(matchedRules[0].at(2).distance, 1);
+  });
+
+  it('should match a double date (range)', function() {
+
+    var message = 'from 1st january to 13rd of march';
+    var terms = NplMatcher.parseSentence(message, {});
+    var rules = new NplMatcher.MatchRules([
+      'from',
+      '[date]->from',
+      'to',
+      '[date]->to'
+    ]);
+
+    var matchedRules = NplMatcher.matchRules(terms, rules, true);
+
+    /*matchedRules.forEach(function(rules, idx) {
+     console.log('');
+     console.log('Rule #' + (idx + 1));
+     console.log(rules.toJSON());
+     });*/
+
+    assert.equal(matchedRules[0].count(), 4);
+    assert.equal(matchedRules[0].at(0).text, 'from');
+    assert.equal(matchedRules[0].at(1).text, '1st january');
+    assert.equal(matchedRules[0].at(1).raw, '1st january');
+    assert.instanceOf(matchedRules[0].at(1).value, Date);
+    assert.equal(matchedRules[0].at(1).value.getMonth(), 0);
+    assert.equal(matchedRules[0].at(1).value.getDate(), 1);
+    assert.equal(matchedRules[0].at(2).text, 'to');
+    assert.equal(matchedRules[0].at(2).distance, 0);
+    assert.instanceOf(matchedRules[0].at(3).value, Date);
+    assert.equal(matchedRules[0].at(3).value.getMonth(), 2);
+    assert.equal(matchedRules[0].at(3).value.getDate(), 13);
+    assert.equal(matchedRules[0].at(3).text, '13rd of march');
+    assert.equal(matchedRules[0].at(3).raw, '13rd of march');
   });
 
 });

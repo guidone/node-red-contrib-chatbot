@@ -41,8 +41,6 @@ module.exports = function(RED) {
         return;
       }
 
-      console.log('start listen');
-
       rules.forEach(function(rule) {
         var matchedRule = null;
         if (!matched && rule === '*') {

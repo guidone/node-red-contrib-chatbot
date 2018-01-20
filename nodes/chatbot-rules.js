@@ -3,12 +3,33 @@ var _ = require('underscore');
 var when = utils.when;
 
 var Types = {
-  is_topic_empty: function(rule, chatContext) {
+
+  inbound: function(rule, message) {
     return new Promise(function(resolve, reject) {
+      if (message.payload != null && message.payload.inbound === true) {
+        resolve(rule);
+      } else {
+        reject();
+      }
+    });
+  },
+
+  outbound: function(rule, message) {
+    return new Promise(function(resolve, reject) {
+      if (message.payload != null && message.payload.inbound === false) {
+        resolve(rule);
+      } else {
+        reject();
+      }
+    });
+  },
+
+  isTopicEmpty: function(rule, message) {
+    return new Promise(function(resolve, reject) {
+      var chatContext = message.chat();
       when(chatContext.get('topic'))
         .then(
           function(topic) {
-            console.log('il topic???', topic);
             if (_.isEmpty(topic)) {
               resolve(rule);
             } else {
@@ -22,19 +43,18 @@ var Types = {
 
   },
 
-  catch_all: function(rule, chatContext) {
-    return new Promise(function (resolve, reject) {
+  catchAll: function(rule) {
+    return new Promise(function (resolve) {
       resolve(rule);
     });
   },
 
-
-  is_not_topic: function(rule, chatContext) {
+  isNotTopic: function(rule, message) {
     return new Promise(function (resolve, reject) {
+      var chatContext = message.chat();
       when(chatContext.get('topic'))
         .then(
           function (topic) {
-            console.log('diverso il topic da ' + rule.topic);
             if (topic !== rule.topic) {
               resolve(rule);
             } else {
@@ -47,12 +67,30 @@ var Types = {
     });
   },
 
-  has_not_variable: function(rule, chatContext) {
+  isTopic: function(rule, message) {
     return new Promise(function (resolve, reject) {
-      when(chatContext.get(rule.name))
+      var chatContext = message.chat();
+      when(chatContext.get('topic'))
+        .then(
+          function (topic) {
+            if (topic === rule.topic) {
+              resolve(rule);
+            } else {
+              reject();
+            }
+          },
+          function () {
+            reject();
+          });
+    });
+  },
+
+  hasNotVariable: function(rule, message) {
+    return new Promise(function (resolve, reject) {
+      var chatContext = message.chat();
+      when(chatContext.get(rule.variable))
         .then(
           function (content) {
-            console.log('empty la var ' + rule.name);
             if (_.isEmpty(content)) {
               resolve(rule);
             } else {
@@ -65,41 +103,66 @@ var Types = {
     });
   },
 
+  hasVariable: function(rule, message) {
+    return new Promise(function (resolve, reject) {
+      var chatContext = message.chat();
+      when(chatContext.get(rule.variable))
+        .then(
+          function (content) {
+            if (!_.isEmpty(content)) {
+              resolve(rule);
+            } else {
+              reject();
+            }
+          },
+          function () {
+            reject();
+          });
+    });
+  }
+
 };
 
-
-function executeRules(rules, chatContext, current) {
+/**
+ * @method executeRules
+ * Execute a set of rules, the first rules that complies resolve the promise with argument the rule (augumented with
+ * the position of the rule in the list)
+ * @deferred
+ * @param {Array} rules
+ * @param {Object} message
+ * @param {Number} [current=1]
+ */
+function executeRules(rules, message, current) {
 
   current = current || 1;
 
   if (_.isEmpty(rules)) {
+    // if empty, means all rules failed
     return new Promise(function(resolve, reject) {
       reject();
     });
   } else {
     var first = _(rules).first();
-    console.log('Analizzo', current, first);
-    return new Promise(function(resolve, reject) {
 
+    return new Promise(function(resolve, reject) {
+      // rules doesn't exist
       if (!_.isFunction(Types[first.type])) {
-        console.log('Error: no function for type ' + first.type);
         reject();
       }
-
-      Types[first.type](first, chatContext)
+      // check if the first rule applies
+      Types[first.type](first, message)
         .then(
           function () {
-            console.log('ok la prima');
-            first.index = current;
-            resolve(first);
+            var rule = _.clone(first);
+            rule.index = current;
+            resolve(rule);
           },
           function () {
             var nextRules = _.rest(rules);
             if (_.isEmpty(nextRules)) {
               reject();
             } else {
-              console.log('rieseguo ', current + 1);
-              executeRules(nextRules, chatContext, current + 1)
+              executeRules(nextRules, message, current + 1)
                 .then(
                   function(rule) {
                     resolve(rule);
@@ -109,82 +172,34 @@ function executeRules(rules, chatContext, current) {
                   }
                 );
             }
-
           }
         );
     });
-
   }
-
-
-  /*return new Promise(function(resolve, reject) {
-
-
-
-
-  })*/
-
-
 }
-
-
-
 
 module.exports = function(RED) {
 
   function ChatBotRules(config) {
     RED.nodes.createNode(this, config);
     var node = this;
-
     node.rules = config.rules;
 
     this.on('input', function(msg) {
-
-      var originalMessage = msg.originalMessage;
-      var chatContext = msg.chat();
-
-      var rules = node.rules;
-
-      console.log('+++++', rules);
-      /*rules = [
-        {
-          type: 'is_topic_empty'
-        },
-        {
-          type: 'is_not_topic',
-          topic: 'query'
-        },
-        {
-          type: 'has_not_variable',
-          name: 'room'
-        },
-        {
-          type: 'has_not_variable',
-          name: 'from'
-        },
-        {
-          type: 'has_not_variable',
-          name: 'to'
-        }
-      ];*/
-
-
-      executeRules(rules, chatContext)
+      var rules = utils.extractValue('arrayOfObject', 'rules', node, msg, true);
+      executeRules(rules, msg)
         .then(
           function(rule) {
-            console.log('OK rules -> ', rule);
             var result = new Array(rules.length);
-            result[rule.index - 1] = msg;
+            result = _(result).map(function(value, idx) {
+              return idx === (rule.index - 1) ? msg : null
+            });
             node.send(result);
           },
           function() {
-            console.log('failed');
+            // all rules failed, do nothing
           }
         );
-
-
-
-
     });
   }
 
