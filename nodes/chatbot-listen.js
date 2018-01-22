@@ -31,6 +31,12 @@ module.exports = function(RED) {
       if (originalMessage == null || _.isEmpty(rules)) {
         return;
       }
+      if (msg.payload != null && msg.payload.inbound === false) {
+        if (debug) {
+          console.log('Message is outbound, skip parsing.');
+        }
+        return;
+      }
 
       // parse incoming message
       var message = msg.payload.content;
