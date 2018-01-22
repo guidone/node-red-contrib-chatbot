@@ -32,7 +32,7 @@
             type: type
           };
           if (type === 'hasNotVariable' || type === 'hasVariable') {
-            obj.name = rule.find('input[name=variable]').val();
+            obj.variable = rule.find('input[name=variable]').val();
           }
           if (type === 'isNotTopic' || type === 'isTopic') {
             obj.topic = rule.find('input[name=topic]').val();
@@ -80,7 +80,7 @@
             container.find('.' + rule.type).show();
           }
           if (rule.variable != null) {
-            $('input[name=variable]', container).val(rule.name);
+            $('input[name=variable]', container).val(rule.variable);
           }
           if (rule.topic != null) {
             $('input[name=topic]', container).val(rule.topic);
@@ -130,7 +130,7 @@
       } else if (rule.type === 'isTopic') {
         return 'Topic is "' + (rule.topic != null && rule.topic !== '' ? rule.topic : '...') + '"';
       } else if (rule.type === 'hasNotVariable') {
-        return 'Variable "' + (rule.name != null && rule.name !== '' ? rule.name : '...') + '" is not defined';
+        return 'Variable "' + (rule.variable != null && rule.variable !== '' ? rule.variable : '...') + '" is not defined';
       }
     }
   });
