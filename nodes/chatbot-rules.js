@@ -141,41 +141,40 @@ function executeRules(rules, message, current) {
     return new Promise(function(resolve, reject) {
       reject();
     });
-  } else {
-    var first = _(rules).first();
-
-    return new Promise(function(resolve, reject) {
-      // rules doesn't exist
-      if (!_.isFunction(Types[first.type])) {
-        reject();
-      }
-      // check if the first rule applies
-      Types[first.type](first, message)
-        .then(
-          function () {
-            var rule = _.clone(first);
-            rule.index = current;
-            resolve(rule);
-          },
-          function () {
-            var nextRules = _.rest(rules);
-            if (_.isEmpty(nextRules)) {
-              reject();
-            } else {
-              executeRules(nextRules, message, current + 1)
-                .then(
-                  function(rule) {
-                    resolve(rule);
-                  },
-                  function() {
-                    reject();
-                  }
-                );
-            }
-          }
-        );
-    });
   }
+
+  var first = _(rules).first();
+  return new Promise(function(resolve, reject) {
+    // rules doesn't exist
+    if (!_.isFunction(Types[first.type])) {
+      reject();
+    }
+    // check if the first rule applies
+    Types[first.type](first, message)
+      .then(
+        function () {
+          var rule = _.clone(first);
+          rule.index = current;
+          resolve(rule);
+        },
+        function () {
+          var nextRules = _.rest(rules);
+          if (_.isEmpty(nextRules)) {
+            reject();
+          } else {
+            executeRules(nextRules, message, current + 1)
+              .then(
+                function(rule) {
+                  resolve(rule);
+                },
+                function() {
+                  reject();
+                }
+              );
+          }
+        }
+      );
+  });
 }
 
 module.exports = function(RED) {

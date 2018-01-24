@@ -3,6 +3,13 @@ var NplMatcher = require('../lib/npl-matcher');
 var helpers = require('../lib/helpers/regexps');
 var utils = require('../lib/helpers/utils');
 var when = utils.when;
+var clc = require('cli-color');
+var prettyjson = require('prettyjson');
+
+var green = clc.greenBright;
+var white = clc.white;
+var grey = clc.blackBright;
+
 
 module.exports = function(RED) {
 
@@ -33,6 +40,7 @@ module.exports = function(RED) {
       }
       if (msg.payload != null && msg.payload.inbound === false) {
         if (debug) {
+          // eslint-disable-next-line no-console
           console.log('Message is outbound, skip parsing.');
         }
         return;
@@ -65,7 +73,12 @@ module.exports = function(RED) {
             }
           });
           if (debug) {
-            console.log('WINS: ---> ', rule, storeVariables);
+            // eslint-disable-next-line no-console
+            console.log('--------------');
+            console.log(green('Matched rule:'), grey(rule));
+            console.log(green('Extracted variables:'));
+            console.log(prettyjson.render(storeVariables));
+            console.log('');
           }
           // store async
           if (!_.isEmpty(storeVariables)) {
