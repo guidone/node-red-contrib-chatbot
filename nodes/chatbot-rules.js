@@ -91,7 +91,7 @@ var Types = {
       when(chatContext.get(rule.variable))
         .then(
           function (content) {
-            if (_.isEmpty(content)) {
+            if (content == null) {
               resolve(rule);
             } else {
               reject();
@@ -109,7 +109,7 @@ var Types = {
       when(chatContext.get(rule.variable))
         .then(
           function (content) {
-            if (!_.isEmpty(content)) {
+            if (content != null) {
               resolve(rule);
             } else {
               reject();
