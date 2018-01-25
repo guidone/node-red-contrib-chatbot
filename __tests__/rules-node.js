@@ -212,5 +212,43 @@ describe('Chat rules node', function() {
       });
   });
 
+  it('should match goes through the first if the variable my_var is not null', function() {
+    var msg = RED.createMessage(null);
+    RED.node.config({
+      rules: [
+        { type: 'hasVariable', variable: 'my_var' },
+        { type: 'catchAll' }
+      ]
+    });
+    RulesBlock(RED);
+    msg.chat().set({ my_var: 'something '});
+    RED.node.get().emit('input', msg);
+
+    return RED.node.get().await()
+      .then(function() {
+        assert.isNull(RED.node.message(1));
+        assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
+      });
+  });
+
+  it('should match goes through the second if the variable my_var has not a value', function() {
+    var msg = RED.createMessage(null);
+    RED.node.config({
+      rules: [
+        { type: 'hasVariable', variable: 'my_var' },
+        { type: 'catchAll' }
+      ]
+    });
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+    msg.chat().set({});
+    return RED.node.get().await()
+      .then(function() {
+        assert.isNull(RED.node.message(0));
+        assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
+      });
+  });
+
+
 });
 
