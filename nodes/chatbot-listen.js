@@ -7,9 +7,7 @@ var clc = require('cli-color');
 var prettyjson = require('prettyjson');
 
 var green = clc.greenBright;
-var white = clc.white;
 var grey = clc.blackBright;
-
 
 module.exports = function(RED) {
 
@@ -75,9 +73,13 @@ module.exports = function(RED) {
           if (debug) {
             // eslint-disable-next-line no-console
             console.log('--------------');
+            // eslint-disable-next-line no-console
             console.log(green('Matched rule:'), grey(rule));
+            // eslint-disable-next-line no-console
             console.log(green('Extracted variables:'));
+            // eslint-disable-next-line no-console
             console.log(prettyjson.render(storeVariables));
+            // eslint-disable-next-line no-console
             console.log('');
           }
           // store async
