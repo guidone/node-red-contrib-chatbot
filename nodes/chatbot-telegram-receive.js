@@ -109,20 +109,28 @@ module.exports = function(RED) {
     this.bot = config.bot;
 
     this.config = RED.nodes.getNode(this.bot);
+    var global = this.context().global;
+    var nodeGlobalKey = null;
 
     if (this.config) {
       this.status({fill: 'red', shape: 'ring', text: 'disconnected'});
       node.chat = this.config.chat;
       if (node.chat) {
         this.status({fill: 'green', shape: 'ring', text: 'connected'});
-
+        nodeGlobalKey = 'telegram_master_' + this.config.id.replace('.','_');
+        var isMaster = false;
+        if (global.get(nodeGlobalKey) == null) {
+          isMaster = true;
+          global.set(nodeGlobalKey, node.id);
+        }
         node.chat.on('message', function (message) {
           var context = message.chat();
           // if a conversation is going on, go straight to the conversation node, otherwise if authorized
           // then first pin, if not second pin
           when(context.get('currentConversationNode'))
             .then(function(currentConversationNode) {
-              if (currentConversationNode != null) {
+              if (isMaster && currentConversationNode != null) {
+                // if the current node is master, then redirect
                 // void the current conversation
                 when(context.set('currentConversationNode', null))
                   .then(function() {
@@ -134,8 +142,6 @@ module.exports = function(RED) {
               }
             });
         });
-
-
       } else {
         node.warn("no bot in config.");
       }
@@ -144,6 +150,7 @@ module.exports = function(RED) {
     }
 
     this.on('close', function (done) {
+      node.context().global.set(nodeGlobalKey, null);
       if (node.chat != null) {
         node.chat.off('message');
       }
