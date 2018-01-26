@@ -1,3 +1,4 @@
+* **0.9.14** - Fixed startup error on Facebook Messenger 
 * **0.9.13** - Fixed dropdown "parse mode" for Telegram
 * **0.9.12** - New context engine available for Facebook Messenger 
 * **0.9.11** - Fix context provider drop down in hosted environments 
