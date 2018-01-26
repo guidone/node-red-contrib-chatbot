@@ -445,10 +445,10 @@ describe('NLP matcher', function() {
   });
 
 
-  /*it.only('should match a sentence with a date', function() {
+  it('should match a sentence with a date', function() {
 
     var message = 'I will call Jack on 10 January';
-    var terms = NplMatcher.parseSentence(message);
+    var terms = NplMatcher.parseSentence(message, null, false);
     var rules = new NplMatcher.MatchRules([
       {
         text: 'call',
@@ -465,6 +465,12 @@ describe('NLP matcher', function() {
     ]);
     var matchedRules = NplMatcher.matchRules(terms, rules);
 
+    /*_(matchedRules).each(function(rules, idx) {
+      console.log('');
+      console.log('Rule #' + (idx + 1));
+      console.log(rules.toJSON());
+    });*/
+
     assert.equal(matchedRules[0].count(), 3);
 
     assert.equal(matchedRules[0].at(0).type, 'verb');
@@ -477,16 +483,17 @@ describe('NLP matcher', function() {
     assert.equal(matchedRules[0].at(1).distance, 0);
 
     assert.equal(matchedRules[0].at(2).type, 'date');
-    assert.equal(matchedRules[0].at(2).value.date(), 10);
-    assert.equal(matchedRules[0].at(2).value.month(), 0);
+    assert.instanceOf(matchedRules[0].at(2).value, Date);
+    assert.equal(matchedRules[0].at(2).value.getMonth(), 0);
+    assert.equal(matchedRules[0].at(2).value.getDate(), 10);
     assert.equal(matchedRules[0].at(2).distance, 1);
 
-  });*/
+  });
 
   it('should match number written in letters', function() {
 
     var message = 'I owe forty five apples to Jimmy';
-    var terms = NplMatcher.parseSentence(message, null, true);
+    var terms = NplMatcher.parseSentence(message, null, false);
     var rules = new NplMatcher.MatchRules([
       {
         type: 'verb',
@@ -494,7 +501,7 @@ describe('NLP matcher', function() {
       },
       {
         type: 'number',
-        variable: 'age'
+        variable: 'apples'
       },
       {
         text: 'apple',
@@ -503,11 +510,11 @@ describe('NLP matcher', function() {
     ]);
     var matchedRules = NplMatcher.matchRules(terms, rules);
 
-    matchedRules.forEach(function(rules, idx) {
+    /*matchedRules.forEach(function(rules, idx) {
      console.log('');
      console.log('Rule #' + (idx + 1));
      console.log(rules.toJSON());
-     });
+     });*/
 
     assert.equal(matchedRules[0].count(), 3);
 
@@ -517,7 +524,7 @@ describe('NLP matcher', function() {
 
     assert.equal(matchedRules[0].at(1).type, 'number');
     assert.equal(matchedRules[0].at(1).value, 45);
-    assert.equal(matchedRules[0].at(1).variable, 'age');
+    assert.equal(matchedRules[0].at(1).variable, 'apples');
     assert.equal(matchedRules[0].at(1).distance, 0);
 
     assert.equal(matchedRules[0].at(2).type, 'noun');
@@ -1216,7 +1223,7 @@ describe('NLP matcher', function() {
   it('should match a double date (range)', function() {
 
     var message = 'from 1st january to 13rd march';
-    var terms = NplMatcher.parseSentence(message, {}, true);
+    var terms = NplMatcher.parseSentence(message, {}, false);
     var rules = new NplMatcher.MatchRules([
       'from',
       '[date]->from',
@@ -1224,7 +1231,7 @@ describe('NLP matcher', function() {
       '[date]->to'
     ]);
 
-    var matchedRules = NplMatcher.matchRules(terms, rules, true);
+    var matchedRules = NplMatcher.matchRules(terms, rules);
 
     /*matchedRules.forEach(function(rules, idx) {
      console.log('');
@@ -1251,24 +1258,24 @@ describe('NLP matcher', function() {
   it('should match a number and not confuse with a date', function() {
 
     var message = 'I will call in 8 minutes';
-    var terms = NplMatcher.parseSentence(message, {}, true);
+    var terms = NplMatcher.parseSentence(message, {}, false);
     var rules = new NplMatcher.MatchRules([
       'will call',
       '[number]->minutes',
       'minutes'
     ]);
 
-    var matchedRules = NplMatcher.matchRules(terms, rules, true);
+    var matchedRules = NplMatcher.matchRules(terms, rules);
 
-    matchedRules.forEach(function(rules, idx) {
+    /*matchedRules.forEach(function(rules, idx) {
      console.log('');
      console.log('Rule #' + (idx + 1));
      console.log(rules.toJSON());
-     });
+     });*/
 
     assert.equal(matchedRules[0].count(), 3);
     assert.equal(matchedRules[0].at(0).text, 'will call');
-    assert.equal(matchedRules[0].at(0).distance, 2);
+    assert.equal(matchedRules[0].at(0).distance, 1);
     assert.equal(matchedRules[0].at(0).type, 'word');
     assert.equal(matchedRules[0].at(1).text, null);
     assert.equal(matchedRules[0].at(1).raw, '8');

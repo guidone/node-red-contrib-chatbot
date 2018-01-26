@@ -44,7 +44,7 @@ describe('Chat image node', function() {
 
 
   it('should send a image message with filename from payload', function () {
-    var msg = RED.createMessage('./' + __dirname + '/dummy/file.mp4', 'telegram');
+    var msg = RED.createMessage(__dirname + '/dummy/file.mp4', 'telegram');
     RED.node.config({
       name: 'my file name: test'
     });
@@ -62,7 +62,7 @@ describe('Chat image node', function() {
 
   it('should send a image message with filename from payload (named parameter)', function () {
     var msg = RED.createMessage({
-      image: './' + __dirname + '/dummy/file.mp4',
+      image: __dirname + '/dummy/file.mp4',
       caption: 'just a caption'
     }, 'telegram');
     RED.node.config({
@@ -83,7 +83,7 @@ describe('Chat image node', function() {
 
   it('should send a image message with buffer from payload (named parameter)', function () {
     var msg = RED.createMessage({
-      image: fs.readFileSync('./' + __dirname + '/dummy/image.png'),
+      image: fs.readFileSync(__dirname + '/dummy/image.png'),
       caption: 'just a caption'
     }, 'telegram');
     RED.node.config({
@@ -105,7 +105,7 @@ describe('Chat image node', function() {
   it('should send a image message with filename from config', function () {
     var msg = RED.createMessage({}, 'telegram');
     RED.node.config({
-      image: './' + __dirname + '/dummy/file.mp4',
+      image: __dirname + '/dummy/file.mp4',
       caption: 'just a caption'
     });
     ImageBlock(RED);
@@ -124,7 +124,7 @@ describe('Chat image node', function() {
   it('should send a image message with filename from config (old parameter)', function () {
     var msg = RED.createMessage({}, 'telegram');
     RED.node.config({
-      filename: './' + __dirname + '/dummy/file.mp4',
+      filename: __dirname + '/dummy/file.mp4',
       caption: 'just a caption'
     });
     ImageBlock(RED);
