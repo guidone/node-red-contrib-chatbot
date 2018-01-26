@@ -1,3 +1,5 @@
 language: node_js
 node_js:
   - "6"
+notifications:
+  slack: red-bot:TnSz3xU4TGWv19P8y4YVBvyM
