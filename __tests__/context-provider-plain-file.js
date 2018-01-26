@@ -1,6 +1,6 @@
 var _ = require('underscore');
 var assert = require('chai').assert;
-var RED = require('./lib/red-stub')();
+var RED = require('../lib/red-stub')();
 var ContextProviders = require('../lib/chat-platform/chat-context-factory');
 var os = require('os');
 var fs = require('fs');

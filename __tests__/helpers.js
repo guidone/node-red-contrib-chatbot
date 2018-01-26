@@ -2,7 +2,7 @@ var _ = require('underscore');
 var assert = require('chai').assert;
 var helpers = require('../lib/helpers/regexps');
 var utils = require('../lib/helpers/utils');
-var RED = require('./lib/red-stub')();
+var RED = require('../lib/red-stub')();
 
 describe('Helpers functions', function() {
 

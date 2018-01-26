@@ -1,7 +1,7 @@
 var _ = require('underscore');
 var assert = require('chai').assert;
-var RED = require('./lib/red-stub')();
-var ApiAi = require('./lib/apiai-stub');
+var RED = require('../lib/red-stub')();
+var ApiAi = require('../lib/apiai-stub');
 var ApiAiBlock = require('../nodes/chatbot-apiai');
 
 var ApiAiMessage1 = {

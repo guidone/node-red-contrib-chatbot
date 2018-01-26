@@ -1,6 +1,6 @@
 var _ = require('underscore');
 var assert = require('chai').assert;
-var RED = require('./lib/red-stub')();
+var RED = require('../lib/red-stub')();
 var ListenBlock = require('../nodes/chatbot-listen');
 var ListenLexiconBlock = require('../nodes/chatbot-listen-lexicon');
 var utils = require('../lib/helpers/utils');
@@ -33,7 +33,7 @@ describe('Chat listen lexicon node', function() {
     'book,[room]->room'
   ];
 
-  it.only('should use a room lexicon with Listen owning', function () {
+  it('should use a room lexicon with Listen owning', function () {
     var msg = RED.createMessage({
       content: 'I want a single room',
       lexicon: RoomLexicon,

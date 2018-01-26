@@ -1,6 +1,6 @@
 var _ = require('underscore');
 var assert = require('chai').assert;
-var RED = require('./lib/red-stub')();
+var RED = require('../lib/red-stub')();
 var RiveScriptBlock = require('../nodes/chatbot-rivescript');
 var utils = require('../lib/helpers/utils');
 var when = utils.when;
