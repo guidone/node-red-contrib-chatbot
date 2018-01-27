@@ -132,7 +132,7 @@ module.exports = function(RED) {
               if (isMaster && currentConversationNode != null) {
                 // if the current node is master, then redirect
                 // void the current conversation
-                when(context.set('currentConversationNode', null))
+                when(context.remove('currentConversationNode'))
                   .then(function() {
                     // emit message directly the node where the conversation stopped
                     RED.events.emit('node:' + currentConversationNode, message);
