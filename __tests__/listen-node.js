@@ -30,7 +30,7 @@ describe('Chat listen node', function() {
     RED.node.config({
       rules: [
         '[number]->tip',
-        '*'
+        'another rule'
       ]
     });
     ListenBlock(RED);
@@ -41,6 +41,25 @@ describe('Chat listen node', function() {
         function () {
           assert.isNull(RED.node.message(0));
           assert.isNull(RED.node.message(1));
+        }
+      );
+  });
+
+  it('should not try to parse a command-like message but redirect to catch all', function () {
+    var msg = RED.createMessage({content: '/view'});
+    RED.node.config({
+      rules: [
+        '[number]->tip',
+        '*'
+      ]
+    });
+    ListenBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(
+        function() {
+          assert.isNull(RED.node.message(0));
+          assert.equal(RED.node.message(1).originalMessage.chat.id, 42);
         }
       );
   });

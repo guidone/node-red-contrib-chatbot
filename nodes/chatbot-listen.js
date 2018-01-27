@@ -22,6 +22,8 @@ module.exports = function(RED) {
 
       var originalMessage = msg.originalMessage;
       var chatContext = msg.chat();
+
+      var message = msg.payload.content;
       var task = new Promise(function(resolve) {
         resolve();
       });
@@ -43,30 +45,23 @@ module.exports = function(RED) {
         }
         return;
       }
-
       // parse incoming message
-      var message = msg.payload.content;
+      var isCommand = helpers.isCommand(message);
       var terms = NplMatcher.parseSentence(message, lexicon, debug);
-
-      // do not try to parse if it's a command like
-      if (helpers.isCommand(message)) {
-        return;
-      }
-
       rules.forEach(function(rule) {
         var matchedRule = null;
         if (!matched && rule === '*') {
           // mark as matched, only the first wins
           matched = true;
           output.push(msg);
-        } else if (!matched && (matchedRule = NplMatcher.matchRule(terms, new NplMatcher.MatchRules(rule.split(',')))) != null) {
+        } else if (!matched && !isCommand && (matchedRule = NplMatcher.matchRule(terms, new NplMatcher.MatchRules(rule.split(',')))) != null) {
           // mark as matched, only the first wins
+          // do not try to parse if it's a command like and not parse if there's already a match
           matched = true;
           // store variables
           var storeVariables = {};
           matchedRule.forEach(function(rule) {
             if (!_.isEmpty(rule.variable)) {
-              //chatContext.set(rule.variable, rule.value);
               storeVariables[rule.variable] = rule.value;
             }
           });
