@@ -158,6 +158,8 @@
       case 'hasNotVariable':
       case 'hasVariable':
         return $.RedBot.validate.notEmpty(rule.variable);
+      case 'command':
+        return $.RedBot.validate.notEmpty(rule.command);
       case 'outbound':
       case 'inbound':
       case 'isTopicEmpty':

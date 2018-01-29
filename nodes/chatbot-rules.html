@@ -40,6 +40,9 @@
           if (type === 'isNotTopic' || type === 'isTopic') {
             obj.topic = rule.find('input[name=topic]').val();
           }
+          if (type === 'command') {
+            obj.command = rule.find('input[name=command]').val();
+          }
           node.rules.push(obj);
         }
       });
@@ -56,6 +59,7 @@
           row
             .append('<select name="type" style="width:40%">'
               + '<option value="">Select rule</option>'
+              + '<option value="command">Message is command</option>'
               + '<option value="outbound">Message is outbound</option>'
               + '<option value="inbound">Message is inbound</option>'
               + '<option value="isTopicEmpty">Topic is not defined</option>'
@@ -72,6 +76,7 @@
             });
           row
             .append('<input class="hasNotVariable hasVariable" style="display:none;width:50%;margin-left:10px;" type="text" name="variable" placeholder="Context variable"/>')
+            .append('<input class="command" style="display:none;width:50%;margin-left:10px;" type="text" name="command" placeholder="/command"/>')
             .append('<input class="isNotTopic isTopic" style="display:none;width:40%;margin-left:10px;" type="text" name="topic" placeholder="Topic"/>');
           var finalspan = $('<span/>',{style:"float: right;margin-top: 6px;"}).appendTo(row);
           finalspan.append('&nbsp;&#8594; <span class="node-input-rule-index">' + (i + 1) + '</span>');
@@ -87,6 +92,9 @@
           }
           if (rule.topic != null) {
             $('input[name=topic]', container).val(rule.topic);
+          }
+          if (rule.command != null) {
+            $('input[name=command]', container).val(rule.command);
           }
         },
         removeItem: function(opt) {
