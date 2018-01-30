@@ -16,7 +16,6 @@ var Types = {
 
   command: function(rule, message) {
     var commandToCheck = rule.command.match(/^\//) ? rule.command : '/' + rule.command;
-    console.log('confronto con', message.payload.content, commandToCheck, message.payload.content === commandToCheck);
     return new Promise(function(resolve, reject) {
       if (message.payload != null && message.payload.content === commandToCheck) {
         resolve(rule);
