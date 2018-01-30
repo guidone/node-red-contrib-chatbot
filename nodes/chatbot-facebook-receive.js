@@ -155,6 +155,7 @@ module.exports = function(RED) {
     }
 
     this.on('close', function (done) {
+      node.context().global.set(nodeGlobalKey, null);
       if (node.chat != null) {
         node.chat.off('message');
       }
