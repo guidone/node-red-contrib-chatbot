@@ -49,7 +49,8 @@ var mappings = {
   'Facebook-Receiver-node.md': 'chatbot-facebook-receive.html|chatbot-facebook-node',
   'Switch-node.md': 'chatbot-switch.html',
   'Inline-Query-node.md': 'chatbot-inline-query.html',
-  'Dialog-node.md': 'chatbot-dialog.html'
+  'Dialog-node.md': 'chatbot-dialog.html',
+  'Rules-node.md': 'chatbot-rules.html'
 };
 
 function collectImages(html) {

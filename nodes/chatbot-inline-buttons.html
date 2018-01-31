@@ -147,6 +147,41 @@
         return false;
     }
   };
+  $.RedBot.validate.rule = function(rule) {
+    if (rule == null) {
+      return false;
+    }
+    switch(rule.type) {
+      case 'isNotTopic':
+      case 'isTopic':
+        return $.RedBot.validate.notEmpty(rule.topic);
+      case 'hasNotVariable':
+      case 'hasVariable':
+        return $.RedBot.validate.notEmpty(rule.variable);
+      case 'command':
+        return $.RedBot.validate.notEmpty(rule.command);
+      case 'outbound':
+      case 'inbound':
+      case 'isTopicEmpty':
+      case 'catchAll':
+        return true;
+      default:
+        return false;
+    }
+  };
+  $.RedBot.validate.rules = function(rules) {
+    if (rules == null) {
+      return false;
+    }
+    var valid = true;
+    var idx;
+    for(idx = 0; idx < rules.length; idx++) {
+      if (!$.RedBot.validate.rule(rules[idx])) {
+        valid = false;
+      }
+    }
+    return valid;
+  };
   $.RedBot.buttonTypes.findButton = function(type) {
     var button = null;
     this.forEach(function(current) {
@@ -761,6 +796,9 @@
       buttons: {
         value: [],
         validate: function(buttons) {
+          if (buttons == null) {
+            return false;
+          }
           var valid = true;
           var idx;
           for(idx = 0; idx < buttons.length; idx++) {
@@ -796,6 +834,7 @@
         .css('min-height','300px')
         .css('min-width','450px')
         .editableList({
+          addButton: 'Add button',
           addItem: function(container, i, item) {
             $(container).RB_mountButtonDialog({
               types: ['url', 'postback', 'call', 'login', 'newline', 'logout', 'dialog'],

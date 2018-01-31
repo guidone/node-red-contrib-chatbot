@@ -1,0 +1,196 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-rules', {
+    category: 'RedBot Flow',
+    color: '#FFCC66',
+    defaults: {
+      name: {
+        value: ''
+      },
+      rules: {
+        value: [],
+        validate: function(rules) {
+          return $.RedBot.validate.rules(rules);
+        }
+      },
+      outputs: {
+        value: 1
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'Rules',
+    icon: 'chatbot-rules.png',
+    label: function() {
+      return this.name || 'Rules' ;
+    },
+    oneditsave: function() {
+      var rules = $('#node-input-rule-container').editableList('items');
+      var node = this;
+      node.rules = [];
+      rules.each(function(i) {
+        var rule = $(this);
+        var type = rule.find('select[name=type]').val();
+        if (type != null && type !== '') {
+          var obj = {
+            type: type
+          };
+          if (type === 'hasNotVariable' || type === 'hasVariable') {
+            obj.variable = rule.find('input[name=variable]').val();
+          }
+          if (type === 'isNotTopic' || type === 'isTopic') {
+            obj.topic = rule.find('input[name=topic]').val();
+          }
+          if (type === 'command') {
+            obj.command = rule.find('input[name=command]').val();
+          }
+          node.rules.push(obj);
+        }
+      });
+      this.outputs = node.rules.length;
+    },
+    oneditprepare: function() {
+      var node = this;
+      $("#node-input-rule-container").css('min-height','250px').css('min-width','450px').editableList({
+        addButton: 'Add rule',
+        addItem: function (container, i, opt) {
+          // build rule row
+          var rule = opt;
+          var row = $('<div/>').appendTo(container);
+          row
+            .append('<select name="type" style="width:40%">'
+              + '<option value="">Select rule</option>'
+              + '<option value="command">Message is command</option>'
+              + '<option value="outbound">Message is outbound</option>'
+              + '<option value="inbound">Message is inbound</option>'
+              + '<option value="isTopicEmpty">Topic is not defined</option>'
+              + '<option value="isNotTopic">Topic is not ...</option>'
+              + '<option value="isTopic">Topic is ...</option>'
+              + '<option value="hasNotVariable">Variable is not defined ...</option>'
+              + '<option value="hasVariable">Variable is defined ...</option>'
+              + '<option value="catchAll">If nothing of above applies</option>'
+              + '</select>')
+            .change(function() {
+              var type = $('select[name=type]', container).val();
+              container.find('input').hide();
+              container.find('.' + type).show();
+            });
+          row
+            .append('<input class="hasNotVariable hasVariable" style="display:none;width:50%;margin-left:10px;" type="text" name="variable" placeholder="Context variable"/>')
+            .append('<input class="command" style="display:none;width:50%;margin-left:10px;" type="text" name="command" placeholder="/command"/>')
+            .append('<input class="isNotTopic isTopic" style="display:none;width:40%;margin-left:10px;" type="text" name="topic" placeholder="Topic"/>');
+          var finalspan = $('<span/>',{style:"float: right;margin-top: 6px;"}).appendTo(row);
+          finalspan.append('&nbsp;&#8594; <span class="node-input-rule-index">' + (i + 1) + '</span>');
+
+          // finally set data
+          if (rule.type != null) {
+            $('select[name=type]', container).val(rule.type);
+            container.find('input').hide();
+            container.find('.' + rule.type).show();
+          }
+          if (rule.variable != null) {
+            $('input[name=variable]', container).val(rule.variable);
+          }
+          if (rule.topic != null) {
+            $('input[name=topic]', container).val(rule.topic);
+          }
+          if (rule.command != null) {
+            $('input[name=command]', container).val(rule.command);
+          }
+        },
+        removeItem: function(opt) {
+          var rules = $('#node-input-rule-container').editableList('items');
+          rules.each(function(i) {
+            $(this).find('.node-input-rule-index').html(i + 1);
+          });
+        },
+        sortItems: function() {
+          var rules = $('#node-input-rule-container').editableList('items');
+          rules.each(function(i) {
+            $(this).find('.node-input-rule-index').html(i + 1);
+          });
+        },
+        sortable: true,
+        removable: true
+      });
+
+      for (var i=0; i < node.rules.length; i++) {
+        var rule = this.rules[i];
+        $('#node-input-rule-container').editableList('addItem', rule);
+      }
+    },
+    oneditresize: function() {
+      var dialogForm = $('#dialog-form');
+      var rowName = $('.form-row-name', dialogForm);
+      var rowLabel = $('.form-row-label', dialogForm);
+      var rowHint = $('.redbot-form-hint', dialogForm);
+      var height = dialogForm.height() - rowName.height() - rowLabel.height() - rowHint.height() - 30;
+      $('#node-input-buttons-container').editableList('height', height);
+    },
+    outputLabels: function(index) {
+      var rule = this.rules[index];
+      if (rule.type === 'catchAll') {
+        return 'If no rule applies';
+      } else if (rule.type === 'inbound') {
+        return 'Message is inbound';
+      } if (rule.type === 'outbound') {
+        return 'Message is outbound';
+      } else if (rule.type === 'isTopicEmpty') {
+        return 'Topic is not defined';
+      } else if (rule.type === 'isNotTopic') {
+        return 'Topic is not "' + (rule.topic != null && rule.topic !== '' ? rule.topic : '...') + '"';
+      } else if (rule.type === 'isTopic') {
+        return 'Topic is "' + (rule.topic != null && rule.topic !== '' ? rule.topic : '...') + '"';
+      } else if (rule.type === 'hasNotVariable') {
+        return 'Variable "' + (rule.variable != null && rule.variable !== '' ? rule.variable : '...') + '" is not defined';
+      }
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-rules">
+  <div class="form-row form-row-name">
+    <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row form-row-label">
+    <label for="node-input-name" style="width:100%;">Forward message based on rules:</label>
+  </div>
+  <div class="form-row node-input-rule-container-row">
+      <ol id="node-input-rule-container"></ol>
+  </div>
+  <div class="redbot-form-hint">
+    The first matched rule skips the rest of the matching. To get a else-like behaviour, use <em>If nothing of above applies</em> at the end of the list to capture all messages that don't match any rule.
+  </p>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-rules"><p>Rules node is a multi-output node that allows to control the flow of the chatbot based on simple rules (for example <em>&quot;The topic is myTopic&quot;</em>, <em>&quot;The context variable myVar is not defined&quot;</em>). This node replace the [[Topic node|Topic-node]] that will deprecated soon.</p>
+<p>The first rule that matches trigger the redirect of the incoming message to the related output and stops the chain of rules.</p>
+<p>This node is useful to create loops in the flow, for example to keep asking some questions to the user until a list of needed information (context variables) are filled.</p>
+<p>Rules can be created programmatically by an upstream <code>Function node</code> passing array of rules in the message payload:</p>
+<pre><code>msg.payload = [
+  {
+    type: &#39;hasNotVariable&#39;,
+    variable: &#39;my_variable&#39;
+  },
+  {
+    type: &#39;catchAll&#39;
+  }
+];
+return msg;
+</code></pre><p>Available parameters for the <code>msg.payload</code></p>
+<dl class="message-properties">
+
+
+<dt>type<span class="property-type">string</span><dd>Type of rule: <em>inbound</em>, <em>outbound</em>, <em>isTopicEmpty</em>, <em>catchAll</em>, <em>isNotTopic</em>, <em>isTopic</em>, <em>hasNotVariable</em>, <em>hasVariable</em></dd>
+<dt>topic<span class="property-type">string</span><dd>Match the rule if the flow topic matches/doesn&#39;t match the specified topic. Required for  <em>isNotTopic</em> and <em>isTopic</em></dd>
+<dt>variable<span class="property-type">string</span><dd>Match the rule if the context variable is defined/not defined. Required for <em>hasVariable</em> and <em>hasNotVariable</em></dd>
+
+</dl>
+<p><img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram">
+<img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook">
+<img src="https://img.shields.io/badge/platform-Slack-green.svg" alt="Slack">
+<img src="https://img.shields.io/badge/platform-Smooch-orange.svg" alt="Smooch"></p>
+</script>
+
+

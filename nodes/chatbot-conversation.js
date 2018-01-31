@@ -36,7 +36,7 @@ module.exports = function(RED) {
         } else if (transport === 'telegram' && RED.nodes.getNode(botTelegram) != null) {
           platformNode = RED.nodes.getNode(botTelegram).chat;
         } else if (transport === 'facebook' && RED.nodes.getNode(botFacebook) != null) {
-          platformNode = RED.nodes.getNode(botTelegram).chat;
+          platformNode = RED.nodes.getNode(botFacebook).chat;
         } else {
           node.error('Chatbot not found or not configured properly');
           return;

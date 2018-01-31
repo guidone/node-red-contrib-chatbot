@@ -47,6 +47,7 @@
       $('#node-input-buttons-container')
         .css('min-width','450px')
         .editableList({
+          addButton: 'Add button',
           addItem: function(container, i, item) {
             $(container).RB_mountButtonDialog({
               types: ['quick-reply', 'location'],
