@@ -182,9 +182,10 @@ return msg;
 <dl class="message-properties">
 
 
-<dt>type<span class="property-type">string</span><dd>Type of rule: <em>inbound</em>, <em>outbound</em>, <em>isTopicEmpty</em>, <em>catchAll</em>, <em>isNotTopic</em>, <em>isTopic</em>, <em>hasNotVariable</em>, <em>hasVariable</em></dd>
+<dt>type<span class="property-type">string</span><dd>Type of rule: <em>inbound</em>, <em>outbound</em>, <em>isTopicEmpty</em>, <em>catchAll</em>, <em>isNotTopic</em>, <em>isTopic</em>, <em>hasNotVariable</em>, <em>hasVariable</em>, <em>command</em></dd>
 <dt>topic<span class="property-type">string</span><dd>Match the rule if the flow topic matches/doesn&#39;t match the specified topic. Required for  <em>isNotTopic</em> and <em>isTopic</em></dd>
 <dt>variable<span class="property-type">string</span><dd>Match the rule if the context variable is defined/not defined. Required for <em>hasVariable</em> and <em>hasNotVariable</em></dd>
+<dt>command<span class="property-type">string</span><dd>Match the input command, if any. Required for <em>command</em></dd>
 
 </dl>
 <p><img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram">

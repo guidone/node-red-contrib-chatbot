@@ -1,3 +1,4 @@
+* **0.9.15** - Added `Rules node`, fixed messages being broadcasted multiple times, fixed `Conversation node` for Facebook
 * **0.9.14** - Fixed startup error on Facebook Messenger 
 * **0.9.13** - Fixed dropdown "parse mode" for Telegram
 * **0.9.12** - New context engine available for Facebook Messenger 
