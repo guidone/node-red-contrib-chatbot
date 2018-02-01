@@ -3,7 +3,10 @@ var moment = require('moment');
 var TelegramServer = require('../lib/telegram/telegram-chat');
 var ContextProviders = require('../lib/chat-platform/chat-context-factory');
 var utils = require('../lib/helpers/utils');
+var clc = require('cli-color');
+
 var when = utils.when;
+var warn = clc.yellow;
 
 module.exports = function(RED) {
 
@@ -21,6 +24,8 @@ module.exports = function(RED) {
   function TelegramBotNode(n) {
     RED.nodes.createNode(this, n);
     var node = this;
+    var environment = this.context().global.environment === 'production' ? 'production' : 'development';
+    var startNode = utils.isUsedInEnvironment(RED, node.id, environment);
 
     this.botname = n.botname;
     this.store = n.store;
@@ -28,6 +33,12 @@ module.exports = function(RED) {
     this.usernames = n.usernames != null ? n.usernames.split(',') : [];
     this.polling = n.polling;
     this.parseMode = n.parseMode;
+
+    // exit if the node is not meant to be started in this environment
+    if (!startNode) {
+      console.log(warn('Telegram Bot ' + this.botname + ' will not be launched, environment is ' + environment));
+      return;
+    }
 
     if (this.credentials) {
       this.token = this.credentials.token;
