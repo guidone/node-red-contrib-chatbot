@@ -120,11 +120,13 @@ module.exports = function(RED) {
 
     RED.nodes.createNode(this, config);
     var node = this;
-    this.bot = config.bot;
-
-    this.config = RED.nodes.getNode(this.bot);
     var global = this.context().global;
+    var environment = global.environment === 'production' ? 'production' : 'development';
     var nodeGlobalKey = null;
+
+    this.bot = config.bot;
+    this.botProduction = config.botProduction;
+    this.config = RED.nodes.getNode(environment === 'production' ? this.botProduction : this.bot);
 
     if (this.config) {
       this.status({fill: 'red', shape: 'ring', text: 'disconnected'});
@@ -176,10 +178,14 @@ module.exports = function(RED) {
   function TelegramOutNode(config) {
     RED.nodes.createNode(this, config);
     var node = this;
-    this.bot = config.bot;
-    this.track = config.track;
+    var global = this.context().global;
+    var environment = global.environment === 'production' ? 'production' : 'development';
 
-    this.config = RED.nodes.getNode(this.bot);
+    this.bot = config.bot;
+    this.botProduction = config.botProduction;
+    this.track = config.track;
+    this.config = RED.nodes.getNode(environment === 'production' ? this.botProduction : this.bot);
+
     if (this.config) {
       this.status({fill: 'red', shape: 'ring', text: 'disconnected'});
       node.chat = this.config.chat;
