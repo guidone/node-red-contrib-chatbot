@@ -7,6 +7,7 @@ var clc = require('cli-color');
 
 var when = utils.when;
 var warn = clc.yellow;
+var green = clc.green;
 
 module.exports = function(RED) {
 
@@ -36,8 +37,10 @@ module.exports = function(RED) {
 
     // exit if the node is not meant to be started in this environment
     if (!startNode) {
-      console.log(warn('Telegram Bot ' + this.botname + ' will not be launched, environment is ' + environment));
+      console.log(warn('Telegram Bot ' + this.botname + ' will NOT be launched, environment is ' + environment));
       return;
+    } else {
+      console.log(green('Telegram Bot ' + this.botname + ' will be launched, environment is ' + environment));
     }
 
     if (this.credentials) {
