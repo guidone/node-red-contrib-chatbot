@@ -797,7 +797,7 @@
         value: [],
         validate: function(buttons) {
           if (buttons == null) {
-            return false;
+            return true; // allow no buttons
           }
           var valid = true;
           var idx;
