@@ -1,0 +1,85 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-recast-token', {
+    category: 'config',
+    defaults: {
+      name: {
+        value: '',
+        required: true
+      }
+    },
+    oneditprepare: function() {},
+    paletteName: 'Recast Token',
+    credentials: {
+      token: {
+        type: 'text'
+      }
+    },
+    label: function () {
+      return 'Recast.ai';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-recast-token">
+<div class="form-row">
+  <label for="node-config-input-name"><i class="icon-bookmark"></i>Name</label>
+  <input type="text" id="node-config-input-name">
+</div>
+<div class="form-row">
+  <label for="node-config-input-token">Token</label>
+  <input type="text" id="node-config-input-token">
+</div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-recast-token">
+<p>
+  Add here personal <em>Recast.ai</em> access token
+</p>
+</script>
+
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-recast', {
+    category: 'RedBot Flow',
+    color: '#FFCC66',
+    defaults: {
+      recast: {
+        value: '',
+        type: 'chatbot-recast-token',
+        required: true
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'Recast.ai',
+    icon: 'chatbot-api-ai.png',
+    label: function() {
+      return this.name || 'Recast.ai';
+    },
+    oneditsave: function() {
+
+    },
+    oneditprepare: function() {
+      var node = this;
+
+
+
+
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-recast">
+  <div class="form-row">
+    <label for="node-input-"><i class="icon-cog"></i> Token</label>
+    <input type="text" id="node-input-recast" placeholder="Api.ai access token">
+  </div>
+
+</div>
+
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-recast">
+</script>
+
+
+
