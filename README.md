@@ -8,25 +8,8 @@ With **RedBot** you can visually build a full featured chat bot for **Telegram**
 
 > Node-RED is a tool for wiring together hardware devices, APIs and online services in new and interesting ways.
 
-```
-<table>
-  <tr align="center">
-    <td>
-      <a href="https://t.me/redbotnode">
-        <img src="https://cloud.githubusercontent.com/assets/399657/21956672/a30cf206-da53-11e6-8c6c-0995cf2aef62.jpg"/>
-        <div>&nbsp; &nbsp; &nbsp; &nbsp; Twitter &nbsp; &nbsp; &nbsp;  &nbsp;</div>
-      </a>
-    </td>
-    <td>
-      <a href="https://red-bot.slack.com/">
-        <img src="https://cloud.githubusercontent.com/assets/399657/21956671/a30cbc82-da53-11e6-82d6-aaaaebc0bc93.jpg"/>
-        <div>&nbsp; &nbsp; &nbsp; Slack group &nbsp; &nbsp; &nbsp; </div>
-      </a>
-    </td>
-  </tr>
-</table>
-
-Stay up to date with the **[Telegram Channel](https://t.me/redbotnode)**
+[Join the Slack group](https://red-bot.slack.com/)
+[Join the Telegram channel](https://t.me/redbotnode)
 
 Maintaining **RedBot** is very time-consuming, if you like it, please consider:
 
