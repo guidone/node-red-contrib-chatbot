@@ -140,14 +140,8 @@ Then open your Node-RED and add a Telegram Receiver, in the configuration panel,
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-telegram-receive">
-  <p>Receive a message (text, audio, video, image, etc) from a Telegram bot.</p>
-  <p>The message is stored in <code>msg.payload</code>, this node also stores in the context flow:
-  <code>username</code>, <code>firstName</code>, <code>lastName</code>, <code>chatId</code>, <code>authorized</code>,
-  <code>transport</code> and <code>messageId</code>.
-  </p>
+  <p>Input node for Telegram.</p>
 </script>
-
-
 
 <script type="text/javascript">
   RED.nodes.registerType('chatbot-telegram-send', {
@@ -207,10 +201,7 @@ Then open your Node-RED and add a Telegram Receiver, in the configuration panel,
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-telegram-send">
-<p>
-  Send a message (text, audio, video, image, etc) from a Telegram bot. In order to create complex conversations, it
-  can track answers from the user using output pin.
-</p>
+  <p>Output node for Telegram.</p>
 </script>
 
 

@@ -27,7 +27,7 @@ module.exports = function(RED) {
       }
       const client = new recastai.request(recastNode.credentials.token, 'en');
       // exit if not message
-      if (!utils.message.isText(msg)) {
+      if (!utils.message.isMessage(msg)) {
         node.send([null, msg]);
         return;
       }
