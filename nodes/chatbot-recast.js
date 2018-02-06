@@ -1,11 +1,11 @@
 var _ = require('underscore');
 var utils = require('../lib/helpers/utils');
-const recastai = require('recastai');
+var recastai = require('recastai');
 var clc = require('cli-color');
+var moment = require('moment');
 
 var when = utils.when;
 var warn = clc.yellow;
-var green = clc.green;
 
 module.exports = function(RED) {
 
@@ -25,7 +25,7 @@ module.exports = function(RED) {
         warn('Recast.ai token is missing.');
         return;
       }
-      const client = new recastai.request(recastNode.credentials.token, 'en');
+      var client = new recastai.request(recastNode.credentials.token, 'en');
       // exit if not message
       if (!utils.message.isMessage(msg)) {
         node.send([null, msg]);
@@ -76,15 +76,9 @@ module.exports = function(RED) {
 
   RED.nodes.registerType('chatbot-recast', ChatBotRecast);
 
-
   function RecastToken(n) {
     RED.nodes.createNode(this, n);
-    var self = this;
-    //if (self.credentials != null && !_.isEmpty(self.credentials.token)) {
-      //self.apiAi = apiai(self.credentials.token);
-    //}
   }
-
 
   RED.nodes.registerType('chatbot-recast-token', RecastToken, {
     credentials: {

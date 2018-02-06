@@ -24,7 +24,6 @@
       "chatbot-analytics": "./nodes/chatbot-analytics.js",
       "chatbot-context": "./nodes/chatbot-context.js",
       "chatbot-topic": "./nodes/chatbot-topic.js",
-      "chatbot-recast": "./nodes/chatbot-recast.js",
       "chatbot-voice": "./nodes/chatbot-voice.js",
       "chatbot-language": "./nodes/chatbot-language.js",
       "chatbot-listen": "./nodes/chatbot-listen.js",

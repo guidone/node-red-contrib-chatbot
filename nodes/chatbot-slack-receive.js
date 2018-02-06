@@ -35,11 +35,12 @@ module.exports = function(RED) {
 
     // exit if the node is not meant to be started in this environment
     if (!startNode) {
+      // eslint-disable-next-line no-console
       console.log(warn('Slack Bot ' + this.botname + ' will NOT be launched, environment is ' + environment));
       return;
-    } else {
-      console.log(green('Slack Bot ' + this.botname + ' will be launched, environment is ' + environment));
     }
+    // eslint-disable-next-line no-console
+    console.log(green('Slack Bot ' + this.botname + ' will be launched, environment is ' + environment));
 
     if (this.credentials) {
       this.token = this.credentials.token;
@@ -155,7 +156,7 @@ module.exports = function(RED) {
             });
         });
       } else {
-        node.warn("no bot in config.");
+        node.warn('Missing or incomplete configuration in Slack Receiver');
       }
     } else {
       node.warn('Missing configuration in Slack Receiver');
@@ -188,10 +189,10 @@ module.exports = function(RED) {
       if (node.chat) {
         this.status({fill: 'green', shape: 'ring', text: 'connected'});
       } else {
-        node.warn("no bot in config.");
+        node.warn('Missing or incomplete configuration in Slack Receiver');
       }
     } else {
-      node.warn("no config.");
+      node.warn('Missing configuration in Slack Receiver');
     }
 
     // relay message
