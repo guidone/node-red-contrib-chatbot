@@ -44,17 +44,6 @@ describe('Chat document node', function() {
       });
   });
 
-  it('should send a local pdf document with a wrong filename parameter in upstream node Telegram', function () {
-    var msg = RED.createMessage(null, 'telegram');
-    msg.filename = __dirname + '/dummy/file-wrong.pdf';
-    RED.node.config({});
-    DocumentBlock(RED);
-    RED.node.get().emit('input', msg);
-
-    assert.include(RED.node.error(), 'File doesn\'t exist:');
-    assert.include(RED.node.error(), 'file-wrong.pdf');
-  });
-
   it('should send a document from bin a file with Telegram', function () {
     var msg = RED.createMessage(null, 'telegram');
     RED.node.config({
@@ -181,6 +170,25 @@ describe('Chat document node', function() {
         assert.equal(RED.node.message().payload.filename, 'image.png');
         assert.equal(RED.node.message().originalMessage.chat.id, 42);
       });
+  });
+
+  it('should send a local pdf document with a wrong filename parameter in upstream node Telegram', function () {
+    var msg = RED.createMessage(null, 'telegram');
+    msg.filename = __dirname + '/dummy/file-wrong.pdf';
+    RED.node.config({});
+    DocumentBlock(RED);
+    RED.node.get().emit('input', msg);
+
+    return RED.node.get().await()
+      .then(
+        function() {
+          // do nothing
+        },
+        function() {
+          assert.include(RED.node.error(), 'File doesn\'t exist:');
+          assert.include(RED.node.error(), 'file-wrong.pdf');
+        }
+      );
   });
 
 });

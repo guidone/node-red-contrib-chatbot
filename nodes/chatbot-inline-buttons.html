@@ -797,7 +797,7 @@
         value: [],
         validate: function(buttons) {
           if (buttons == null) {
-            return false;
+            return true; // allow no buttons
           }
           var valid = true;
           var idx;
@@ -1132,6 +1132,11 @@ return msg;
     color: #999999;
     line-height: 14px;
     margin-top: 5px;
+  }
+
+  .redbot-environment {
+    font-size: 12px;
+    color: #999999;
   }
 
   .redbot-form-hint code, .redbot-form-legend code {

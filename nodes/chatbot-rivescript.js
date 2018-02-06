@@ -36,6 +36,7 @@ module.exports = function(RED) {
         content = msg.payload.content;
       }
       if (_.isEmpty(content) || helpers.isCommand(content)) {
+        node.send([null, msg]);
         return;
       }
 

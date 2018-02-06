@@ -3,7 +3,11 @@ var moment = require('moment');
 var FacebookServer = require('../lib/facebook/facebook-chat');
 var ContextProviders = require('../lib/chat-platform/chat-context-factory');
 var utils = require('../lib/helpers/utils');
+var clc = require('cli-color');
+
 var when = utils.when;
+var warn = clc.yellow;
+var green = clc.green;
 
 module.exports = function(RED) {
 
@@ -21,11 +25,22 @@ module.exports = function(RED) {
   function FacebookBotNode(n) {
     RED.nodes.createNode(this, n);
     var node = this;
+    var environment = this.context().global.environment === 'production' ? 'production' : 'development';
+    var startNode = utils.isUsedInEnvironment(RED, node.id, environment);
 
     this.botname = n.botname;
     this.store = n.store;
     this.log = n.log;
     this.usernames = n.usernames != null ? n.usernames.split(',') : [];
+
+    // exit if the node is not meant to be started in this environment
+    if (!startNode) {
+      // eslint-disable-next-line no-console
+      console.log(warn('Facebook Messenger Bot ' + this.botname + ' will NOT be launched, environment is ' + environment));
+      return;
+    }
+    // eslint-disable-next-line no-console
+    console.log(green('Facebook Messenger Bot ' + this.botname + ' will be launched, environment is ' + environment));
 
     if (this.credentials) {
       this.token = this.credentials.token;
@@ -112,11 +127,13 @@ module.exports = function(RED) {
 
     RED.nodes.createNode(this, config);
     var node = this;
-    this.bot = config.bot;
-
-    this.config = RED.nodes.getNode(this.bot);
     var global = this.context().global;
+    var environment = global.environment === 'production' ? 'production' : 'development';
     var nodeGlobalKey = null;
+
+    this.bot = config.bot;
+    this.botProduction = config.botProduction;
+    this.config = RED.nodes.getNode(environment === 'production' ? this.botProduction : this.bot);
 
     if (this.config) {
       this.status({fill: 'red', shape: 'ring', text: 'disconnected'});
@@ -148,7 +165,7 @@ module.exports = function(RED) {
             });
         });
       } else {
-        node.warn("no bot in config.");
+        node.warn('Missing or incomplete configuration in Facebook Receiver');
       }
     } else {
       node.warn('Missing configuration in Facebook Receiver');
@@ -167,8 +184,13 @@ module.exports = function(RED) {
   function FacebookOutNode(config) {
     RED.nodes.createNode(this, config);
     var node = this;
+    var global = this.context().global;
+    var environment = global.environment === 'production' ? 'production' : 'development';
+
     this.bot = config.bot;
+    this.botProduction = config.botProduction;
     this.track = config.track;
+    this.config = RED.nodes.getNode(environment === 'production' ? this.botProduction : this.bot);
 
     this.config = RED.nodes.getNode(this.bot);
     if (this.config) {
@@ -177,10 +199,10 @@ module.exports = function(RED) {
       if (node.chat) {
         this.status({fill: 'green', shape: 'ring', text: 'connected'});
       } else {
-        node.warn("no bot in config.");
+        node.warn('Missing or incomplete configuration in Facebook Receiver');
       }
     } else {
-      node.warn("no config.");
+      node.warn('Missing configuration in Facebook Receiver');
     }
 
     // relay message

@@ -85,7 +85,12 @@
         value: '',
         type: 'chatbot-slack-node',
         required: true
-      }
+      },
+      botProduction: {
+        value: "",
+        type: 'chatbot-slack-node',
+        required: false
+      },
     },
     inputs: 0,
     outputs: 1,
@@ -98,19 +103,21 @@
 </script>
 
 <script type="text/x-red" data-template-name="chatbot-slack-receive">
-<div class="form-row">
-    <label for="node-input-bot"><i class="icon-bookmark"></i> Bot</label>
+  <div class="form-row">
+    <label for="node-input-bot" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(development)</span></label>
     <input type="text" id="node-input-bot" placeholder="Bot">
-</div>
+  </div>
+  <div class="form-row" style="margin-top:25px;">
+    <label for="node-input-botProduction" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(production)</span></label>
+    <input type="text" id="node-input-botProduction" placeholder="Bot">
+  </div>
+  <div class="redbot-form-hint">
+    Bot for <strong>production</strong> will be launched only if the global variable <em>"environment"</em> in <em>settings.js</em> is set to <em>"production"</em>, otherwise will be used the configuration for <strong>development</strong>.
+  </div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-slack-receive">
-    <p>Receive a message (text, audio, video, image, etc) from a Slack bot.</p>
-    <p>The message is stored in <code>msg.payload</code>, this node also stores in the context flow:
-    <code>username</code>, <code>firstName</code>, <code>lastName</code>, <code>chatId</code>, <code>authorized</code>,
-    <code>transport</code> and <code>messageId</code>.
-    </p>
-
+  <p>Input node for Slack.</p>
 </script>
 
 <script type="text/javascript">
@@ -122,6 +129,11 @@
         value: '',
         type: 'chatbot-slack-node',
         required: true
+      },
+      botProduction: {
+        value: "",
+        type: 'chatbot-slack-node',
+        required: false
       },
       track: {
         value: false
@@ -145,21 +157,28 @@
 </script>
 
 <script type="text/x-red" data-template-name="chatbot-slack-send">
-<div class="form-row">
-  <label for="node-input-bot">Bot</label>
-  <input type="text" id="node-input-bot" placeholder="Bot">
-</div>
-<div class="form-row">
-  <label for="node-input-track">Track</label>
-  <input type="checkbox" value="true" id="node-input-track">
-  <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
-  Track response of the user for this message, any further answer will be redirect to the output pin.
+ <div class="form-row">
+    <label for="node-input-bot" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(development)</span></label>
+    <input type="text" id="node-input-bot" placeholder="Bot">
   </div>
-</div>
+  <div class="form-row" style="margin-top:25px;">
+    <label for="node-input-botProduction" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(production)</span></label>
+    <input type="text" id="node-input-botProduction" placeholder="Bot">
+  </div>
+  <div class="redbot-form-hint">
+    Bot for <strong>production</strong> will be launched only if the global variable <em>"environment"</em> in <em>settings.js</em> is set to <em>"production"</em>, otherwise will be used the configuration for <strong>development</strong>.
+  </div>
+  <div class="form-row" style="margin-top:25px;">
+    <label for="node-input-track">Track</label>
+    <input type="checkbox" value="true" id="node-input-track">
+    <div class="redbot-form-hint">
+    Track response of the user for this message, any further answer will be redirect to the output pin.
+    </div>
+  </div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-slack-send">
-
+  <p>Output node for Slack.</p>
 </script>
 
 
