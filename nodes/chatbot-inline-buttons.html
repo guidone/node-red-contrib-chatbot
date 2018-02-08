@@ -152,6 +152,8 @@
       return false;
     }
     switch(rule.type) {
+      case 'environment':
+        return $.RedBot.validate.notEmpty(rule.environment);
       case 'isNotTopic':
       case 'isTopic':
         return $.RedBot.validate.notEmpty(rule.topic);

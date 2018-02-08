@@ -43,6 +43,9 @@
           if (type === 'command') {
             obj.command = rule.find('input[name=command]').val();
           }
+          if (type === 'environment') {
+            obj.environment = rule.find('select[name=environment]').val();
+          }
           node.rules.push(obj);
         }
       });
@@ -61,6 +64,7 @@
               + '<option value="">Select rule</option>'
               + '<option value="command">Message is command ...</option>'
               + '<option value="anyCommand">Message is a command</option>'
+              + '<option value="environment">Environment is ...</option>'
               + '<option value="outbound">Message is outbound</option>'
               + '<option value="inbound">Message is inbound</option>'
               + '<option value="isTopicEmpty">Topic is not defined</option>'
@@ -73,12 +77,18 @@
             .change(function() {
               var type = $('select[name=type]', container).val();
               container.find('input').hide();
+              container.find('select.environment').hide();
               container.find('.' + type).show();
             });
           row
             .append('<input class="hasNotVariable hasVariable" style="display:none;width:50%;margin-left:10px;" type="text" name="variable" placeholder="Context variable"/>')
             .append('<input class="command" style="display:none;width:50%;margin-left:10px;" type="text" name="command" placeholder="/command"/>')
-            .append('<input class="isNotTopic isTopic" style="display:none;width:40%;margin-left:10px;" type="text" name="topic" placeholder="Topic"/>');
+            .append('<input class="isNotTopic isTopic" style="display:none;width:40%;margin-left:10px;" type="text" name="topic" placeholder="Topic"/>')
+            .append('<select class="environment" name="environment" style="display:none;width:40%;margin-left:10px;">'
+              + '<option value="">Select environment</option>'
+              + '<option value="production">production</option>'
+              + '<option value="development">development</option>'
+              + '</select>');
           var finalspan = $('<span/>',{style:"float: right;margin-top: 6px;"}).appendTo(row);
           finalspan.append('&nbsp;&#8594; <span class="node-input-rule-index">' + (i + 1) + '</span>');
 
@@ -86,6 +96,7 @@
           if (rule.type != null) {
             $('select[name=type]', container).val(rule.type);
             container.find('input').hide();
+            container.find('select.environment').hide();
             container.find('.' + rule.type).show();
           }
           if (rule.variable != null) {
@@ -96,6 +107,9 @@
           }
           if (rule.command != null) {
             $('input[name=command]', container).val(rule.command);
+          }
+          if (rule.environment != null) {
+            $('select[name=environment]', container).val(rule.environment);
           }
         },
         removeItem: function(opt) {
@@ -136,6 +150,8 @@
         return 'If no rule applies';
       } else if (rule.type === 'catchAll') {
         return 'If no rule applies';
+      } else if (rule.type === 'environment') {
+        return 'Environment is "' + ($.RedBot.validate.notEmpty(rule.environment) ? rule.environment : '...') + '"';
       } else if (rule.type === 'command') {
         return 'Message is command "' + ($.RedBot.validate.notEmpty(rule.command) ? rule.command : '...') + '"';
       } else if (rule.type === 'anyCommand') {
