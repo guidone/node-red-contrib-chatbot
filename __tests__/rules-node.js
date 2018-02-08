@@ -309,7 +309,7 @@ describe('Chat rules node', function() {
       });
   });
 
-  it('should match goes through the second if the message is not the a command', function() {
+  it('should go through the second if the message is not the a command', function() {
     var msg = RED.createMessage({
       content: 'a simple message'
     });
@@ -321,6 +321,50 @@ describe('Chat rules node', function() {
     });
     RulesBlock(RED);
     RED.node.get().emit('input', msg);
+
+    return RED.node.get().await()
+      .then(function() {
+        assert.isNull(RED.node.message(0));
+        assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
+      });
+  });
+
+  it('should go through the first if is production env', function() {
+    var msg = RED.createMessage({
+      content: 'a simple message'
+    }, 'telegram', { environment: 'production'});
+    RED.node.config({
+      rules: [
+        { type: 'environment', environment: 'production' },
+        { type: 'environment', environment: 'development' },
+        { type: 'catchAll' }
+      ]
+    });
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+
+    return RED.node.get().await()
+      .then(function() {
+        assert.isNull(RED.node.message(1));
+        assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
+      });
+  });
+
+  it('should go through the first if is development env', function() {
+    var msg = RED.createMessage({
+      content: 'a simple message'
+    }, 'telegram', { environment: 'development'});
+    RED.node.config({
+      rules: [
+        { type: 'environment', environment: 'production' },
+        { type: 'environment', environment: 'development' },
+        { type: 'catchAll' }
+      ]
+    });
+
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+
 
     return RED.node.get().await()
       .then(function() {

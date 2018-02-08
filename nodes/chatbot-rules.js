@@ -5,6 +5,18 @@ var when = utils.when;
 
 var Types = {
 
+  environment: function(rule, message, global) {
+    var environment = global != null && global.environment === 'production' ? 'production' : 'development';
+    //console.log('actual:', environment, rule.environment);
+    return new Promise(function(resolve, reject) {
+      if (environment === rule.environment) {
+        resolve(rule);
+      } else {
+        reject();
+      }
+    });
+  },
+
   inbound: function(rule, message) {
     return new Promise(function(resolve, reject) {
       if (message.payload != null && message.payload.inbound === true) {
@@ -152,9 +164,10 @@ var Types = {
  * @deferred
  * @param {Array} rules
  * @param {Object} message
+ * @param {Object} RED
  * @param {Number} [current=1]
  */
-function executeRules(rules, message, current) {
+function executeRules(rules, message, global, current) {
 
   current = current || 1;
 
@@ -172,7 +185,7 @@ function executeRules(rules, message, current) {
       reject();
     }
     // check if the first rule applies
-    Types[first.type](first, message)
+    Types[first.type](first, message, global)
       .then(
         function () {
           var rule = _.clone(first);
@@ -184,7 +197,7 @@ function executeRules(rules, message, current) {
           if (_.isEmpty(nextRules)) {
             reject();
           } else {
-            executeRules(nextRules, message, current + 1)
+            executeRules(nextRules, message, global, current + 1)
               .then(
                 function(rule) {
                   resolve(rule);
@@ -204,11 +217,12 @@ module.exports = function(RED) {
   function ChatBotRules(config) {
     RED.nodes.createNode(this, config);
     var node = this;
+    var global = this.context().global;
     node.rules = config.rules;
 
     this.on('input', function(msg) {
       var rules = utils.extractValue('arrayOfObject', 'rules', node, msg, true);
-      executeRules(rules, msg)
+      executeRules(rules, msg, global)
         .then(
           function(rule) {
             var result = new Array(rules.length);
