@@ -59,7 +59,8 @@
           row
             .append('<select name="type" style="width:40%">'
               + '<option value="">Select rule</option>'
-              + '<option value="command">Message is command</option>'
+              + '<option value="command">Message is command ...</option>'
+              + '<option value="anyCommand">Message is a command</option>'
               + '<option value="outbound">Message is outbound</option>'
               + '<option value="inbound">Message is inbound</option>'
               + '<option value="isTopicEmpty">Topic is not defined</option>'
@@ -127,21 +128,28 @@
       $('#node-input-buttons-container').editableList('height', height);
     },
     outputLabels: function(index) {
+      if (this.rules == null) {
+        return;
+      }
       var rule = this.rules[index];
       if (rule.type === 'catchAll') {
         return 'If no rule applies';
-      } else if (rule.type === 'inbound') {
-        return 'Message is inbound';
-      } if (rule.type === 'outbound') {
+      } else if (rule.type === 'catchAll') {
+        return 'If no rule applies';
+      } else if (rule.type === 'command') {
+        return 'Message is command "' + ($.RedBot.validate.notEmpty(rule.command) ? rule.command : '...') + '"';
+      } else if (rule.type === 'anyCommand') {
+        return 'Message is a command';
+      } else if (rule.type === 'outbound') {
         return 'Message is outbound';
       } else if (rule.type === 'isTopicEmpty') {
         return 'Topic is not defined';
       } else if (rule.type === 'isNotTopic') {
-        return 'Topic is not "' + (rule.topic != null && rule.topic !== '' ? rule.topic : '...') + '"';
+        return 'Topic is not "' + ($.RedBot.validate.notEmpty(rule.topic) ? rule.topic : '...') + '"';
       } else if (rule.type === 'isTopic') {
-        return 'Topic is "' + (rule.topic != null && rule.topic !== '' ? rule.topic : '...') + '"';
+        return 'Topic is "' + ($.RedBot.validate.notEmpty(rule.topic) ? rule.topic : '...') + '"';
       } else if (rule.type === 'hasNotVariable') {
-        return 'Variable "' + (rule.variable != null && rule.variable !== '' ? rule.variable : '...') + '" is not defined';
+        return 'Variable "' + ($.RedBot.validate.notEmpty(rule.variable) ? rule.variable : '...') + '" is not defined';
       }
     }
   });
