@@ -1,4 +1,5 @@
 var utils = require('../lib/helpers/utils');
+var helpers = require('../lib/helpers/regexps');
 var _ = require('underscore');
 var when = utils.when;
 
@@ -7,6 +8,16 @@ var Types = {
   inbound: function(rule, message) {
     return new Promise(function(resolve, reject) {
       if (message.payload != null && message.payload.inbound === true) {
+        resolve(rule);
+      } else {
+        reject();
+      }
+    });
+  },
+
+  anyCommand: function(rule, message) {
+    return new Promise(function(resolve, reject) {
+      if (message.payload != null && _.isString(message.payload.content) && helpers.isCommand(message.payload.content)) {
         resolve(rule);
       } else {
         reject();

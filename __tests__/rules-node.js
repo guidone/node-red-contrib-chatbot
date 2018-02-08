@@ -289,5 +289,45 @@ describe('Chat rules node', function() {
       });
   });
 
+  it('should match goes through the first if the message is any command', function() {
+    var msg = RED.createMessage({
+      content: '/my_command'
+    });
+    RED.node.config({
+      rules: [
+        { type: 'anyCommand' },
+        { type: 'catchAll' }
+      ]
+    });
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+
+    return RED.node.get().await()
+      .then(function() {
+        assert.isNull(RED.node.message(1));
+        assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
+      });
+  });
+
+  it('should match goes through the second if the message is not the a command', function() {
+    var msg = RED.createMessage({
+      content: 'a simple message'
+    });
+    RED.node.config({
+      rules: [
+        { type: 'anyCommand' },
+        { type: 'catchAll' }
+      ]
+    });
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+
+    return RED.node.get().await()
+      .then(function() {
+        assert.isNull(RED.node.message(0));
+        assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
+      });
+  });
+
 });
 
