@@ -24,7 +24,8 @@ module.exports = function(RED) {
       when(task)
         .then(function(jsonContext) {
           var chatLog = new ChatLog(jsonContext);
-          node.send(chatLog.message(msg));
+          msg.payload = chatLog.message(msg);
+          node.send(msg);
         });
     });
   }
