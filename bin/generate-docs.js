@@ -50,7 +50,9 @@ var mappings = {
   'Switch-node.md': 'chatbot-switch.html',
   'Inline-Query-node.md': 'chatbot-inline-query.html',
   'Dialog-node.md': 'chatbot-dialog.html',
-  'Rules-node.md': 'chatbot-rules.html'
+  'Rules-node.md': 'chatbot-rules.html',
+  'Recast-node': 'chatbot-recast.html|chatbot-recast',
+  'Recast-token-node': 'chatbot-recast.html|chatbot-recast-token'
 };
 
 function collectImages(html) {
