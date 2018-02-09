@@ -21,7 +21,7 @@ describe('Chat RiveScript node', function() {
       });
   });
 
-  it('should not answer to useless sentence', function() {
+  it('should not answer to useless sentence, pass thru message', function() {
     var msg = RED.createMessage({content: 'I have an headache'});
     RED.node.clear();
     RED.node.config({
@@ -32,7 +32,7 @@ describe('Chat RiveScript node', function() {
     return RED.node.get().await()
       .then(function () {
         assert.equal(RED.node.message(), null);
-        assert.equal(RED.node.message(1).payload, 'ERR: No Reply Matched');
+        assert.equal(RED.node.message(1).payload.content, 'I have an headache');
       });
   });
 
