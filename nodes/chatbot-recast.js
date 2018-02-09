@@ -19,13 +19,14 @@ module.exports = function(RED) {
 
       var chatContext = msg.chat();
       var recastNode = RED.nodes.getNode(node.recast);
+      var language = utils.extractValue('string', 'language', node, msg, false);
 
       // exit if empty credentials
       if (recastNode == null || recastNode.credentials == null || _.isEmpty(recastNode.credentials.token)) {
         warn('Recast.ai token is missing.');
         return;
       }
-      var client = new recastai.request(recastNode.credentials.token, 'en');
+      var client = new recastai.request(recastNode.credentials.token, language.toLowerCase());
       // exit if not message
       if (!utils.message.isMessage(msg)) {
         node.send([null, msg]);
