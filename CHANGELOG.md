@@ -1,3 +1,7 @@
+* **0.9.20** - Fixed `Log node` payload, fixed second pin output of `Rivescript node`
+* **0.9.19** - Added rule 'environment' to `Rules node`
+* **0.9.18** - Added rule 'any command' to `Rules node`
+* **0.9.17** - Support for Node-RED projects. Telegram, Slack and Facebook nodes have multiple configuration for production and development, now the same flow runs in different environments. Deprecated `API.ai node`
 * **0.9.15** - Added `Rules node`, fixed messages being broadcasted multiple times, fixed `Conversation node` for Facebook
 * **0.9.14** - Fixed startup error on Facebook Messenger 
 * **0.9.13** - Fixed dropdown "parse mode" for Telegram
