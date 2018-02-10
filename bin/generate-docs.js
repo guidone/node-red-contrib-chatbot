@@ -39,7 +39,6 @@ var mappings = {
   'Log-node.md': 'chatbot-log.html',
   'Listen-node.md': 'chatbot-listen.html',
   'Context-node.md': 'chatbot-context.html',
-  'API.ai-node.md': 'chatbot-apiai.html',
   'Sticker-node.md': 'chatbot-sticker.html',
   'Waiting-node.md': 'chatbot-waiting.html',
   'Listen-Lexicon-node.md': 'chatbot-listen-lexicon.html',
@@ -51,8 +50,8 @@ var mappings = {
   'Inline-Query-node.md': 'chatbot-inline-query.html',
   'Dialog-node.md': 'chatbot-dialog.html',
   'Rules-node.md': 'chatbot-rules.html',
-  'Recast-node': 'chatbot-recast.html|chatbot-recast',
-  'Recast-token-node': 'chatbot-recast.html|chatbot-recast-token'
+  'Recast-node.md': 'chatbot-recast.html|chatbot-recast',
+  'Recast-token-node.md': 'chatbot-recast.html|chatbot-recast-token'
 };
 
 function collectImages(html) {
