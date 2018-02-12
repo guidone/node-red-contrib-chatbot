@@ -15,6 +15,8 @@ Maintaining **RedBot** is very time-consuming, if you like it, please consider:
 <a target="blank" href="https://www.paypal.me/guidone"><img src="https://img.shields.io/badge/Donate-PayPal-blue.svg"/></a>
 <a target="blank" href="https://blockchain.info/payment_request?address=17tWsZgb8CsCVZ4ZWEqRz4ekz7KjUPVagz"><img src="https://img.shields.io/badge/Donate-Bitcoin-green.svg"/></a>
 
+![RedBot](https://github.com/guidone/node-red-contrib-chatbot/blob/master/docs/images/node-red-screenshot.png)
+
 ## Documentation
 
 1. [RedBot nodes](https://github.com/guidone/node-red-contrib-chatbot/wiki/RedBot-nodes)
