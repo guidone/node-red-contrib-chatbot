@@ -36,7 +36,7 @@
 
 <script type="text/javascript">
   RED.nodes.registerType('chatbot-dialogflow', {
-    category: 'RedBot Flow',
+    category: 'RedBot Parsers',
     color: '#FFCC66',
     defaults: {
       dialogflow: {
@@ -47,6 +47,9 @@
       language: {
         value: 'en',
         required: true
+      },
+      debug: {
+        value: false
       }
     },
     inputs: 1,
@@ -62,7 +65,7 @@
 <script type="text/x-red" data-template-name="chatbot-dialogflow">
   <div class="form-row">
     <label for="node-input-recast">Token</label>
-    <input type="text" id="node-input-dialogflow" placeholder="Recast.ai access token">
+    <input type="text" id="node-input-dialogflow" placeholder="Dialogflow.ai access token">
   </div>
   <div class="form-row">
     <label for="node-input-">Language</label>
@@ -141,7 +144,14 @@
       <option value="XH">Xhosa</option>
     </select>
   </div>
-</div>
+  <div class="form-row">
+    <label for="node-input-debug">Debug</label>
+    <input type="checkbox" value="true" id="node-input-debug">
+    <span class="redbot-form-legend">
+      Show debug information from Dialogflow.ai
+    </span>
+  </div>
+
 
 </script>
 

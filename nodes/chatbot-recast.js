@@ -1,11 +1,10 @@
 var _ = require('underscore');
 var utils = require('../lib/helpers/utils');
 var recastai = require('recastai');
-var clc = require('cli-color');
 var moment = require('moment');
+var lcd = require('../lib/helpers/lcd');
 
 var when = utils.when;
-var warn = clc.yellow;
 
 module.exports = function(RED) {
 
@@ -14,16 +13,18 @@ module.exports = function(RED) {
     var node = this;
     node.recast = config.recast;
     node.language = config.language;
+    node.debug = config.debug;
 
     this.on('input', function (msg) {
 
       var chatContext = msg.chat();
       var recastNode = RED.nodes.getNode(node.recast);
       var language = utils.extractValue('string', 'language', node, msg, false);
+      var debug = utils.extractValue('boolean', 'debug', node, msg, false);
 
       // exit if empty credentials
       if (recastNode == null || recastNode.credentials == null || _.isEmpty(recastNode.credentials.token)) {
-        warn('Recast.ai token is missing.');
+        lcd.warn('Recast.ai token is missing.');
         return;
       }
       var client = new recastai.request(recastNode.credentials.token, language.toLowerCase());
@@ -32,44 +33,48 @@ module.exports = function(RED) {
         node.send([null, msg]);
         return;
       }
+
+      var variables = null;
+      var intent = null;
+
       // call recast
       client.analyseText(msg.payload.content)
         .then(function(res) {
 
           if (res.intent()) {
-            var task = when(true);
+            //var task = when(true);
             // evaluate returned entities
-            var entities = {};
+            var intent = res.intent().slug;
+            var variables = {};
             _(res.entities).each(function(value, key) {
               if (_.isArray(value) && !_.isEmpty(value)) {
                 if (key === 'number') {
-                  entities[key] = value[0].scalar;
+                  variables[key] = value[0].scalar;
                 } else if (key === 'datetime') {
-                  entities[key] = moment(value[0].iso);
+                  variables[key] = moment(value[0].iso);
                 } else {
-                  entities[key] = value[0].raw;
+                  variables[key] = value[0].raw;
                 }
               }
             });
-            // store the topic
-            task = task.then(function() {
-              return when(chatContext.set('topic', res.intent().slug));
-            });
-            // pass thru
-            task.then(
-              function() {
-                msg.payload = entities;
-                node.send([msg, null]);
-              },
-              function(e) {
-                node.error(e);
-              }
-            );
+            // store new topic
+            return when(chatContext.set('topic', intent));
           } else {
-            // if didn't matched any intent
+            // if didn't matched any intent, relay to 2nd output and stop here
             node.send([null, msg]);
           }
-        }, function(e) {
+        })
+        .then(function() {
+          msg.payload = {
+            variables: variables,
+            intent: intent
+          };
+          if (debug) {
+            lcd.node(msg.payload, { node: node, title: 'Recast.ai' });
+          }
+          node.send([msg, null]);
+        })
+        .catch(function(e) {
           node.error(e);
         });
     });
