@@ -1,14 +1,9 @@
 var _ = require('underscore');
 var utils = require('../lib/helpers/utils');
-var request = require('request').defaults({ encoding: null });
-var clc = require('cli-color');
-var moment = require('moment');
-
-const dialogflow = require('dialogflow');
-
+var lcd = require('../lib/helpers/lcd');
 
 var when = utils.when;
-var warn = clc.yellow;
+
 
 module.exports = function(RED) {
 
@@ -17,19 +12,20 @@ module.exports = function(RED) {
     var node = this;
     node.dialogflow = config.dialogflow;
     node.language = config.language;
+    node.debug = config.debug;
 
     this.on('input', function (msg) {
 
       var chatContext = msg.chat();
       var dialogFlowNode = RED.nodes.getNode(node.dialogflow);
       var language = utils.extractValue('string', 'language', node, msg, false);
+      var debug = utils.extractValue('boolean', 'debug', node, msg, false);
 
-      //console.log('dialogFlowNode', dialogFlowNode);
       // exit if empty credentials
-      /*if (recastNode == null || recastNode.credentials == null || _.isEmpty(recastNode.credentials.token)) {
-        warn('Recast.ai token is missing.');
+      if (dialogFlowNode == null || dialogFlowNode.credentials == null || _.isEmpty(dialogFlowNode.credentials.token)) {
+        lcd.warn('Dialogflow.ai token is missing.');
         return;
-      }*/
+      }
 
       var chatId = utils.getChatId(msg);
       //var sessionPath = sessionClient.sessionPath('guidone', chatId);
@@ -42,23 +38,24 @@ module.exports = function(RED) {
       var requestUrl = 'https://api.dialogflow.com/v1/query?'
         + 'v=20170712'
         + '&query=' + encodeURIComponent(msg.payload.content)
-        + '&lang=en'
+        + '&lang=' + language.toLowerCase()
         + '&resetContexts=true'
         + '&sessionId=' + chatId
         + '&timezone=CET';
-
-      request({
+      var dialogFlow = {
         method: 'GET',
         url: requestUrl,
         json: true,
         headers: {
           'Authorization': 'Bearer ' + dialogFlowNode.credentials.token
         }
-      }, function(error, response, body) {
+      };
+      var intent = null;
+      var variables = null;
 
-        if (error) {
-          node.error(error);
-        } else {
+      utils.request(dialogFlow)
+        .then(
+          function(body) {
 
           if (body.result != null && body.result.metadata != null && body.result.metadata.intentName != null) {
             // test if no match
@@ -66,8 +63,8 @@ module.exports = function(RED) {
               // if didn't matched any intent
               node.send([null, msg]);
             } else {
-              var intent = body.result.metadata.intentName;
-              var variables = body.result.parameters;
+              intent = body.result.metadata.intentName;
+              variables = body.result.parameters;
 
               // remove empty vars
               _(variables).each(function(value, key) {
@@ -76,28 +73,23 @@ module.exports = function(RED) {
                 }
               });
 
-              console.log('++++ intent', intent);
-              console.log('++++ variables', variables);
-
-              when(chatContext.set('topic', intent))
-                .then(
-                  function() {
-                    msg.payload = {
-                      intent: intent,
-                      variables: variables
-                    };
-                    node.send([msg, null]);
-                  },
-                  function(error) {
-                    node.error(error);
-                  }
-                );
+              return when(chatContext.set('topic', intent));
             }
-          } else {
-            node.error(error);
           }
-        }
-      });
+        })
+        .then(function() {
+          msg.payload = {
+            intent: intent,
+            variables: variables
+          };
+          if (debug) {
+            lcd.node(msg.payload, { node: node, title: 'Dialogflow.ai' });
+          }
+          node.send([msg, null]);
+        })
+        .catch(function(error) {
+          node.error(error);
+        });
     });
   }
 

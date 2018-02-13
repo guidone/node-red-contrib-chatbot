@@ -38,7 +38,7 @@
 
 <script type="text/javascript">
   RED.nodes.registerType('chatbot-recast', {
-    category: 'RedBot Flow',
+    category: 'RedBot Parsers',
     color: '#FFCC66',
     defaults: {
       recast: {
@@ -49,6 +49,9 @@
       language: {
         value: 'en',
         required: true
+      },
+      default: {
+        value: false
       }
     },
     inputs: 1,
@@ -143,7 +146,14 @@
       <option value="XH">Xhosa</option>
     </select>
   </div>
-</div>
+  <div class="form-row">
+    <label for="node-input-debug">Debug</label>
+    <input type="checkbox" value="true" id="node-input-debug">
+    <span class="redbot-form-legend">
+      Show debug information from Recast.ai
+    </span>
+  </div>
+
 
 </script>
 
