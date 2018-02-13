@@ -4,7 +4,6 @@ var lcd = require('../lib/helpers/lcd');
 
 var when = utils.when;
 
-
 module.exports = function(RED) {
 
   function ChatBotDialogflow(config) {
@@ -20,6 +19,7 @@ module.exports = function(RED) {
       var dialogFlowNode = RED.nodes.getNode(node.dialogflow);
       var language = utils.extractValue('string', 'language', node, msg, false);
       var debug = utils.extractValue('boolean', 'debug', node, msg, false);
+      var chatId = utils.getChatId(msg);
 
       // exit if empty credentials
       if (dialogFlowNode == null || dialogFlowNode.credentials == null || _.isEmpty(dialogFlowNode.credentials.token)) {
@@ -27,8 +27,6 @@ module.exports = function(RED) {
         return;
       }
 
-      var chatId = utils.getChatId(msg);
-      //var sessionPath = sessionClient.sessionPath('guidone', chatId);
       // exit if not message
       if (!utils.message.isMessage(msg)) {
         node.send([null, msg]);
@@ -52,6 +50,7 @@ module.exports = function(RED) {
       };
       var intent = null;
       var variables = null;
+      var answer = null;
 
       utils.request(dialogFlow)
         .then(
@@ -65,6 +64,7 @@ module.exports = function(RED) {
             } else {
               intent = body.result.metadata.intentName;
               variables = body.result.parameters;
+              answer = body.result.fulfillment != null ? body.result.fulfillment.speech : null;
 
               // remove empty vars
               _(variables).each(function(value, key) {
@@ -80,9 +80,10 @@ module.exports = function(RED) {
         .then(function() {
           msg.payload = {
             intent: intent,
-            variables: variables
+            variables: variables,
+            answer: answer
           };
-          if (debug) {
+          if (debug)  {
             lcd.node(msg.payload, { node: node, title: 'Dialogflow.ai' });
           }
           node.send([msg, null]);
