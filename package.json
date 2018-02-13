@@ -60,7 +60,8 @@
       "chatbot-switch": "./nodes/chatbot-switch.js",
       "chatbot-dialog": "./nodes/chatbot-dialog.js",
       "chatbot-rules": "./nodes/chatbot-rules.js",
-      "chatbot-recast": "./nodes/chatbot-recast.js"
+      "chatbot-recast": "./nodes/chatbot-recast.js",
+      "chatbot-dialogflow": "./nodes/chatbot-dialogflow.js"
     }
   },
   "maintainers": [
