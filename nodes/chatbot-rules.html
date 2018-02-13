@@ -37,7 +37,7 @@
           if (type === 'hasNotVariable' || type === 'hasVariable') {
             obj.variable = rule.find('input[name=variable]').val();
           }
-          if (type === 'isNotTopic' || type === 'isTopic') {
+          if (type === 'isNotTopic' || type === 'isTopic' || type === 'topicIncludes') {
             obj.topic = rule.find('input[name=topic]').val();
           }
           if (type === 'command') {
@@ -70,6 +70,7 @@
               + '<option value="isTopicEmpty">Topic is not defined</option>'
               + '<option value="isNotTopic">Topic is not ...</option>'
               + '<option value="isTopic">Topic is ...</option>'
+              + '<option value="topicIncludes">Topic includes ...</option>'
               + '<option value="hasNotVariable">Variable is not defined ...</option>'
               + '<option value="hasVariable">Variable is defined ...</option>'
               + '<option value="catchAll">If nothing of above applies</option>'
@@ -83,7 +84,7 @@
           row
             .append('<input class="hasNotVariable hasVariable" style="display:none;width:50%;margin-left:10px;" type="text" name="variable" placeholder="Context variable"/>')
             .append('<input class="command" style="display:none;width:50%;margin-left:10px;" type="text" name="command" placeholder="/command"/>')
-            .append('<input class="isNotTopic isTopic" style="display:none;width:40%;margin-left:10px;" type="text" name="topic" placeholder="Topic"/>')
+            .append('<input class="isNotTopic isTopic topicIncludes" style="display:none;width:40%;margin-left:10px;" type="text" name="topic" placeholder="Topic"/>')
             .append('<select class="environment" name="environment" style="display:none;width:40%;margin-left:10px;">'
               + '<option value="">Select environment</option>'
               + '<option value="production">production</option>'
@@ -160,6 +161,8 @@
         return 'Message is outbound';
       } else if (rule.type === 'isTopicEmpty') {
         return 'Topic is not defined';
+      } else if (rule.type === 'topicIncludes') {
+        return 'Topic includes "' + ($.RedBot.validate.notEmpty(rule.topic) ? rule.topic : '...') + '"';
       } else if (rule.type === 'isNotTopic') {
         return 'Topic is not "' + ($.RedBot.validate.notEmpty(rule.topic) ? rule.topic : '...') + '"';
       } else if (rule.type === 'isTopic') {

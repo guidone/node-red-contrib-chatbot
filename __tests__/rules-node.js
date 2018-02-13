@@ -157,6 +157,45 @@ describe('Chat rules node', function() {
       });
   });
 
+
+  it('should match goes through the first if the namespace.my_topic contains namespace.', function() {
+    var msg = RED.createMessage(null);
+    RED.node.config({
+      rules: [
+        { type: 'topicIncludes', topic: 'namespace.' },
+        { type: 'catchAll' }
+      ]
+    });
+    RulesBlock(RED);
+    msg.chat().set({ topic: 'namespace.my_topic' });
+    RED.node.get().emit('input', msg);
+
+    return RED.node.get().await()
+      .then(function() {
+        assert.isNull(RED.node.message(1));
+        assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
+      });
+  });
+
+  it('should match goes through the second if the namespace.my_topic doesn\'t contain another_namespace.', function() {
+    var msg = RED.createMessage(null);
+    RED.node.config({
+      rules: [
+        { type: 'topicIncludes', topic: 'another_namespace.' },
+        { type: 'catchAll' }
+      ]
+    });
+    RulesBlock(RED);
+    msg.chat().set({ topic: 'namespace.my_topic' });
+    RED.node.get().emit('input', msg);
+
+    return RED.node.get().await()
+      .then(function() {
+        assert.isNull(RED.node.message(0));
+        assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
+      });
+  });
+
   it('should match goes through the first if the message is inbound', function() {
     var msg = RED.createMessage({inbound: true});
     RED.node.config({
@@ -364,7 +403,6 @@ describe('Chat rules node', function() {
 
     RulesBlock(RED);
     RED.node.get().emit('input', msg);
-
 
     return RED.node.get().await()
       .then(function() {
