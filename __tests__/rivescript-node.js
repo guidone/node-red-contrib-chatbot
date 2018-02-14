@@ -33,6 +33,8 @@ describe('Chat RiveScript node', function() {
       .then(function () {
         assert.equal(RED.node.message(), null);
         assert.equal(RED.node.message(1).payload.content, 'I have an headache');
+        assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
+        assert.equal(RED.node.message(1).originalMessage.transport, 'telegram');
       });
   });
 
