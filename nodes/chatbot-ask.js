@@ -1,4 +1,3 @@
-var _ = require('underscore');
 var utils = require('../lib/helpers/utils');
 var MessageTemplate = require('../lib/message-template-async');
 var emoji = require('node-emoji');
@@ -8,7 +7,7 @@ module.exports = function(RED) {
   function ChatBotAsk(config) {
     RED.nodes.createNode(this, config);
     var node = this;
-    this.buttons = config.answers; // keep for retrocompatibility
+    this.buttons = config.buttons;
     this.message = config.message;
     this.inline = config.inline;
     this.transports = ['telegram'];

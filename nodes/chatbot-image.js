@@ -1,5 +1,5 @@
 var Path = require('path');
-var sanitize = require("sanitize-filename");
+var sanitize = require('sanitize-filename');
 var utils = require('../lib/helpers/utils');
 var fetchers = require('../lib/helpers/fetchers');
 var validators = require('../lib/helpers/validators');

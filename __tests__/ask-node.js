@@ -9,7 +9,7 @@ describe('Chat keyword node', function() {
     var msg = RED.createMessage({}, 'telegram');
     RED.node.config({
       message: 'message for the buttons',
-      answers: [
+      buttons: [
         {
           value: 'value 1',
           label: 'Value 1'

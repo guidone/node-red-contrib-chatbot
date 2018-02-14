@@ -224,7 +224,7 @@ module.exports = function(RED) {
         });
 
       } else {
-        node.warn("no bot in config.");
+        node.warn('no bot in config.');
       }
     } else {
       node.warn('Missing configuration in Facebook Messenger Receiver');
@@ -248,10 +248,10 @@ module.exports = function(RED) {
       if (node.bot) {
         this.status({fill: 'green', shape: 'ring', text: 'connected'});
       } else {
-        node.warn("no bot in config.");
+        node.warn('no bot in config.');
       }
     } else {
-      node.warn("no config.");
+      node.warn('no config.');
     }
 
     function sendMessage(msg) {

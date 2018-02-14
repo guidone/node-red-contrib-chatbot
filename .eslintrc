@@ -1,0 +1,13 @@
+{
+    "globals": {
+        "Promise": true
+    },
+    "env": {
+        "node": true
+    },
+    "extends": "eslint:recommended",
+    "rules": {
+        "quotes": ["error", "single"],
+        "no-useless-escape": 0
+    }
+}

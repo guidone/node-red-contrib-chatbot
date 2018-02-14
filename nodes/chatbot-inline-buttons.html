@@ -61,6 +61,12 @@
       label: 'New row of buttons',
       className: 'platform-combo-telegram',
       platforms: ['telegram']
+    },
+    {
+      type: 'keyboardButton',
+      label: 'Keyboard Button',
+      className: 'platform-combo-telegram',
+      platforms: ['telegram']
     }
   ];
   $.RedBot.elementTypes = [
@@ -136,6 +142,8 @@
         return $.RedBot.validate.notEmpty(button.label) && $.RedBot.validate.notEmpty(button.value);
       case 'call':
         return $.RedBot.validate.notEmpty(button.label) && $.RedBot.validate.notEmpty(button.number);
+      case 'keyboardButton':
+        return $.RedBot.validate.notEmpty(button.label);
       case 'newline':
       case 'share':
       case 'logout':
@@ -444,6 +452,12 @@
     var result = null;
 
     switch(type.val()) {
+      case 'keyboardButton':
+        result = {
+          type: 'keyboardButton',
+          label: label.val()
+        };
+        break;
       case 'url':
         result = {
           type: 'url',
@@ -534,7 +548,7 @@
 
     options = options || {};
     options.types = options.types != null ?
-      options.types : ['url', 'postback', 'call', 'share', 'login', 'newline', 'logout', 'location', 'quick-reply', 'dialog'];
+      options.types : ['url', 'postback', 'call', 'share', 'login', 'newline', 'logout', 'location', 'quick-reply', 'dialog', 'key'];
     options.platforms = options.platforms != null ? options.platforms : ['facebook', 'telegram'];
     options.badges = options.badges !== false;
 
@@ -656,6 +670,12 @@
     $('<div/>').css('marginTop','5px')
       .html('This creates a new row of buttons')
       .appendTo(panelNewline);
+
+    var panelKeyboardButton = $('<div class="panel panel-keyboardButton" style="display:none;"/>').appendTo(container);
+    $('<div/>').css('marginTop','5px')
+      .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="label" placeholder="Button label"/>'))
+      .appendTo(panelKeyboardButton);
+
 
     $('<div class="panel panel-share" style="display:none;"/>').appendTo(container);
 
