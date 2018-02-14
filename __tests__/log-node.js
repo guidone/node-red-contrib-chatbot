@@ -20,8 +20,8 @@ describe('Chat log node', function() {
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
       .then(function () {
-        assert.include(RED.node.message(), '42 [Javascript Jedi] <');
-        assert.include(RED.node.message(), '- I am the message');
+        assert.include(RED.node.message().payload, '42 [Javascript Jedi] <');
+        assert.include(RED.node.message().payload, '- I am the message');
       });
   });
 
@@ -40,8 +40,8 @@ describe('Chat log node', function() {
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
       .then(function () {
-        assert.include(RED.node.message(), '42 [Javascript Jedi] <');
-        assert.include(RED.node.message(), 'image: <buffer>');
+        assert.include(RED.node.message().payload, '42 [Javascript Jedi] <');
+        assert.include(RED.node.message().payload, 'image: <buffer>');
       });
   });
 
@@ -64,8 +64,8 @@ describe('Chat log node', function() {
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
       .then(function () {
-        assert.include(RED.node.message(), '42 [Javascript Jedi] <');
-        assert.include(RED.node.message(), '- latitude: 123 longitude: 123');
+        assert.include(RED.node.message().payload, '42 [Javascript Jedi] <');
+        assert.include(RED.node.message().payload, '- latitude: 123 longitude: 123');
       });
   });
 
@@ -84,8 +84,8 @@ describe('Chat log node', function() {
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
       .then(function () {
-        assert.include(RED.node.message(), '42 [Javascript Jedi] <');
-        assert.include(RED.node.message(), 'document: <buffer>');
+        assert.include(RED.node.message().payload, '42 [Javascript Jedi] <');
+        assert.include(RED.node.message().payload, 'document: <buffer>');
       });
   });
 
@@ -104,8 +104,8 @@ describe('Chat log node', function() {
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
       .then(function () {
-        assert.include(RED.node.message(), '42 [Javascript Jedi] <');
-        assert.include(RED.node.message(), 'audio: <buffer>');
+        assert.include(RED.node.message().payload, '42 [Javascript Jedi] <');
+        assert.include(RED.node.message().payload, 'audio: <buffer>');
       });
   });
 
@@ -128,8 +128,8 @@ describe('Chat log node', function() {
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
       .then(function () {
-        assert.include(RED.node.message(), '42 [Javascript Jedi] <');
-        assert.include(RED.node.message(), 'these are buttons [Button 1] [Another button]');
+        assert.include(RED.node.message().payload, '42 [Javascript Jedi] <');
+        assert.include(RED.node.message().payload, 'these are buttons [Button 1] [Another button]');
       });
   });
 

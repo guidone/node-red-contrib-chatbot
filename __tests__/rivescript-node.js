@@ -32,7 +32,8 @@ describe('Chat RiveScript node', function() {
     return RED.node.get().await()
       .then(function () {
         assert.equal(RED.node.message(), null);
-        assert.equal(RED.node.message(1).payload, 'ERR: No Reply Matched');
+        assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
+        assert.equal(RED.node.message(1).originalMessage.transport, 'telegram');
       });
   });
 
