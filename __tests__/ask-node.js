@@ -11,15 +11,18 @@ describe('Chat keyword node', function() {
       message: 'message for the buttons',
       buttons: [
         {
-          value: 'value 1',
+          type: 'keyboardButton',
           label: 'Value 1'
         },
         {
-          value: 'value 2',
+          type: 'keyboardButton',
           label: 'Value 2'
         },
         {
-          value: 'value 3',
+          type: 'newline'
+        },
+        {
+          type: 'keyboardButton',
           label: 'Value 3'
         }
       ]
@@ -33,12 +36,13 @@ describe('Chat keyword node', function() {
         assert.equal(RED.node.message().payload.content, 'message for the buttons');
         assert.equal(RED.node.message().payload.chatId, 42);
         assert.isArray(RED.node.message().payload.buttons);
-        assert.equal(RED.node.message().payload.buttons[0].value, 'value 1');
+        assert.equal(RED.node.message().payload.buttons[0].type, 'keyboardButton');
         assert.equal(RED.node.message().payload.buttons[0].label, 'Value 1');
-        assert.equal(RED.node.message().payload.buttons[1].value, 'value 2');
+        assert.equal(RED.node.message().payload.buttons[1].type, 'keyboardButton');
         assert.equal(RED.node.message().payload.buttons[1].label, 'Value 2');
-        assert.equal(RED.node.message().payload.buttons[2].value, 'value 3');
-        assert.equal(RED.node.message().payload.buttons[2].label, 'Value 3');
+        assert.equal(RED.node.message().payload.buttons[2].type, 'newline');
+        assert.equal(RED.node.message().payload.buttons[3].type, 'keyboardButton');
+        assert.equal(RED.node.message().payload.buttons[3].label, 'Value 3');
       });
   });
 
@@ -47,15 +51,18 @@ describe('Chat keyword node', function() {
       message: 'message for the buttons',
       buttons: [
         {
-          value: 'value 1',
+          type: 'keyboardButton',
           label: 'Value 1'
         },
         {
-          value: 'value 2',
+          type: 'keyboardButton',
           label: 'Value 2'
         },
         {
-          value: 'value 3',
+          type: 'newline'
+        },
+        {
+          type: 'keyboardButton',
           label: 'Value 3'
         }
       ]
@@ -71,12 +78,13 @@ describe('Chat keyword node', function() {
         assert.equal(RED.node.message().payload.content, 'message for the buttons');
         assert.equal(RED.node.message().payload.chatId, 42);
         assert.isArray(RED.node.message().payload.buttons);
-        assert.equal(RED.node.message().payload.buttons[0].value, 'value 1');
+        assert.equal(RED.node.message().payload.buttons[0].type, 'keyboardButton');
         assert.equal(RED.node.message().payload.buttons[0].label, 'Value 1');
-        assert.equal(RED.node.message().payload.buttons[1].value, 'value 2');
+        assert.equal(RED.node.message().payload.buttons[1].type, 'keyboardButton');
         assert.equal(RED.node.message().payload.buttons[1].label, 'Value 2');
-        assert.equal(RED.node.message().payload.buttons[2].value, 'value 3');
-        assert.equal(RED.node.message().payload.buttons[2].label, 'Value 3');
+        assert.equal(RED.node.message().payload.buttons[2].type, 'newline');
+        assert.equal(RED.node.message().payload.buttons[3].type, 'keyboardButton');
+        assert.equal(RED.node.message().payload.buttons[3].label, 'Value 3');
       });
 
   });

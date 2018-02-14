@@ -22,7 +22,7 @@ module.exports = function(RED) {
         return;
       }
 
-      var buttons = utils.extractValue('arrayOfObject', 'buttons', node, msg, true);
+      var buttons = utils.extractValue('buttons', 'buttons', node, msg, true);
       var message = utils.extractValue('string', 'message', node, msg, false);
 
       template(message)
