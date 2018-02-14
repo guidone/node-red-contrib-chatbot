@@ -18,16 +18,19 @@ module.exports = function(RED) {
       var chatId = utils.getChatId(msg);
       var messageId = utils.getMessageId(msg);
       var template = MessageTemplate(msg, node);
-      var answers = null;
-      var message = null;
+      //var answers = null;
+      //var message = null;
 
       // check transport compatibility
       if (!utils.matchTransport(node, msg)) {
         return;
       }
 
+      var answers = utils.extractValue('arrayOfString', 'buttons', node, msg, true);
+      var message = utils.extractValue('string', 'message', node, msg, false);
+
       // get from config or payload
-      if (_.isArray(node.answers) && !_.isEmpty(node.answers)) {
+      /*if (_.isArray(node.answers) && !_.isEmpty(node.answers)) {
         answers = node.answers;
       } else if (_.isObject(msg.payload) && _.isArray(msg.payload.buttons) && !_.isEmpty(msg.payload.buttons)) {
         answers = msg.payload.buttons;
@@ -37,7 +40,7 @@ module.exports = function(RED) {
         message = node.message;
       } else if (_.isObject(msg.payload) && _.isString(msg.payload.message) && !_.isEmpty(msg.payload.message)) {
         message = msg.payload.message;
-      }
+      }*/
 
       template(message)
         .then(function(translated) {
