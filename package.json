@@ -20,6 +20,7 @@
   },
   "node-red": {
     "nodes": {
+      "chatbot-redbot": "./nodes/chatbot-redbot.js",
       "chatbot-message": "./nodes/chatbot-message.js",
       "chatbot-analytics": "./nodes/chatbot-analytics.js",
       "chatbot-context": "./nodes/chatbot-context.js",
