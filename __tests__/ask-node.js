@@ -46,6 +46,24 @@ describe('Chat keyword node', function() {
       });
   });
 
+  it('should send a reset keyboard if the buttons array is empty', function () {
+    var msg = RED.createMessage({}, 'telegram');
+    RED.node.config({
+      message: 'message for the buttons',
+      buttons: []
+    });
+    KeyboardBlock(RED);
+    RED.node.get().emit('input', msg);
+
+    return RED.node.get().await()
+      .then(function () {
+        assert.equal(RED.node.message().payload.type, 'reset-buttons');
+        assert.equal(RED.node.message().payload.content, 'message for the buttons');
+        assert.equal(RED.node.message().payload.chatId, 42);
+      });
+  });
+
+
   it('should send custom keyboard in Telegram passed thru payload', function () {
     var msg = RED.createMessage({
       message: 'message for the buttons',
