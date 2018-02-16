@@ -1,7 +1,6 @@
 var _ = require('underscore');
 var utils = require('../lib/helpers/utils');
 var lcd = require('../lib/helpers/lcd');
-var moment = require('moment');
 var when = utils.when;
 
 module.exports = function(RED) {
@@ -13,19 +12,6 @@ module.exports = function(RED) {
 
     this.on('input', function(msg) {
 
-      // cleanup payload
-      var payload = null;
-      if (msg.payload != null) {
-        payload = _.clone(msg.payload);
-        _(payload).each(function(value, key) {
-          if (value instanceof Buffer) {
-            payload[key] = '<Buffer>';
-          } else if (value instanceof moment) {
-            payload[key] = value.toString();
-          }
-        });
-      }
-
       if (_.isFunction(msg.chat)) {
         var chatContext = msg.chat();
         // get all keys
@@ -34,8 +20,8 @@ module.exports = function(RED) {
             // chat context
             lcd.node(obj, { title: 'ChatBot debug', node: node });
             // message
-            if (payload != null) {
-              lcd.node(payload, {title: 'Chat message', node: node});
+            if (msg.payload != null) {
+              lcd.node(msg.payload, {title: 'Chat message', node: node});
             }
           });
       } else {
