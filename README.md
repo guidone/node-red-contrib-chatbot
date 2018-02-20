@@ -38,7 +38,6 @@ Then open  the user data directory  `~/.node-red`  and install the package
 ```
 $ cd ~/.node-red
 $ npm install node-red-contrib-chatbot
-$ node-red
 ```
 
 Then run
