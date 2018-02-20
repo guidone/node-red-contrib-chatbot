@@ -40,12 +40,10 @@ module.exports = function(RED) {
       // call recast
       client.analyseText(msg.payload.content)
         .then(function(res) {
-
           if (res.intent()) {
-            //var task = when(true);
             // evaluate returned entities
-            var intent = res.intent().slug;
-            var variables = {};
+            intent = res.intent().slug;
+            variables = {};
             _(res.entities).each(function(value, key) {
               if (_.isArray(value) && !_.isEmpty(value)) {
                 if (key === 'number') {
