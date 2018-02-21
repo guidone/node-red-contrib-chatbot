@@ -19,9 +19,10 @@ module.exports = function(RED) {
       if (!utils.matchTransport(node, msg)) {
         return;
       }
+      // in slack force the only typing available
       if (utils.getTransport(msg) === 'slack' && waitingType !== 'typing') {
-        node.error('Only \'typing\' is supported for slack transport');
-        return;
+        //node.warn('Only \'typing\' is supported for slack transport');
+        waitingType = 'typing';
       }
 
       msg.payload = {

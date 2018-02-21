@@ -3,7 +3,7 @@ var assert = require('chai').assert;
 var RED = require('../lib/red-stub')();
 var ActionBlock = require('../nodes/chatbot-waiting');
 
-describe('Chat action node', function() {
+describe('Chat waiting node', function() {
 
   it('should be a action message for Telegram', function() {
     var msg = RED.createMessage(null, 'telegram');
@@ -34,9 +34,9 @@ describe('Chat action node', function() {
     });
     ActionBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.isNull(RED.node.message());
+    assert.equal(RED.node.message().payload.type, 'action');
+    assert.equal(RED.node.message().payload.waitingType, 'typing');
   });
-
 
 });
 
