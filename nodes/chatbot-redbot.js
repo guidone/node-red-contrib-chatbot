@@ -5,6 +5,7 @@ var moment = require('moment');
 var jsonPackage = fs.readFileSync(__dirname + '/../package.json');
 try {
   var package = JSON.parse(jsonPackage);
+  // eslint-disable-next-line no-console
   console.log(lcd.white(moment().format('DD MMM HH:mm:ss')
     + ' - [info] RedBot version:')
     + ' ' + lcd.green(package.version) + lcd.grey(' (node-red-contrib-chatbot)'));
