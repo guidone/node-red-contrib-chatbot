@@ -1,3 +1,5 @@
+* **0.9.22** - Now `Node keyboard` can remove a previously sent keyboard
+* **0.9.21** - **[breaking changes]** Refactored `Node keyboard`, aligned the payload to other buttons ([[see here|Keyboard-node]])
 * **0.9.20** - Fixed `Log node` payload, fixed second pin output of `Rivescript node`
 * **0.9.19** - Added rule 'environment' to `Rules node`
 * **0.9.18** - Added rule 'any command' to `Rules node`

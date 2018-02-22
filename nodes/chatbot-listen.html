@@ -593,7 +593,7 @@
 <pre><code>1 - |send[verb]| |curriculum[noun]| |vitae|
 2 - |send[verb]| |cv|
 </code></pre><p>Available types are: <em>word</em> (catches everything), <em>noun</em>, <em>verb</em>, <em>adjective</em>, <em>conjunction</em>, <em>adverb</em>, <em>symbol</em>, <em>date</em>, <em>determiner</em>, <em>person</em>, <em>number</em>, <em>email</em>, <em>url</em>, <em>currency</em>.</p>
-<p>Keyword types are particularly useful to search for patterns in the user&#39;s input and store them in the chat context, for example to match a sentence like <em>&quot;send you curriculum vitae to Peter at peter.something@gmail.com&quot;</em></p>
+<p>Keyword types are particularly useful to search for patterns in the user&#39;s input and store them in the chat context, for example to match a sentence like <em>&quot;send you curriculum vitae to Peter at <a href="mailto:peter.something@gmail.com">peter.something@gmail.com</a>&quot;</em></p>
 <pre><code>1 - |send[verb]| |curriculum| |to| |[person]-&gt;name| |at| |[email]-&gt;toemail|
 </code></pre><p>then the inbound messages:</p>
 <pre><code>&quot;can you send your curriculum vitae to John at my-email@email.com&quot;

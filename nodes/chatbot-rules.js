@@ -153,6 +153,24 @@ var Types = {
             reject();
           });
     });
+  },
+
+  topicIncludes: function(rule, message) {
+    return new Promise(function (resolve, reject) {
+      var chatContext = message.chat();
+      when(chatContext.get('topic'))
+        .then(
+          function (topic) {
+            if (topic.indexOf(rule.topic) !== -1 ) {
+              resolve(rule);
+            } else {
+              reject();
+            }
+          },
+          function () {
+            reject();
+          });
+    });
   }
 
 };

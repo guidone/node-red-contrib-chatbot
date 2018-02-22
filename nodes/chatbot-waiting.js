@@ -13,8 +13,7 @@ module.exports = function(RED) {
 
       var node = this;
       var waitingType = this.waitingType;
-      var originalMessage = msg.originalMessage;
-      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
+      var chatId = utils.getChatId(msg);
 
       // check transport compatibility
       if (!utils.matchTransport(node, msg)) {
