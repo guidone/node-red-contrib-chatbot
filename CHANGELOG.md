@@ -1,3 +1,4 @@
+* **0.9.24** - Fixed button labels for `Request node`
 * **0.9.23** - Added nodes for Recast.ai and Dialogflow.com, improved debugging in system console
 * **0.9.22** - Now `Node keyboard` can remove a previously sent keyboard
 * **0.9.21** - **[breaking changes]** Refactored `Node keyboard`, aligned the payload to other buttons ([[see here|Keyboard-node]])
