@@ -23,8 +23,8 @@ module.exports = function(RED) {
       var messageId = utils.getMessageId(msg);
 
       var message = utils.extractValue('string', 'message', node, msg);
-      var requestType = utils.extractValue('string', 'requestType', node, msg);
-      var buttonLabel = utils.extractValue('string', 'buttonLabel', node, msg);
+      var requestType = utils.extractValue('string', 'requestType', node, msg, false);
+      var buttonLabel = utils.extractValue('string', 'buttonLabel', node, msg, false);
       var template = MessageTemplate(msg, node);
 
       template(message)

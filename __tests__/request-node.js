@@ -19,6 +19,7 @@ describe('Chat request node', function() {
         assert.equal(RED.node.message().payload.content, 'i am the request');
         assert.equal(RED.node.message().payload.type, 'request');
         assert.equal(RED.node.message().payload.requestType, 'location');
+        assert.equal(RED.node.message().payload.label, 'your position');
       });
   });
 
@@ -36,6 +37,7 @@ describe('Chat request node', function() {
         assert.equal(RED.node.message().payload.content, 'i am the request');
         assert.equal(RED.node.message().payload.type, 'request');
         assert.equal(RED.node.message().payload.requestType, 'phone-number');
+        assert.equal(RED.node.message().payload.label, 'your phone');
       });
   });
 
@@ -53,6 +55,7 @@ describe('Chat request node', function() {
         assert.equal(RED.node.message().payload.content, 'i am the request ☕️');
         assert.equal(RED.node.message().payload.type, 'request');
         assert.equal(RED.node.message().payload.requestType, 'phone-number');
+        assert.equal(RED.node.message().payload.label, 'your phone');
       });
   });
 
