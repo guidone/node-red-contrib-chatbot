@@ -1,3 +1,4 @@
+* **0.9.25** - Deprecated `Switch Node`, added message type rules to `Rules node`, relaxed some verification checks with Facebook Messenger, fixed small bugs with Dialogflow and Recast  
 * **0.9.24** - Fixed button labels for `Request node`
 * **0.9.23** - Added nodes for Recast.ai and Dialogflow.com, improved debugging in system console
 * **0.9.22** - Now `Node keyboard` can remove a previously sent keyboard
