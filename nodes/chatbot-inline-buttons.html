@@ -1,6 +1,22 @@
 <script type="text/javascript">
 
   $.RedBot = {};
+  $.RedBot.messageTypes = [
+    {value: 'message', label: 'Text'},
+    {value: 'command', label: 'Command'},
+    {value: 'audio', label: 'Audio'},
+    {value: 'buttons', label: 'Buttons'},
+    {value: 'contact', label: 'Contact'},
+    {value: 'document', label: 'Document'},
+    {value: 'dialog', label: 'Dialog'},
+    {value: 'inline-buttons', label: 'Inline buttons'},
+    {value: 'inline-query', label: 'Inline Query'},
+    {value: 'location', label: 'Location'},
+    {value: 'photo', label: 'Photo'},
+    {value: 'request', label: 'Request'},
+    {value: 'response', label: 'Dialog Response'},
+    {value: 'video', label: 'Video'}
+  ];
   $.RedBot.buttonTypes = [
     {
       type: 'url',
@@ -171,6 +187,8 @@
         return $.RedBot.validate.notEmpty(rule.variable);
       case 'command':
         return $.RedBot.validate.notEmpty(rule.command);
+      case 'messageType':
+        return $.RedBot.validate.notEmpty(rule.messageType);
       case 'outbound':
       case 'inbound':
       case 'isTopicEmpty':

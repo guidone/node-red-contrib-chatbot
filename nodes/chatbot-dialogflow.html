@@ -15,7 +15,7 @@
       }
     },
     label: function () {
-      return 'Dialogflow.com';
+      return this.name || 'Dialogflow.com';
     }
   });
 </script>
@@ -179,7 +179,7 @@ May I have a mojito
   payload: {
     intent: &#39;want-drink&#39;,
     answer: &#39;I am the answer&#39;,
-    variables: { 
+    variables: {
       Drinks: &#39;martini rosso&#39;
     }
 }
