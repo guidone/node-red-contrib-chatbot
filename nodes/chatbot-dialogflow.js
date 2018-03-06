@@ -65,10 +65,9 @@ module.exports = function(RED) {
               intent = body.result.metadata.intentName;
               variables = body.result.parameters;
               answer = body.result.fulfillment != null ? body.result.fulfillment.speech : null;
-
               // remove empty vars
               _(variables).each(function(value, key) {
-                if (_.isEmpty(value)) {
+                if (value == null) {
                   delete variables[key];
                 }
               });
