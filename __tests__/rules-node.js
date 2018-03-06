@@ -411,5 +411,146 @@ describe('Chat rules node', function() {
       });
   });
 
+  it('should go through the first if is type message', function() {
+    var msg = RED.createMessage({
+      content: 'a simple message'
+    }, 'telegram', { environment: 'development'});
+    RED.node.config({
+      rules: [
+        { type: 'messageType', environment: 'message' },
+        { type: 'messageType', environment: 'video' },
+        { type: 'catchAll' }
+      ]
+    });
+
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+
+    return RED.node.get().await()
+      .then(function() {
+        assert.isNull(RED.node.message(2));
+        assert.isNull(RED.node.message(1));
+        assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
+      });
+  });
+
+  it('should go through the first if is type message', function() {
+    var msg = RED.createMessage({
+      content: 'a simple message',
+      type: 'message'
+    }, 'telegram', { environment: 'development'});
+    RED.node.config({
+      rules: [
+        { type: 'messageType', messageType: 'message' },
+        { type: 'messageType', messageType: 'video' },
+        { type: 'catchAll' }
+      ]
+    });
+
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+
+    return RED.node.get().await()
+      .then(function() {
+        assert.isNull(RED.node.message(2));
+        assert.isNull(RED.node.message(1));
+        assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
+      });
+  });
+
+  it('should go through the second if is type video', function() {
+    var msg = RED.createMessage({
+      content: 'a simple message',
+      type: 'video'
+    }, 'telegram', { environment: 'development'});
+    RED.node.config({
+      rules: [
+        { type: 'messageType', messageType: 'message' },
+        { type: 'messageType', messageType: 'video' },
+        { type: 'catchAll' }
+      ]
+    });
+
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+
+    return RED.node.get().await()
+      .then(function() {
+        assert.isNull(RED.node.message(2));
+        assert.isNull(RED.node.message(0));
+        assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
+      });
+  });
+
+  it('should go through the third if is type image', function() {
+    var msg = RED.createMessage({
+      content: 'a simple message',
+      type: 'image'
+    }, 'telegram', { environment: 'development'});
+    RED.node.config({
+      rules: [
+        { type: 'messageType', messageType: 'message' },
+        { type: 'messageType', messageType: 'video' },
+        { type: 'catchAll' }
+      ]
+    });
+
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+
+    return RED.node.get().await()
+      .then(function() {
+        assert.isNull(RED.node.message(0));
+        assert.isNull(RED.node.message(1));
+        assert.equal(RED.node.message(2).originalMessage.chat.id, '42');
+      });
+  });
+
+  it('should go through the second if is type command', function() {
+    var msg = RED.createMessage({
+      content: '/my_command',
+      type: 'image'
+    }, 'telegram', { environment: 'development'});
+    RED.node.config({
+      rules: [
+        { type: 'messageType', messageType: 'message' },
+        { type: 'messageType', messageType: 'command' },
+        { type: 'catchAll' }
+      ]
+    });
+
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+
+    return RED.node.get().await()
+      .then(function() {
+        assert.isNull(RED.node.message(0));
+        assert.isNull(RED.node.message(2));
+        assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
+      });
+  });
+
+  it('should go through the first if is type is not command', function() {
+    var msg = RED.createMessage({
+      content: 'no command',
+      type: 'image'
+    }, 'telegram', { environment: 'development'});
+    RED.node.config({
+      rules: [
+        { type: 'notMessageType', messageType: 'command' },
+        { type: 'catchAll' }
+      ]
+    });
+
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+
+    return RED.node.get().await()
+      .then(function() {
+        assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
+        assert.isNull(RED.node.message(1));
+      });
+  });
+
 });
 
