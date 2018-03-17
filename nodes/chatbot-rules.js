@@ -7,7 +7,6 @@ var Types = {
 
   messageType: function(rule, message) {
     return new Promise(function(resolve, reject) {
-      console.log('+++', message.payload.type , rule.messageType, message.payload.type === rule.messageType);
       if (message != null && message.payload != null) {
         if ((helpers.isCommand(message.payload.content) && rule.messageType === 'command') ||
           (message.payload.type === rule.messageType)) {
