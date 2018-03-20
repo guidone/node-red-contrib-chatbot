@@ -31,4 +31,15 @@ module.exports = function(RED) {
     }));
   });
 
+  // add an endpoint to get a list of context providers
+  RED.httpNode.get('/redbot/globals', function(req, res) {
+    console.log(RED.settings.functionGlobalContext.keys());
+    var keys = RED.settings.functionGlobalContext.keys();
+    var result = {};
+    keys.forEach(function(key) {
+      result[key] = RED.settings.functionGlobalContext.get(key);
+    });
+    res.send(result);
+  });
+
 };
