@@ -77,8 +77,7 @@ module.exports = function(RED) {
               return when(chatContext.set('topic', intent));
             }
           } else {
-            node.error('Error on api.dialogflow.com');
-            return Promise.reject();
+            return Promise.reject('Error on api.dialogflow.com');
           }
         })
         .then(function() {
@@ -93,7 +92,9 @@ module.exports = function(RED) {
           node.send([msg, null]);
         })
         .catch(function(error) {
-          node.error(error);
+          if (error != null) {
+            node.error(error, msg);
+          }
         });
     });
   }
