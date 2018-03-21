@@ -38,6 +38,7 @@ var mappings = {
   'Authorized-node.md': 'chatbot-authorized.html',
   'Log-node.md': 'chatbot-log.html',
   'Listen-node.md': 'chatbot-listen.html',
+  'Location-node.md': 'chatbot-location.html',
   'Context-node.md': 'chatbot-context.html',
   'Sticker-node.md': 'chatbot-sticker.html',
   'Waiting-node.md': 'chatbot-waiting.html',
