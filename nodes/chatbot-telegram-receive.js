@@ -4,10 +4,14 @@ var TelegramServer = require('../lib/telegram/telegram-chat');
 var ContextProviders = require('../lib/chat-platform/chat-context-factory');
 var utils = require('../lib/helpers/utils');
 var clc = require('cli-color');
+var lcd = require('../lib/helpers/lcd');
+var prettyjson = require('prettyjson');
+var validators = require('../lib/helpers/validators');
 
 var when = utils.when;
 var warn = clc.yellow;
 var green = clc.green;
+
 
 module.exports = function(RED) {
 
@@ -28,6 +32,7 @@ module.exports = function(RED) {
     var environment = this.context().global.environment === 'production' ? 'production' : 'development';
     var isUsed = utils.isUsed(RED, node.id);
     var startNode = utils.isUsedInEnvironment(RED, node.id, environment);
+    var telegramConfigs = RED.settings.functionGlobalContext.get('telegram');
 
     this.botname = n.botname;
     this.store = n.store;
@@ -48,57 +53,74 @@ module.exports = function(RED) {
     }
     // eslint-disable-next-line no-console
     console.log(green('Telegram Bot ' + this.botname + ' will be launched, environment is ' + environment));
-
-    if (this.credentials) {
-      this.token = this.credentials.token;
-      if (this.token) {
-        this.token = this.token.trim();
-        if (!this.chat) {
-          // get the context storage node
-          var contextStorageNode = RED.nodes.getNode(this.store);
-          var contextStorage = null;
-          var contextParams = null;
-          // check if context node
-          if (contextStorageNode != null) {
-            contextStorage = contextStorageNode.contextStorage;
-            contextParams = contextStorageNode.contextParams;
-          } else {
-            contextStorage = 'memory';
-            contextParams = {};
-            node.error('No context provider specified for chatbot ' + this.botname + '. Defaulting to "memory"');
-          }
-          // check if provider exisst
-          if (!contextProviders.hasProvider(contextStorage)) {
-            node.error('Error creating chatbot ' + this.botname+ '. The context provider '
-              + contextStorage + ' doesn\'t exist.');
-            return;
-          }
-          // create a factory for the context provider
-          node.contextProvider = contextProviders.getProvider(contextStorage, contextParams);
-          // try to start the servers
-          try {
-            node.contextProvider.start();
-            node.chat = TelegramServer.createServer({
-              authorizedUsernames: node.usernames,
-              token: node.token,
-              polling: node.polling,
-              parseMode: node.parseMode,
-              contextProvider: node.contextProvider,
-              logfile: node.log,
-              RED: RED
-            });
-            node.chat.start();
-            // handle error on sl6teack chat server
-            node.chat.on('error', function(error) {
-              node.error(error);
-            });
-            node.chat.on('warning', function(warning) {
-              node.warn(warning);
-            });
-          } catch(e) {
-            node.error(e);
-          }
-        }
+    // get the context storage node
+    var contextStorageNode = RED.nodes.getNode(this.store);
+    // build the configuration object
+    var botConfiguration = {
+      authorizedUsernames: node.usernames,
+      token: node.credentials != null && node.credentials.token != null ? node.credentials.token.trim() : null,
+      polling: node.polling,
+      parseMode: node.parseMode,
+      logfile: node.log,
+      contextProvider: contextStorageNode != null ? contextStorageNode.contextStorage : null,
+      contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null
+    };
+    // check if there's a valid configuration in global settings
+    if (telegramConfigs[node.botname] != null) {
+      var validation = validators.platform.telegram(telegramConfigs[node.botname]);
+      if (validation != null) {
+        console.log('');
+        console.log(lcd.error('Found a Telegram configuration in settings.js "' + node.botname + '", but it\'s invalid.'));
+        console.log(lcd.grey('Errors:'));
+        console.log(prettyjson.render(validation));
+        console.log('');
+        return;
+      } else {
+        console.log('');
+        console.log(lcd.grey('Found a valid Telegram configuration in settings.js: "' + node.botname + '":'));
+        console.log(prettyjson.render(telegramConfigs[node.botname]));
+        console.log('');
+        botConfiguration = telegramConfigs[node.botname];
+      }
+    }
+    // check if context node
+    if (botConfiguration.contextProvider == null) {
+      console.log(lcd.warn('No context provider specified for chatbot ' + this.botname + '. Defaulting to "memory"'));
+      botConfiguration.contextProvider = 'memory';
+      botConfiguration.contextParams = {};
+    }
+    // if chat is not already there and there's a token
+    if (node.chat == null && botConfiguration.token != null) {
+      // check if provider exisst
+      if (!contextProviders.hasProvider(botConfiguration.contextProvider)) {
+        node.error('Error creating chatbot ' + this.botname + '. The context provider '
+          + botConfiguration.contextProvider + ' doesn\'t exist.');
+        return;
+      }
+      // create a factory for the context provider
+      node.contextProvider = contextProviders.getProvider(botConfiguration.contextProvider, botConfiguration.contextParams);
+      // try to start the servers
+      try {
+        node.contextProvider.start();
+        node.chat = TelegramServer.createServer({
+          authorizedUsernames: botConfiguration.authorizedUsernames,
+          token: botConfiguration.token,
+          polling: botConfiguration.polling,
+          parseMode: botConfiguration.parseMode,
+          contextProvider: node.contextProvider,
+          logfile: botConfiguration.log,
+          RED: RED
+        });
+        node.chat.start();
+        // handle error on sl6teack chat server
+        node.chat.on('error', function(error) {
+          node.error(error);
+        });
+        node.chat.on('warning', function(warning) {
+          node.warn(warning);
+        });
+      } catch(e) {
+        node.error(e);
       }
     }
 
