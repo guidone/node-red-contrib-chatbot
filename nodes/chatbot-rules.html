@@ -242,7 +242,9 @@ return msg;
 <dl class="message-properties">
 
 
-<dt>type<span class="property-type">string</span><dd>Type of rule: <em>inbound</em>, <em>outbound</em>, <em>isTopicEmpty</em>, <em>catchAll</em>, <em>isNotTopic</em>, <em>isTopic</em>, <em>hasNotVariable</em>, <em>hasVariable</em>, <em>command</em>, <em>messageType</em>, <em>notMessageType</em></dd>
+<dt>type<span class="property-type">string</span><dd>Type of rule: <em>inbound</em>, <em>outbound</em>, <em>isTopicEmpty</em>, <em>catchAll</em>, <em>isNotTopic</em>, <em>isTopic</em>, <em>hasNotVariable</em>, <em>hasVariable</em>, <em>command</em>, <em>messageType</em>, <em>notMessageType</em>, <em>transport</em>, <em>anyCommand</em>, <em>environment</em></dd>
+<dt>environment<span class="property-type">string</span><dd>Match the environment type, can be <em>production</em> or <em>development</em>. Required for type <em>environment</em></dd>
+<dt>transport<span class="property-type">string</span><dd>Match the transport type, can be <em>facebook</em>, <em>telegram</em>, <em>slack</em> or <em>smooch</em>. Required for type <em>transport</em></dd>
 <dt>topic<span class="property-type">string</span><dd>Match the rule if the flow topic matches/doesn&#39;t match the specified topic. Required for  <em>isNotTopic</em> and <em>isTopic</em></dd>
 <dt>variable<span class="property-type">string</span><dd>Match the rule if the context variable is defined/not defined. Required for <em>hasVariable</em> and <em>hasNotVariable</em></dd>
 <dt>command<span class="property-type">string</span><dd>Match the input command. Required for <em>command</em></dd>

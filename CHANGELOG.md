@@ -1,3 +1,4 @@
+* **0.9.28** - Deprecated `Transport node` in favour of `Rules node`, fixed blank context dropdown, Facebook upload doesn't use temporary file anymore, fixed Dialogflow.com/Recast.ai second output
 * **0.9.27** - ...and another deprecation in Telegram lib
 * **0.9.26** - Update Telegram api library
 * **0.9.25** - Deprecated `Switch Node`, added message type rules to `Rules node`, relaxed some verification checks with Facebook Messenger, fixed small bugs with Dialogflow and Recast  

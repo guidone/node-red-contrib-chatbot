@@ -53,10 +53,23 @@
 </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-location">
-  <p>
-  Sends location message with latitude and longitude coordinates, on the chat client that will be rendered with a map.
-  </p>
+<script type="text/x-red" data-help-name="chatbot-location"><p>Send a position message to the chatbot (a tiny clicable map).</p>
+<p>It&#39;s possible to programmatically send a location node by passing the parameters from a upstream <code>Function node</code>:</p>
+<pre><code>msg.payload.latitude = 45.00;
+msg.payload.longitude = 23.00;
+return msg;
+</code></pre><p>Available parameters for the <code>msg.payload</code></p>
+<dl class="message-properties">
+
+
+<dt>latitude<span class="property-type">float</span><dd>The position latitude</dd>
+<dt>longitude<span class="property-type">float</span><dd>The position longitude</dd>
+<dt>place<span class="property-type">string</span><dd>The position description</dd>
+
+</dl>
+<p><img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram">
+<img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook">
+<img src="https://img.shields.io/badge/platform-Slack-green.svg" alt="Slack"></p>
 </script>
 
 
