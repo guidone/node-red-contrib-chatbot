@@ -552,5 +552,49 @@ describe('Chat rules node', function() {
       });
   });
 
+  it('should go through the first if the transport is Telegram', function() {
+    var msg = RED.createMessage({
+      content: 'no command',
+      type: 'image'
+    }, 'telegram', { environment: 'development'});
+    RED.node.config({
+      rules: [
+        { type: 'transport', transport: 'telegram' },
+        { type: 'catchAll' }
+      ]
+    });
+
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+
+    return RED.node.get().await()
+      .then(function() {
+        assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
+        assert.isNull(RED.node.message(1));
+      });
+  });
+
+  it('should go through the second if the transport is Facebook', function() {
+    var msg = RED.createMessage({
+      content: 'no command',
+      type: 'image'
+    }, 'telegram', { environment: 'development'});
+    RED.node.config({
+      rules: [
+        { type: 'transport', transport: 'facebook' },
+        { type: 'catchAll' }
+      ]
+    });
+
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+
+    return RED.node.get().await()
+      .then(function() {
+        assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
+        assert.isNull(RED.node.message(0));
+      });
+  });
+
 });
 

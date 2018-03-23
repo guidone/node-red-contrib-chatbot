@@ -5,6 +5,18 @@ var when = utils.when;
 
 var Types = {
 
+  transport: function(rule, message) {
+    return new Promise(function(resolve, reject) {
+      if (message != null && message.payload != null) {
+        if (message.originalMessage.transport === rule.transport) {
+          resolve(rule);
+        } else {
+          reject();
+        }
+      }
+    });
+  },
+
   messageType: function(rule, message) {
     return new Promise(function(resolve, reject) {
       if (message != null && message.payload != null) {

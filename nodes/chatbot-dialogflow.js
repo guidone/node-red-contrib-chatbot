@@ -55,12 +55,15 @@ module.exports = function(RED) {
       utils.request(dialogFlow)
         .then(
           function(body) {
-
           if (body.result != null && body.result.metadata != null && body.result.metadata.intentName != null) {
             // test if no match
             if (body.result.action === 'input.unknown') {
+              if (debug) {
+                lcd.node(body.result.action, {node: node, title: 'Dialogflow.ai'});
+              }
               // if didn't matched any intent
               node.send([null, msg]);
+              return Promise.reject();
             } else {
               intent = body.result.metadata.intentName;
               variables = body.result.parameters;
@@ -71,9 +74,10 @@ module.exports = function(RED) {
                   delete variables[key];
                 }
               });
-
               return when(chatContext.set('topic', intent));
             }
+          } else {
+            return Promise.reject('Error on api.dialogflow.com');
           }
         })
         .then(function() {
@@ -82,13 +86,15 @@ module.exports = function(RED) {
             variables: variables,
             answer: answer
           };
-          if (debug)  {
+          if (debug) {
             lcd.node(msg.payload, { node: node, title: 'Dialogflow.ai' });
           }
           node.send([msg, null]);
         })
         .catch(function(error) {
-          node.error(error);
+          if (error != null) {
+            node.error(error, msg);
+          }
         });
     });
   }

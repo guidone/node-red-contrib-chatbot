@@ -126,5 +126,13 @@ describe('Validators', function() {
     assert.isFalse(validators.integer('fortytwo'));
   });
 
+  it('validates a float', function() {
+    assert.isTrue(validators.float('42.22'));
+    assert.isTrue(validators.float('0042.2123123'));
+    assert.isTrue(validators.float('12'));
+    assert.isFalse(validators.float(''));
+    assert.isFalse(validators.float('fortytwo'));
+  });
+
 });
 

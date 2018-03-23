@@ -15,19 +15,18 @@ module.exports = function(RED) {
 
       var chatId = utils.getChatId(msg);
       var messageId = utils.getMessageId(msg);
-      var latitude = node.latitude;
-      var longitude = node.longitude;
-      var place = node.place;
 
       // check transport compatibility
       if (!utils.matchTransport(node, msg)) {
         return;
       }
 
-      if (_.isObject(msg.payload) && _.isNumber(msg.payload.latitude) && _.isNumber(msg.payload.longitude)) {
-        latitude = msg.payload.latitude;
-        longitude = msg.payload.longitude;
-      }
+      var latitude = utils.extractValue('float', 'latitude', node, msg, false);
+      var longitude = utils.extractValue('float', 'longitude', node, msg, false);
+      var place = utils.extractValue('string', 'place', node, msg, false);
+
+      latitude = _.isNumber(latitude) ? latitude : parseFloat(latitude);
+      longitude = _.isNumber(longitude) ? longitude : parseFloat(longitude);
 
       // send out the message
       msg.payload = {

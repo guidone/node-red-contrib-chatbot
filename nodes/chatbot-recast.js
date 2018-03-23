@@ -59,7 +59,11 @@ module.exports = function(RED) {
             return when(chatContext.set('topic', intent));
           } else {
             // if didn't matched any intent, relay to 2nd output and stop here
+            if (debug) {
+              lcd.node('No match', { node: node, title: 'Recast.ai' });
+            }
             node.send([null, msg]);
+            return Promise.reject();
           }
         })
         .then(function() {
@@ -73,7 +77,9 @@ module.exports = function(RED) {
           node.send([msg, null]);
         })
         .catch(function(e) {
-          node.error(e);
+          if (e != null) {
+            node.error(e, msg);
+          }
         });
     });
   }

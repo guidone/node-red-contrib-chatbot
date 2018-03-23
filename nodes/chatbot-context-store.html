@@ -35,7 +35,8 @@
       // fetch available context providers
       $.get(nodeRedUrl + 'redbot/context-providers')
         .done(function(response) {
-          var select = $('#node-config-input-contextStorage');
+          var select = $('#node-config-input-contextStorage')
+            .append('<option value="">Select context provider</option>');
           var idx;
           var providers = {};
           for(idx = 0; idx < response.length; idx++) {
