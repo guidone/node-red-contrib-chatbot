@@ -1,0 +1,134 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-invoice', {
+    category: 'RedBot',
+    color: '#FFCC66',
+    defaults: {
+      name: {
+        value: ''
+      },
+      title: {
+        value: ''
+      },
+      description: {
+        value: ''
+      },
+      currency: {
+        value: ''
+      },
+      needName: {
+        value: true
+      },
+      needEmail: {
+        value: false
+      },
+      needPhoneNumber: {
+        value: false
+      },
+      needShippingAddress: {
+        value: false
+      },
+
+    },
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'Invoice',
+    icon: 'chatbot-inline-button.png',
+    label: function() {
+      return this.name || 'Invoice';
+    },
+    oneditsave: function() {
+      var buttons = $("#node-input-buttons-container").editableList('items');
+      var node = this;
+      node.buttons = [];
+      var idx;
+      for(idx = 0; idx < buttons.length; idx++) {
+        node.buttons.push($(buttons[idx]).RB_getButtonData());
+      }
+    },
+    oneditprepare: function() {
+      $('#node-input-buttons-container')
+        .css('min-height','300px')
+        .css('min-width','450px')
+        .editableList({
+          addButton: 'Add button',
+          addItem: function(container, i, item) {
+            $(container).RB_mountButtonDialog({
+              types: ['url', 'postback', 'call', 'login', 'newline', 'logout', 'dialog'],
+              platforms: ['facebook', 'telegram', 'slack']
+            });
+            $(container).RB_setButtonData(item);
+          },
+          removable: true,
+          sortable: true
+        });
+
+      var buttons = this.buttons;
+      var idx;
+      for (idx = 0; idx < buttons.length; idx++) {
+        $('#node-input-buttons-container').editableList('addItem', buttons[idx]);
+      }
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-invoice">
+<div class="form-row form-row-name">
+  <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+  <input type="text" id="node-input-name" placeholder="Name">
+</div>
+<div class="form-row form-row-title">
+  <label for="node-input-name">Title</label>
+  <input type="text" id="node-input-title" placeholder="title">
+</div>
+<div class="form-row form-row-description">
+  <label for="node-input-description">Description</label>
+  <textarea id="node-input-description" placeholder="Invoice description" style="width:93%;height:50px;"></textarea>
+</div>
+<div class="form-row form-row-currency">
+  <label for="node-input-currency">Currency</label>
+  <input type="text" id="node-input-currency" placeholder="">
+</div>
+<div class="form-row">
+  <label for="node-input-answer">Need Name</label>
+  <input type="checkbox" value="true" id="node-input-needName">
+</div>
+<div class="form-row">
+  <label for="node-input-answer">Need Email</label>
+  <input type="checkbox" value="true" id="node-input-needEmail">
+</div>
+<div class="form-row">
+  <label for="node-input-answer">Need Phone Number</label>
+  <input type="checkbox" value="true" id="node-input-needPhoneNumber">
+</div>
+<div class="form-row">
+  <label for="node-input-answer">Need Shipping Address</label>
+  <input type="checkbox" value="true" id="node-input-needShippingAddress">
+</div>
+
+
+
+
+
+
+
+<div class="form-row form-row-label" style="margin-bottom:0;">
+  <label><i class="fa fa-list"></i> <span>Buttons</span></label>
+</div>
+<div class="form-row node-input-rule-container-row">
+  <ol id="node-input-buttons-container"></ol>
+</div>
+<div class="form-row-hint" style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;margin-bottom:10px;">
+  Some attributes apply for specific platform:<br>
+  <span class="icon-platform-facebook"></span> = <span style="font-size:10px">Facebook</span>
+  <span class="icon-platform-telegram"></span> = <span style="font-size:10px">Telegram</span>
+  <span class="icon-platform-smooch"></span> = <span style="font-size:10px">Smooch</span>
+  <span class="icon-platform-slack"></span> = <span style="font-size:10px">Slack</span>
+</div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-invoice">
+</script>
+
+
+
+

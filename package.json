@@ -62,7 +62,8 @@
       "chatbot-dialog": "./nodes/chatbot-dialog.js",
       "chatbot-rules": "./nodes/chatbot-rules.js",
       "chatbot-recast": "./nodes/chatbot-recast.js",
-      "chatbot-dialogflow": "./nodes/chatbot-dialogflow.js"
+      "chatbot-dialogflow": "./nodes/chatbot-dialogflow.js",
+      "chatbot-invoice": "./nodes/chatbot-invoice.js"
     }
   },
   "maintainers": [
