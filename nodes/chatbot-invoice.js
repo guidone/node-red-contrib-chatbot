@@ -16,6 +16,8 @@ module.exports = function(RED) {
     this.needEmail = config.needEmail;
     this.needPhoneNumber = config.needPhoneNumber;
     this.needShippingAddress = config.needShippingAddress;
+    this.isFlexible = config.isFlexible;
+    this.payload = config.payload;
     this.transports = ['telegram'];
 
     this.on('input', function(msg) {
@@ -26,32 +28,27 @@ module.exports = function(RED) {
       }
 
       var chatId = utils.getChatId(msg);
-      //var messageId = utils.getMessageId(msg);
       var template = MessageTemplate(msg, node);
 
       var title = utils.extractValue('string', 'title', node, msg, false);
       var description = utils.extractValue('string', 'description', node, msg, false);
       var currency = utils.extractValue('string', 'currency', node, msg, false);
+      var payload = utils.extractValue('string', 'payload', node, msg, false);
       var needName = utils.extractValue('boolean', 'needName', node, msg, false);
       var needEmail = utils.extractValue('boolean', 'needEmail', node, msg, false);
       var needPhoneNumber = utils.extractValue('boolean', 'needPhoneNumber', node, msg, false);
       var needShippingAddress = utils.extractValue('boolean', 'needShippingAddress', node, msg, false);
-
-      // prepare buttons, first the config, then payload
-
-
+      var isFlexible = utils.extractValue('boolean', 'isFlexible', node, msg, false);
 
       template('test')
         .then(function(message) {
           msg.payload = {
             type: 'invoice',
-            //name: 'Fatturella',
             title: title,
             description: description,
-            //providerToken: '284685063:TEST:ZDYxZTBhNTkzMWRi',
             startParameter: 'start_parameter',
             currency: currency,
-            payload: 'MYPAYLOD',
+            payload: payload,
             prices: [
               {label: 'Uno', amount: 125},
               {label: 'Due', amount: 300}
@@ -60,7 +57,7 @@ module.exports = function(RED) {
             needPhoneNumber: needPhoneNumber,
             needEmail: needEmail,
             needShippingAddress: needShippingAddress,
-            is_flexible: false,
+            isFlexible: isFlexible,
             chatId: chatId
           };
           node.send(msg);

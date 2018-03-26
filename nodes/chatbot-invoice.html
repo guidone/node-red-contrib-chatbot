@@ -12,6 +12,9 @@
       description: {
         value: ''
       },
+      payload: {
+        value: ''
+      },
       currency: {
         value: ''
       },
@@ -27,6 +30,9 @@
       needShippingAddress: {
         value: false
       },
+      isFlexible: {
+        value: false
+      }
 
     },
     inputs: 1,
@@ -78,33 +84,125 @@
 </div>
 <div class="form-row form-row-title">
   <label for="node-input-name">Title</label>
-  <input type="text" id="node-input-title" placeholder="title">
+  <input type="text" id="node-input-title" placeholder="Title">
 </div>
 <div class="form-row form-row-description">
   <label for="node-input-description">Description</label>
   <textarea id="node-input-description" placeholder="Invoice description" style="width:93%;height:50px;"></textarea>
 </div>
+<div class="form-row form-row-payload">
+  <label for="node-input-payload">Payload</label>
+  <input type="text" id="node-input-payload" placeholder="Invoice Payload">
+</div>
 <div class="form-row form-row-currency">
   <label for="node-input-currency">Currency</label>
-  <input type="text" id="node-input-currency" placeholder="">
+  <select id="node-input-currency" placeholder="Select currency">
+    <option value="AED">United Arab Emirates Dirham</option>
+    <option value="AFN">Afghan Afghani</option>
+    <option value="ALL">Albanian Lek</option>
+    <option value="AMD">Armenian Dram</option>
+    <option value="ARS">Argentine Peso</option>
+    <option value="AUD">Australian Dollar</option>
+    <option value="AZN">Azerbaijani Manat</option>
+    <option value="BAM">Bosnia & Herzegovina Convertible Mark</option>
+    <option value="BDT">Bangladeshi Taka</option>
+    <option value="BGN">Bulgarian Lev</option>
+    <option value="BND">Brunei Dollar</option>
+    <option value="BOB">Bolivian Boliviano</option>
+    <option value="BRL">Brazilian Real</option>
+    <option value="CAD">Canadian Dollar</option>
+    <option value="CHF">Swiss Franc</option>
+    <option value="CLP">Chilean Peso</option>
+    <option value="CNY">Chinese Renminbi Yuan</option>
+    <option value="COP">Colombian Peso</option>
+    <option value="CRC">Costa Rican Colón</option>
+    <option value="CZK">Czech Koruna</option>
+    <option value="DKK">Danish Krone</option>
+    <option value="DOP">Dominican Peso</option>
+    <option value="DZD">Algerian Dinar</option>
+    <option value="EGP">Egyptian Pound</option>
+    <option value="EUR">Euro</option>
+    <option value="GBP">British Pound</option>
+    <option value="GEL">Georgian Lari</option>
+    <option value="GTQ">Guatemalan Quetzal</option>
+    <option value="HKD">Hong Kong Dollar</option>
+    <option value="HNL">Honduran Lempira</option>
+    <option value="HRK">Croatian Kuna</option>
+    <option value="HUF">Hungarian Forint</option>
+    <option value="IDR">Indonesian Rupiah</option>
+    <option value="ILS">Israeli New Sheqel</option>
+    <option value="INR">Indian Rupee</option>
+    <option value="ISK">Icelandic Króna</option>
+    <option value="JMD">Jamaican Dollar</option>
+    <option value="JPY">Japanese Yen</option>
+    <option value="KES">Kenyan Shilling</option>
+    <option value="KGS">Kyrgyzstani Som</option>
+    <option value="KRW">South Korean Won</option>
+    <option value="KZT">Kazakhstani Tenge</option>
+    <option value="LBP">Lebanese Pound</option>
+    <option value="LKR">Sri Lankan Rupee</option>
+    <option value="MAD">Moroccan Dirham</option>
+    <option value="MDL">Moldovan Leu</option>
+    <option value="MNT">Mongolian Tögrög</option>
+    <option value="MUR">Mauritian Rupee</option>
+    <option value="MVR">Maldivian Rufiyaa</option>
+    <option value="MXN">Mexican Peso</option>
+    <option value="MYR">Malaysian Ringgit</option>
+    <option value="MZN">Mozambican Metical</option>
+    <option value="NGN">Nigerian Naira</option>
+    <option value="NIO">Nicaraguan Córdoba</option>
+    <option value="NOK">Norwegian Krone</option>
+    <option value="NPR">Nepalese Rupee</option>
+    <option value="NZD">New Zealand Dollar</option>
+    <option value="PAB">Panamanian Balboa</option>
+    <option value="PEN">Peruvian Nuevo Sol</option>
+    <option value="PHP">Philippine Peso</option>
+    <option value="PKR">Pakistani Rupee</option>
+    <option value="PLN">Polish Złoty</option>
+    <option value="PYG">Paraguayan Guaraní</option>
+    <option value="QAR">Qatari Riyal</option>
+    <option value="RON">Romanian Leu</option>
+    <option value="RSD">Serbian Dinar</option>
+    <option value="RUB">Russian Ruble</option>
+    <option value="SAR">Saudi Riyal</option>
+    <option value="SEK">Swedish Krona</option>
+    <option value="SGD">Singapore Dollar</option>
+    <option value="THB">Thai Baht</option>
+    <option value="TJS">Tajikistani Somoni</option>
+    <option value="TRY">Turkish Lira</option>
+    <option value="TTD">Trinidad and Tobago Dollar</option>
+    <option value="TWD">New Taiwan Dollar</option>
+    <option value="TZS">Tanzanian Shilling</option>
+    <option value="UAH">Ukrainian Hryvnia</option>
+    <option value="UGX">Ugandan Shilling</option>
+    <option value="USD">United States Dollar</option>
+    <option value="UYU">Uruguayan Peso</option>
+    <option value="UZS">Uzbekistani Som</option>
+    <option value="VND">Vietnamese Đồng</option>
+    <option value="YER">Yemeni Rial</option>
+    <option value="ZAR">South African Rand</option>
+  </select>
 </div>
-<div class="form-row">
-  <label for="node-input-answer">Need Name</label>
+<div class="form-row form-row-checkbox">
+  <label for="node-input-needName">Need Name</label>
   <input type="checkbox" value="true" id="node-input-needName">
 </div>
-<div class="form-row">
-  <label for="node-input-answer">Need Email</label>
+<div class="form-row form-row-checkbox">
+  <label for="node-input-needEmail">Need Email</label>
   <input type="checkbox" value="true" id="node-input-needEmail">
 </div>
-<div class="form-row">
-  <label for="node-input-answer">Need Phone Number</label>
+<div class="form-row form-row-checkbox">
+  <label for="node-input-needPhoneNumber">Need Phone Number</label>
   <input type="checkbox" value="true" id="node-input-needPhoneNumber">
 </div>
-<div class="form-row">
-  <label for="node-input-answer">Need Shipping Address</label>
+<div class="form-row form-row-checkbox">
+  <label for="node-input-needShippingAddress">Need Shipping Address</label>
   <input type="checkbox" value="true" id="node-input-needShippingAddress">
 </div>
-
+<div class="form-row form-row-checkbox">
+  <label for="node-input-isFlexible">Is flexible</label>
+  <input type="checkbox" value="true" id="node-input-isFlexible">
+</div>
 
 
 
