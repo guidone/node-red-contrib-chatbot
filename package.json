@@ -63,7 +63,8 @@
       "chatbot-rules": "./nodes/chatbot-rules.js",
       "chatbot-recast": "./nodes/chatbot-recast.js",
       "chatbot-dialogflow": "./nodes/chatbot-dialogflow.js",
-      "chatbot-invoice": "./nodes/chatbot-invoice.js"
+      "chatbot-invoice": "./nodes/chatbot-invoice.js",
+      "chatbot-invoice-shipping": "./nodes/chatbot-invoice-shipping.js"
     }
   },
   "maintainers": [

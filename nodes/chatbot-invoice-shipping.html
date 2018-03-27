@@ -1,0 +1,89 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-invoice-shipping', {
+    category: 'RedBot',
+    color: '#FFCC66',
+    defaults: {
+      name: {
+        value: ''
+      },
+      shippingOptions: {
+        value: []
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'Invoice Shipping',
+    icon: 'chatbot-inline-button.png',
+    label: function() {
+      return this.name || 'Invoice Shipping';
+    },
+    oneditsave: function() {
+      var shippingOptions = $("#node-input-items-container").editableList('items');
+      var node = this;
+      node.shippingOptions = [];
+      var idx;
+      for(idx = 0; idx < shippingOptions.length; idx++) {
+        var container = $(shippingOptions[idx]);
+        node.shippingOptions.push({
+          id: $('input[name=id]', container).val(),
+          label: $('input[name=label]', container).val(),
+          amount: $('input[name=amount]', container).val()
+        });
+      }
+    },
+    oneditprepare: function() {
+      $('#node-input-items-container')
+        .css('min-height','300px')
+        .css('min-width','450px')
+        .editableList({
+          addButton: 'Add shipping option',
+          addItem: function(container, i, item) {
+            var row = $('<div/>').appendTo(container);
+            row
+              .append('<input style="width:15%;margin-left:10px;" type="text" name="id" placeholder="Unique Id"/>')
+              .append('<input style="width:50%;margin-left:10px;" type="text" name="label" placeholder="Label"/>')
+              .append('<input style="width:25%;margin-left:10px;" type="text" name="amount" placeholder="Amount"/>');
+
+            if (item.label != null) {
+              $('input[name=label]', container).val(item.label);
+            }
+            if (item.amount != null) {
+              $('input[name=amount]', container).val(item.amount);
+            }
+            if (item.id != null) {
+              $('input[name=id]', container).val(item.id);
+            }
+          },
+          removable: true,
+          sortable: true
+        });
+
+      var shippingOptions = this.shippingOptions;
+      var idx;
+      for (idx = 0; idx < shippingOptions.length; idx++) {
+        $('#node-input-items-container').editableList('addItem', shippingOptions[idx]);
+      }
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-invoice-shipping">
+<div class="form-row form-row-name">
+  <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+  <input type="text" id="node-input-name" placeholder="Name">
+</div>
+
+<div class="form-row form-row-label" style="margin-bottom:0;">
+  <label><i class="fa fa-list"></i> <span>Shipping Methods</span></label>
+</div>
+<div class="form-row node-input-rule-container-row">
+  <ol id="node-input-items-container"></ol>
+</div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-invoice-shipping">
+</script>
+
+
+
+
