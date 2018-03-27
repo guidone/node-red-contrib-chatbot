@@ -32,8 +32,10 @@
       },
       isFlexible: {
         value: false
+      },
+      prices: {
+        value: []
       }
-
     },
     inputs: 1,
     outputs: 1,
@@ -43,35 +45,44 @@
       return this.name || 'Invoice';
     },
     oneditsave: function() {
-      var buttons = $("#node-input-buttons-container").editableList('items');
+      var prices = $("#node-input-items-container").editableList('items');
       var node = this;
-      node.buttons = [];
+      node.prices = [];
       var idx;
-      for(idx = 0; idx < buttons.length; idx++) {
-        node.buttons.push($(buttons[idx]).RB_getButtonData());
+      for(idx = 0; idx < prices.length; idx++) {
+        var container = $(prices[idx]);
+        node.prices.push({
+          label: $('input[name=label]', container).val(),
+          amount: $('input[name=amount]', container).val()
+        });
       }
     },
     oneditprepare: function() {
-      $('#node-input-buttons-container')
+      $('#node-input-items-container')
         .css('min-height','300px')
         .css('min-width','450px')
         .editableList({
-          addButton: 'Add button',
+          addButton: 'Add item',
           addItem: function(container, i, item) {
-            $(container).RB_mountButtonDialog({
-              types: ['url', 'postback', 'call', 'login', 'newline', 'logout', 'dialog'],
-              platforms: ['facebook', 'telegram', 'slack']
-            });
-            $(container).RB_setButtonData(item);
+            var row = $('<div/>').appendTo(container);
+            row
+              .append('<input style="width:70%;margin-left:10px;" type="text" name="label" placeholder="Description"/>')
+              .append('<input style="width:25%;margin-left:10px;" type="text" name="amount" placeholder="Amount"/>');
+            if (item.label != null) {
+              $('input[name=label]', container).val(item.label);
+            }
+            if (item.amount != null) {
+              $('input[name=amount]', container).val(item.amount);
+            }
           },
           removable: true,
           sortable: true
         });
 
-      var buttons = this.buttons;
+      var prices = this.prices;
       var idx;
-      for (idx = 0; idx < buttons.length; idx++) {
-        $('#node-input-buttons-container').editableList('addItem', buttons[idx]);
+      for (idx = 0; idx < prices.length; idx++) {
+        $('#node-input-items-container').editableList('addItem', prices[idx]);
       }
     }
   });
@@ -183,44 +194,45 @@
     <option value="ZAR">South African Rand</option>
   </select>
 </div>
-<div class="form-row form-row-checkbox">
-  <label for="node-input-needName">Need Name</label>
-  <input type="checkbox" value="true" id="node-input-needName">
-</div>
-<div class="form-row form-row-checkbox">
-  <label for="node-input-needEmail">Need Email</label>
-  <input type="checkbox" value="true" id="node-input-needEmail">
-</div>
-<div class="form-row form-row-checkbox">
-  <label for="node-input-needPhoneNumber">Need Phone Number</label>
-  <input type="checkbox" value="true" id="node-input-needPhoneNumber">
-</div>
-<div class="form-row form-row-checkbox">
-  <label for="node-input-needShippingAddress">Need Shipping Address</label>
-  <input type="checkbox" value="true" id="node-input-needShippingAddress">
-</div>
+<table width="100%">
+<tr>
+  <td width="50%">
+    <div class="form-row form-row-checkbox">
+      <label for="node-input-needName">Need Name</label>
+      <input type="checkbox" value="true" id="node-input-needName">
+    </div>
+  </td>
+  <td width="50%">
+    <div class="form-row form-row-checkbox">
+      <label for="node-input-needEmail">Need Email</label>
+      <input type="checkbox" value="true" id="node-input-needEmail">
+    </div>
+  </td>
+</tr>
+<tr>
+  <td width="50%">
+    <div class="form-row form-row-checkbox">
+      <label for="node-input-needPhoneNumber">Need Phone Number</label>
+      <input type="checkbox" value="true" id="node-input-needPhoneNumber">
+    </div>
+  </td>
+  <td width="50%">
+    <div class="form-row form-row-checkbox">
+      <label for="node-input-needShippingAddress">Need Shipping Address</label>
+      <input type="checkbox" value="true" id="node-input-needShippingAddress">
+    </div>
+  </td>
+</tr>
+</table>
 <div class="form-row form-row-checkbox">
   <label for="node-input-isFlexible">Is flexible</label>
   <input type="checkbox" value="true" id="node-input-isFlexible">
 </div>
-
-
-
-
-
-
 <div class="form-row form-row-label" style="margin-bottom:0;">
-  <label><i class="fa fa-list"></i> <span>Buttons</span></label>
+  <label><i class="fa fa-list"></i> <span>Items</span></label>
 </div>
 <div class="form-row node-input-rule-container-row">
-  <ol id="node-input-buttons-container"></ol>
-</div>
-<div class="form-row-hint" style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;margin-bottom:10px;">
-  Some attributes apply for specific platform:<br>
-  <span class="icon-platform-facebook"></span> = <span style="font-size:10px">Facebook</span>
-  <span class="icon-platform-telegram"></span> = <span style="font-size:10px">Telegram</span>
-  <span class="icon-platform-smooch"></span> = <span style="font-size:10px">Smooch</span>
-  <span class="icon-platform-slack"></span> = <span style="font-size:10px">Slack</span>
+  <ol id="node-input-items-container"></ol>
 </div>
 </script>
 

@@ -134,6 +134,25 @@ describe('Validators', function() {
     assert.isFalse(validators.float('fortytwo'));
   });
 
+  it('validates a variable', function() {
+    assert.isTrue(validators.isVariable('{{price}}'));
+    assert.isFalse(validators.isVariable('{{price{{'));
+  });
+
+  it('validates a Telegram price', function() {
+    assert.isTrue(validators.invoiceItem({ label: 'Test', amount: '1.23' }));
+    assert.isFalse(validators.invoiceItem({ label: 'Test', amount: '{{price{{' }));
+  });
+
+  it('validates a Telegram prices', function() {
+    assert.isTrue(validators.invoiceItems([{ label: 'Test', amount: '1.23' }]));
+    assert.isTrue(validators.invoiceItems([{ label: 'Test', amount: '1.23' }, { label: 'Test 2', amount: 1.23 }]));
+    assert.isTrue(validators.invoiceItems([{ label: 'Test', amount: '{{price}}' }, { label: 'Test 2', amount: 1.23 }]));
+    assert.isFalse(validators.invoiceItems([{ label: 'Test', amount: null }]));
+    assert.isFalse(validators.invoiceItems([{ label: 'Test', amount: '{{price{{' }, { label: 'Test 2', amount: 1.23 }]));
+    assert.isFalse(validators.invoiceItems([{ label: null, amount: '1.23' }]));
+  });
+
   it('validates a Telegram configuration', function() {
     var base = {
       authorizedUsernames: '12213123',

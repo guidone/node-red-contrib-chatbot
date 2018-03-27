@@ -1,7 +1,6 @@
 var MessageTemplate = require('../lib/message-template-async');
-var emoji = require('node-emoji');
 var utils = require('../lib/helpers/utils');
-
+var _ = require('underscore');
 
 module.exports = function(RED) {
 
@@ -17,16 +16,15 @@ module.exports = function(RED) {
     this.needPhoneNumber = config.needPhoneNumber;
     this.needShippingAddress = config.needShippingAddress;
     this.isFlexible = config.isFlexible;
+    this.prices = config.prices;
     this.payload = config.payload;
     this.transports = ['telegram'];
 
     this.on('input', function(msg) {
-
       // check transport compatibility
       if (!utils.matchTransport(node, msg)) {
         return;
       }
-
       var chatId = utils.getChatId(msg);
       var template = MessageTemplate(msg, node);
 
@@ -39,31 +37,43 @@ module.exports = function(RED) {
       var needPhoneNumber = utils.extractValue('boolean', 'needPhoneNumber', node, msg, false);
       var needShippingAddress = utils.extractValue('boolean', 'needShippingAddress', node, msg, false);
       var isFlexible = utils.extractValue('boolean', 'isFlexible', node, msg, false);
+      var prices = utils.extractValue('invoiceItems', 'prices', node, msg, false);
 
-      template('test')
-        .then(function(message) {
-          msg.payload = {
+      // payload that can be translated
+      var invoicePayload = {
+        title: title,
+        description: description,
+        payload: payload,
+        prices: prices
+      };
+
+      template(invoicePayload)
+        .then(function(invoicePayload) {
+          // convert amount in numbers * 100
+          invoicePayload.prices = _(invoicePayload.prices).map(function(price) {
+            return {
+              label: price.label,
+              amount: Math.floor(parseFloat(price.amount) * 100)
+            }
+          });
+
+          // todo check again with validator
+
+          _.extend(invoicePayload, {
             type: 'invoice',
-            title: title,
-            description: description,
             startParameter: 'start_parameter',
             currency: currency,
-            payload: payload,
-            prices: [
-              {label: 'Uno', amount: 125},
-              {label: 'Due', amount: 300}
-            ],
             needName: needName,
             needPhoneNumber: needPhoneNumber,
             needEmail: needEmail,
             needShippingAddress: needShippingAddress,
             isFlexible: isFlexible,
             chatId: chatId
-          };
+          });
+          msg.payload = invoicePayload;
           node.send(msg);
         });
     });
-
   }
 
   RED.nodes.registerType('chatbot-invoice', ChatBotInvoice);
