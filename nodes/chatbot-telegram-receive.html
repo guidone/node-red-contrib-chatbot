@@ -38,6 +38,7 @@
       $.get(nodeRedUrl + 'redbot/globals')
         .done(function(response) {
           if (response != null && response.telegram != null && response.telegram[node.botname] != null) {
+            $('#node-config-input-botname').prop('readonly', true);
             $('.form-editable').addClass('hidden');
             $('.form-warning').removeClass('hidden');
             $('.form-warning .bot-name').html('"' + node.botname + '"');
@@ -108,7 +109,6 @@
     This bot configuration is stored in <b>Node-RED</b> <em>settings.js</em> and cannot be modified from the UI, check
     the section <code>functionGlobalContext</code> near the key <em class="bot-name">""</em>
   </div>
-
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-telegram-node"><p>Creating a chatbot in <strong>Telegram</strong> is very easy, since it allows polling in order to to receive messages, it doesn&#39;t required a callback url and a https certificate (like <strong>Facebook Messenger</strong>)</p>
