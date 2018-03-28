@@ -200,39 +200,29 @@
 <div class="form-row node-input-rule-container-row">
   <ol id="node-input-items-container"></ol>
 </div>
-<table width="100%">
-<tr>
-  <td width="50%">
-    <div class="form-row form-row-checkbox">
-      <label for="node-input-needName">Need Name</label>
-      <input type="checkbox" value="true" id="node-input-needName">
-    </div>
-  </td>
-  <td width="50%">
-    <div class="form-row form-row-checkbox">
-      <label for="node-input-needEmail">Need Email</label>
-      <input type="checkbox" value="true" id="node-input-needEmail">
-    </div>
-  </td>
-</tr>
-<tr>
-  <td width="50%">
-    <div class="form-row form-row-checkbox">
-      <label for="node-input-needPhoneNumber">Need Phone Number</label>
-      <input type="checkbox" value="true" id="node-input-needPhoneNumber">
-    </div>
-  </td>
-  <td width="50%">
-    <div class="form-row form-row-checkbox">
-      <label for="node-input-needShippingAddress">Need Shipping Address</label>
-      <input type="checkbox" value="true" id="node-input-needShippingAddress">
-    </div>
-  </td>
-</tr>
-</table>
 <div class="form-row form-row-checkbox">
-  <label for="node-input-isFlexible">Is flexible</label>
-  <input type="checkbox" value="true" id="node-input-isFlexible">
+  <label for="node-input-needName">User Data</label>
+  <input type="checkbox" value="true" id="node-input-needName"> Requires name
+</div>
+<div class="form-row form-row-checkbox">
+  <label for="node-input-needEmail">&nbsp;</label>
+  <input type="checkbox" value="true" id="node-input-needEmail"> Requires email
+</div>
+<div class="form-row form-row-checkbox">
+  <label for="node-input-needPhoneNumber">&nbsp;</label>
+  <input type="checkbox" value="true" id="node-input-needPhoneNumber"> Requires phone number
+</div>
+<div class="form-row form-row-checkbox">
+  <label for="node-input-needShippingAddress">&nbsp;</label>
+  <input type="checkbox" value="true" id="node-input-needShippingAddress"> Requires shipping address
+</div>
+<br/>
+<div class="form-row form-row-checkbox">
+  <label for="node-input-isFlexible">Shipping</label>
+  <input type="checkbox" value="true" id="node-input-isFlexible">Flexible order
+  <div class="redbot-form-hint">
+    Shipping fees are calculated dinamically using a <code>Shipping node</code>
+  </div>
 </div>
 </script>
 
