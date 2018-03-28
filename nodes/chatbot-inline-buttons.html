@@ -109,6 +109,40 @@
     }
   ];
   $.RedBot.validate = {};
+  $.RedBot.validate.isVariable = function(value) {
+    return $.RedBot.validate.string(value) && value.match(/^\{\{[A-Za-z0-9_-]*\}\}$/) != null;
+  };
+  $.RedBot.validate.number = function(value) {
+    return typeof value === 'number';
+  };
+  $.RedBot.validate.string = function(value) {
+    return typeof value === 'string';
+  };
+  $.RedBot.validate.numberOrVariable = function(value) {
+    return $.RedBot.validate.number(value)
+      ||
+      ($.RedBot.validate.notEmpty(value) && !isNaN(parseFloat(value)))
+      ||
+      ($.RedBot.validate.notEmpty(value) && $.RedBot.validate.isVariable(value));
+  };
+  $.RedBot.validate.price = function(price) {
+    return price != null
+      && $.RedBot.validate.notEmpty(price.label)
+      && $.RedBot.validate.numberOrVariable(price.amount);
+  };
+  $.RedBot.validate.prices = function(prices) {
+    if (prices == null) {
+      return false;
+    }
+    var valid = true;
+    var idx;
+    for(idx = 0; idx < prices.length; idx++) {
+      if (!$.RedBot.validate.price(prices[idx])) {
+        valid = false;
+      }
+    }
+    return valid;
+  };
   $.RedBot.validate.notEmpty = function(str) {
     return str != null && str != '';
   };

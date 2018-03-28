@@ -7,16 +7,20 @@
         value: ''
       },
       title: {
-        value: ''
+        value: '',
+        required: true
       },
       description: {
-        value: ''
+        value: '',
+        required: true
       },
       payload: {
-        value: ''
+        value: '',
+        required: true
       },
       currency: {
-        value: ''
+        value: '',
+        required: true
       },
       needName: {
         value: true
@@ -34,7 +38,10 @@
         value: false
       },
       prices: {
-        value: []
+        value: [],
+        validate: function(value) {
+          return $.RedBot.validate.prices(value);
+        }
       }
     },
     inputs: 1,
