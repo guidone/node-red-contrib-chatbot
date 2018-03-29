@@ -31,7 +31,7 @@ module.exports = function(RED) {
     var environment = this.context().global.environment === 'production' ? 'production' : 'development';
     var isUsed = utils.isUsed(RED, node.id);
     var startNode = utils.isUsedInEnvironment(RED, node.id, environment);
-    var facebookConfigs = RED.settings.functionGlobalContext.get('facebook');
+    var facebookConfigs = RED.settings.functionGlobalContext.get('facebook') || {};
 
     this.botname = n.botname;
     this.store = n.store;
@@ -56,9 +56,9 @@ module.exports = function(RED) {
     // build the configuration object
     var botConfiguration = {
       authorizedUsernames: node.usernames,
-      token: node.credentials.token,
-      verifyToken: node.credentials.verify_token,
-      appSecret: node.credentials.app_secret,
+      token: node.credentials != null && node.credentials.token != null ? node.credentials.token.trim() : null,
+      verifyToken: node.credentials != null && node.credentials.verify_token != null ? node.credentials.verify_token.trim() : null,
+      appSecret: node.credentials != null && node.credentials.app_secret != null ? node.credentials.app_secret.trim() : null,
       logfile: node.log,
       contextProvider: contextStorageNode != null ? contextStorageNode.contextStorage : null,
       contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null
@@ -83,7 +83,7 @@ module.exports = function(RED) {
     }
     // check if context node
     if (botConfiguration.contextProvider == null) {
-      console.log(lcd.warn('No context provider specified for chatbot ' + this.botname + '. Defaulting to "memory"'));
+      console.log(lcd.warn('No context provider specified for chatbot ' + node.botname + '. Defaulting to "memory"'));
       botConfiguration.contextProvider = 'memory';
       botConfiguration.contextParams = {};
     }
