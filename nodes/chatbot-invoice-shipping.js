@@ -18,38 +18,18 @@ module.exports = function(RED) {
       }
       var template = MessageTemplate(msg, node);
       var shippingOptions = utils.extractValue('shippingOptions', 'shippingOptions', node, msg, true);
+      var shippingQueryId = msg.payload != null ? msg.payload.shippingQueryId : null;
 
-
-
-      /*var shippingPayload = {
-        shippingQueryId: msg.payload.shippingQueryId,
-        type: 'invoice-shipping',
-        shippingOptions: shippingOptions
-        /*shippingOptions: [
-          {
-            id: 'fedex',
-            title: 'Fedex Express',
-            prices: [
-              { label: 'Uno', amount: 100},
-            ]
-          },
-          {
-            id: 'cacchez',
-            title: 'Cacchez Express',
-            prices: [
-              { label: 'UnoUno', amount: 100},
-              { label: 'DueDue', amount: 200}
-            ]
-          }
-        ]*/
-
-      //};
+      if (_.isEmpty(shippingQueryId)) {
+        node.error('shippingQueryId is null in payload, use Invoice Shipping in aswer to a "invoice-shipping" message');
+        return;
+      }
 
       template(shippingOptions)
         .then(function(shippingOptions) {
           msg.payload = {
             type: 'invoice-shipping',
-            shippingQueryId: msg.payload.shippingQueryId,
+            shippingQueryId: shippingQueryId,
             shippingOptions: shippingOptions
           };
           node.send(msg);
