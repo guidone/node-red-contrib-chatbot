@@ -198,6 +198,10 @@
       var rule = this.rules[index];
       if (rule.type === 'catchAll') {
         return 'If no rule applies';
+      } else if (rule.type === 'messageType') {
+        return 'Message type is "' + ($.RedBot.validate.notEmpty(rule.messageType) ? rule.messageType : '...') + '"';
+      } else if (rule.type === 'notMessageType') {
+        return 'Message type is not "' + ($.RedBot.validate.notEmpty(rule.messageType) ? rule.messageType : '...') + '"';
       } else if (rule.type === 'catchAll') {
         return 'If no rule applies';
       } else if (rule.type === 'environment') {

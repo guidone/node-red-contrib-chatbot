@@ -23,6 +23,7 @@ describe('Invoice Shipping node', function() {
     return RED.node.get().await()
       .then(function () {
         var message = RED.node.message();
+        assert.equal(message.payload.type, 'invoice-shipping');
         assert.equal(message.payload.shippingQueryId, '42');
         assert.isArray(message.payload.shippingOptions);
         assert.equal(message.payload.shippingOptions[0].id, 'dhl');
@@ -52,6 +53,7 @@ describe('Invoice Shipping node', function() {
     return RED.node.get().await()
       .then(function () {
         var message = RED.node.message();
+        assert.equal(message.payload.type, 'invoice-shipping');
         assert.equal(message.payload.shippingQueryId, '42');
         assert.isArray(message.payload.shippingOptions);
         assert.equal(message.payload.shippingOptions[0].id, 'dhl');

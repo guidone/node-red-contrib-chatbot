@@ -1,6 +1,7 @@
 var MessageTemplate = require('../lib/message-template-async');
 var utils = require('../lib/helpers/utils');
 var _ = require('underscore');
+var validators = require('../lib/helpers/validators');
 
 module.exports = function(RED) {
 
@@ -49,16 +50,12 @@ module.exports = function(RED) {
 
       template(invoicePayload)
         .then(function(invoicePayload) {
-          // convert amount in numbers * 100
-          invoicePayload.prices = _(invoicePayload.prices).map(function(price) {
-            return {
-              label: price.label,
-              amount: Math.floor(parseFloat(price.amount) * 100)
-            }
-          });
-
-          // todo check again with validator
-
+          // check again, validation may insert wrong values
+          if (!validators.invoiceItems(invoicePayload.prices)) {
+            node.error('Invalid prices in Invoice node: ' + JSON.stringify(invoicePayload.prices));
+            return;
+          }
+          // merge template
           _.extend(invoicePayload, {
             type: 'invoice',
             startParameter: 'start_parameter',

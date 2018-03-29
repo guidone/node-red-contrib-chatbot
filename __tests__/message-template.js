@@ -34,6 +34,18 @@ describe('Message template', function() {
       });
   });
 
+  it('Simple replacement of a token with strange chars', function() {
+    var msg = RED.createMessage();
+    var node = {};
+    RED.nodes.createNode(node, {});
+    msg.chat().set({user_name: 'guido'});
+    var template = MessageTemplate(msg, node);
+    return template('I am a template for {{user_name}} user')
+      .then(function(result) {
+        assert.equal(result, 'I am a template for guido user');
+      });
+  });
+
   it('Simple replacement of a couple of tokens', function() {
     var msg = RED.createMessage();
     var node = {};
