@@ -134,5 +134,62 @@ describe('Validators', function() {
     assert.isFalse(validators.float('fortytwo'));
   });
 
+  it('validates a Telegram configuration', function() {
+    var base = {
+      authorizedUsernames: '12213123',
+      token: 'xxx:xxxxyyyyyyzzzz',
+      polling: 1000,
+      parseMode: 'none',
+      contextProvider: 'memory',
+      logfile: null
+    };
+
+    assert.isNull(validators.platform.telegram(base));
+    assert.isNotNull(validators.platform.telegram(_.extend({}, base, { polling: 'aaaa'})));
+    assert.isNotNull(validators.platform.telegram(_.extend({}, base, { token: null})));
+    assert.isNotNull(validators.platform.telegram(_.extend({}, base, { token: ''})));
+    assert.isNotNull(validators.platform.telegram(_.extend({}, base, { contextProvider: 'wrong_context'})));
+    assert.isNotNull(validators.platform.telegram(_.extend({}, base, { authorizedUsernames: 42})));
+    assert.isNotNull(validators.platform.telegram(_.extend({}, base, { logfile: 42})));
+  });
+
+  it('validates a Slack configuration', function() {
+    var base = {
+      botname: 'guidone_bot',
+      token: 'xoxb-00000000-1111111111111',
+      authorizedUsernames: null,
+      contextProvider: 'memory',
+      logfile: null
+    };
+
+    assert.isNull(validators.platform.slack(base));
+    assert.isNotNull(validators.platform.slack(_.extend(base, { botname: null})));
+    assert.isNotNull(validators.platform.slack(_.extend(base, { token: null})));
+    assert.isNotNull(validators.platform.slack(_.extend(base, { token: ''})));
+    assert.isNotNull(validators.platform.slack(_.extend(base, { contextProvider: 'wrong_context'})));
+    assert.isNotNull(validators.platform.slack(_.extend(base, { authorizedUsernames: 42})));
+    assert.isNotNull(validators.platform.slack(_.extend(base, { logfile: 42})));
+  });
+
+  it('validates a Facebook configuration', function() {
+    var base = {
+      authorizedUsernames: null,
+      token: 'xxxxyyyyzzzz',
+      verifyToken: 'test',
+      appSecret: 'xxxxyyyyyzzzz',
+      contextProvider: 'memory',
+      logfile: null
+    };
+
+    assert.isNull(validators.platform.facebook(base));
+    assert.isNotNull(validators.platform.facebook(_.extend({}, base, { appSecret: null})));
+    assert.isNotNull(validators.platform.facebook(_.extend({}, base, { appSecret: ''})));
+    assert.isNotNull(validators.platform.facebook(_.extend({}, base, { token: null})));
+    assert.isNotNull(validators.platform.facebook(_.extend({}, base, { token: ''})));
+    assert.isNotNull(validators.platform.facebook(_.extend({}, base, { contextProvider: 'wrong_context'})));
+    assert.isNotNull(validators.platform.facebook(_.extend({}, base, { authorizedUsernames: 42})));
+    assert.isNotNull(validators.platform.facebook(_.extend({}, base, { logfile: 42})));
+  });
+
 });
 

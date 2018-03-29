@@ -63,6 +63,7 @@ module.exports = function(RED) {
     if (slackConfigs[node.botname] != null) {
       var validation = validators.platform.slack(slackConfigs[node.botname]);
       if (validation != null) {
+        /* eslint-disable no-console */
         console.log('');
         console.log(lcd.error('Found a Slack configuration in settings.js "' + node.botname + '", but it\'s invalid.'));
         console.log(lcd.grey('Errors:'));
@@ -74,11 +75,13 @@ module.exports = function(RED) {
         console.log(lcd.grey('Found a valid Slack configuration in settings.js: "' + node.botname + '":'));
         console.log(prettyjson.render(slackConfigs[node.botname]));
         console.log('');
+        /* eslint-enable no-console */
         botConfiguration = slackConfigs[node.botname];
       }
     }
     // check if context node
     if (botConfiguration.contextProvider == null) {
+      // eslint-disable-next-line no-console
       console.log(lcd.warn('No context provider specified for chatbot ' + node.botname + '. Defaulting to "memory"'));
       botConfiguration.contextProvider = 'memory';
       botConfiguration.contextParams = {};
