@@ -46,7 +46,7 @@ Then run
 node-red
 ```
 
-The next step is to create a chat bot, I reccomend to use **Telegram** since the setup it's easier ( **Telegram** allows polling to receive messages, so it's not necessary to create a https certificate).
+The next step is to create a chat bot, I recommend to use **Telegram** since the setup is easier ( **Telegram** allows polling to receive messages, so it's not necessary to create a https certificate).
 Use **@BotFather** to create a chat bot, [follow instructions here](https://core.telegram.org/bots#botfather) then copy you access **token**.
 
 Then open your **Node-RED** and add a `Telegram Receiver`, in the configuration panel, add a new bot and paste the **token**
