@@ -19,6 +19,23 @@
         value: null
       }
     },
+    oneditprepare: function() {
+      var node = this;
+      var nodeRedUrl = '';
+      if (RED.settings.httpNodeRoot) {
+        nodeRedUrl = RED.settings.httpNodeRoot;
+      }
+      // fetch available context providers
+      $.get(nodeRedUrl + 'redbot/globals')
+        .done(function(response) {
+          if (response != null && response.facebook != null && response.facebook[node.botname] != null) {
+            $('#node-config-input-botname').prop('readonly', true);
+            $('.form-editable').addClass('hidden');
+            $('.form-warning').removeClass('hidden');
+            $('.form-warning .bot-name').html('"' + node.botname + '"');
+          }
+        });
+    },
     paletteName: 'Facebook Bot',
     credentials: {
       token: {
@@ -42,49 +59,55 @@
     <label for="node-config-input-botname"><i class="icon-bookmark"></i> Bot-Name</label>
     <input type="text" id="node-config-input-botname">
   </div>
-  <div class="form-row">
-    <label for="node-config-input-token">Token</label>
-    <input type="text" id="node-config-input-token" placeholder="Access Token">
-    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
-      The access token that is generated when the Facebook app is connected to a Facebook page
-    </div>
-  </div>
+  <div class="form-editable">
     <div class="form-row">
-    <label for="node-config-input-app_secret">App Secret</label>
-    <input type="text" id="node-config-input-app_secret" placeholder="App secret">
-    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
-      This is the app secret, find it in the "dashboard" section of the Facebook app
+      <label for="node-config-input-token">Token</label>
+      <input type="text" id="node-config-input-token" placeholder="Access Token">
+      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+        The access token that is generated when the Facebook app is connected to a Facebook page
+      </div>
+    </div>
+      <div class="form-row">
+      <label for="node-config-input-app_secret">App Secret</label>
+      <input type="text" id="node-config-input-app_secret" placeholder="App secret">
+      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+        This is the app secret, find it in the "dashboard" section of the Facebook app
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-verify_token">Verify</label>
+      <input type="text" id="node-config-input-verify_token" placeholder="Verify token">
+      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+        The verify token is an arbitrary string, must match the same string in the "Webhooks" section in the
+        Facebook app
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-usernames">Users</label>
+      <input type="text" id="node-config-input-usernames" placeholder="Authorized users">
+      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+        Comma separated list of userId authorized to use the chatBot
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-log">Log file</label>
+      <input type="text" id="node-config-input-log">
+      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+        Store inbound and outbound messages to file
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="node-input-bot">Context</label>
+      <input type="text" id="node-config-input-store" placeholder="Select storage for chat context">
+      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+        Select the chat context provider to use with this bot, if none is selected then non-persistent "memory" will be used.<br>
+        To extend <strong>RedBot</strong> with a new chat context provider see <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Creating-a-Chat-Context-Provider" target="_blank">this tutorial</a>.
+      </div>
     </div>
   </div>
-  <div class="form-row">
-    <label for="node-config-input-verify_token">Verify</label>
-    <input type="text" id="node-config-input-verify_token" placeholder="Verify token">
-    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
-      The verify token is an arbitrary string, must match the same string in the "Webhooks" section in the
-      Facebook app
-    </div>
-  </div>
-  <div class="form-row">
-    <label for="node-config-input-usernames">Users</label>
-    <input type="text" id="node-config-input-usernames" placeholder="Authorized users">
-    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
-      Comma separated list of userId authorized to use the chatBot
-    </div>
-  </div>
-  <div class="form-row">
-    <label for="node-config-input-log">Log file</label>
-    <input type="text" id="node-config-input-log">
-    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
-      Store inbound and outbound messages to file
-    </div>
-  </div>
-  <div class="form-row">
-    <label for="node-input-bot">Context</label>
-    <input type="text" id="node-config-input-store" placeholder="Select storage for chat context">
-    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
-      Select the chat context provider to use with this bot, if none is selected then non-persistent "memory" will be used.<br>
-      To extend <strong>RedBot</strong> with a new chat context provider see <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Creating-a-Chat-Context-Provider" target="_blank">this tutorial</a>.
-    </div>
+  <div class="form-warning hidden">
+    This bot configuration is stored in <b>Node-RED</b> <em>settings.js</em> and cannot be modified from the UI, check
+    the section <code>functionGlobalContext</code> near the key <em class="bot-name">""</em>
   </div>
 </script>
 

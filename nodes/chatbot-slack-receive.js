@@ -4,6 +4,9 @@ var SlackServer = require('../lib/slack/slack-chat');
 var ContextProviders = require('../lib/chat-platform/chat-context-factory');
 var utils = require('../lib/helpers/utils');
 var clc = require('cli-color');
+var lcd = require('../lib/helpers/lcd');
+var prettyjson = require('prettyjson');
+var validators = require('../lib/helpers/validators');
 
 var when = utils.when;
 var warn = clc.yellow;
@@ -28,6 +31,7 @@ module.exports = function(RED) {
     var environment = this.context().global.environment === 'production' ? 'production' : 'development';
     var isUsed = utils.isUsed(RED, node.id);
     var startNode = utils.isUsedInEnvironment(RED, node.id, environment);
+    var slackConfigs = RED.settings.functionGlobalContext.get('slack') || {};
 
     this.botname = n.botname;
     this.store = n.store;
@@ -46,56 +50,73 @@ module.exports = function(RED) {
     }
     // eslint-disable-next-line no-console
     console.log(green('Slack Bot ' + this.botname + ' will be launched, environment is ' + environment));
-
-    if (this.credentials) {
-      this.token = this.credentials.token;
-      if (this.token) {
-        this.token = this.token.trim();
-        if (!this.chat) {
-          // get the context storage node
-          var contextStorageNode = RED.nodes.getNode(this.store);
-          var contextStorage = null;
-          var contextParams = null;
-          // check if context node
-          if (contextStorageNode != null) {
-            contextStorage = contextStorageNode.contextStorage;
-            contextParams = contextStorageNode.contextParams;
-          } else {
-            contextStorage = 'memory';
-            contextParams = {};
-            node.error('No context provider specified for chatbot ' + this.botname + '. Defaulting to "memory"');
-          }
-          // check if provider exisst
-          if (!contextProviders.hasProvider(contextStorage)) {
-            node.error('Error creating chatbot ' + this.botname+ '. The context provider '
-              + contextStorage + ' doesn\'t exist.');
-            return;
-          }
-          // create a factory for the context provider
-          node.contextProvider = contextProviders.getProvider(contextStorage, contextParams);
-          // try to start the servers
-          try {
-            node.contextProvider.start();
-            node.chat = SlackServer.createServer({
-              botname: node.botname,
-              authorizedUsernames: node.usernames,
-              token: node.token,
-              contextProvider: node.contextProvider,
-              logfile: node.log,
-              RED: RED
-            });
-            node.chat.start();
-            // handle error on sl6teack chat server
-            node.chat.on('error', function(error) {
-              node.error(error);
-            });
-            node.chat.on('warning', function(warning) {
-              node.warn(warning);
-            });
-          } catch(e) {
-            node.error(e);
-          }
-        }
+    // get the context storage node
+    var contextStorageNode = RED.nodes.getNode(this.store);
+    // build the configuration object
+    var botConfiguration = {
+      botname: node.botname,
+      token: node.credentials != null && node.credentials.token != null ? node.credentials.token.trim() : null,
+      contextProvider: contextStorageNode != null ? contextStorageNode.contextStorage : null,
+      contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null
+    };
+    // check if there's a valid configuration in global settings
+    if (slackConfigs[node.botname] != null) {
+      var validation = validators.platform.slack(slackConfigs[node.botname]);
+      if (validation != null) {
+        /* eslint-disable no-console */
+        console.log('');
+        console.log(lcd.error('Found a Slack configuration in settings.js "' + node.botname + '", but it\'s invalid.'));
+        console.log(lcd.grey('Errors:'));
+        console.log(prettyjson.render(validation));
+        console.log('');
+        return;
+      } else {
+        console.log('');
+        console.log(lcd.grey('Found a valid Slack configuration in settings.js: "' + node.botname + '":'));
+        console.log(prettyjson.render(slackConfigs[node.botname]));
+        console.log('');
+        /* eslint-enable no-console */
+        botConfiguration = slackConfigs[node.botname];
+      }
+    }
+    // check if context node
+    if (botConfiguration.contextProvider == null) {
+      // eslint-disable-next-line no-console
+      console.log(lcd.warn('No context provider specified for chatbot ' + node.botname + '. Defaulting to "memory"'));
+      botConfiguration.contextProvider = 'memory';
+      botConfiguration.contextParams = {};
+    }
+    // if chat is not already there and there's a token
+    if (node.chat == null && botConfiguration.token != null) {
+      // check if provider exisst
+      if (!contextProviders.hasProvider(botConfiguration.contextProvider)) {
+        node.error('Error creating chatbot ' + node.botname + '. The context provider '
+          + botConfiguration.contextProvider + ' doesn\'t exist.');
+        return;
+      }
+      // create a factory for the context provider
+      node.contextProvider = contextProviders.getProvider(botConfiguration.contextProvider, botConfiguration.contextParams);
+      // try to start the servers
+      try {
+        node.contextProvider.start();
+        node.chat = SlackServer.createServer({
+          botname: botConfiguration.botname,
+          authorizedUsernames: botConfiguration.usernames,
+          token: botConfiguration.token,
+          contextProvider: node.contextProvider,
+          logfile: botConfiguration.log,
+          RED: RED
+        });
+        node.chat.start();
+        // handle error on sl6teack chat server
+        node.chat.on('error', function(error) {
+          node.error(error);
+        });
+        node.chat.on('warning', function(warning) {
+          node.warn(warning);
+        });
+      } catch(e) {
+        node.error(e);
       }
     }
 

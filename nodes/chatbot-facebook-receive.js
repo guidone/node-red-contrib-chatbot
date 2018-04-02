@@ -4,6 +4,9 @@ var FacebookServer = require('../lib/facebook/facebook-chat');
 var ContextProviders = require('../lib/chat-platform/chat-context-factory');
 var utils = require('../lib/helpers/utils');
 var clc = require('cli-color');
+var lcd = require('../lib/helpers/lcd');
+var prettyjson = require('prettyjson');
+var validators = require('../lib/helpers/validators');
 
 var when = utils.when;
 var warn = clc.yellow;
@@ -28,6 +31,7 @@ module.exports = function(RED) {
     var environment = this.context().global.environment === 'production' ? 'production' : 'development';
     var isUsed = utils.isUsed(RED, node.id);
     var startNode = utils.isUsedInEnvironment(RED, node.id, environment);
+    var facebookConfigs = RED.settings.functionGlobalContext.get('facebook') || {};
 
     this.botname = n.botname;
     this.store = n.store;
@@ -47,58 +51,77 @@ module.exports = function(RED) {
     // eslint-disable-next-line no-console
     console.log(green('Facebook Messenger Bot ' + this.botname + ' will be launched, environment is ' + environment));
 
-    if (this.credentials) {
-      this.token = this.credentials.token;
-      this.verify_token = this.credentials.verify_token;
-      this.app_secret = this.credentials.app_secret;
-      if (this.token) {
-        this.token = this.token.trim();
-        if (!this.chat) {
-          // get the context storage node
-          var contextStorageNode = RED.nodes.getNode(this.store);
-          var contextStorage = null;
-          var contextParams = null;
-          // check if context node
-          if (contextStorageNode != null) {
-            contextStorage = contextStorageNode.contextStorage;
-            contextParams = contextStorageNode.contextParams;
-          } else {
-            contextStorage = 'memory';
-            contextParams = {};
-            node.error('No context provider specified for chatbot ' + this.botname + '. Defaulting to "memory"');
-          }
-          // check if provider exisst
-          if (!contextProviders.hasProvider(contextStorage)) {
-            node.error('Error creating chatbot ' + this.botname+ '. The context provider '
-              + contextStorage + ' doesn\'t exist.');
-            return;
-          }
-          // create a factory for the context provider
-          node.contextProvider = contextProviders.getProvider(contextStorage, contextParams);
-          // try to start the servers
-          try {
-            node.contextProvider.start();
-            node.chat = FacebookServer.createServer({
-              authorizedUsernames: node.usernames,
-              token: node.token,
-              verifyToken: node.verify_token,
-              appSecret: node.app_secret,
-              contextProvider: node.contextProvider,
-              logfile: node.log,
-              RED: RED
-            });
-            node.chat.start();
-            // handle error on sl6teack chat server
-            node.chat.on('error', function(error) {
-              node.error(error);
-            });
-            node.chat.on('warning', function(warning) {
-              node.warn(warning);
-            });
-          } catch(e) {
-            node.error(e);
-          }
-        }
+    // get the context storage node
+    var contextStorageNode = RED.nodes.getNode(this.store);
+    // build the configuration object
+    var botConfiguration = {
+      authorizedUsernames: node.usernames,
+      token: node.credentials != null && node.credentials.token != null ? node.credentials.token.trim() : null,
+      verifyToken: node.credentials != null && node.credentials.verify_token != null ? node.credentials.verify_token.trim() : null,
+      appSecret: node.credentials != null && node.credentials.app_secret != null ? node.credentials.app_secret.trim() : null,
+      logfile: node.log,
+      contextProvider: contextStorageNode != null ? contextStorageNode.contextStorage : null,
+      contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null
+    };
+    // check if there's a valid configuration in global settings
+    if (facebookConfigs[node.botname] != null) {
+      var validation = validators.platform.facebook(facebookConfigs[node.botname]);
+      if (validation != null) {
+        /* eslint-disable no-console */
+        console.log('');
+        console.log(lcd.error('Found a Facebook Messenger configuration in settings.js "' + node.botname + '", but it\'s invalid.'));
+        console.log(lcd.grey('Errors:'));
+        console.log(prettyjson.render(validation));
+        console.log('');
+        return;
+      } else {
+        console.log('');
+        console.log(lcd.grey('Found a valid Facebook Messenger configuration in settings.js: "' + node.botname + '":'));
+        console.log(prettyjson.render(facebookConfigs[node.botname]));
+        console.log('');
+        /* eslint-enable no-console */
+        botConfiguration = facebookConfigs[node.botname];
+      }
+    }
+    // check if context node
+    if (botConfiguration.contextProvider == null) {
+      // eslint-disable-next-line no-console
+      console.log(lcd.warn('No context provider specified for chatbot ' + node.botname + '. Defaulting to "memory"'));
+      botConfiguration.contextProvider = 'memory';
+      botConfiguration.contextParams = {};
+    }
+    // if chat is not already there and there's a token
+    if (node.chat == null && botConfiguration.token != null) {
+      // check if provider exisst
+      if (!contextProviders.hasProvider(botConfiguration.contextProvider)) {
+        node.error('Error creating chatbot ' + this.botname + '. The context provider '
+          + botConfiguration.contextProvider + ' doesn\'t exist.');
+        return;
+      }
+      // create a factory for the context provider
+      node.contextProvider = contextProviders.getProvider(botConfiguration.contextProvider, botConfiguration.contextParams);
+      // try to start the servers
+      try {
+        node.contextProvider.start();
+        node.chat = FacebookServer.createServer({
+          authorizedUsernames: botConfiguration.usernames,
+          token: botConfiguration.token,
+          verifyToken: botConfiguration.verify_token,
+          appSecret: botConfiguration.app_secret,
+          contextProvider: node.contextProvider,
+          logfile: botConfiguration.log,
+          RED: RED
+        });
+        node.chat.start();
+        // handle error on sl6teack chat server
+        node.chat.on('error', function(error) {
+          node.error(error);
+        });
+        node.chat.on('warning', function(warning) {
+          node.warn(warning);
+        });
+      } catch(e) {
+        node.error(e);
       }
     }
 
