@@ -1,3 +1,4 @@
+* **0.10.0** - [[Global Configuration|Global-Configuration]]
 * **0.9.29** - Fixed a bug where unused chatbots where launched even if not used (causing some polling error in Telegram)
 * **0.9.28** - Deprecated `Transport node` in favour of `Rules node`, fixed blank context dropdown, Facebook upload doesn't use temporary file anymore, fixed Dialogflow.com/Recast.ai second output
 * **0.9.27** - ...and another deprecation in Telegram lib
