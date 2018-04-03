@@ -54,6 +54,8 @@ module.exports = function(RED) {
         path = node.filename;
       } else if (!_.isEmpty(msg.filename)) {
         path = msg.filename;
+      } else if (msg.payload != null && !_.isEmpty(msg.payload.path)) {
+        path = msg.payload.path;
       }
 
       if (!_.isEmpty(path)) {
