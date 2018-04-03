@@ -112,7 +112,7 @@ module.exports = function(RED) {
 
       // if parsing ok, then pass through and set variable in context flow
       if (parsedValue != null) {
-        if (chatContext != null) {
+        if (chatContext != null && !_.isEmpty(parseVariable)) {
           chatContext.set(parseVariable, parsedValue);
         }
         msg.payload = parsedValue;

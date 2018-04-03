@@ -24,6 +24,23 @@ describe('Chat parse node', function() {
     assert.equal(chat.get('photo').toString(), 'image-bytecode');
   });
 
+  it('should parse an image into a buffer without saving in the context', function() {
+    var msg = RED.createMessage({
+      type: 'photo',
+      content: new Buffer('image-bytecode')
+    });
+    RED.node.config({
+      parseType: 'photo',
+      parseVariable: ''
+    });
+    ParseBlock(RED);
+    RED.node.get().emit('input', msg);
+    assert.instanceOf(RED.node.message().payload, Buffer);
+    assert.equal(RED.node.message().payload.toString(), 'image-bytecode');
+    var chat = msg.chat();
+    assert.isNull(chat.get(''));
+  });
+
   it('should not parse an image without type', function() {
     var msg = RED.createMessage({
       content: new Buffer('image-bytecode')
