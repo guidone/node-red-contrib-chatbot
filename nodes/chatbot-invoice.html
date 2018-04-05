@@ -233,7 +233,42 @@
 </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-invoice">
+<script type="text/x-red" data-help-name="chatbot-invoice"><p>This node creates an Invoice to trigger a payment in Telegram. To learn more about Telegram payments <a href="https://core.telegram.org/bots/payments">read here</a>.</p>
+<p>In order to start a payment process a <strong>providerToken</strong> is needed: use @BotFather to get a providerToken for a supported payment platform (like Stripe) and set this in the chat bot config [[Telegram Receiver node|Telegram-Receiver-node]].</p>
+<p>The <code>payload</code> parameter is a unique identifier for the invoice being processed, tipically is your <em>order-id</em> or <em>cart-id</em> and it will be sent back by Telegram when the payment is completed (not to be confused by <strong>Node-RED</strong>&#39;s <code>message.payload</code>). </p>
+<p>All the elements of the <code>Invoice node</code> supports chat context templating, for example it&#39;s possible to set the title of the invoice to <code>Invoice to {{firstName}} {{lastName}}</code> and the amount of an item to <code>{{currentPrice}}</code> (given that somewhere is defined in the chat context the key <em>currentPrice</em>) and the template tokens will be replaced by the actual values.</p>
+<p>The <em>Flexible order</em> means that the final prices depends on the shipping method choosen by the user. When this happens the chatbot receives a message with type <code>invoice-shipping</code> that should be followed by a response unsing [[Invoice Shipping node|Invoice-Shipping-node]]. If this doesn&#39;t happen, then the order will not be finalized.</p>
+<p>When the payment is complete, a message type <code>payment</code> is sent to the chatbot with all the information provided by the user (email, phone number, shipping address). At this point the chatbot generally uses the [[Rules node|Rules-node]] to redirect these type of messages to an appropriate flow that uses the <code>payload</code> attribute to lookup in the database and flag the order as <em>paid</em>.</p>
+<p>The <code>payment</code> message payload:</p>
+<pre><code>{ 
+  currency: &#39;EUR&#39;,
+  total_amount: 1423,
+  invoice_payload: &#39;MY_STRING_PAYLOAD&#39;,
+  shipping_option_id: &#39;my_shipping_id&#39;,
+  order_info: { 
+    name: &#39;Guido Bellomo&#39;,
+    phone_number: &#39;a-cell-phone-number&#39;,
+    shipping_address: { 
+      country_code: &#39;IT&#39;,
+      state: &#39;Mi&#39;,
+      city: &#39;Milano&#39;,
+      street_line1: &#39;Via Di Qua, 12&#39;,
+      street_line2: &#39;&#39;,
+      post_code: &#39;20100&#39; 
+    } 
+  },
+  telegram_payment_charge_id: &#39;_&#39;,
+  provider_payment_charge_id: &#39;ch_xxxyyyyzzzz&#39; 
+} 
+</code></pre><p>Available parameters for the <code>msg.payload</code></p>
+<dl class="message-properties">
+
+
+<dt>label<span class="property-type">string</span><dd>The description of the invoice item</dd>
+<dt>amount<span class="property-type">number</span><dd>The total amount for this invoice item</dd>
+
+</dl>
+<p><img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram"></p>
 </script>
 
 

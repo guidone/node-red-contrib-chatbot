@@ -54,7 +54,9 @@ var mappings = {
   'Recast-node.md': 'chatbot-recast.html|chatbot-recast',
   'Recast-token-node.md': 'chatbot-recast.html|chatbot-recast-token',
   'Dialogflow-node.md': 'chatbot-dialogflow.html|chatbot-dialogflow',
-  'Dialogflow-token-node.md': 'chatbot-dialogflow.html|chatbot-dialogflow-token'
+  'Dialogflow-token-node.md': 'chatbot-dialogflow.html|chatbot-dialogflow-token',
+  'Invoice-node.md': 'chatbot-invoice.html',
+  'Invoice-Shipping-node.md': 'chatbot-invoice-shipping.html'
 };
 
 function collectImages(html) {
