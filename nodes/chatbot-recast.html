@@ -52,6 +52,9 @@
       },
       debug: {
         value: false
+      },
+      variable: {
+        value: 'topic'
       }
     },
     inputs: 1,
@@ -147,14 +150,16 @@
     </select>
   </div>
   <div class="form-row">
+    <label for="node-input-variable">Store <em>intent</em> in</label>
+    <input type="text" id="node-input-variable" placeholder="Variable name">
+  </div>
+  <div class="form-row">
     <label for="node-input-debug">Debug</label>
     <input type="checkbox" value="true" id="node-input-debug">
     <span class="redbot-form-legend">
       Show debug information from Recast.ai
     </span>
   </div>
-
-
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-recast"><p><a href="http://recast.ai">Recast.ai</a> is a chatbot / AI platform that allows to easily train a bot in order to detect the user intent and extract relevant data.</p>
@@ -174,10 +179,10 @@ May I have a mojito
 <pre><code>{
   payload: {
     intent: &#39;want-drink&#39;,
-    variables: { 
-      pronoun: &#39;I&#39;, 
-      number: 1, 
-      drink: &#39;martini&#39; 
+    variables: {
+      pronoun: &#39;I&#39;,
+      number: 1,
+      drink: &#39;martini&#39;
     }
 }
 </code></pre><p>Generally after a <code>Recast.ai node</code> it&#39;s useful a <code>Rules node</code> to test the <em>topic</em> variable and redirect the flow based on user&#39;s intent.</p>

@@ -12,12 +12,14 @@ module.exports = function(RED) {
     node.dialogflow = config.dialogflow;
     node.language = config.language;
     node.debug = config.debug;
+    node.variable = config.variable;
 
     this.on('input', function (msg) {
 
       var chatContext = msg.chat();
       var dialogFlowNode = RED.nodes.getNode(node.dialogflow);
       var language = utils.extractValue('string', 'language', node, msg, false);
+      var variable = utils.extractValue('string', 'variable', node, msg, false);
       var debug = utils.extractValue('boolean', 'debug', node, msg, false);
       var chatId = utils.getChatId(msg);
 
@@ -74,7 +76,7 @@ module.exports = function(RED) {
                   delete variables[key];
                 }
               });
-              return when(chatContext.set('topic', intent));
+              return when(!_.isEmpty(variable) ? chatContext.set(variable, intent) : true);
             }
           } else {
             return Promise.reject('Error on api.dialogflow.com');
