@@ -37,6 +37,10 @@
           if (type === 'hasNotVariable' || type === 'hasVariable') {
             obj.variable = rule.find('input[name=variable]').val();
           }
+          if (type === 'isVariable') {
+            obj.variable = rule.find('input[name=variableName]').val();
+            obj.value = rule.find('input[name=variableValue]').val();
+          }
           if (type === 'isNotTopic' || type === 'isTopic' || type === 'topicIncludes') {
             obj.topic = rule.find('input[name=topic]').val();
           }
@@ -52,6 +56,7 @@
           if (type === 'transport') {
             obj.transport = rule.find('select[name=transport]').val();
           }
+          console.log('---', obj);
           node.rules.push(obj);
         }
       });
@@ -66,7 +71,7 @@
           var rule = opt;
           var row = $('<div/>').appendTo(container);
           row
-            .append('<select name="type" style="width:40%">'
+            .append('<select name="type" style="width:30%">'
               + '<option value="">Select rule</option>'
               + '<option value="command">Message is command ...</option>'
               + '<option value="anyCommand">Message is a command</option>'
@@ -82,11 +87,13 @@
               + '<option value="transport">Transport is ...</option>'
               + '<option value="hasNotVariable">Variable ... is not defined</option>'
               + '<option value="hasVariable">Variable ... is defined</option>'
+              + '<option value="isVariable">Variable ... is ...</option>'
               + '<option value="catchAll">If nothing of above applies</option>'
               + '</select>')
             .change(function() {
               var type = $('select[name=type]', container).val();
               container.find('input').hide();
+              container.find('span').hide();
               container.find('select.environment').hide();
               container.find('.' + type).show();
             });
@@ -99,6 +106,9 @@
 
           row
             .append('<input class="hasNotVariable hasVariable" style="display:none;width:50%;margin-left:10px;" type="text" name="variable" placeholder="Context variable"/>')
+            .append('<input class="isVariable" style="display:none;width:25%;margin-left:10px;" type="text" name="variableName" placeholder="Name"/>')
+            .append('<span class="isVariable">&nbsp;is&nbsp;</span>')
+            .append('<input class="isVariable" style="display:none;width:25%;margin-left:0px;" type="text" name="variableValue" placeholder="Value"/>')
             .append('<input class="command" style="display:none;width:50%;margin-left:10px;" type="text" name="command" placeholder="/command"/>')
             .append('<input class="isNotTopic isTopic topicIncludes" style="display:none;width:40%;margin-left:10px;" type="text" name="topic" placeholder="Topic"/>')
             .append('<select class="environment" name="environment" style="display:none;width:40%;margin-left:10px;">'
@@ -127,8 +137,11 @@
             container.find('select.environment').hide();
             container.find('.' + rule.type).show();
           }
-          if (rule.variable != null) {
+          if (rule.variable != null && (rule.type === 'hasNotVariable' || rule.type === 'hasVariable')) {
             $('input[name=variable]', container).val(rule.variable);
+          }
+          if (rule.variable != null && rule.type === 'isVariable') {
+            $('input[name=variableName]', container).val(rule.variable);
           }
           if (rule.transport != null) {
             $('select[name=transport]', container).val(rule.transport);
@@ -144,6 +157,9 @@
           }
           if (rule.messageType != null) {
             $('select[name=messageType]', container).val(rule.messageType);
+          }
+          if (rule.value != null) {
+            $('input[name=variableValue]', container).val(rule.value);
           }
         },
         removeItem: function(opt) {

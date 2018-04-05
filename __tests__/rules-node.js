@@ -596,5 +596,47 @@ describe('Chat rules node', function() {
       });
   });
 
+  it('should go through the first if the variable is eq to test_value', function() {
+    var msg = RED.createMessage({
+      content: 'no command',
+      type: 'image'
+    }, 'telegram', { environment: 'development'});
+    RED.node.config({
+      rules: [
+        { type: 'isVariable', variable: 'myVar', value: 'test_value' },
+        { type: 'catchAll' }
+      ]
+    });
+    msg.chat().set('myVar', 'test_value');
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(function() {
+        assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
+        assert.isNull(RED.node.message(1));
+      });
+  });
+
+  it('should go through the second if the variable is neq to test_value', function() {
+    var msg = RED.createMessage({
+      content: 'no command',
+      type: 'image'
+    }, 'telegram', { environment: 'development'});
+    RED.node.config({
+      rules: [
+        { type: 'isVariable', variable: 'myVar', value: 'test_value' },
+        { type: 'catchAll' }
+      ]
+    });
+    msg.chat().set('myVar', 'wrong_test_value');
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(function() {
+        assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
+        assert.isNull(RED.node.message(0));
+      });
+  });
+
 });
 

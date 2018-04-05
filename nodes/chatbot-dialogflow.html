@@ -52,6 +52,9 @@
       },
       debug: {
         value: false
+      },
+      variable: {
+        value: 'topic'
       }
     },
     inputs: 1,
@@ -147,6 +150,10 @@
     </select>
   </div>
   <div class="form-row">
+    <label for="node-input-variable">Store <em>intent</em> in</label>
+    <input type="text" id="node-input-variable" placeholder="Variable name">
+  </div>
+  <div class="form-row">
     <label for="node-input-debug">Debug</label>
     <input type="checkbox" value="true" id="node-input-debug">
     <span class="redbot-form-legend">
@@ -179,7 +186,7 @@ May I have a mojito
   payload: {
     intent: &#39;want-drink&#39;,
     answer: &#39;I am the answer&#39;,
-    variables: { 
+    variables: {
       Drinks: &#39;martini rosso&#39;
     }
 }

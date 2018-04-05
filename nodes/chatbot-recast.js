@@ -14,6 +14,7 @@ module.exports = function(RED) {
     node.recast = config.recast;
     node.language = config.language;
     node.debug = config.debug;
+    node.variable = config.variable;
 
     this.on('input', function (msg) {
 
@@ -21,6 +22,7 @@ module.exports = function(RED) {
       var recastNode = RED.nodes.getNode(node.recast);
       var language = utils.extractValue('string', 'language', node, msg, false);
       var debug = utils.extractValue('boolean', 'debug', node, msg, false);
+      var variable = utils.extractValue('string', 'variable', node, msg, false);
 
       // exit if empty credentials
       if (recastNode == null || recastNode.credentials == null || _.isEmpty(recastNode.credentials.token)) {
@@ -56,7 +58,7 @@ module.exports = function(RED) {
               }
             });
             // store new topic
-            return when(chatContext.set('topic', intent));
+            return when(!_.isEmpty(variable) ? chatContext.set(variable, intent) : true);
           } else {
             // if didn't matched any intent, relay to 2nd output and stop here
             if (debug) {

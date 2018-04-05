@@ -5,6 +5,24 @@ var when = utils.when;
 
 var Types = {
 
+  isVariable: function(rule, message) {
+    return new Promise(function(resolve, reject) {
+      var chatContext = message.chat();
+      when(chatContext.get(rule.variable))
+        .then(
+          function(variable) {
+            if (variable === rule.value) {
+              resolve(rule);
+            } else {
+              reject();
+            }
+          },
+          function() {
+            reject();
+          });
+    });
+  },
+
   transport: function(rule, message) {
     return new Promise(function(resolve, reject) {
       if (message != null && message.payload != null) {

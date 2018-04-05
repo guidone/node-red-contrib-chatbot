@@ -182,6 +182,8 @@
       case 'isNotTopic':
       case 'isTopic':
         return $.RedBot.validate.notEmpty(rule.topic);
+      case 'isVariable':
+        return $.RedBot.validate.notEmpty(rule.value) && $.RedBot.validate.notEmpty(rule.variable);
       case 'hasNotVariable':
       case 'hasVariable':
         return $.RedBot.validate.notEmpty(rule.variable);
