@@ -166,7 +166,7 @@
 <p>For a complete tutorial about <strong>Dialogflow.com</strong> give a look <a href="https://dialogflow.com/docs/getting-started/building-your-first-agent">here</a>. The <code>Dialogflow.com node</code> sends the text of the incoming message to the <strong>Dialogflow.com</strong> servers, then:</p>
 <ul>
 <li>if no <em>intent</em> is detected, then the incoming message is redirected to the second output</li>
-<li>if an <em>intent</em> is detected, then it&#39;s stored in the context variable <code>topic</code> and a key/value hash of all relevant information extracted is sent to the first output along with other informations</li>
+<li>if an <em>intent</em> is detected, then it&#39;s stored in the context variable <code>topic</code> (or a different variable) and a key/value hash of all relevant information extracted is sent to the first output along with other informations.</li>
 </ul>
 <p><strong>Dialogflow.com</strong> is able to create a full featured chatbot, nevertheless it can be used just for the NLP capabilities and to detetect/classify user&#39;s sentences.</p>
 <p>For example, create a <code>Drinks</code> entity with these values</p>
@@ -186,7 +186,7 @@ May I have a mojito
   payload: {
     intent: &#39;want-drink&#39;,
     answer: &#39;I am the answer&#39;,
-    variables: {
+    variables: { 
       Drinks: &#39;martini rosso&#39;
     }
 }

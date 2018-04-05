@@ -1,3 +1,4 @@
+* **0.10.1** - Dialogflow and React can store the intent in any variable, `Rules node` can now check the value of a variable 
 * **0.10.0** - [[Global Configuration|Global-Configuration]]
 * **0.9.29** - Fixed a bug where unused chatbots where launched even if not used (causing some polling error in Telegram)
 * **0.9.28** - Deprecated `Transport node` in favour of `Rules node`, fixed blank context dropdown, Facebook upload doesn't use temporary file anymore, fixed Dialogflow.com/Recast.ai second output
