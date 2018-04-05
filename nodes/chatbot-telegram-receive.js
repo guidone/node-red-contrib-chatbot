@@ -110,6 +110,7 @@ module.exports = function(RED) {
         node.chat = TelegramServer.createServer({
           authorizedUsernames: botConfiguration.authorizedUsernames,
           token: botConfiguration.token,
+          providerToken: botConfiguration.providerToken,
           polling: botConfiguration.polling,
           parseMode: botConfiguration.parseMode,
           contextProvider: node.contextProvider,
