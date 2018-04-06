@@ -1,3 +1,4 @@
+* **0.10.2** - Improved detect command and fixed error in Telegram postback
 * **0.10.1** - Dialogflow and React can store the intent in any variable, `Rules node` can now check the value of a variable 
 * **0.10.0** - [[Global Configuration|Global-Configuration]]
 * **0.9.29** - Fixed a bug where unused chatbots where launched even if not used (causing some polling error in Telegram)
