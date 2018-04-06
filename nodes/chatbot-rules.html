@@ -218,6 +218,9 @@
         return 'Topic is "' + ($.RedBot.validate.notEmpty(rule.topic) ? rule.topic : '...') + '"';
       } else if (rule.type === 'hasNotVariable') {
         return 'Variable "' + ($.RedBot.validate.notEmpty(rule.variable) ? rule.variable : '...') + '" is not defined';
+      } else if (rule.type === 'isVariable') {
+        return 'Variable "' + ($.RedBot.validate.notEmpty(rule.variable) ? rule.variable : '...') + '" is equal to "'
+          + ($.RedBot.validate.notEmpty(rule.value) ? rule.value : '...') + '"';
       }
     }
   });

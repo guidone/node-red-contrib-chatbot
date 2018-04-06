@@ -10,9 +10,12 @@ describe('Helpers functions', function() {
     assert.isTrue(helpers.isCommand('/cmd'));
     assert.isTrue(helpers.isCommand('/Cmd'));
     assert.isTrue(helpers.isCommand('/cmd with params'));
+    assert.isTrue(helpers.isCommand('/cmd_particular with params', '/cmd_particular'));
+    assert.isTrue(helpers.isCommand('/cmd with params', '/cmd'));
     assert.isFalse(helpers.isCommand('I am not a command'));
     assert.isFalse(helpers.isCommand('  trailing spaces'));
     assert.isFalse(helpers.isCommand());
+    assert.isFalse(helpers.isCommand('/cmd with params', 'another_cmd'));
   });
 
   it('detect a url', function() {

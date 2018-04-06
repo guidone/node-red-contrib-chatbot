@@ -308,6 +308,26 @@ describe('Chat rules node', function() {
       });
   });
 
+  it('should match goes through the first if the message is the command /my_command with parameter', function() {
+    var msg = RED.createMessage({
+      content: '/my_command 12345'
+    });
+    RED.node.config({
+      rules: [
+        { type: 'command', command: '/my_command' },
+        { type: 'catchAll' }
+      ]
+    });
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+
+    return RED.node.get().await()
+      .then(function() {
+        assert.isNull(RED.node.message(1));
+        assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
+      });
+  });
+
   it('should match goes through the second if the message is not the command /my_command', function() {
     var msg = RED.createMessage({
       content: 'a simple message'

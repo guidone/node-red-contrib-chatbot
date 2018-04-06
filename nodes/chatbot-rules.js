@@ -93,9 +93,8 @@ var Types = {
   },
 
   command: function(rule, message) {
-    var commandToCheck = rule.command.match(/^\//) ? rule.command : '/' + rule.command;
     return new Promise(function(resolve, reject) {
-      if (message.payload != null && message.payload.content === commandToCheck) {
+      if (message.payload != null && helpers.isCommand(message.payload.content, rule.command)) {
         resolve(rule);
       } else {
         reject();
