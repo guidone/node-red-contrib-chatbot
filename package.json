@@ -55,6 +55,7 @@
       "chatbot-slack-receive": "./nodes/chatbot-slack-receive.js",
       "chatbot-messenger-menu": "./nodes/chatbot-messenger-menu.js",
       "chatbot-facebook-receive": "./nodes/chatbot-facebook-receive.js",
+      "chatbot-zulip-receive": "./nodes/chatbot-zulip-receive.js",
       "chatbot-smooch-receive": "./nodes/chatbot-smooch-receive.js",
       "chatbot-context-store": "./nodes/chatbot-context-store.js",
       "chatbot-inline-query": "./nodes/chatbot-inline-query.js",
@@ -104,7 +105,8 @@
     "speakeasy-nlp": "^0.2.2",
     "stream-buffers": "^3.0.1",
     "underscore": "^1.8.3",
-    "underscore.string": "^3.3.4"
+    "underscore.string": "^3.3.4",
+    "zulip": "^0.1.0"
   },
   "devDependencies": {
     "chai": "^4.1.1",
