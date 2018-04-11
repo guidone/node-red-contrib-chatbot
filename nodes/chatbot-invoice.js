@@ -19,6 +19,9 @@ module.exports = function(RED) {
     this.isFlexible = config.isFlexible;
     this.prices = config.prices;
     this.payload = config.payload;
+    this.photoUrl = config.photoUrl;
+    this.photoWidth = config.photoWidth;
+    this.photoHeight = config.photoHeight;
     this.transports = ['telegram'];
 
     this.on('input', function(msg) {
@@ -33,6 +36,9 @@ module.exports = function(RED) {
       var description = utils.extractValue('string', 'description', node, msg, false);
       var currency = utils.extractValue('string', 'currency', node, msg, false);
       var payload = utils.extractValue('string', 'payload', node, msg, false);
+      var photoUrl = utils.extractValue('string', 'photoUrl', node, msg, false);
+      var photoWidth = utils.extractValue('integer', 'photoWidth', node, msg, false);
+      var photoHeight = utils.extractValue('integer', 'photoHeight', node, msg, false);
       var needName = utils.extractValue('boolean', 'needName', node, msg, false);
       var needEmail = utils.extractValue('boolean', 'needEmail', node, msg, false);
       var needPhoneNumber = utils.extractValue('boolean', 'needPhoneNumber', node, msg, false);
@@ -45,7 +51,10 @@ module.exports = function(RED) {
         title: title,
         description: description,
         payload: payload,
-        prices: prices
+        prices: prices,
+        photoUrl: photoUrl,
+        photoHeight: parseInt(photoHeight, 10),
+        photoWidth: parseInt(photoWidth, 10)
       };
 
       template(invoicePayload)
@@ -55,6 +64,7 @@ module.exports = function(RED) {
             node.error('Invalid prices in Invoice node: ' + JSON.stringify(invoicePayload.prices));
             return;
           }
+          console.log('---->', invoicePayload);
           // merge template
           _.extend(invoicePayload, {
             type: 'invoice',
