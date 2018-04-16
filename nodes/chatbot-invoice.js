@@ -37,8 +37,10 @@ module.exports = function(RED) {
       var currency = utils.extractValue('string', 'currency', node, msg, false);
       var payload = utils.extractValue('string', 'payload', node, msg, false);
       var photoUrl = utils.extractValue('string', 'photoUrl', node, msg, false);
-      var photoWidth = utils.extractValue('integer', 'photoWidth', node, msg, false);
-      var photoHeight = utils.extractValue('integer', 'photoHeight', node, msg, false);
+      var photoWidth = utils.extractValue('integer', 'photoWidth', node, msg, false)
+        || utils.extractValue('variable', 'photoWidth', node, msg, false);
+      var photoHeight = utils.extractValue('integer', 'photoHeight', node, msg, false)
+        || utils.extractValue('variable', 'photoHeight', node, msg, false);
       var needName = utils.extractValue('boolean', 'needName', node, msg, false);
       var needEmail = utils.extractValue('boolean', 'needEmail', node, msg, false);
       var needPhoneNumber = utils.extractValue('boolean', 'needPhoneNumber', node, msg, false);
@@ -53,23 +55,28 @@ module.exports = function(RED) {
         payload: payload,
         prices: prices,
         photoUrl: photoUrl,
-        photoHeight: parseInt(photoHeight, 10),
-        photoWidth: parseInt(photoWidth, 10)
+        photoHeight: photoHeight,
+        photoWidth: photoWidth,
+        currency: currency
       };
 
       template(invoicePayload)
         .then(function(invoicePayload) {
+          invoicePayload.photoWidth = !_.isEmpty(invoicePayload.photoWidth) ? parseInt(invoicePayload.photoWidth, 10) : null;
+          invoicePayload.photoHeight = !_.isEmpty(invoicePayload.photoHeight) ? parseInt(invoicePayload.photoHeight, 10) : null;
           // check again, validation may insert wrong values
           if (!validators.invoiceItems(invoicePayload.prices)) {
             node.error('Invalid prices in Invoice node: ' + JSON.stringify(invoicePayload.prices));
             return;
           }
-          console.log('---->', invoicePayload);
+          if (!validators.invoice(invoicePayload)) {
+            node.error('Invalid values in Invoice node: ' + JSON.stringify(invoicePayload));
+            return;
+          }
           // merge template
           _.extend(invoicePayload, {
             type: 'invoice',
             startParameter: 'start_parameter',
-            currency: currency,
             needName: needName,
             needPhoneNumber: needPhoneNumber,
             needEmail: needEmail,

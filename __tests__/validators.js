@@ -124,6 +124,7 @@ describe('Validators', function() {
     assert.isTrue(validators.integer('12'));
     assert.isFalse(validators.integer(''));
     assert.isFalse(validators.integer('fortytwo'));
+    assert.isFalse(validators.integer('{{variable}}'));
   });
 
   it('validates a float', function() {
@@ -208,6 +209,29 @@ describe('Validators', function() {
     assert.isNotNull(validators.platform.facebook(_.extend({}, base, { contextProvider: 'wrong_context'})));
     assert.isNotNull(validators.platform.facebook(_.extend({}, base, { authorizedUsernames: 42})));
     assert.isNotNull(validators.platform.facebook(_.extend({}, base, { logfile: 42})));
+  });
+
+  it('validates an invoice', function() {
+
+    var invoice = {
+      title: "PostCard Bot",
+      description :"Payment for Guido's postcard",
+      payload:"196520947",
+      prices: [{"label":"Color Postcard 10x15 cm","amount":"2.49"}],
+      photoUrl: "http://res.cloudinary.com/guido-bellomo/image/upload/v1523858227/lxgmygzcxdmf0cle8vmk.jpg",
+      photoHeight: 960,
+      photoWidth: 1280,
+      currency: 'EUR'
+    };
+
+    assert.isTrue(validators.invoice(invoice));
+    assert.isFalse(validators.invoice(Object.assign(invoice, { photoWidth: null })));
+    assert.isFalse(validators.invoice(Object.assign(invoice, { photoWidth: '{{variable}}' })));
+    assert.isFalse(validators.invoice(Object.assign(invoice, { photoHeight: null })));
+    assert.isFalse(validators.invoice(Object.assign(invoice, { title: null })));
+    assert.isFalse(validators.invoice(Object.assign(invoice, { payload: null })));
+    assert.isFalse(validators.invoice(Object.assign(invoice, { prices: null })));
+    assert.isFalse(validators.invoice(Object.assign(invoice, { currency: null })));
   });
 
 });
