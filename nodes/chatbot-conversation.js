@@ -41,7 +41,11 @@ module.exports = function(RED) {
           node.error('Chatbot not found or not configured properly');
           return;
         }
-
+        // check if chat is null, perhaps the node exists but it's not used by any receiver
+        if (platformNode == null) {
+          node.error('No active chatbot for this configuration. Means that the configuration was found but no receiver node is using it');
+          return;
+        }
         var message = null;
         platformNode.createMessage(chatId, null, messageId, msg)
           .then(function(createdMessage) {

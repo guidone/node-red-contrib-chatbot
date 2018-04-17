@@ -18,10 +18,10 @@ module.exports = function(RED) {
         when(chatContext.all())
           .then(function(obj) {
             // chat context
-            lcd.node(obj, { title: 'ChatBot debug', node: node });
+            lcd.node(obj, { title: 'ChatBot context', node: node });
             // message
             if (msg.payload != null) {
-              lcd.node(msg.payload, {title: 'Chat message', node: node});
+              lcd.node(msg.payload, {title: 'ChatBot message', node: node});
             }
           });
       } else {

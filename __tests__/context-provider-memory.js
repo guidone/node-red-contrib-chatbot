@@ -130,4 +130,32 @@ describe('Chat context provider memory', function() {
       });
   });
 
+  it('should set some value the remove with multiple arguments', function() {
+
+    var contextProviders = ContextProviders(RED);
+    var provider = contextProviders.getProvider('memory');
+
+    return when(provider.getOrCreate(42, {}))
+      .then(function(chatContext) {
+        return chatContext.set({firstName: 'Guidone', lastName: 'Bellomo', email: 'some@email'});
+      })
+      .then(function() {
+        return when(provider.get(42).get('firstName'));
+      })
+      .then(function(firstName) {
+        assert.equal(firstName, 'Guidone');
+      })
+      .then(function() {
+        return when(provider.get(42).remove('firstName', 'lastName', 'email'));
+      })
+      .then(function() {
+        return when(provider.get(42).all());
+      })
+      .then(function(json) {
+        assert.isUndefined(json.firstName);
+        assert.isUndefined(json.lastName);
+        assert.isUndefined(json.email);
+      });
+  });
+
 });
