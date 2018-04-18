@@ -2,17 +2,20 @@
 
   $.RedBot = {};
   $.RedBot.messageTypes = [
-    {value: 'message', label: 'Text'},
-    {value: 'command', label: 'Command'},
     {value: 'audio', label: 'Audio'},
     {value: 'buttons', label: 'Buttons'},
+    {value: 'command', label: 'Command'},
     {value: 'contact', label: 'Contact'},
-    {value: 'document', label: 'Document'},
     {value: 'dialog', label: 'Dialog'},
+    {value: 'document', label: 'Document'},
     {value: 'inline-buttons', label: 'Inline buttons'},
     {value: 'inline-query', label: 'Inline Query'},
+    {value: 'invoice', label: 'Invoice'},
+    {value: 'invoice-shipping', label: 'Invoice Shipping Query'},
     {value: 'location', label: 'Location'},
+    {value: 'message', label: 'Text'},
     {value: 'photo', label: 'Photo'},
+    {value: 'payment', label: 'Payment'},
     {value: 'request', label: 'Request'},
     {value: 'response', label: 'Dialog Response'},
     {value: 'video', label: 'Video'}
@@ -106,6 +109,40 @@
     }
   ];
   $.RedBot.validate = {};
+  $.RedBot.validate.isVariable = function(value) {
+    return $.RedBot.validate.string(value) && value.match(/^\{\{[A-Za-z0-9_-]*\}\}$/) != null;
+  };
+  $.RedBot.validate.number = function(value) {
+    return typeof value === 'number';
+  };
+  $.RedBot.validate.string = function(value) {
+    return typeof value === 'string';
+  };
+  $.RedBot.validate.numberOrVariable = function(value) {
+    return $.RedBot.validate.number(value)
+      ||
+      ($.RedBot.validate.notEmpty(value) && !isNaN(parseFloat(value)))
+      ||
+      ($.RedBot.validate.notEmpty(value) && $.RedBot.validate.isVariable(value));
+  };
+  $.RedBot.validate.price = function(price) {
+    return price != null
+      && $.RedBot.validate.notEmpty(price.label)
+      && $.RedBot.validate.numberOrVariable(price.amount);
+  };
+  $.RedBot.validate.prices = function(prices) {
+    if (prices == null) {
+      return false;
+    }
+    var valid = true;
+    var idx;
+    for(idx = 0; idx < prices.length; idx++) {
+      if (!$.RedBot.validate.price(prices[idx])) {
+        valid = false;
+      }
+    }
+    return valid;
+  };
   $.RedBot.validate.notEmpty = function(str) {
     return str != null && str != '';
   };
@@ -1008,6 +1045,17 @@ return msg;
 </script>
 
 <style>
+
+  .form-row-checkbox {
+    margin-bottom: 0px;
+  }
+
+  .form-row-checkbox input[type=checkbox] {
+    width: auto;
+    margin-top: 0px;
+    margin-right: 5px;
+  }
+
   .icon-platform-telegram {
      display: inline-block;
      width: 9px;
@@ -1117,8 +1165,6 @@ return msg;
     background-position: right 12px top 2px, right 22px top 2px;
     background-repeat: no-repeat, no-repeat;
   }
-
-
 
   .platform-smooch-facebook, .platform-facebook-smooch {
     background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAENJREFUGBljXOyx/T8DAcAEk4/Z7gFjgmlkPlwRSAYmAaNhulAULfHcAVYIopEBiiKQBLoCkBiGIpAgOqCeIkZiwgkAEPoRCUXTyWoAAAAASUVORK5CYII=),

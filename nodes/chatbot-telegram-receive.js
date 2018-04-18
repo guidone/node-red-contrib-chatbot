@@ -40,6 +40,7 @@ module.exports = function(RED) {
     this.usernames = n.usernames != null ? n.usernames.split(',') : [];
     this.polling = n.polling;
     this.parseMode = n.parseMode;
+    this.providerToken = n.providerToken;
 
     if (!isUsed) {
       // silently exit, this node is not used
@@ -59,6 +60,7 @@ module.exports = function(RED) {
     var botConfiguration = {
       authorizedUsernames: node.usernames,
       token: node.credentials != null && node.credentials.token != null ? node.credentials.token.trim() : null,
+      providerToken: node.providerToken,
       polling: node.polling,
       parseMode: node.parseMode,
       logfile: node.log,
@@ -108,6 +110,7 @@ module.exports = function(RED) {
         node.chat = TelegramServer.createServer({
           authorizedUsernames: botConfiguration.authorizedUsernames,
           token: botConfiguration.token,
+          providerToken: botConfiguration.providerToken,
           polling: botConfiguration.polling,
           parseMode: botConfiguration.parseMode,
           contextProvider: node.contextProvider,

@@ -13,7 +13,6 @@ var tasks = new Promise(function(resolve) {
 });
 
 var mappings = {
-  'Buttons-node.md': 'chatbot-inline-buttons.html',
   'Generic-Template-node.md': 'chatbot-generic-template.html',
   'List-Template-node.md': 'chatbot-list-template.html',
   'Quick-Replies-node.md': 'chatbot-quick-replies.html',
@@ -43,7 +42,6 @@ var mappings = {
   'Sticker-node.md': 'chatbot-sticker.html',
   'Waiting-node.md': 'chatbot-waiting.html',
   'Listen-Lexicon-node.md': 'chatbot-listen-lexicon.html',
-  'Context-Provider-node.md': 'chatbot-context-store.html',
   'Slack-Receiver-node.md': 'chatbot-slack-receive.html|chatbot-slack-node',
   'Telegram-Receiver-node.md': 'chatbot-telegram-receive.html|chatbot-telegram-node',
   'Facebook-Receiver-node.md': 'chatbot-facebook-receive.html|chatbot-facebook-node',
@@ -54,7 +52,10 @@ var mappings = {
   'Recast-node.md': 'chatbot-recast.html|chatbot-recast',
   'Recast-token-node.md': 'chatbot-recast.html|chatbot-recast-token',
   'Dialogflow-node.md': 'chatbot-dialogflow.html|chatbot-dialogflow',
-  'Dialogflow-token-node.md': 'chatbot-dialogflow.html|chatbot-dialogflow-token'
+  'Dialogflow-token-node.md': 'chatbot-dialogflow.html|chatbot-dialogflow-token',
+  'Invoice-node.md': 'chatbot-invoice.html',
+  'Invoice-Shipping-node.md': 'chatbot-invoice-shipping.html',
+  'Chat-Context.md': 'chatbot-context-store.html'
 };
 
 function collectImages(html) {
@@ -139,7 +140,7 @@ _(mappings).map(function(nodeFile, markdownFile) {
       // table always 3 cell: name of field, type, description
       htmlSource = htmlSource.replace(/<table>/g, '<dl class="message-properties">');
       htmlSource = htmlSource.replace(/<\/table>/g, '</dl>');
-      htmlSource = htmlSource.replace(/<thead>[\s\S]*<\/thead>/g, '');
+      htmlSource = htmlSource.replace(/<thead>[\s\S]*?<\/thead>/g, '');
       htmlSource = htmlSource.replace(/<tbody>/g, '');
       htmlSource = htmlSource.replace(/<\/tbody>/g, '');
       var matches = htmlSource.match(/<tr>([\s\S]*?)<\/tr>/g);

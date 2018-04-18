@@ -74,7 +74,71 @@
 </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-context-store"><p>Docs for context provider</p>
-<p>tbd</p>
+<script type="text/x-red" data-help-name="chatbot-context-store"><p><strong>Node-RED</strong> has two variable context <em>global</em> and <em>flow</em>, the first is available everywhere in the app, the second just in the executed flow.</p>
+<p><strong>RedBot</strong> introduces the <em>chat</em> context where is possible to store information related to the specific user. The <code>Receiver node</code> store here some default information like <em>chatId</em>, <em>username</em>, <em>authorized</em>, <em>firstName</em>, <em>lastName</em>, etc. but it&#39;s possible to store any kind of information.</p>
+<p>Two chat context providers are available</p>
+<ul>
+<li><strong>Memory</strong> <em>(default)</em>: it&#39;s a very fast and volatile storage, means that when the server is restarted all the stored data is lost. It&#39; the default one (good for experimenting) and all the methods are synchronous</li>
+<li><strong>Plain file</strong>: it stores data in a plain <em>json</em> file, all the methods are asynchronous. Currently is only available for <strong>Slack</strong> (soon for <strong>Telegram</strong> and <strong>Facebook</strong>)</li>
+</ul>
+<p>To get the chat context in a <code>Function node</code> (using the <strong>Memory</strong> context provider): </p>
+<pre><code>var chat = msg.chat();
+console.log(chat.get(&#39;authorized&#39;)); // is the user authorized
+console.log(chat.get(&#39;username&#39;)); // guidone72
+chat.set(&#39;my_stuff&#39;, &#39;remember that&#39;);
+</code></pre><p>The same with <strong>Plain file</strong> context provider</p>
+<pre><code>var chat = msg.chat();
+chat.get(&#39;authorized&#39;)
+  .then(function(authorized) {
+    console.log(authorized); // is the user authorized
+    node.send(msg);
+  });
+</code></pre><p>since it&#39;s asynchronous all methods return a Promise. It&#39;s also possibile to combine multiple calls</p>
+<pre><code>var chat = msg.chat();
+chat.get(&#39;authorized&#39;, &#39;username&#39;)
+  .then(function(variables) {
+    console.log(variables.authorized); // is the user authorized
+    console.log(variables.username); // guidone72
+    return chat.set(&#39;my_stuff&#39;, &#39;remember that&#39;);
+  })
+  .then(function() {
+    node.send(msg);  // pass thru when the chat.set is over
+  });
+</code></pre><h3 id="chat-context-methods">Chat context methods</h3>
+<p>All context providers support these methods:</p>
+<dl class="message-properties">
+
+
+<dt>.get(key)<span class="property-type">any</span><dd>Return the value of the key</dd>
+<dt>.get(key1, key2, ...keyN)<span class="property-type">object</span><dd>Return an hash with the values of the requested keys { key1: ..., key2: ... }</dd>
+<dt>.set(key, value)<span class="property-type">context</span><dd>Set the value of the key</dd>
+<dt>.set({key1: ..., key2: ...})<span class="property-type">context</span><dd>Set multiple key values</dd>
+<dt>.remove(key)<span class="property-type">context</span><dd>Remove value for the key</dd>
+<dt>.remove(key1, key2, ...keyN)<span class="property-type">context</span><dd>Remove multiple keys</dd>
+<dt>.clear()<span class="property-type">context</span><dd>Clear all the chat context</dd>
+<dt>.dump()<span class="property-type">context</span><dd>Dump in console the chat context</dd>
+<dt>.all()<span class="property-type">context</span><dd>Get all keys/values</dd>
+
+</dl>
+<p><strong>Plain file</strong> context always returns a Promise.</p>
+<h3 id="template-variables">Template Variables</h3>
+<p>Some most of the nodes like <code>Message node</code> evaluates the specified text with a very simple template system (Handlebars-like syntax).
+For example to say hello to the user</p>
+<pre><code>Hi, {{firstName}}!
+</code></pre><p>There are some predefined variables in each chat context</p>
+<dl class="message-properties">
+
+
+<dt>chatId<span class="property-type">string</span><dd>The chat id (same for a specific user)</dd>
+<dt>messageId<span class="property-type">string</span><dd>The message id of the last sent message</dd>
+<dt>userId<span class="property-type">string</span><dd>The user id</dd>
+<dt>firstName<span class="property-type">string</span><dd>First name, when available (in Telegram must be specified in preferences)</dd>
+<dt>lastName<span class="property-type">string</span><dd>Last name, when available (in Telegram must be specified in preferences)</dd>
+<dt>authorized<span class="property-type">boolean</span><dd>Whether the user is authorized or not</dd>
+<dt>transport<span class="property-type">string</span><dd>the current transport, could be <em>telegram</em>, <em>facebook</em>, <em>slack</em></dd>
+<dt>message<span class="property-type">string</span><dd>the current message from the user in string format</dd>
+<dt>language<span class="property-type">string</span><dd>The language of the chat client</dd>
+
+</dl>
 </script>
 
