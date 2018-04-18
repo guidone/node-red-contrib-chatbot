@@ -283,6 +283,25 @@
 <dl class="message-properties">
 
 
+<dt>title<span class="property-type">string</span><dd>The title of the invoice</dd>
+<dt>description<span class="property-type">string</span><dd>The description of the invoice</dd>
+<dt>payload<span class="property-type">string</span><dd>A custom string that identifies the order or the cart in your system, it will be returned when the payment is confirmed</dd>
+<dt>currency<span class="property-type">string</span><dd>Three letters <a href="https://www.wikiwand.com/en/ISO_4217">ISO code</a> for the currency, for example <em>USD</em>, <em>EUR</em>, etc.</dd>
+<dt>needName<span class="property-type">boolean</span><dd>The user&#39;s name is required to complete the payment</dd>
+<dt>needEmail<span class="property-type">boolean</span><dd>The user&#39;s email is required to complete the payment</dd>
+<dt>needPhoneNumber<span class="property-type">boolean</span><dd>The user&#39;s phone number is required to complete the payment</dd>
+<dt>needShippingAddress<span class="property-type">boolean</span><dd>The user&#39;s shipping address is required to complete the payment</dd>
+<dt>isFlexible<span class="property-type">boolean</span><dd>The total amount depends on the shipping method, a message type <code>invoice-shipping</code> will be sent to the chatbot that requires a [[Invoice Shipping node</dd>
+<dt>prices<span class="property-type">array of [price]</span><dd>Items of the invoice</dd>
+<dt>photoUrl<span class="property-type">string</span><dd>Url of the picture for the invoice</dd>
+<dt>photoHeight<span class="property-type">integer</span><dd>Width of the invoice picture. Required with <em>photoUrl</em></dd>
+<dt>photoWidth<span class="property-type">integer</span><dd>Height of the invoice picture. Required with <em>photoUrl</em></dd>
+
+</dl>
+<p>The <code>[price]</code> object</p>
+<dl class="message-properties">
+
+
 <dt>label<span class="property-type">string</span><dd>The description of the invoice item</dd>
 <dt>amount<span class="property-type">number</span><dd>The total amount for this invoice item</dd>
 

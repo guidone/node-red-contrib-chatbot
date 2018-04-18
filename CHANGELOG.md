@@ -1,3 +1,4 @@
+* **0.11.0** - Added `Invoice node` and `Invoice Shipping node` for Telegram 
 * **0.10.3** - Fixed concurrency in plain file context provider, improved error logging 
 * **0.10.2** - Improved detect command and fixed error in Telegram postback
 * **0.10.1** - Dialogflow and React can store the intent in any variable, `Rules node` can now check the value of a variable 
