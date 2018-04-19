@@ -36,6 +36,7 @@ module.exports = function(RED) {
     this.botname = n.botname;
     this.store = n.store;
     this.log = n.log;
+    this.debug = n.debug;
     this.usernames = n.usernames != null ? n.usernames.split(',') : [];
 
     if (!isUsed) {
@@ -60,6 +61,7 @@ module.exports = function(RED) {
       verifyToken: node.credentials != null && node.credentials.verify_token != null ? node.credentials.verify_token.trim() : null,
       appSecret: node.credentials != null && node.credentials.app_secret != null ? node.credentials.app_secret.trim() : null,
       logfile: node.log,
+      debug: node.debug,
       contextProvider: contextStorageNode != null ? contextStorageNode.contextStorage : null,
       contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null
     };
@@ -110,6 +112,7 @@ module.exports = function(RED) {
           appSecret: botConfiguration.app_secret,
           contextProvider: node.contextProvider,
           logfile: botConfiguration.log,
+          debug: botConfiguration.debug,
           RED: RED
         });
         node.chat.start();

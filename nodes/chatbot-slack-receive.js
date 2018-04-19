@@ -36,6 +36,7 @@ module.exports = function(RED) {
     this.botname = n.botname;
     this.store = n.store;
     this.log = n.log;
+    this.debug = n.debug;
     this.usernames = n.usernames != null ? n.usernames.split(',') : [];
 
     if (!isUsed) {
@@ -57,7 +58,8 @@ module.exports = function(RED) {
       botname: node.botname,
       token: node.credentials != null && node.credentials.token != null ? node.credentials.token.trim() : null,
       contextProvider: contextStorageNode != null ? contextStorageNode.contextStorage : null,
-      contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null
+      contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null,
+      debug: node.debug
     };
     // check if there's a valid configuration in global settings
     if (slackConfigs[node.botname] != null) {
@@ -105,6 +107,7 @@ module.exports = function(RED) {
           token: botConfiguration.token,
           contextProvider: node.contextProvider,
           logfile: botConfiguration.log,
+          debug: botConfiguration.debug,
           RED: RED
         });
         node.chat.start();

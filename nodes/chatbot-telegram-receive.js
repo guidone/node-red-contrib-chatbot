@@ -41,6 +41,7 @@ module.exports = function(RED) {
     this.polling = n.polling;
     this.parseMode = n.parseMode;
     this.providerToken = n.providerToken;
+    this.debug = n.debug;
 
     if (!isUsed) {
       // silently exit, this node is not used
@@ -65,7 +66,8 @@ module.exports = function(RED) {
       parseMode: node.parseMode,
       logfile: node.log,
       contextProvider: contextStorageNode != null ? contextStorageNode.contextStorage : null,
-      contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null
+      contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null,
+      debug: node.debug
     };
     // check if there's a valid configuration in global settings
     if (telegramConfigs[node.botname] != null) {
@@ -115,6 +117,7 @@ module.exports = function(RED) {
           parseMode: botConfiguration.parseMode,
           contextProvider: node.contextProvider,
           logfile: botConfiguration.log,
+          debug: botConfiguration.debug,
           RED: RED
         });
         node.chat.start();
