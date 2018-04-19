@@ -17,6 +17,9 @@
       },
       log: {
         value: null
+      },
+      debug: {
+        value: false
       }
     },
     oneditprepare: function() {
@@ -79,6 +82,13 @@
         Select the chat context provider to use with this bot, if none is selected then non-persistent "memory" will be used.<br>
         To extend <strong>RedBot</strong> with a new chat context provider see <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Creating-a-Chat-Context-Provider" target="_blank">this tutorial</a>.
       </div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-debug">Debug</label>
+      <input type="checkbox" value="true" id="node-config-input-debug">
+      <span class="redbot-form-legend">
+        Show debug information on send/receive
+      </span>
     </div>
   </div>
   <div class="form-warning hidden">

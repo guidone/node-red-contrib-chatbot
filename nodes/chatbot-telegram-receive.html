@@ -29,6 +29,9 @@
       },
       parseMode: {
         value: ''
+      },
+      debug: {
+        value: false
       }
     },
     oneditprepare: function() {
@@ -111,6 +114,13 @@
       <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;">
       Render the text content of messages, inline buttons and keywords with Markdown or HTML
       </div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-debug">Debug</label>
+      <input type="checkbox" value="true" id="node-config-input-debug">
+      <span class="redbot-form-legend">
+        Show debug information on send/receive
+      </span>
     </div>
   </div>
   <div class="form-warning hidden">
