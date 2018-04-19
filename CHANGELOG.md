@@ -1,3 +1,4 @@
+* **0.12.1** - Fixed send sticker in Telegram
 * **0.12.0** - Added `Invoice node` and `Invoice Shipping node` for Telegram 
 * **0.10.3** - Fixed concurrency in plain file context provider, improved error logging 
 * **0.10.2** - Improved detect command and fixed error in Telegram postback
