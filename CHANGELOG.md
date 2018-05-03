@@ -1,3 +1,4 @@
+* **0.12.3** - Added support for Facebook _messaging_referrals_
 * **0.12.2** - Added debug flag to all receivers
 * **0.12.1** - Fixed send sticker in Telegram
 * **0.12.0** - Added `Invoice node` and `Invoice Shipping node` for Telegram 

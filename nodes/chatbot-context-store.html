@@ -79,7 +79,7 @@
 <p>Two chat context providers are available</p>
 <ul>
 <li><strong>Memory</strong> <em>(default)</em>: it&#39;s a very fast and volatile storage, means that when the server is restarted all the stored data is lost. It&#39; the default one (good for experimenting) and all the methods are synchronous</li>
-<li><strong>Plain file</strong>: it stores data in a plain <em>json</em> file, all the methods are asynchronous. Currently is only available for <strong>Slack</strong> (soon for <strong>Telegram</strong> and <strong>Facebook</strong>)</li>
+<li><strong>Plain file</strong>: it stores data in a plain <em>json</em> file, all the methods are asynchronous.</li>
 </ul>
 <p>To get the chat context in a <code>Function node</code> (using the <strong>Memory</strong> context provider): </p>
 <pre><code>var chat = msg.chat();
