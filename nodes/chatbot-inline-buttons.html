@@ -230,6 +230,8 @@
         return $.RedBot.validate.notEmpty(rule.messageType);
       case 'transport':
         return $.RedBot.validate.notEmpty(rule.transport);
+      case 'messageEvent':
+        return $.RedBot.validate.notEmpty(rule.event);
       case 'outbound':
       case 'inbound':
       case 'isTopicEmpty':
