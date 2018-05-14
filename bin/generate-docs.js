@@ -55,7 +55,8 @@ var mappings = {
   'Dialogflow-token-node.md': 'chatbot-dialogflow.html|chatbot-dialogflow-token',
   'Invoice-node.md': 'chatbot-invoice.html',
   'Invoice-Shipping-node.md': 'chatbot-invoice-shipping.html',
-  'Chat-Context.md': 'chatbot-context-store.html'
+  'Chat-Context.md': 'chatbot-context-store.html',
+  'Keyboard-node.md': 'chatbot-ask.html'
 };
 
 function collectImages(html) {
