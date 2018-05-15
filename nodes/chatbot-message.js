@@ -18,16 +18,16 @@ module.exports = function(RED) {
       return _.isString(messages[luck]) ? messages[luck] : messages[luck].message;
     };
 
-    this.emptyMessages = function(messages) {
+    /*this.emptyMessages = function(messages) {
       return _.isEmpty(messages) || _(messages).all(function(message) {
         // in node config elements are object, in payload are just strings
         return _.isObject(message) ? _.isEmpty(message.message) : _.isEmpty(message);
       });
-    };
+    };*/
 
     this.on('input', function(msg) {
 
-      var message = node.message;
+      //var message = node.message;
       var answer = node.answer;
       var chatId = utils.getChatId(msg);
       var messageId = utils.getMessageId(msg);
@@ -38,7 +38,7 @@ module.exports = function(RED) {
         return;
       }
 
-      if (_.isString(node.message) && !_.isEmpty(node.message)) {
+      /*if (_.isString(node.message) && !_.isEmpty(node.message)) {
         message = node.message;
       } else if (_.isArray(node.message) && !this.emptyMessages(node.message)) {
         message = node.pickOne(node.message);
@@ -50,7 +50,18 @@ module.exports = function(RED) {
         message = String(msg.payload);
       } else {
         node.error('Empty message');
-      }
+      }*/
+
+      // try to get a plain string or number from config or payload or "message" variable
+      // also try to get message from the "answer" key in payload, that to try to get the answer directly from nodes
+      // like dialogflow/recast
+      // also try to get an array of messages from config and pick one randomly
+      var messages = utils.extractValue('string', 'message', node, msg)
+        || utils.extractValue('string', 'answer', node, msg, false)
+        || utils.extractValue('number', 'message', node, msg)
+        || utils.extractValue('messages', 'message', node, msg);
+
+      var message = _.isArray(messages) ? node.pickOne(messages) : messages;
 
       template(message)
         .then(function(message) {
