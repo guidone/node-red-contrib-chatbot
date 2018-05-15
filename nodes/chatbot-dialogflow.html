@@ -186,11 +186,12 @@ May I have a mojito
   payload: {
     intent: &#39;want-drink&#39;,
     answer: &#39;I am the answer&#39;,
-    variables: {
+    variables: { 
       Drinks: &#39;martini rosso&#39;
     }
 }
 </code></pre><p>Generally after a <code>Dialogflow.com node</code> it&#39;s useful a <code>Rules node</code> to test the <em>topic</em> variable and redirect the flow based on user&#39;s intent.</p>
+<p>If Dialogflow is configured to provide an answer (<code>payload.answer&#39;) then is possible to connect a</code>Message node` directly to the first output to send the message back to the user.</p>
 <p>With <strong>Dialogflow.com</strong> it&#39;s possible to define some answers for intents, if one of these is available it will be included in the <code>payload</code>.</p>
 <p><img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram">
 <img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook">

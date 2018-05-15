@@ -1,3 +1,4 @@
+* **0.12.5** - Added events **new-user**, **referral**, filter by event in `Rules node`, now if `Dialogflow node` and `Recast node` can be connected directly to a `Message node`
 * **0.12.4** - Fix docs for `Keyboard Buttons node`
 * **0.12.3** - Added support for Facebook _messaging_referrals_
 * **0.12.2** - Added debug flag to all receivers
