@@ -210,7 +210,7 @@ describe('Chat message node', function() {
   });
 
   it('should send a message randomly picked from array', function() {
-    var msg = RED.createMessage();
+    var msg = RED.createMessage({});
     RED.node.config({
       message: [{message: 'Message 1'}, {message: 'Message 2'}, {message: 'Message 3'}],
       track: false,
@@ -308,6 +308,18 @@ describe('Chat message node', function() {
     return RED.node.get().await()
       .then(function () {
         assert.equal(RED.node.message().payload.content, 'Test context for message');
+      });
+  });
+
+  it('should get the "answer" key from payload', function() {
+    var msg = RED.createMessage({ answer: 'I am an answer from dialogflow' });
+    RED.node.config({
+    });
+    MessageBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(function () {
+        assert.equal(RED.node.message().payload.content, 'I am an answer from dialogflow');
       });
   });
 

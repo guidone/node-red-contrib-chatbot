@@ -56,6 +56,9 @@
           if (type === 'transport') {
             obj.transport = rule.find('select[name=transport]').val();
           }
+          if (type === 'messageEvent') {
+            obj.event = rule.find('select[name=event]').val();
+          }
           console.log('---', obj);
           node.rules.push(obj);
         }
@@ -78,6 +81,7 @@
               + '<option value="environment">Environment is ...</option>'
               + '<option value="outbound">Message is outbound</option>'
               + '<option value="inbound">Message is inbound</option>'
+              + '<option value="messageEvent">Message is event ...</option>'
               + '<option value="messageType">Message is type ...</option>'
               + '<option value="notMessageType">Message is not type ...</option>'
               + '<option value="isTopicEmpty">Topic is not defined</option>'
@@ -94,7 +98,7 @@
               var type = $('select[name=type]', container).val();
               container.find('input').hide();
               container.find('span').hide();
-              container.find('select.environment').hide();
+              container.find('select[name!=type]').hide();
               container.find('.' + type).show();
             });
           // get options for message type
@@ -107,7 +111,7 @@
           row
             .append('<input class="hasNotVariable hasVariable" style="display:none;width:50%;margin-left:10px;" type="text" name="variable" placeholder="Context variable"/>')
             .append('<input class="isVariable" style="display:none;width:25%;margin-left:10px;" type="text" name="variableName" placeholder="Name"/>')
-            .append('<span class="isVariable">&nbsp;is&nbsp;</span>')
+            .append('<span class="isVariable" style="display:none;">&nbsp;is&nbsp;</span>')
             .append('<input class="isVariable" style="display:none;width:25%;margin-left:0px;" type="text" name="variableValue" placeholder="Value"/>')
             .append('<input class="command" style="display:none;width:50%;margin-left:10px;" type="text" name="command" placeholder="/command"/>')
             .append('<input class="isNotTopic isTopic topicIncludes" style="display:none;width:40%;margin-left:10px;" type="text" name="topic" placeholder="Topic"/>')
@@ -115,6 +119,11 @@
               + '<option value="">Select environment</option>'
               + '<option value="production">production</option>'
               + '<option value="development">development</option>'
+              + '</select>')
+            .append('<select class="messageEvent" name="event" style="display:none;width:40%;margin-left:10px;">'
+              + '<option value="">Select type</option>'
+              + '<option value="new-user">New user(s)</option>'
+              + '<option value="referral">Referral</option>'
               + '</select>')
             .append('<select class="transport" name="transport" style="display:none;width:40%;margin-left:10px;">'
               + '<option value="">Select transport</option>'
@@ -134,7 +143,7 @@
           if (rule.type != null) {
             $('select[name=type]', container).val(rule.type);
             container.find('input').hide();
-            container.find('select.environment').hide();
+            container.find('select[name!=type]').hide();
             container.find('.' + rule.type).show();
           }
           if (rule.variable != null && (rule.type === 'hasNotVariable' || rule.type === 'hasVariable')) {
@@ -160,6 +169,9 @@
           }
           if (rule.value != null) {
             $('input[name=variableValue]', container).val(rule.value);
+          }
+          if (rule.event != null) {
+            $('input[name=event]', container).val(rule.event);
           }
         },
         removeItem: function(opt) {
@@ -200,6 +212,8 @@
         return 'If no rule applies';
       } else if (rule.type === 'messageType') {
         return 'Message type is "' + ($.RedBot.validate.notEmpty(rule.messageType) ? rule.messageType : '...') + '"';
+      } else if (rule.type === 'messageEvent') {
+        return 'Message type is event "' + ($.RedBot.validate.notEmpty(rule.event) ? rule.event : '...') + '"';
       } else if (rule.type === 'notMessageType') {
         return 'Message type is not "' + ($.RedBot.validate.notEmpty(rule.messageType) ? rule.messageType : '...') + '"';
       } else if (rule.type === 'catchAll') {

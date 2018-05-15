@@ -48,6 +48,18 @@ var Types = {
     });
   },
 
+  messageEvent: function(rule, message) {
+    return new Promise(function(resolve, reject) {
+      if (message != null && message.payload != null) {
+        if (message.payload.type === rule.event) {
+          resolve(rule);
+        } else {
+          reject();
+        }
+      }
+    });
+  },
+
   notMessageType: function(rule, message) {
     return new Promise(function(resolve, reject) {
       if (message != null && message.payload != null) {

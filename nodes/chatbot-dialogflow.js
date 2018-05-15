@@ -28,6 +28,11 @@ module.exports = function(RED) {
         lcd.warn('Dialogflow.ai token is missing.');
         return;
       }
+      // error if no language at all
+      if (_.isEmpty(language)) {
+        node.error('Language param is empty in Dialogflow node');
+        return;
+      }
 
       // exit if not message
       if (!utils.message.isMessage(msg)) {

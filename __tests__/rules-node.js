@@ -658,5 +658,47 @@ describe('Chat rules node', function() {
       });
   });
 
+  it('should go through the first if the message is event', function() {
+    var msg = RED.createMessage({
+      content: 'no command',
+      type: 'new-user'
+    }, 'telegram');
+    RED.node.config({
+      rules: [
+        { type: 'messageEvent', event: 'new-user'},
+        { type: 'catchAll' }
+      ]
+    });
+    msg.chat().set('myVar', 'test_value');
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(function() {
+        assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
+        assert.isNull(RED.node.message(1));
+      });
+  });
+
+  it('should go through the second if the message is a different event', function() {
+    var msg = RED.createMessage({
+      content: 'no command',
+      type: 'referral'
+    }, 'telegram');
+    RED.node.config({
+      rules: [
+        { type: 'messageEvent', event: 'new-user'},
+        { type: 'catchAll' }
+      ]
+    });
+    msg.chat().set('myVar', 'test_value');
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(function() {
+        assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
+        assert.isNull(RED.node.message(0));
+      });
+  });
+
 });
 
