@@ -11,19 +11,12 @@ module.exports = function(RED) {
     this.message = config.message;
     this.answer = config.answer;
     this.parse_mode = config.parse_mode;
-    this.transports = ['telegram', 'slack', 'facebook', 'smooch'];
+    this.transports = ['telegram', 'slack', 'facebook', 'smooch', 'viber'];
 
     this.pickOne = function(messages) {
       var luck = Math.floor(Math.random() * messages.length);
       return _.isString(messages[luck]) ? messages[luck] : messages[luck].message;
     };
-
-    /*this.emptyMessages = function(messages) {
-      return _.isEmpty(messages) || _(messages).all(function(message) {
-        // in node config elements are object, in payload are just strings
-        return _.isObject(message) ? _.isEmpty(message.message) : _.isEmpty(message);
-      });
-    };*/
 
     this.on('input', function(msg) {
 
@@ -37,20 +30,6 @@ module.exports = function(RED) {
       if (!utils.matchTransport(node, msg)) {
         return;
       }
-
-      /*if (_.isString(node.message) && !_.isEmpty(node.message)) {
-        message = node.message;
-      } else if (_.isArray(node.message) && !this.emptyMessages(node.message)) {
-        message = node.pickOne(node.message);
-      } else if (_.isString(msg.payload) && !_.isEmpty(msg.payload)) {
-        message = msg.payload;
-      } else if (_.isArray(msg.payload) && !this.emptyMessages(msg.payload)) {
-        message = node.pickOne(msg.payload);
-      } else if (_.isNumber(msg.payload)) {
-        message = String(msg.payload);
-      } else {
-        node.error('Empty message');
-      }*/
 
       // try to get a plain string or number from config or payload or "message" variable
       // also try to get message from the "answer" key in payload, that to try to get the answer directly from nodes
