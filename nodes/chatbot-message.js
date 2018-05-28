@@ -57,9 +57,9 @@ module.exports = function(RED) {
       // like dialogflow/recast
       // also try to get an array of messages from config and pick one randomly
       var messages = utils.extractValue('string', 'message', node, msg)
+        || utils.extractValue('messages', 'message', node, msg)
         || utils.extractValue('string', 'answer', node, msg, false)
-        || utils.extractValue('number', 'message', node, msg)
-        || utils.extractValue('messages', 'message', node, msg);
+        || utils.extractValue('number', 'message', node, msg);
 
       var message = _.isArray(messages) ? node.pickOne(messages) : messages;
 

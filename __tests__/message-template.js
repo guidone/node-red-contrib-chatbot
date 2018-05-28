@@ -22,6 +22,21 @@ describe('Message template', function() {
       });
   });
 
+  it('Leave a number without token intact', function() {
+
+    var msg = RED.createMessage();
+    //MessageBlock(RED);
+
+    var node = {};
+    RED.nodes.createNode(node, {});
+    var template = MessageTemplate(msg, node);
+
+    return template(1527491606935)
+      .then(function(result) {
+        assert.equal(result, '1527491606935');
+      });
+  });
+
   it('Simple replacement of a token', function() {
     var msg = RED.createMessage();
     var node = {};
