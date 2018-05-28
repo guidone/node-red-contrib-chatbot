@@ -10,7 +10,7 @@ module.exports = function(RED) {
     this.name = config.name;
     this.buttons = config.buttons;
     this.message = config.message;
-    this.transports = ['telegram', 'facebook', 'smooch', 'slack'];
+    this.transports = ['telegram', 'facebook', 'smooch', 'slack', 'viber'];
 
     this.on('input', function(msg) {
 
