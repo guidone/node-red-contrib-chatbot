@@ -17,6 +17,7 @@ module.exports = function(RED) {
     this.botTelegram = config.botTelegram;
     this.botSlack = config.botSlack;
     this.botFacebook = config.botFacebook;
+    this.botViber = config.botViber;
 
     this.on('input', function(msg) {
 
@@ -27,8 +28,9 @@ module.exports = function(RED) {
       var botTelegram = node.botTelegram;
       var botSlack = node.botSlack;
       var botFacebook = node.botFacebook;
+      var botViber = node.botViber;
 
-      if (transport === 'slack' || transport === 'telegram' || transport === 'facebook') {
+      if (transport === 'slack' || transport === 'telegram' || transport === 'facebook' || transport === 'viber') {
         //var store = RED.nodes.getNode(node.store);
         var platformNode = null;
         if (transport === 'slack' && RED.nodes.getNode(botSlack) != null) {
@@ -37,6 +39,8 @@ module.exports = function(RED) {
           platformNode = RED.nodes.getNode(botTelegram).chat;
         } else if (transport === 'facebook' && RED.nodes.getNode(botFacebook) != null) {
           platformNode = RED.nodes.getNode(botFacebook).chat;
+        } else if (transport === 'viber' && RED.nodes.getNode(botViber) != null) {
+          platformNode = RED.nodes.getNode(botViber).chat;
         } else {
           node.error('Chatbot not found or not configured properly');
           return;

@@ -21,6 +21,11 @@
         type: 'chatbot-facebook-node',
         required: false
       },
+      botViber: {
+        value: '',
+        type: 'chatbot-viber-node',
+        required: false
+      },
       chatId: {
         value: ''
       },
@@ -81,6 +86,7 @@
     <option value="slack">Slack</option>
     <option value="smooch">Smooch</option>
     <option value="telegram">Telegram</option>
+    <option value="viber">Viber</option>
   </select>
 </div>
 <div class="form-row form-row-bot form-row-bot-telegram">
@@ -94,6 +100,10 @@
 <div class="form-row form-row-bot form-row-bot-facebook">
   <label for="node-input-botFacebook">Facebook Bot</label>
   <input type="text" id="node-input-botFacebook" placeholder="Facebook Bot">
+</div>
+<div class="form-row form-row-bot form-row-bot-viber">
+  <label for="node-input-botViber">Viber Bot</label>
+  <input type="text" id="node-input-botViber" placeholder="Viber Bot">
 </div>
 <div class="form-row form-row-bot form-row-bot-smooch">
   <label for="node-input-bot">Context</label>

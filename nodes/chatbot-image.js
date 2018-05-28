@@ -13,7 +13,7 @@ module.exports = function(RED) {
     this.name = config.name;
     this.caption = config.caption;
     this.filename = config.filename; // for retrocompatibility
-    this.transports = ['telegram', 'slack', 'facebook', 'smooch'];
+    this.transports = ['telegram', 'slack', 'facebook', 'smooch', 'viber'];
 
     this.on('input', function(msg) {
 
