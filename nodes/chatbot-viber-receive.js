@@ -62,13 +62,13 @@ module.exports = function(RED) {
       authorizedUsernames: node.usernames,
       token: node.credentials != null && node.credentials.token != null ? node.credentials.token.trim() : null,
       webHook: node.webHook,
-      //polling: node.polling,
-      //parseMode: node.parseMode,
+      botname: node.botname,
       logfile: node.log,
       contextProvider: contextStorageNode != null ? contextStorageNode.contextStorage : null,
       contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null,
       debug: node.debug
     };
+
     // check if there's a valid configuration in global settings
     if (viberConfigs[node.botname] != null) {
       var validation = validators.platform.viber(viberConfigs[node.botname]);
@@ -113,6 +113,7 @@ module.exports = function(RED) {
           authorizedUsernames: botConfiguration.authorizedUsernames,
           token: botConfiguration.token,
           webHook: botConfiguration.webHook,
+          botname: botConfiguration.botname,
           //polling: botConfiguration.polling,
           //parseMode: botConfiguration.parseMode,
           contextProvider: node.contextProvider,

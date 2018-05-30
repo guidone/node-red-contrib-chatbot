@@ -31,7 +31,7 @@ module.exports = function(RED) {
       var content = utils.extractValue('string', 'image', node, msg)
         || utils.extractValue('buffer', 'image', node, msg)
         || utils.extractValue('string', 'filename', node, msg); // for retrocompatibility
-      var caption = utils.extractValue('string', 'caption', node, msg);
+      var caption = utils.extractValue('string', 'caption', node, msg, false);
       // get the content
       var fetcher = null;
       if (validators.filepath(content)) {
