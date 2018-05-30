@@ -12,7 +12,9 @@
       },
       webHook: {
         value: '',
-        required: true
+        validate: function(value) {
+          return $.RedBot.validate.url(value);
+        }
       },
       store: {
         value: '',
@@ -135,7 +137,7 @@
     icon: 'chatbot-receiver.png',
     paletteLabel: 'Viber In',
     label: function () {
-      return "Viber Receiver";
+      return 'Viber Receiver';
     }
   });
 </script>
@@ -164,12 +166,12 @@
     color: '#FFCC66',
     defaults: {
       bot: {
-        value: "",
+        value: '',
         type: 'chatbot-viber-node',
         required: true
       },
       botProduction: {
-        value: "",
+        value: '',
         type: 'chatbot-viber-node',
         required: false
       },
