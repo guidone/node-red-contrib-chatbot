@@ -9,7 +9,8 @@ var BufferTransformers = require('../lib/buffer-transformers');
 var ValidExtensions = {
   'facebook': ['.pdf', '.png', '.jpg', '.zip', '.gif'],
   'telegram': ['.pdf', '.gif', '.zip'],
-  'slack': ['.pdf', '.zip']
+  'slack': ['.pdf', '.zip'],
+  'viber': ['*']
 };
 
 
@@ -21,7 +22,7 @@ module.exports = function(RED) {
     this.filename = config.filename;
     this.name = config.name;
     this.caption = config.caption;
-    this.transports = ['telegram', 'facebook', 'slack'];
+    this.transports = ['telegram', 'facebook', 'slack', 'viber'];
 
     this.on('input', function(msg) {
 
@@ -108,13 +109,12 @@ module.exports = function(RED) {
       }
       // if the file has a not accepted extension, then zip it
       var transform = BufferTransformers.identity;
-      if (!_(validExtensions).contains(file.extension)) {
+      if (!_(validExtensions).contains('*') && !_(validExtensions).contains(file.extension)) {
         transform = BufferTransformers.zip
       }
       // zip the file if needed or leave it as is
       transform(file)
         .then(function(newFile) {
-          //console.log('++++', newFile);
           // send out the message
           msg.payload = {
             type: 'document',
