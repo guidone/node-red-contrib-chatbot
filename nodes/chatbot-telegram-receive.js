@@ -116,7 +116,7 @@ module.exports = function(RED) {
           polling: botConfiguration.polling,
           parseMode: botConfiguration.parseMode,
           contextProvider: node.contextProvider,
-          logfile: botConfiguration.log,
+          logfile: botConfiguration.logfile,
           debug: botConfiguration.debug,
           RED: RED
         });

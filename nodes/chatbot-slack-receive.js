@@ -59,7 +59,8 @@ module.exports = function(RED) {
       token: node.credentials != null && node.credentials.token != null ? node.credentials.token.trim() : null,
       contextProvider: contextStorageNode != null ? contextStorageNode.contextStorage : null,
       contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null,
-      debug: node.debug
+      debug: node.debug,
+      logfile: node.log
     };
     // check if there's a valid configuration in global settings
     if (slackConfigs[node.botname] != null) {
@@ -106,7 +107,7 @@ module.exports = function(RED) {
           authorizedUsernames: botConfiguration.usernames,
           token: botConfiguration.token,
           contextProvider: node.contextProvider,
-          logfile: botConfiguration.log,
+          logfile: botConfiguration.logfile,
           debug: botConfiguration.debug,
           RED: RED
         });
