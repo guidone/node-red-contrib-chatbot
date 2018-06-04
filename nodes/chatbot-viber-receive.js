@@ -114,10 +114,8 @@ module.exports = function(RED) {
           token: botConfiguration.token,
           webHook: botConfiguration.webHook,
           botname: botConfiguration.botname,
-          //polling: botConfiguration.polling,
-          //parseMode: botConfiguration.parseMode,
           contextProvider: node.contextProvider,
-          logfile: botConfiguration.log,
+          logfile: botConfiguration.logfile,
           debug: botConfiguration.debug,
           RED: RED
         });
