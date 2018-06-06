@@ -140,4 +140,36 @@ describe('Chat image node', function() {
       });
   });
 
+  it('should send a image message with buffer from payload (input from http node)', function () {
+    var msg = RED.createMessage(fs.readFileSync(__dirname + '/dummy/image.png'), 'telegram');
+    RED.node.config({
+      name: 'my file name: test'
+    });
+    ImageBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(function() {
+        assert.equal(RED.node.message().payload.type, 'photo');
+        assert.equal(RED.node.message().payload.inbound, false);
+        assert.instanceOf(RED.node.message().payload.content, Buffer);
+        assert.equal(RED.node.message().payload.filename, 'my file name test');
+        assert.equal(RED.node.message().originalMessage.chat.id, 42);
+      });
+  });
+
+  it('should warn if the user trying to send very large string (a http payload as string instead of buffer)', function () {
+    var msg = RED.createMessage(fs.readFileSync(__dirname + '/dummy/image.png').toString(), 'telegram');
+    RED.node.config({
+      name: 'my file name: test'
+    });
+    ImageBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(
+        function() {},
+        function(error) {
+          assert.include(error, 'Looks like you are passing a very long string');
+        });
+  });
+
 });

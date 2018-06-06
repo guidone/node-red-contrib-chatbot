@@ -1,5 +1,6 @@
 var Path = require('path');
 var sanitize = require('sanitize-filename');
+var _ = require('underscore');
 var utils = require('../lib/helpers/utils');
 var fetchers = require('../lib/helpers/fetchers');
 var validators = require('../lib/helpers/validators');
@@ -42,8 +43,13 @@ module.exports = function(RED) {
       } else if (validators.buffer(content)) {
         fetcher = fetchers.identity;
         filename = sanitize(name);
+      } else if (_.isString(content) && content.length > 4064) {
+        node.error('Looks like you are passing a very long string (> 4064 bytes) in the payload as image url or path\n'
+          + 'Perhaps you are using a "Http request" and passing the result as string instead of buffer?');
+        return;
       } else {
         node.error('Don\'t know how to handle: ' + content);
+        return;
       }
 
       fetcher(content)
