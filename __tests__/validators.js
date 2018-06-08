@@ -68,9 +68,16 @@ describe('Validators', function() {
   });
 
   it('validates a url', function() {
+    assert.isFalse(validators.url('http://barabba'));
     assert.isFalse(validators.url('not a real url'));
+    assert.isFalse(validators.url('http://'));
+    assert.isFalse(validators.url('http://notld'));
+    assert.isTrue(validators.url('http://domain.it'));
     assert.isTrue(validators.url('http://host.com//dir/file.mp3'));
     assert.isTrue(validators.url('https://hots.com/dir/file.mp3'));
+    assert.isTrue(validators.url(' https://username:password@www.mydomain.it/cgi-bin'));
+    assert.isTrue(validators.url(' https://username:password@www.mydomain.it:8184/cgi-bin/CGIProxy.fcgi?cmd=snapPicture2&usr=xxxxx&pwd=xxxxxxxx'));
+    assert.isTrue(validators.url(' https://username:password@192.168.1.23:8184/cgi-bin/CGIProxy.fcgi?cmd=snapPicture2&usr=xxxxx&pwd=xxxxxxxx'));
   });
 
   it('validates a buffer', function() {
