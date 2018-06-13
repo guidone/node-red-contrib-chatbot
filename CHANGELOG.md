@@ -1,3 +1,4 @@
+* **0.13.0** - Viber support
 * **0.12.8** - Improve url regular expression, detect mistaken buffer in `Image node` 
 * **0.12.7** - Fixed upload image in Slack with missing _filename_ param
 * **0.12.6** - Fix incorrect payload for `Message node`
