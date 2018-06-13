@@ -14,7 +14,7 @@ module.exports = function(RED) {
     this.name = config.name;
     this.caption = config.caption;
     this.filename = config.filename; // for retrocompatibility
-    this.transports = ['telegram', 'slack', 'facebook', 'smooch'];
+    this.transports = ['telegram', 'slack', 'facebook', 'smooch', 'viber'];
 
     this.on('input', function(msg) {
 
@@ -31,7 +31,7 @@ module.exports = function(RED) {
       var content = utils.extractValue('string', 'image', node, msg)
         || utils.extractValue('buffer', 'image', node, msg)
         || utils.extractValue('string', 'filename', node, msg); // for retrocompatibility
-      var caption = utils.extractValue('string', 'caption', node, msg);
+      var caption = utils.extractValue('string', 'caption', node, msg, false);
       // get the content
       var fetcher = null;
       if (validators.filepath(content)) {

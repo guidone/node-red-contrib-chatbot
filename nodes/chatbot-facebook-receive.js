@@ -111,7 +111,7 @@ module.exports = function(RED) {
           verifyToken: botConfiguration.verify_token,
           appSecret: botConfiguration.app_secret,
           contextProvider: node.contextProvider,
-          logfile: botConfiguration.log,
+          logfile: botConfiguration.logfile,
           debug: botConfiguration.debug,
           RED: RED
         });

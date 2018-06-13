@@ -9,7 +9,7 @@ module.exports = function(RED) {
     this.latitude = config.latitude;
     this.longitude = config.longitude;
     this.place = config.place;
-    this.transports = ['telegram', 'slack', 'facebook'];
+    this.transports = ['telegram', 'slack', 'facebook', 'viber'];
 
     this.on('input', function(msg) {
 

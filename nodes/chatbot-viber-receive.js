@@ -1,6 +1,6 @@
 var _ = require('underscore');
 var moment = require('moment');
-var SlackServer = require('../lib/slack/slack-chat');
+var ViberServer = require('../lib/viber/viber-chat');
 var ContextProviders = require('../lib/chat-platform/chat-context-factory');
 var utils = require('../lib/helpers/utils');
 var clc = require('cli-color');
@@ -12,6 +12,7 @@ var when = utils.when;
 var warn = clc.yellow;
 var green = clc.green;
 
+
 module.exports = function(RED) {
 
   // register Slack server
@@ -21,23 +22,26 @@ module.exports = function(RED) {
   if (RED.redbot.platforms == null) {
     RED.redbot.platforms = {};
   }
-  RED.redbot.platforms.slack = SlackServer;
+  RED.redbot.platforms.viber = ViberServer;
 
   var contextProviders = ContextProviders(RED);
 
-  function SlackBotNode(n) {
+  function ViberBotNode(n) {
     RED.nodes.createNode(this, n);
     var node = this;
     var environment = this.context().global.environment === 'production' ? 'production' : 'development';
     var isUsed = utils.isUsed(RED, node.id);
     var startNode = utils.isUsedInEnvironment(RED, node.id, environment);
-    var slackConfigs = RED.settings.functionGlobalContext.get('slack') || {};
+    var viberConfigs = RED.settings.functionGlobalContext.get('viber') || {};
 
     this.botname = n.botname;
     this.store = n.store;
     this.log = n.log;
-    this.debug = n.debug;
     this.usernames = n.usernames != null ? n.usernames.split(',') : [];
+    //this.polling = n.polling;
+    //this.parseMode = n.parseMode;
+    this.webHook = n.webHook;
+    this.debug = n.debug;
 
     if (!isUsed) {
       // silently exit, this node is not used
@@ -46,40 +50,43 @@ module.exports = function(RED) {
     // exit if the node is not meant to be started in this environment
     if (!startNode) {
       // eslint-disable-next-line no-console
-      console.log(warn('Slack Bot ' + this.botname + ' will NOT be launched, environment is ' + environment));
+      console.log(warn('Viber Bot ' + this.botname + ' will NOT be launched, environment is ' + environment));
       return;
     }
     // eslint-disable-next-line no-console
-    console.log(green('Slack Bot ' + this.botname + ' will be launched, environment is ' + environment));
+    console.log(green('Viber Bot ' + this.botname + ' will be launched, environment is ' + environment));
     // get the context storage node
     var contextStorageNode = RED.nodes.getNode(this.store);
     // build the configuration object
     var botConfiguration = {
-      botname: node.botname,
+      authorizedUsernames: node.usernames,
       token: node.credentials != null && node.credentials.token != null ? node.credentials.token.trim() : null,
+      webHook: node.webHook,
+      botname: node.botname,
+      logfile: node.log,
       contextProvider: contextStorageNode != null ? contextStorageNode.contextStorage : null,
       contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null,
-      debug: node.debug,
-      logfile: node.log
+      debug: node.debug
     };
+
     // check if there's a valid configuration in global settings
-    if (slackConfigs[node.botname] != null) {
-      var validation = validators.platform.slack(slackConfigs[node.botname]);
+    if (viberConfigs[node.botname] != null) {
+      var validation = validators.platform.viber(viberConfigs[node.botname]);
       if (validation != null) {
         /* eslint-disable no-console */
         console.log('');
-        console.log(lcd.error('Found a Slack configuration in settings.js "' + node.botname + '", but it\'s invalid.'));
+        console.log(lcd.error('Found a Viber configuration in settings.js "' + node.botname + '", but it\'s invalid.'));
         console.log(lcd.grey('Errors:'));
         console.log(prettyjson.render(validation));
         console.log('');
         return;
       } else {
         console.log('');
-        console.log(lcd.grey('Found a valid Slack configuration in settings.js: "' + node.botname + '":'));
-        console.log(prettyjson.render(slackConfigs[node.botname]));
+        console.log(lcd.grey('Found a valid Viber configuration in settings.js: "' + node.botname + '":'));
+        console.log(prettyjson.render(viberConfigs[node.botname]));
         console.log('');
         /* eslint-enable no-console */
-        botConfiguration = slackConfigs[node.botname];
+        botConfiguration = viberConfigs[node.botname];
       }
     }
     // check if context node
@@ -93,7 +100,7 @@ module.exports = function(RED) {
     if (node.chat == null && botConfiguration.token != null) {
       // check if provider exisst
       if (!contextProviders.hasProvider(botConfiguration.contextProvider)) {
-        node.error('Error creating chatbot ' + node.botname + '. The context provider '
+        node.error('Error creating chatbot ' + this.botname + '. The context provider '
           + botConfiguration.contextProvider + ' doesn\'t exist.');
         return;
       }
@@ -102,10 +109,11 @@ module.exports = function(RED) {
       // try to start the servers
       try {
         node.contextProvider.start();
-        node.chat = SlackServer.createServer({
-          botname: botConfiguration.botname,
-          authorizedUsernames: botConfiguration.usernames,
+        node.chat = ViberServer.createServer({
+          authorizedUsernames: botConfiguration.authorizedUsernames,
           token: botConfiguration.token,
+          webHook: botConfiguration.webHook,
+          botname: botConfiguration.botname,
           contextProvider: node.contextProvider,
           logfile: botConfiguration.logfile,
           debug: botConfiguration.debug,
@@ -136,7 +144,7 @@ module.exports = function(RED) {
         });
     });
   }
-  RED.nodes.registerType('chatbot-slack-node', SlackBotNode, {
+  RED.nodes.registerType('chatbot-viber-node', ViberBotNode, {
     credentials: {
       token: {
         type: 'text'
@@ -144,7 +152,7 @@ module.exports = function(RED) {
     }
   });
 
-  function SlackInNode(config) {
+  function ViberInNode(config) {
 
     RED.nodes.createNode(this, config);
     var node = this;
@@ -161,7 +169,7 @@ module.exports = function(RED) {
       node.chat = this.config.chat;
       if (node.chat) {
         this.status({fill: 'green', shape: 'ring', text: 'connected'});
-        nodeGlobalKey = 'slack_master_' + this.config.id.replace('.','_');
+        nodeGlobalKey = 'viber_master_' + this.config.id.replace('.','_');
         var isMaster = false;
         if (global.get(nodeGlobalKey) == null) {
           isMaster = true;
@@ -174,6 +182,7 @@ module.exports = function(RED) {
           when(context.get('currentConversationNode'))
             .then(function(currentConversationNode) {
               if (isMaster && currentConversationNode != null) {
+                // if the current node is master, then redirect
                 // void the current conversation
                 when(context.remove('currentConversationNode'))
                   .then(function() {
@@ -186,10 +195,10 @@ module.exports = function(RED) {
             });
         });
       } else {
-        node.warn('Missing or incomplete configuration in Slack Receiver');
+        node.warn('Missing or incomplete configuration in Viber Receiver');
       }
     } else {
-      node.warn('Missing configuration in Slack Receiver');
+      node.warn('Missing configuration in Viber Receiver');
     }
 
     this.on('close', function (done) {
@@ -200,9 +209,9 @@ module.exports = function(RED) {
       done();
     });
   }
-  RED.nodes.registerType('chatbot-slack-receive', SlackInNode);
+  RED.nodes.registerType('chatbot-viber-receive', ViberInNode);
 
-  function SlackOutNode(config) {
+  function ViberOutNode(config) {
     RED.nodes.createNode(this, config);
     var node = this;
     var global = this.context().global;
@@ -219,10 +228,10 @@ module.exports = function(RED) {
       if (node.chat) {
         this.status({fill: 'green', shape: 'ring', text: 'connected'});
       } else {
-        node.warn('Missing or incomplete configuration in Slack Receiver');
+        node.warn('Missing or incomplete configuration in Viber Receiver');
       }
     } else {
-      node.warn('Missing configuration in Slack Receiver');
+      node.warn('Missing configuration in Viber Receiver');
     }
 
     // relay message
@@ -255,6 +264,6 @@ module.exports = function(RED) {
       });
     });
   }
-  RED.nodes.registerType('chatbot-slack-send', SlackOutNode);
+  RED.nodes.registerType('chatbot-viber-send', ViberOutNode);
 
 };
