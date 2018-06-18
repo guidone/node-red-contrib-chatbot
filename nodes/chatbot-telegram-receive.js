@@ -261,7 +261,9 @@ module.exports = function(RED) {
       }
       // finally send out
       stack.then(function() {
-        node.chat.send(message);
+        return node.chat.send(message);
+      }).then(function() {
+        node.send(_.extend({}, message, { payload: null }));
       });
     });
   }
