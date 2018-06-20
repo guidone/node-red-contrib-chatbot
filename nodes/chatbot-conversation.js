@@ -21,11 +21,9 @@ module.exports = function(RED) {
 
     this.on('input', function(msg) {
 
-      var chatId = utils.extractValue('string', 'chatId', node, msg, false)
-        || utils.extractValue('number', 'chatId', node, msg, false);
+      var chatId = utils.extractValue('string', 'chatId', node, msg, false);
       var transport = utils.extractValue('string', 'transport', node, msg, false);
-      var messageId = utils.extractValue('string', 'messageId', node, msg, false)
-        || utils.extractValue('number', 'messageId', node, msg, false);
+      var messageId = utils.extractValue('string', 'messageId', node, msg, false);
       var contextMessageId = utils.extractValue('boolean', 'contextMessageId', node, msg, false);
       var botTelegram = node.botTelegram;
       var botSlack = node.botSlack;
@@ -33,6 +31,7 @@ module.exports = function(RED) {
       var botViber = node.botViber;
 
       if (transport === 'slack' || transport === 'telegram' || transport === 'facebook' || transport === 'viber') {
+        //var store = RED.nodes.getNode(node.store);
         var platformNode = null;
         if (transport === 'slack' && RED.nodes.getNode(botSlack) != null) {
           platformNode = RED.nodes.getNode(botSlack).chat;
@@ -89,7 +88,7 @@ module.exports = function(RED) {
               id: chatId
             },
             message_id: null,
-            modifyMessageId: messageId,
+            modify_message_id: messageId,
             transport: transport
           };
           msg.chat = function() {
