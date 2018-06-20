@@ -182,14 +182,16 @@ module.exports = function(RED) {
           // then first pin, if not second pin
           when(context.get('currentConversationNode'))
             .then(function(currentConversationNode) {
-              if (isMaster && currentConversationNode != null) {
-                // if the current node is master, then redirect
-                // void the current conversation
-                when(context.remove('currentConversationNode'))
-                  .then(function() {
-                    // emit message directly the node where the conversation stopped
-                    RED.events.emit('node:' + currentConversationNode, message);
-                  });
+              // if there's a current converation, then the message must be forwarded
+              if (currentConversationNode != null) {
+                // if the current node is master, then redirect, if not master do nothing
+                if (isMaster) {
+                  when(context.remove('currentConversationNode'))
+                    .then(function () {
+                      // emit message directly the node where the conversation stopped
+                      RED.events.emit('node:' + currentConversationNode, message);
+                    });
+                }
               } else {
                 node.send(message);
               }
@@ -263,9 +265,10 @@ module.exports = function(RED) {
       stack.then(function() {
         return node.chat.send(message);
       }).then(function() {
-        var cloned = RED.util.cloneMessage(message);
-        cloned.payload = null;
-        node.send(cloned);
+        // forward if not tracking
+        if (!node.track) {
+          node.send(message);
+        }
       });
     });
   }

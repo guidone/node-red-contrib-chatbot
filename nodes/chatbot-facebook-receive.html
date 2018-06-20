@@ -217,15 +217,11 @@ In order test if it works: connect a <code>Debug Node</code> to the <code>Facebo
       }
     },
     inputs: 1,
-    outputs: 0,
+    outputs: 1,
     icon: 'chatbot-sender.png',
     paletteLabel: 'Facebook Out',
     label: function () {
       return 'Facebook Sender';
-    },
-    oneditsave: function() {
-      var track = $('#node-input-track').is(':checked');
-      this.outputs = track ? 1 : 0;
     }
   });
 </script>

@@ -192,15 +192,11 @@ P.S. After a chatbot is created in the <strong>Viber</strong> platform, it will 
       }
     },
     inputs: 1,
-    outputs: 0,
+    outputs: 1,
     icon: 'chatbot-sender.png',
     paletteLabel: 'Viber Out',
     label: function () {
       return 'Viber Sender';
-    },
-    oneditsave: function() {
-      var track = $('#node-input-track').is(':checked');
-      this.outputs = track ? 1 : 0;
     }
   });
 </script>

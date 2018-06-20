@@ -177,15 +177,11 @@
       }
     },
     inputs: 1,
-    outputs: 0,
+    outputs: 1,
     icon: 'chatbot-sender.png',
     paletteLabel: 'Slack Out',
     label: function () {
       return 'Slack Sender';
-    },
-    oneditsave: function() {
-      var track = $('#node-input-track').is(':checked');
-      this.outputs = track ? 1 : 0;
     }
   });
 </script>
