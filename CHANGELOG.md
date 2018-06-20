@@ -1,3 +1,4 @@
+* **0.13.1** - All sender nodes have output pin enabled (w/o track option), in order to chain more messages and keep the order. Fixed parsing of numeric _chatId_ in `Conversation node`, fixed filename in `Document node` for **Telegram** 
 * **0.13.0** - Viber support
 * **0.12.8** - Improve url regular expression, detect mistaken buffer in `Image node` 
 * **0.12.7** - Fixed upload image in Slack with missing _filename_ param
