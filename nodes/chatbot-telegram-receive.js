@@ -263,7 +263,9 @@ module.exports = function(RED) {
       stack.then(function() {
         return node.chat.send(message);
       }).then(function() {
-        node.send(_.extend({}, message, { payload: null }));
+        var cloned = RED.util.cloneMessage(message);
+        cloned.payload = null;
+        node.send(cloned);
       });
     });
   }

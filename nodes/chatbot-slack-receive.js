@@ -251,7 +251,11 @@ module.exports = function(RED) {
       }
       // finally send out
       stack.then(function() {
-        node.chat.send(message);
+        return node.chat.send(message);
+      }).then(function() {
+        var cloned = RED.util.cloneMessage(message);
+        cloned.payload = null;
+        node.send(cloned);
       });
     });
   }
