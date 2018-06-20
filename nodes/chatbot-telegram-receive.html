@@ -206,15 +206,11 @@ Then open your Node-RED and add a Telegram Receiver, in the configuration panel,
       }
     },
     inputs: 1,
-    outputs: 0,
+    outputs: 1,
     icon: 'chatbot-sender.png',
     paletteLabel: 'Telegram Out',
     label: function () {
       return 'Telegram Sender';
-    },
-    oneditsave: function() {
-      var track = $('#node-input-track').is(':checked');
-      this.outputs = track ? 1 : 0;
     }
   });
 </script>
