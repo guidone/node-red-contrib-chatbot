@@ -178,8 +178,7 @@ module.exports = function(RED) {
         }
         node.chat.on('message', function (message) {
           var context = message.chat();
-          // if a conversation is going on, go straight to the conversation node, otherwise if authorized
-          // then first pin, if not second pin
+          // check if there is a conversation is going on
           when(context.get('currentConversationNode'))
             .then(function(currentConversationNode) {
               // if there's a current converation, then the message must be forwarded
@@ -223,6 +222,7 @@ module.exports = function(RED) {
     this.bot = config.bot;
     this.botProduction = config.botProduction;
     this.track = config.track;
+    this.passThrough = config.passThrough;
     this.config = RED.nodes.getNode(environment === 'production' ? this.botProduction : this.bot);
 
     if (this.config) {
@@ -266,7 +266,7 @@ module.exports = function(RED) {
         return node.chat.send(message);
       }).then(function() {
         // forward if not tracking
-        if (!node.track) {
+        if (node.passThrough) {
           node.send(message);
         }
       });
