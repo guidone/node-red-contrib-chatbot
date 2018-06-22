@@ -1,3 +1,4 @@
+* **0.13.3** - Fixed a bug with _track_ option and plain file context, added pass through option to `Sender node` to make the outpin pin optional 
 * **0.13.1** - All sender nodes have output pin enabled (w/o track option), in order to chain more messages and keep the order. Fixed parsing of numeric _chatId_ in `Conversation node`, fixed filename in `Document node` for **Telegram** 
 * **0.13.0** - Viber support
 * **0.12.8** - Improve url regular expression, detect mistaken buffer in `Image node` 
