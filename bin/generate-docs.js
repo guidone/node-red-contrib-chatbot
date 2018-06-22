@@ -57,7 +57,8 @@ var mappings = {
   'Invoice-node.md': 'chatbot-invoice.html',
   'Invoice-Shipping-node.md': 'chatbot-invoice-shipping.html',
   'Chat-Context.md': 'chatbot-context-store.html',
-  'Keyboard-node.md': 'chatbot-ask.html'
+  'Keyboard-node.md': 'chatbot-ask.html',
+  'Buttons-node.md': 'chatbot-inline-buttons.html'
 };
 
 function collectImages(html) {

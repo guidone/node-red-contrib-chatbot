@@ -169,17 +169,19 @@ module.exports = function(RED) {
         }
         node.chat.on('message', function (message) {
           var context = message.chat();
-          // if a conversation is going on, go straight to the conversation node, otherwise if authorized
-          // then first pin, if not second pin
+          // check if there is a conversation is going on
           when(context.get('currentConversationNode'))
             .then(function(currentConversationNode) {
-              if (isMaster && currentConversationNode != null) {
-                // void the current conversation
-                when(context.remove('currentConversationNode'))
-                  .then(function() {
-                    // emit message directly the node where the conversation stopped
-                    RED.events.emit('node:' + currentConversationNode, message);
-                  });
+              // if there's a current converation, then the message must be forwarded
+              if (currentConversationNode != null) {
+                // if the current node is master, then redirect, if not master do nothing
+                if (isMaster) {
+                  when(context.remove('currentConversationNode'))
+                    .then(function () {
+                      // emit message directly the node where the conversation stopped
+                      RED.events.emit('node:' + currentConversationNode, message);
+                    });
+                }
               } else {
                 node.send(message);
               }
@@ -211,6 +213,7 @@ module.exports = function(RED) {
     this.bot = config.bot;
     this.botProduction = config.botProduction;
     this.track = config.track;
+    this.passThrough = config.passThrough;
     this.config = RED.nodes.getNode(environment === 'production' ? this.botProduction : this.bot);
 
     if (this.config) {
@@ -253,9 +256,10 @@ module.exports = function(RED) {
       stack.then(function() {
         return node.chat.send(message);
       }).then(function() {
-        var cloned = RED.util.cloneMessage(message);
-        cloned.payload = null;
-        node.send(cloned);
+        // forward if not tracking
+        if (node.passThrough) {
+          node.send(message);
+        }
       });
     });
   }

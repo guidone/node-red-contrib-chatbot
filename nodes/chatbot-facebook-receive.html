@@ -212,12 +212,15 @@ In order test if it works: connect a <code>Debug Node</code> to the <code>Facebo
       track: {
         value: false
       },
+      passThrough: {
+        value: false
+      },
       outputs: {
         value: 0
       }
     },
     inputs: 1,
-    outputs: 0,
+    outputs: 1,
     icon: 'chatbot-sender.png',
     paletteLabel: 'Facebook Out',
     label: function () {
@@ -225,7 +228,8 @@ In order test if it works: connect a <code>Debug Node</code> to the <code>Facebo
     },
     oneditsave: function() {
       var track = $('#node-input-track').is(':checked');
-      this.outputs = track ? 1 : 0;
+      var passThrough = $('#node-input-passThrough').is(':checked');
+      this.outputs = track || passThrough ? 1 : 0;
     }
   });
 </script>
@@ -243,10 +247,15 @@ In order test if it works: connect a <code>Debug Node</code> to the <code>Facebo
     Bot for <strong>production</strong> will be launched only if the global variable <em>"environment"</em> in <em>settings.js</em> is set to <em>"production"</em>, otherwise will be used the configuration for <strong>development</strong>.
   </div>
   <div class="form-row" style="margin-top:25px;">
-    <label for="node-input-track">Track</label>
-    <input type="checkbox" value="true" id="node-input-track">
+    <label for="node-input-track" style="margin-bottom:0px;">Track</label>
+    <input type="checkbox" value="true" id="node-input-track" style="margin-top:0px;">
     <div class="redbot-form-hint">
-    Track response of the user for this message, any further answer will be redirect to the output pin.
+    Track response of the user for this message: any further answer will be redirect to the output pin.
+    </div>
+    <label for="node-input-track" style="margin-bottom:0px;margin-top:15px;">Pass Through</label>
+    <input type="checkbox" value="true" id="node-input-passThrough" style="margin-top:0px;">
+    <div class="redbot-form-hint">
+    Forward the message to the output pin after sending (useful to chain messages and keep the right order)
     </div>
   </div>
 </script>
