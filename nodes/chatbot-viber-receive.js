@@ -221,6 +221,7 @@ module.exports = function(RED) {
     this.bot = config.bot;
     this.botProduction = config.botProduction;
     this.track = config.track;
+    this.passThrough = config.passThrough;
     this.config = RED.nodes.getNode(environment === 'production' ? this.botProduction : this.bot);
 
     if (this.config) {
@@ -263,9 +264,10 @@ module.exports = function(RED) {
       stack.then(function() {
         return node.chat.send(message);
       }).then(function() {
-        var cloned = RED.util.cloneMessage(message);
-        cloned.payload = null;
-        node.send(cloned);
+        // forward if not tracking
+        if (node.passThrough) {
+          node.send(message);
+        }
       });
     });
   }
