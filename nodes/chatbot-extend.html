@@ -1,0 +1,177 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-extend', {
+    category: 'RedBot',
+    color: '#FFCC66',
+    defaults: {
+      codeJs: {
+        value: 'node.chat.in(function(message) {\n'
+          + '  return new Promise(function(resolve, reject) {\n'
+          + '    resolve(message);\n'
+          + '  });\n'
+          + '})'
+      },
+      platform: {
+        value: '',
+        required:true
+      },
+      noerr: {
+        value: 0,
+        required: true,
+        validate: function(v) {
+          return ((!v) || (v === 0)) ? true : false;
+        }}
+    },
+    inputs: 0,
+    outputs: 0,
+    paletteLabel: 'Extend Chat Server',
+    icon: 'chatbot-extend.png',
+    label: function() {
+      return 'Extend Chat Server';
+    },
+    oneditprepare: function() {
+      this.editor = RED.editor.createEditor({
+        id: 'node-input-func-editor',
+        mode: 'ace/mode/javascript',
+        value: $('#node-input-codeJs').val(),
+        globals: {
+          node: true,
+          msg:true,
+          context:true,
+          RED: true,
+          util: true,
+          flow: true,
+          global: true,
+          console: true,
+          Buffer: true,
+          setTimeout: true,
+          clearTimeout: true,
+          setInterval: true,
+          clearInterval: true
+        }
+      });
+    },
+    oneditresize: function(size) {
+      var dialogForm = $('#dialog-form');
+      var formRowSelect = $('.form-row-select', dialogForm);
+      var height = dialogForm.height() - formRowSelect.height() - 30;
+      $('.node-text-editor').css('height', height + 'px');
+      this.editor.resize();
+    },
+    oneditsave: function() {
+      var annot = this.editor.getSession().getAnnotations();
+      this.noerr = 0;
+      $('#node-input-noerr').val(0);
+      for (var k=0; k < annot.length; k++) {
+        if (annot[k].type === 'error') {
+          $('#node-input-noerr').val(annot.length);
+          this.noerr = annot.length;
+        }
+      }
+      $('#node-input-codeJs').val(this.editor.getValue());
+      this.editor.destroy();
+      delete this.editor;
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-extend">
+  <div class="form-row form-row-select">
+    <label for="node-input-platform" style="width: auto;margin-right:10px;">Extend Platform</label>
+    <select id="node-input-platform" placeholder="Select which platform to extend">
+      <option value="facebook">Facebook Messenger</option>
+      <option value="telegram">Telegram</option>
+      <option value="slack">Slack</option>
+      <option value="viber">Viber</option>
+    </select>
+  </div>
+  <div class="form-row">
+    <input type="hidden" id="node-input-codeJs" autofocus="autofocus">
+    <div style="height: 250px; min-height:150px;margin-top: 25px;" class="node-text-editor" id="node-input-func-editor" ></div>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-extend"><p>At the heart of <strong>RedBot</strong> there&#39;s <em>chat-platform.js</em>, a library to translate messages from different platform (Telegram, Slack, Facebook Messenger, etc) to common payloads in order to be used inside Node-RED.
+In this way a text message containing <em>&quot;Hello world!&quot;</em> from Facebook and Telegram will be translated to the same payload by the receivers node and treated in the same flow, the answer to this message (<em>&quot;Hello to you!&quot;</em>) will be then translated and sent back to the platform using the appropriate API call.</p>
+<p><em>chat-platform.js</em> it&#39;s a kind of framework to build connectors for different platforms, it provides basic functionalities (like handling the chat context) while the implementation details for the specific platform is delegated to chunck of codes called middlewares. It&#39;s very similar to Express.js in it&#39;s philosophy, a middleware is something like this</p>
+<pre><code class="lang-javascript">node.chat.in(message =&gt; {
+  return new Promise((resolve, reject) =&gt; {
+    if (message.type === &#39;my-type&#39;) {
+      // do something
+      resolve(message);
+    }
+  });
+});
+</code></pre>
+<p>A middleware is a function that returns and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">promise</a>, it receives a message as argument and - in general - resolves the promise with a message or, if an error occured during the computation, it rejects with an error.</p>
+<p>The implementation of <em>chat-platform.js</em> consists in two chains of middlewares, one for inbound messages and one for outbound messages, that are executed sequentially when e message in received <strong>from</strong> the chat platform and when a message has to be sent <strong>to</strong> the chat platform.</p>
+<p>Each middleware generally takes care of one type of message, keeping up with all chat platform&#39;s API is hard, for this reason keeping the code small, modular and maintable is vital.
+For example a middleware that handles incoming photo message could be something like this:</p>
+<pre><code class="lang-javascript">node.chat.in(message =&gt; {
+  return new Promise((resolve, reject) =&gt; {
+    if (message.originalMessage.type === &#39;picture&#39; &amp;&amp; message.originalMessage.url != null) {
+      fetch(message.originalMessage.url)
+        .then(
+          buffer =&gt; {
+            message.payload.content = buffer;
+            message.payload.type = &#39;photo&#39;;
+            resolve(message);            
+          },
+          error =&gt; reject(`Error downloading &#36;{message.originalMessage.url}`) 
+        );
+    } else {
+      resolve(message);
+    }
+  });
+});
+</code></pre>
+<p>The <code>message</code> variable contains the <strong>Node-RED</strong> message that will go out of the node receiver, this middleware has to detect if the incoming message is a picture, in that case it has to download the photo file and compose store the retrieved data in the message otherwise let the message flow through the next middleware (the <em>.resolve()</em> in the <em>else</em> block).</p>
+<p>The received payload is always stored in the <code>originalMessage</code> key of the message, that depends on the specific chat platform we&#39;re dealing with and it&#39;s usually where the middleware would sniff for particular keys to try to understand which kind of message is arrived.
+In case the middleware decides to handle the message, it has to</p>
+<ol>
+<li>store the content of the message (a string, a buffer, etc.) in the key <code>message.payload.content</code></li>
+<li>assign a type to the message, RedBot supports a number of types out of the box (audio, buttons, command, contact, dialog, document, inline-buttons, inline-query, invoice, invoice-shipping, location, message, photo, payment, request, response, video), but new types can be defined in order to expand the platform.</li>
+<li>resolve the promise with the new message</li>
+</ol>
+<p>In case a middleware has handled a message (it has changed the type with <code>message.payload.type = &#39;a-type&#39;;</code>), the rest of the inbound chain of middlewares will be skipped since the incoming message has been already <em>resolved</em>.
+In case of fatal error, like a broken link, a proper error must be raised with <code>reject(my_error)</code>: the error will be shown in the system console and the <strong>Node-RED</strong> debug panel, so it should be verbose enough to understand want went wrong.</p>
+<p>In a very similar way works the outbound chain, for example in order to extend the chat platform to support a new message type for example <em>bitcoin</em>:</p>
+<pre><code class="lang-javascript">node.chat.out(&#39;bitcoin&#39;, message =&gt; {
+  return new Promise((resolve, reject) =&gt; {
+    fetch(`http://transfer-bitcoin.ahah/to/&#36;{message.payload.chatId}`, { amount: message.payload.content })
+        .then(
+          () =&gt; resolve(message),
+          error =&gt; reject(`Not enough funds`) 
+        );
+  });
+});
+</code></pre>
+<p>The outbound chain of middleware it&#39;s different since it accepts also a <code>type</code>: the middleware will be executed only for this kind of messages, in this case the middleware should</p>
+<ol>
+<li>execute the specific API call using the <code>message.payload.chatId</code> and <code>message.payload.content</code></li>
+<li>resolve the message when the operation is completed</li>
+</ol>
+<p>The value of <code>message.payload.chatId</code> is filled by <em>chat-platform.js</em> and it&#39;s a unique identifier of the user in the chat platform (it could be a string or a number, depends on the chat platform implementation), <code>message.payload.content</code> is the content of the message (in this example the amount of bitcoin).</p>
+<p>The <em>message</em> variable is the <strong>Node-RED</strong> object that runs through the flow, so for example it&#39;s possible to access the chat context in the same way as in <code>Function node</code>:</p>
+<pre><code class="lang-javascript">node.chat.out(message =&gt; {
+  var chat = message.chat();
+  return new Promise((resolve, reject) =&gt; {
+    chat.set(&#39;lastMessageSent&#39;, (new Date).toString())
+      .then(resolve)
+      .catch(e =&gt; reject(&#39;Error on storing the timestamp&#39;));
+  });
+});
+</code></pre>
+<p>The <code>.out()</code> method without a type as argument will be executed for all message types, in this example a timestamp is stored in the chat context for all outgoing messages. It&#39;s important to always resolve or reject the promise to pass the control to the next middleware or break the chain with an meaningful error, failing to do this, the message will never reach the API.</p>
+<p>These are the method available to add middlewares and extend the chat platform:</p>
+<dl class="message-properties">
+
+
+<dt>node.chat.use(func)<span class="property-type">The middleware will be execute for inbound and outbound messages, before any middleware registered with <code>.in()</code> and <code>.out()</code></span><dd>undefined</dd>
+<dt>node.chat.in(func)<span class="property-type">The middleware will be execute for inbound, after all middlewares registered with <code>.use()</code></span><dd>undefined</dd>
+<dt>node.chat.out(func)<span class="property-type">The middleware will be execute for all outbounds messages, after all middlewares registered with <code>.use()</code></span><dd>undefined</dd>
+<dt>node.chat.out(myType, func)<span class="property-type">The middleware will be execute for outbound messages of type <em>myType</em>, after all middlewares registered with <code>.use()</code> and <code>.out()</code> without a type</span><dd>undefined</dd>
+
+</dl>
+</script>
+
+
