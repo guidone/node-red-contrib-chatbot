@@ -1,4 +1,140 @@
 <script type="text/javascript">
+
+  var buildRules = function() {
+    var node = this;
+
+    $("#node-input-rule-container").css('min-height','250px').css('min-width','450px').editableList({
+      addButton: 'Add rule',
+      addItem: function (container, i, opt) {
+        // build rule row
+        var rule = opt;
+        var row = $('<div/>').appendTo(container);
+        row
+          .append('<select name="type" style="width:30%">'
+            + '<option value="">Select rule</option>'
+            + '<option value="command">Message is command ...</option>'
+            + '<option value="anyCommand">Message is a command</option>'
+            + '<option value="environment">Environment is ...</option>'
+            + '<option value="outbound">Message is outbound</option>'
+            + '<option value="inbound">Message is inbound</option>'
+            + '<option value="messageEvent">Message is event ...</option>'
+            + '<option value="messageType">Message is type ...</option>'
+            + '<option value="notMessageType">Message is not type ...</option>'
+            + '<option value="isTopicEmpty">Topic is not defined</option>'
+            + '<option value="isNotTopic">Topic is not ...</option>'
+            + '<option value="isTopic">Topic is ...</option>'
+            + '<option value="topicIncludes">Topic includes ...</option>'
+            + '<option value="transport">Transport is ...</option>'
+            + '<option value="hasNotVariable">Variable ... is not defined</option>'
+            + '<option value="hasVariable">Variable ... is defined</option>'
+            + '<option value="isVariable">Variable ... is ...</option>'
+            + '<option value="catchAll">If nothing of above applies</option>'
+            + '</select>')
+          .change(function() {
+            var type = $('select[name=type]', container).val();
+            container.find('input').hide();
+            container.find('span').hide();
+            container.find('select[name!=type]').hide();
+            container.find('.' + type).show();
+          });
+        // get options for message type
+        var messageTypes = '';
+        for(var idx = 0; idx < node.messageTypes.length; idx++) {
+          messageTypes += '<option value="' + node.messageTypes[idx].value + '">'
+            + node.messageTypes[idx].label + '</option>';
+        }
+
+        row
+          .append('<input class="hasNotVariable hasVariable" style="display:none;width:50%;margin-left:10px;" type="text" name="variable" placeholder="Context variable"/>')
+          .append('<input class="isVariable" style="display:none;width:25%;margin-left:10px;" type="text" name="variableName" placeholder="Name"/>')
+          .append('<span class="isVariable" style="display:none;">&nbsp;is&nbsp;</span>')
+          .append('<input class="isVariable" style="display:none;width:25%;margin-left:0px;" type="text" name="variableValue" placeholder="Value"/>')
+          .append('<input class="command" style="display:none;width:50%;margin-left:10px;" type="text" name="command" placeholder="/command"/>')
+          .append('<input class="isNotTopic isTopic topicIncludes" style="display:none;width:40%;margin-left:10px;" type="text" name="topic" placeholder="Topic"/>')
+          .append('<select class="environment" name="environment" style="display:none;width:40%;margin-left:10px;">'
+            + '<option value="">Select environment</option>'
+            + '<option value="production">production</option>'
+            + '<option value="development">development</option>'
+            + '</select>')
+          .append('<select class="messageEvent" name="event" style="display:none;width:40%;margin-left:10px;">'
+            + '<option value="">Select type</option>'
+            + '<option value="new-user">New user(s)</option>'
+            + '<option value="referral">Referral</option>'
+            + '</select>')
+          .append('<select class="transport" name="transport" style="display:none;width:40%;margin-left:10px;">'
+            + '<option value="">Select transport</option>'
+            + '<option value="facebook">Facebook Messenger</option>'
+            + '<option value="telegram">Telegram</option>'
+            + '<option value="slack">Slack</option>'
+            + '<option value="smooch">Smooch</option>'
+            + '</select>')
+          .append('<select class="messageType notMessageType" name="messageType" style="display:none;width:40%;margin-left:10px;">'
+            + '<option value="">Select type</option>'
+            + messageTypes
+            + '</select>');
+        var finalspan = $('<span/>',{style:"float: right;margin-top: 6px;"}).appendTo(row);
+        finalspan.append('&nbsp;&#8594; <span class="node-input-rule-index">' + (i + 1) + '</span>');
+
+        // finally set data
+        if (rule.type != null) {
+          $('select[name=type]', container).val(rule.type);
+          container.find('input').hide();
+          container.find('select[name!=type]').hide();
+          container.find('.' + rule.type).show();
+        }
+        if (rule.variable != null && (rule.type === 'hasNotVariable' || rule.type === 'hasVariable')) {
+          $('input[name=variable]', container).val(rule.variable);
+        }
+        if (rule.variable != null && rule.type === 'isVariable') {
+          $('input[name=variableName]', container).val(rule.variable);
+        }
+        if (rule.transport != null) {
+          $('select[name=transport]', container).val(rule.transport);
+        }
+        if (rule.topic != null) {
+          $('input[name=topic]', container).val(rule.topic);
+        }
+        if (rule.command != null) {
+          $('input[name=command]', container).val(rule.command);
+        }
+        if (rule.environment != null) {
+          $('select[name=environment]', container).val(rule.environment);
+        }
+        if (rule.messageType != null) {
+          $('select[name=messageType]', container).val(rule.messageType);
+        }
+        if (rule.value != null) {
+          $('input[name=variableValue]', container).val(rule.value);
+        }
+        if (rule.event != null) {
+          $('input[name=event]', container).val(rule.event);
+        }
+      },
+      removeItem: function(opt) {
+        var rules = $('#node-input-rule-container').editableList('items');
+        rules.each(function(i) {
+          $(this).find('.node-input-rule-index').html(i + 1);
+        });
+      },
+      sortItems: function() {
+        var rules = $('#node-input-rule-container').editableList('items');
+        rules.each(function(i) {
+          $(this).find('.node-input-rule-index').html(i + 1);
+        });
+      },
+      sortable: true,
+      removable: true
+    });
+
+    for (var i=0; i < node.rules.length; i++) {
+      var rule = this.rules[i];
+      $('#node-input-rule-container').editableList('addItem', rule);
+    }
+
+  };
+
+
+
   RED.nodes.registerType('chatbot-rules', {
     category: 'RedBot Flow',
     color: '#FFCC66',
@@ -65,135 +201,20 @@
       });
       this.outputs = node.rules.length;
     },
+
     oneditprepare: function() {
       var node = this;
-      $("#node-input-rule-container").css('min-height','250px').css('min-width','450px').editableList({
-        addButton: 'Add rule',
-        addItem: function (container, i, opt) {
-          // build rule row
-          var rule = opt;
-          var row = $('<div/>').appendTo(container);
-          row
-            .append('<select name="type" style="width:30%">'
-              + '<option value="">Select rule</option>'
-              + '<option value="command">Message is command ...</option>'
-              + '<option value="anyCommand">Message is a command</option>'
-              + '<option value="environment">Environment is ...</option>'
-              + '<option value="outbound">Message is outbound</option>'
-              + '<option value="inbound">Message is inbound</option>'
-              + '<option value="messageEvent">Message is event ...</option>'
-              + '<option value="messageType">Message is type ...</option>'
-              + '<option value="notMessageType">Message is not type ...</option>'
-              + '<option value="isTopicEmpty">Topic is not defined</option>'
-              + '<option value="isNotTopic">Topic is not ...</option>'
-              + '<option value="isTopic">Topic is ...</option>'
-              + '<option value="topicIncludes">Topic includes ...</option>'
-              + '<option value="transport">Transport is ...</option>'
-              + '<option value="hasNotVariable">Variable ... is not defined</option>'
-              + '<option value="hasVariable">Variable ... is defined</option>'
-              + '<option value="isVariable">Variable ... is ...</option>'
-              + '<option value="catchAll">If nothing of above applies</option>'
-              + '</select>')
-            .change(function() {
-              var type = $('select[name=type]', container).val();
-              container.find('input').hide();
-              container.find('span').hide();
-              container.find('select[name!=type]').hide();
-              container.find('.' + type).show();
-            });
-          // get options for message type
-          var messageTypes = '';
-          for(var idx = 0; idx < $.RedBot.messageTypes.length; idx++) {
-            messageTypes += '<option value="' + $.RedBot.messageTypes[idx].value + '">'
-              + $.RedBot.messageTypes[idx].label + '</option>';
-          }
 
-          row
-            .append('<input class="hasNotVariable hasVariable" style="display:none;width:50%;margin-left:10px;" type="text" name="variable" placeholder="Context variable"/>')
-            .append('<input class="isVariable" style="display:none;width:25%;margin-left:10px;" type="text" name="variableName" placeholder="Name"/>')
-            .append('<span class="isVariable" style="display:none;">&nbsp;is&nbsp;</span>')
-            .append('<input class="isVariable" style="display:none;width:25%;margin-left:0px;" type="text" name="variableValue" placeholder="Value"/>')
-            .append('<input class="command" style="display:none;width:50%;margin-left:10px;" type="text" name="command" placeholder="/command"/>')
-            .append('<input class="isNotTopic isTopic topicIncludes" style="display:none;width:40%;margin-left:10px;" type="text" name="topic" placeholder="Topic"/>')
-            .append('<select class="environment" name="environment" style="display:none;width:40%;margin-left:10px;">'
-              + '<option value="">Select environment</option>'
-              + '<option value="production">production</option>'
-              + '<option value="development">development</option>'
-              + '</select>')
-            .append('<select class="messageEvent" name="event" style="display:none;width:40%;margin-left:10px;">'
-              + '<option value="">Select type</option>'
-              + '<option value="new-user">New user(s)</option>'
-              + '<option value="referral">Referral</option>'
-              + '</select>')
-            .append('<select class="transport" name="transport" style="display:none;width:40%;margin-left:10px;">'
-              + '<option value="">Select transport</option>'
-              + '<option value="facebook">Facebook Messenger</option>'
-              + '<option value="telegram">Telegram</option>'
-              + '<option value="slack">Slack</option>'
-              + '<option value="smooch">Smooch</option>'
-              + '</select>')
-            .append('<select class="messageType notMessageType" name="messageType" style="display:none;width:40%;margin-left:10px;">'
-              + '<option value="">Select type</option>'
-              + messageTypes
-              + '</select>');
-          var finalspan = $('<span/>',{style:"float: right;margin-top: 6px;"}).appendTo(row);
-          finalspan.append('&nbsp;&#8594; <span class="node-input-rule-index">' + (i + 1) + '</span>');
-
-          // finally set data
-          if (rule.type != null) {
-            $('select[name=type]', container).val(rule.type);
-            container.find('input').hide();
-            container.find('select[name!=type]').hide();
-            container.find('.' + rule.type).show();
-          }
-          if (rule.variable != null && (rule.type === 'hasNotVariable' || rule.type === 'hasVariable')) {
-            $('input[name=variable]', container).val(rule.variable);
-          }
-          if (rule.variable != null && rule.type === 'isVariable') {
-            $('input[name=variableName]', container).val(rule.variable);
-          }
-          if (rule.transport != null) {
-            $('select[name=transport]', container).val(rule.transport);
-          }
-          if (rule.topic != null) {
-            $('input[name=topic]', container).val(rule.topic);
-          }
-          if (rule.command != null) {
-            $('input[name=command]', container).val(rule.command);
-          }
-          if (rule.environment != null) {
-            $('select[name=environment]', container).val(rule.environment);
-          }
-          if (rule.messageType != null) {
-            $('select[name=messageType]', container).val(rule.messageType);
-          }
-          if (rule.value != null) {
-            $('input[name=variableValue]', container).val(rule.value);
-          }
-          if (rule.event != null) {
-            $('input[name=event]', container).val(rule.event);
-          }
-        },
-        removeItem: function(opt) {
-          var rules = $('#node-input-rule-container').editableList('items');
-          rules.each(function(i) {
-            $(this).find('.node-input-rule-index').html(i + 1);
-          });
-        },
-        sortItems: function() {
-          var rules = $('#node-input-rule-container').editableList('items');
-          rules.each(function(i) {
-            $(this).find('.node-input-rule-index').html(i + 1);
-          });
-        },
-        sortable: true,
-        removable: true
-      });
-
-      for (var i=0; i < node.rules.length; i++) {
-        var rule = this.rules[i];
-        $('#node-input-rule-container').editableList('addItem', rule);
+      var nodeRedUrl = '';
+      if (RED.settings.httpNodeRoot) {
+        nodeRedUrl = RED.settings.httpNodeRoot;
       }
+
+      $.get(nodeRedUrl + 'redbot/globals')
+        .done(function(response) {
+          node.messageTypes = response.messageTypes;
+          buildRules.call(node);
+        });
     },
     oneditresize: function() {
       var dialogForm = $('#dialog-form');
