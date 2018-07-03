@@ -119,6 +119,22 @@ module.exports = function(RED) {
           debug: botConfiguration.debug,
           RED: RED
         });
+        // add extensions
+        RED.nodes.eachNode(function(currentNode) {
+          if (currentNode.type === 'chatbot-extend' && !_.isEmpty(currentNode.codeJs)
+            && currentNode.platform === 'viber') {
+            try {
+              eval(currentNode.codeJs);
+            } catch (e) {
+              lcd.node(currentNode.codeJs, {
+                color: lcd.red,
+                node: currentNode,
+                title: 'Syntax error in Extend Chat Server node'
+              });
+            }
+          }
+        });
+        // finally launch it
         node.chat.start();
         // handle error on sl6teack chat server
         node.chat.on('error', function(error) {

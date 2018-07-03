@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-chatbot",
-  "version": "0.13.3",
+  "version": "0.13.4-beta-1",
   "description": "REDBot a Chat bot for a full featured chat bot for Telegram**, Facebook Messenger and Slack. Almost no coding skills required",
   "scripts": {
     "test": "jest",
@@ -65,7 +65,8 @@
       "chatbot-recast": "./nodes/chatbot-recast.js",
       "chatbot-dialogflow": "./nodes/chatbot-dialogflow.js",
       "chatbot-invoice": "./nodes/chatbot-invoice.js",
-      "chatbot-invoice-shipping": "./nodes/chatbot-invoice-shipping.js"
+      "chatbot-invoice-shipping": "./nodes/chatbot-invoice-shipping.js",
+      "chatbot-extend": "./nodes/chatbot-extend.js"
     }
   },
   "maintainers": [
