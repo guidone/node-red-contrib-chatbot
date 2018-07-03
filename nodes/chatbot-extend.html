@@ -115,9 +115,9 @@ For example a middleware that handles incoming photo message could be something 
           buffer =&gt; {
             message.payload.content = buffer;
             message.payload.type = &#39;photo&#39;;
-            resolve(message);
+            resolve(message);            
           },
-          error =&gt; reject(`Error downloading &#36;{message.originalMessage.url}`)
+          error =&gt; reject(`Error downloading &#36;{message.originalMessage.url}`) 
         );
     } else {
       resolve(message);
@@ -135,13 +135,17 @@ In case the middleware decides to handle the message, it has to</p>
 </ol>
 <p>In case a middleware has handled a message (it has changed the type with <code>message.payload.type = &#39;a-type&#39;;</code>), the rest of the inbound chain of middlewares will be skipped since the incoming message has been already <em>resolved</em>.
 In case of fatal error, like a broken link, a proper error must be raised with <code>reject(my_error)</code>: the error will be shown in the system console and the <strong>Node-RED</strong> debug panel, so it should be verbose enough to understand want went wrong.</p>
+<p>In case the <code>Extend node</code> is used to add a custom message type (like in the first example), it&#39;s reccomended to register the message type with</p>
+<pre><code class="lang-javascript">node.chat.registerMessageType(&#39;my-type&#39;, &#39;My Type&#39;);
+</code></pre>
+<p>in this way the new message type will appear in the drop down menu of the <code>Rules node</code>.</p>
 <p>In a very similar way works the outbound chain, for example in order to extend the chat platform to support a new message type for example <em>bitcoin</em>:</p>
 <pre><code class="lang-javascript">node.chat.out(&#39;bitcoin&#39;, message =&gt; {
   return new Promise((resolve, reject) =&gt; {
     fetch(`http://transfer-bitcoin.ahah/to/&#36;{message.payload.chatId}`, { amount: message.payload.content })
         .then(
           () =&gt; resolve(message),
-          error =&gt; reject(`Not enough funds`)
+          error =&gt; reject(`Not enough funds`) 
         );
   });
 });
@@ -171,8 +175,13 @@ In case of fatal error, like a broken link, a proper error must be raised with <
 <dt>node.chat.in(func)<span class="property-type">The middleware will be execute for inbound, after all middlewares registered with <code>.use()</code></span><dd>undefined</dd>
 <dt>node.chat.out(func)<span class="property-type">The middleware will be execute for all outbounds messages, after all middlewares registered with <code>.use()</code></span><dd>undefined</dd>
 <dt>node.chat.out(myType, func)<span class="property-type">The middleware will be execute for outbound messages of type <em>myType</em>, after all middlewares registered with <code>.use()</code> and <code>.out()</code> without a type</span><dd>undefined</dd>
+<dt>node.chat.registerMessageType(type[, label])<span class="property-type">Register the a message type in order to be available in the drop-down of the <code>Rules node</code></span><dd>undefined</dd>
 
 </dl>
+<p><img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram">
+<img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook">
+<img src="https://img.shields.io/badge/platform-Slack-green.svg" alt="Slack">
+<img src="https://img.shields.io/badge/platform-Viber-8079d0.svg" alt="Viber"></p>
 </script>
 
 
