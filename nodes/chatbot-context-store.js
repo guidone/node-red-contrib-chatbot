@@ -1,4 +1,5 @@
 var _ = require('underscore');
+var ChatPlatform = require('../lib/chat-platform/chat-platform');
 
 module.exports = function(RED) {
 
@@ -38,6 +39,11 @@ module.exports = function(RED) {
     keys.forEach(function(key) {
       result[key] = RED.settings.functionGlobalContext.get(key);
     });
+    // collect message types
+    result.messageTypes = _(ChatPlatform.getMessageTypes())
+      .sortBy(function(type) {
+        return type.label;
+      });
     res.send(result);
   });
 
