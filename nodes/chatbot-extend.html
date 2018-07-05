@@ -92,9 +92,9 @@
   </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-extend"><p>At the heart of <strong>RedBot</strong> there&#39;s <em>chat-platform.js</em>, a library to translate messages from different platform (Telegram, Slack, Facebook Messenger, etc) to common payloads in order to be used inside Node-RED.
-In this way a text message containing <em>&quot;Hello world!&quot;</em> from Facebook and Telegram will be translated to the same payload by the receivers node and treated in the same flow, the answer to this message (<em>&quot;Hello to you!&quot;</em>) will be then translated and sent back to the platform using the appropriate API call.</p>
-<p><em>chat-platform.js</em> it&#39;s a kind of framework to build connectors for different platforms, it provides basic functionalities (like handling the chat context) while the implementation details for the specific platform is delegated to chunck of codes called middlewares. It&#39;s very similar to Express.js in it&#39;s philosophy, a middleware is something like this</p>
+<script type="text/x-red" data-help-name="chatbot-extend"><p>At the heart of <strong>RedBot</strong> there&#39;s <em>chat-platform.js</em>, a library to translate messages from different platform (<strong>Telegram</strong>, <strong>Slack</strong>, <strong>Facebook Messenger</strong>, etc) to common payloads in order to be used inside <strong>Node-RED</strong>.
+In this way a text message containing <em>&quot;Hello world!&quot;</em> from <strong>Facebook</strong> or <strong>Telegram</strong> will be translated into the same payload by the receiver nodes and injected into the flow, the answer to this message (<em>&quot;Hello to you!&quot;</em>) will be then translated and sent back to the platform using the appropriate API call.</p>
+<p>The <em>chat-platform.js</em> it&#39;s a kind of framework to build connectors for different platforms, it provides basic functionalities (like handling the chat context, etc) while the implementation details for the specific platform is delegated to chunck of codes called <em>middlewares</em>. It&#39;s very similar to <strong>Express.js</strong> in it&#39;s philosophy, a middleware is something like this</p>
 <pre><code class="lang-javascript">node.chat.in(message =&gt; {
   return new Promise((resolve, reject) =&gt; {
     if (message.type === &#39;my-type&#39;) {
@@ -104,9 +104,9 @@ In this way a text message containing <em>&quot;Hello world!&quot;</em> from Fac
   });
 });
 </code></pre>
-<p>A middleware is a function that returns and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">promise</a>, it receives a message as argument and - in general - resolves the promise with a message or, if an error occured during the computation, it rejects with an error.</p>
-<p>The implementation of <em>chat-platform.js</em> consists in two chains of middlewares, one for inbound messages and one for outbound messages, that are executed sequentially when e message in received <strong>from</strong> the chat platform and when a message has to be sent <strong>to</strong> the chat platform.</p>
-<p>Each middleware generally takes care of one type of message, keeping up with all chat platform&#39;s API is hard, for this reason keeping the code small, modular and maintable is vital.
+<p>A <em>middleware</em> is a function that returns a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">promise</a>, it receives a message as argument and - in general - resolves the promise with a message or, if an error occured during the computation, it rejects with an error.</p>
+<p>The implementation of chat connector with <em>chat-platform.js</em> consists in two chains of middlewares, one for inbound messages and one for outbound messages, that are executed sequentially when a message is received <strong>from</strong> the chat platform and when a message is to be sent <strong>to</strong> the chat platform.</p>
+<p>Each middleware generally takes care of one type of message. Keeping up with all chat platform&#39;s API is hard, for this reason keeping the code small, modular and maintable is vital.
 For example a middleware that handles incoming photo message could be something like this:</p>
 <pre><code class="lang-javascript">node.chat.in(message =&gt; {
   return new Promise((resolve, reject) =&gt; {
@@ -116,9 +116,9 @@ For example a middleware that handles incoming photo message could be something 
           buffer =&gt; {
             message.payload.content = buffer;
             message.payload.type = &#39;photo&#39;;
-            resolve(message);
+            resolve(message);            
           },
-          error =&gt; reject(`Error downloading &#36;{message.originalMessage.url}`)
+          error =&gt; reject(`Error downloading &#36;{message.originalMessage.url}`) 
         );
     } else {
       resolve(message);
@@ -126,12 +126,12 @@ For example a middleware that handles incoming photo message could be something 
   });
 });
 </code></pre>
-<p>The <code>message</code> variable contains the <strong>Node-RED</strong> message that will go out of the node receiver, this middleware has to detect if the incoming message is a picture, in that case it has to download the photo file and compose store the retrieved data in the message otherwise let the message flow through the next middleware (the <em>.resolve()</em> in the <em>else</em> block).</p>
-<p>The received payload is always stored in the <code>originalMessage</code> key of the message, that depends on the specific chat platform we&#39;re dealing with and it&#39;s usually where the middleware would sniff for particular keys to try to understand which kind of message is arrived.
+<p>The <code>message</code> variable contains the <strong>Node-RED</strong> message that will go out of the node receiver, this middleware has to detect if the incoming message is a picture, in that case it has to download the photo file and store the retrieved data in a message attribute otherwise let the message flow through the next middleware (the <em>.resolve()</em> in the <em>else</em> block).</p>
+<p>The received payload is always stored in the <code>originalMessage</code> key of the message, the content depends on the specific chat platform we&#39;re dealing with and it&#39;s usually where the middleware would sniff for particular keys to try to understand which kind of message is arrived.
 In case the middleware decides to handle the message, it has to</p>
 <ol>
 <li>store the content of the message (a string, a buffer, etc.) in the key <code>message.payload.content</code></li>
-<li>assign a type to the message, RedBot supports a number of types out of the box (audio, buttons, command, contact, dialog, document, inline-buttons, inline-query, invoice, invoice-shipping, location, message, photo, payment, request, response, video), but new types can be defined in order to expand the platform.</li>
+<li>assign a type to the message, <em>RedBot</em> supports a number of types out of the box (<em>audio</em>, <em>buttons</em>, <em>command</em>, <em>contact</em>, <em>dialog</em>, <em>document</em>, <em>inline-buttons</em>, <em>inline-query</em>, <em>invoice</em>, <em>invoice-shipping</em>, <em>location</em>, <em>message</em>, <em>photo</em>, <em>payment</em>, <em>request</em>, <em>response</em>, <em>video</em>), but new types can be defined in order to expand the platform.</li>
 <li>resolve the promise with the new message</li>
 </ol>
 <p>In case a middleware has handled a message (it has changed the type with <code>message.payload.type = &#39;a-type&#39;;</code>), the rest of the inbound chain of middlewares will be skipped since the incoming message has been already <em>resolved</em>.
@@ -140,13 +140,13 @@ In case of fatal error, like a broken link, a proper error must be raised with <
 <pre><code class="lang-javascript">node.chat.registerMessageType(&#39;my-type&#39;, &#39;My Type&#39;);
 </code></pre>
 <p>in this way the new message type will appear in the drop down menu of the <code>Rules node</code>.</p>
-<p>In a very similar way works the outbound chain, for example in order to extend the chat platform to support a new message type for example <em>bitcoin</em>:</p>
+<p>In a very similar way works the outbound chain: in order to extend the chat platform to support a new message type for example <em>bitcoin</em>:</p>
 <pre><code class="lang-javascript">node.chat.out(&#39;bitcoin&#39;, message =&gt; {
   return new Promise((resolve, reject) =&gt; {
     fetch(`http://transfer-bitcoin.ahah/to/&#36;{message.payload.chatId}`, { amount: message.payload.content })
         .then(
           () =&gt; resolve(message),
-          error =&gt; reject(`Not enough funds`)
+          error =&gt; reject(`Not enough funds`) 
         );
   });
 });

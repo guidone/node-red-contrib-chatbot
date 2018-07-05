@@ -59,7 +59,8 @@ var mappings = {
   'Chat-Context.md': 'chatbot-context-store.html',
   'Keyboard-node.md': 'chatbot-ask.html',
   'Buttons-node.md': 'chatbot-inline-buttons.html',
-  'Extend-node.md': 'chatbot-extend.html'
+  'Extend-node.md': 'chatbot-extend.html',
+  'Universal-Connector-node.md': 'chatbot-universal-receive.html|chatbot-universal-receive'
 };
 
 function collectImages(html) {
