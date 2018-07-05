@@ -1,6 +1,6 @@
 var _ = require('underscore');
 var moment = require('moment');
-var TelegramServer = require('../lib/telegram/telegram-chat');
+var TelegramServer = require('../lib/platforms/telegram-chat');
 var ContextProviders = require('../lib/chat-platform/chat-context-factory');
 var utils = require('../lib/helpers/utils');
 var clc = require('cli-color');

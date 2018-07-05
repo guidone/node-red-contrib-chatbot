@@ -2,7 +2,7 @@ var _ = require('underscore');
 var assert = require('chai').assert;
 var RED = require('../lib/red-stub')();
 var ConversationBlock = require('../nodes/chatbot-conversation');
-var TelegramServer = require('../lib/telegram/telegram-chat');
+var TelegramServer = require('../lib/platforms/telegram-chat');
 var ContextProviders = require('../lib/chat-platform/chat-context-factory');
 var contextProviders = ContextProviders(RED);
 

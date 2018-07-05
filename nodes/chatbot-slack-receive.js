@@ -1,6 +1,6 @@
 var _ = require('underscore');
 var moment = require('moment');
-var SlackServer = require('../lib/slack/slack-chat');
+var SlackServer = require('../lib/platforms/slack-chat');
 var ContextProviders = require('../lib/chat-platform/chat-context-factory');
 var utils = require('../lib/helpers/utils');
 var clc = require('cli-color');

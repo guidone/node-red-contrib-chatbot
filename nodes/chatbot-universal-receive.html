@@ -10,14 +10,8 @@
         value: '',
         required: false
       },
-      providerToken: {
-        value: '',
-        required: false
-      },
-      polling: {
-        value: 1000,
-        required: true,
-        validate: RED.validators.number()
+      connectorParams: {
+        value: ''
       },
       store: {
         value: '',
@@ -27,19 +21,24 @@
       log: {
         value: null
       },
-      parseMode: {
-        value: ''
-      },
       debug: {
         value: false
-      },
-      codeJs: {
-        value: ''
       }
+    },
+    oneditsave: function() {
+      this.connectorParams = $('#node-config-input-connectorParams').typedInput('value');
     },
     oneditprepare: function() {
       $("#node-config-input-polling").spinner({min: 0, step: 100});
       var node = this;
+      // init free params
+      var widget = $('#node-config-input-connectorParams');
+      widget.typedInput({
+        'default': 'json',
+        types: ['json']
+      });
+      widget.typedInput('value', this.connectorParams);
+      // get globals
       var nodeRedUrl = '';
       if (RED.settings.httpNodeRoot) {
         nodeRedUrl = RED.settings.httpNodeRoot;
@@ -74,18 +73,6 @@
   </div>
   <div class="form-editable">
     <div class="form-row">
-      <label for="node-config-input-token">Token</label>
-      <input type="text" id="node-config-input-token">
-    </div>
-    <div class="form-row">
-      <label for="node-config-input-providerToken">Provider Token</label>
-      <input type="text" id="node-config-input-providerToken">
-    </div>
-    <div class="form-row">
-      <label for="node-config-input-polling">Polling</label>
-      <input type="text" id="node-config-input-polling" style="text-align:end; width:60px !important"> ms
-    </div>
-    <div class="form-row">
       <label for="node-config-input-usernames">Users</label>
       <input type="text" id="node-config-input-usernames">
       <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
@@ -102,20 +89,9 @@
     <div class="form-row">
       <label for="node-input-bot">Context</label>
       <input type="text" id="node-config-input-store" placeholder="Select storage for chat context">
-      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+      <div class="redbot-form-hint">
         Select the chat context provider to use with this bot, if none is selected then non-persistent "memory" will be used.<br>
         To extend <strong>RedBot</strong> with a new chat context provider see <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Creating-a-Chat-Context-Provider" target="_blank">this tutorial</a>.
-      </div>
-    </div>
-    <div class="form-row">
-      <label for="node-config-input-parseMode">Parse</label>
-      <select id="node-config-input-parseMode" placeholder="Select parse mode">
-        <option value="">None</option>
-        <option value="Markdown">Markdown</option>
-        <option value="HTML">HTML</option>
-      </select>
-      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;">
-      Render the text content of messages, inline buttons and keywords with Markdown or HTML
       </div>
     </div>
     <div class="form-row">
@@ -125,14 +101,18 @@
         Show debug information on send/receive
       </span>
     </div>
+    <div class="form-row">
+      <label for="node-config-input-connectorParams">Params</label>
+      <input type="text" id="node-config-input-connectorParams" placeholder="Params">
+      <div class="redbot-form-hint">
+        Parameters passed to the <i>Universal Connector</i>. Use the method <code>this.getOptions()</code> in the
+        middlewares to get the parameters. See <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Extend-node" target="_blank">the help page</a>
+      </div>
+    </div>
   </div>
   <div class="form-warning hidden">
     This bot configuration is stored in <b>Node-RED</b> <em>settings.js</em> and cannot be modified from the UI, check
     the section <code>functionGlobalContext</code> near the key <em class="bot-name">""</em>
-  </div>
-  <div class="form-row" style="margin-top:25px;">
-    <label for="node-config-input-codeJs">Extend</label>
-    <textarea id="node-config-input-codeJs" placeholder="Extend" style="width:93%;height:500px;"></textarea>
   </div>
 </script>
 
