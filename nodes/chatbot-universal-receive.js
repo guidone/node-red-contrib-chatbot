@@ -37,6 +37,7 @@ module.exports = function(RED) {
     this.botname = n.botname;
     this.store = n.store;
     this.log = n.log;
+    this.connectorParams = n.connectorParams;
     this.usernames = n.usernames != null ? n.usernames.split(',') : [];
     this.polling = n.polling;
     this.parseMode = n.parseMode;
@@ -57,17 +58,24 @@ module.exports = function(RED) {
     console.log(green('Universal Connector Bot ' + this.botname + ' will be launched, environment is ' + environment));
     // get the context storage node
     var contextStorageNode = RED.nodes.getNode(this.store);
+    // parse JSON config
+    var connectorParams = null;
+    try {
+      connectorParams = JSON.parse(this.connectorParams);
+    } catch(error) {
+      lcd.dump(error, 'Error in JSON configuration of Universal Connector');
+      console.log(lcd.red(this.connectorParams));
+      console.log('');
+      return;
+    }
     // build the configuration object
     var botConfiguration = {
       authorizedUsernames: node.usernames,
-      token: node.credentials != null && node.credentials.token != null ? node.credentials.token.trim() : null,
-      providerToken: node.providerToken,
-      polling: node.polling,
-      parseMode: node.parseMode,
       logfile: node.log,
       contextProvider: contextStorageNode != null ? contextStorageNode.contextStorage : null,
       contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null,
-      debug: node.debug
+      debug: node.debug,
+      connectorParams: connectorParams
     };
     // check if there's a valid configuration in global settings
     if (universalConfigs[node.botname] != null) {
@@ -97,7 +105,7 @@ module.exports = function(RED) {
       botConfiguration.contextParams = {};
     }
     // if chat is not already there and there's a token
-    if (node.chat == null && botConfiguration.token != null) {
+    if (node.chat == null) {
       // check if provider exisst
       if (!contextProviders.hasProvider(botConfiguration.contextProvider)) {
         node.error('Error creating chatbot ' + this.botname + '. The context provider '
@@ -109,17 +117,16 @@ module.exports = function(RED) {
       // try to start the servers
       try {
         node.contextProvider.start();
-        node.chat = UniversalServer.createServer({
-          authorizedUsernames: botConfiguration.authorizedUsernames,
-          token: botConfiguration.token,
-          providerToken: botConfiguration.providerToken,
-          polling: botConfiguration.polling,
-          parseMode: botConfiguration.parseMode,
-          contextProvider: node.contextProvider,
-          logfile: botConfiguration.logfile,
-          debug: botConfiguration.debug,
-          RED: RED
-        });
+        node.chat = UniversalServer.createServer(_.extend(
+          {
+            authorizedUsernames: botConfiguration.authorizedUsernames,
+            contextProvider: node.contextProvider,
+            logfile: botConfiguration.logfile,
+            debug: botConfiguration.debug,
+            RED: RED
+          },
+          botConfiguration.connectorParams
+        ));
         // add extensions
         RED.nodes.eachNode(function(currentNode) {
           if (currentNode.type === 'chatbot-extend' && !_.isEmpty(currentNode.codeJs)
@@ -288,6 +295,7 @@ module.exports = function(RED) {
       }
       // finally send out
       stack.then(function() {
+        console.log('sto per send', message);
         return node.chat.send(message);
       }).then(function() {
         // forward if not tracking
