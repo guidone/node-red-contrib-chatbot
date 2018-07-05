@@ -235,12 +235,7 @@ module.exports = function(RED) {
     });
 
     this.on('input', function(msg) {
-
-      console.log('input universla', msg);
-
       node.chat.receive(msg.payload);
-
-
     });
   }
   RED.nodes.registerType('chatbot-universal-receive', UniversalInNode);
@@ -295,7 +290,6 @@ module.exports = function(RED) {
       }
       // finally send out
       stack.then(function() {
-        console.log('sto per send', message);
         return node.chat.send(message);
       }).then(function() {
         // forward if not tracking
