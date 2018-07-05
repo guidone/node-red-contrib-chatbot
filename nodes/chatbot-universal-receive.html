@@ -1,0 +1,259 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-universal-node', {
+    category: 'config',
+    defaults: {
+      botname: {
+        value: '',
+        required: true
+      },
+      usernames: {
+        value: '',
+        required: false
+      },
+      providerToken: {
+        value: '',
+        required: false
+      },
+      polling: {
+        value: 1000,
+        required: true,
+        validate: RED.validators.number()
+      },
+      store: {
+        value: '',
+        type: 'chatbot-context-store',
+        required: false
+      },
+      log: {
+        value: null
+      },
+      parseMode: {
+        value: ''
+      },
+      debug: {
+        value: false
+      },
+      codeJs: {
+        value: ''
+      }
+    },
+    oneditprepare: function() {
+      $("#node-config-input-polling").spinner({min: 0, step: 100});
+      var node = this;
+      var nodeRedUrl = '';
+      if (RED.settings.httpNodeRoot) {
+        nodeRedUrl = RED.settings.httpNodeRoot;
+      }
+      // fetch available context providers
+      $.get(nodeRedUrl + 'redbot/globals')
+        .done(function(response) {
+          if (response != null && response.telegram != null && response.telegram[node.botname] != null) {
+            $('#node-config-input-botname').prop('readonly', true);
+            $('.form-editable').addClass('hidden');
+            $('.form-warning').removeClass('hidden');
+            $('.form-warning .bot-name').html('"' + node.botname + '"');
+          }
+        });
+    },
+    paletteName: 'Universal Bot',
+    credentials: {
+      token: {
+        type: 'text'
+      }
+    },
+    label: function () {
+      return this.botname;
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-universal-node">
+  <div class="form-row">
+    <label for="node-config-input-botname"><i class="icon-bookmark"></i> Bot-Name</label>
+    <input type="text" id="node-config-input-botname">
+  </div>
+  <div class="form-editable">
+    <div class="form-row">
+      <label for="node-config-input-token">Token</label>
+      <input type="text" id="node-config-input-token">
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-providerToken">Provider Token</label>
+      <input type="text" id="node-config-input-providerToken">
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-polling">Polling</label>
+      <input type="text" id="node-config-input-polling" style="text-align:end; width:60px !important"> ms
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-usernames">Users</label>
+      <input type="text" id="node-config-input-usernames">
+      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+        Comma separated list of userId authorized to use the chatBot
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-log">Log file</label>
+      <input type="text" id="node-config-input-log">
+      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+        Store inbound and outbound messages to file
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="node-input-bot">Context</label>
+      <input type="text" id="node-config-input-store" placeholder="Select storage for chat context">
+      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+        Select the chat context provider to use with this bot, if none is selected then non-persistent "memory" will be used.<br>
+        To extend <strong>RedBot</strong> with a new chat context provider see <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Creating-a-Chat-Context-Provider" target="_blank">this tutorial</a>.
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-parseMode">Parse</label>
+      <select id="node-config-input-parseMode" placeholder="Select parse mode">
+        <option value="">None</option>
+        <option value="Markdown">Markdown</option>
+        <option value="HTML">HTML</option>
+      </select>
+      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;">
+      Render the text content of messages, inline buttons and keywords with Markdown or HTML
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-debug">Debug</label>
+      <input type="checkbox" value="true" id="node-config-input-debug">
+      <span class="redbot-form-legend">
+        Show debug information on send/receive
+      </span>
+    </div>
+  </div>
+  <div class="form-warning hidden">
+    This bot configuration is stored in <b>Node-RED</b> <em>settings.js</em> and cannot be modified from the UI, check
+    the section <code>functionGlobalContext</code> near the key <em class="bot-name">""</em>
+  </div>
+  <div class="form-row" style="margin-top:25px;">
+    <label for="node-config-input-codeJs">Extend</label>
+    <textarea id="node-config-input-codeJs" placeholder="Extend" style="width:93%;height:500px;"></textarea>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-universal-node">
+  test
+
+</script>
+
+
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-universal-receive', {
+    category: 'RedBot Platforms',
+    color: '#FFCC66',
+    defaults: {
+      bot: {
+        value: '',
+        type: 'chatbot-universal-node',
+        required: true
+      },
+      botProduction: {
+        value: '',
+        type: 'chatbot-universal-node',
+        required: false
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'chatbot-receiver.png',
+    paletteLabel: 'Universal In',
+    label: function () {
+      return 'Universal Receiver';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-universal-receive">
+  <div class="form-row">
+    <label for="node-input-bot" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(development)</span></label>
+    <input type="text" id="node-input-bot" placeholder="Bot">
+  </div>
+  <div class="form-row" style="margin-top:25px;">
+    <label for="node-input-botProduction" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(production)</span></label>
+    <input type="text" id="node-input-botProduction" placeholder="Bot">
+  </div>
+  <div class="redbot-form-hint">
+    Bot for <strong>production</strong> will be launched only if the global variable <em>"environment"</em> in <em>settings.js</em> is set to <em>"production"</em>, otherwise will be used the configuration for <strong>development</strong>.
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-universal-receive">
+  <p>Input node for Universal node.</p>
+</script>
+
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-universal-send', {
+    category: 'RedBot Platforms',
+    color: '#FFCC66',
+    defaults: {
+      bot: {
+        value: "",
+        type: 'chatbot-universal-node',
+        required: true
+      },
+      botProduction: {
+        value: "",
+        type: 'chatbot-universal-node',
+        required: false
+      },
+      track: {
+        value: false
+      },
+      passThrough: {
+        value: false
+      },
+      outputs: {
+        value: 0
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'chatbot-sender.png',
+    paletteLabel: 'Universal Out',
+    label: function () {
+      return 'Universal Sender';
+    },
+    oneditsave: function() {
+      var track = $('#node-input-track').is(':checked');
+      var passThrough = $('#node-input-passThrough').is(':checked');
+      this.outputs = track || passThrough ? 1 : 0;
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-universal-send">
+  <div class="form-row">
+    <label for="node-input-bot" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(development)</span></label>
+    <input type="text" id="node-input-bot" placeholder="Bot">
+  </div>
+  <div class="form-row" style="margin-top:25px;">
+    <label for="node-input-botProduction" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(production)</span></label>
+    <input type="text" id="node-input-botProduction" placeholder="Bot">
+  </div>
+  <div class="redbot-form-hint">
+    Bot for <strong>production</strong> will be launched only if the global variable <em>"environment"</em> in <em>settings.js</em> is set to <em>"production"</em>, otherwise will be used the configuration for <strong>development</strong>.
+  </div>
+  <div class="form-row" style="margin-top:25px;">
+    <label for="node-input-track" style="margin-bottom:0px;">Track</label>
+    <input type="checkbox" value="true" id="node-input-track" style="margin-top:0px;">
+    <div class="redbot-form-hint">
+    Track response of the user for this message: any further answer will be redirect to the output pin.
+    </div>
+    <label for="node-input-track" style="margin-bottom:0px;margin-top:15px;">Pass Through</label>
+    <input type="checkbox" value="true" id="node-input-passThrough" style="margin-top:0px;">
+    <div class="redbot-form-hint">
+    Forward the message to the output pin after sending (useful to chain messages and keep the right order)
+    </div>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-universal-send">
+  <p>Output node for Universal connector.</p>
+</script>
+
+

@@ -82,6 +82,7 @@
       <option value="facebook">Facebook Messenger</option>
       <option value="telegram">Telegram</option>
       <option value="slack">Slack</option>
+      <option value="universal">Universal Connector</option>
       <option value="viber">Viber</option>
     </select>
   </div>
@@ -115,9 +116,9 @@ For example a middleware that handles incoming photo message could be something 
           buffer =&gt; {
             message.payload.content = buffer;
             message.payload.type = &#39;photo&#39;;
-            resolve(message);            
+            resolve(message);
           },
-          error =&gt; reject(`Error downloading &#36;{message.originalMessage.url}`) 
+          error =&gt; reject(`Error downloading &#36;{message.originalMessage.url}`)
         );
     } else {
       resolve(message);
@@ -145,7 +146,7 @@ In case of fatal error, like a broken link, a proper error must be raised with <
     fetch(`http://transfer-bitcoin.ahah/to/&#36;{message.payload.chatId}`, { amount: message.payload.content })
         .then(
           () =&gt; resolve(message),
-          error =&gt; reject(`Not enough funds`) 
+          error =&gt; reject(`Not enough funds`)
         );
   });
 });

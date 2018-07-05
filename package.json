@@ -52,6 +52,7 @@
       "chatbot-transport": "./nodes/chatbot-transport.js",
       "chatbot-rivescript": "./nodes/chatbot-rivescript.js",
       "chatbot-telegram-receive": "./nodes/chatbot-telegram-receive.js",
+      "chatbot-universal-receive": "./nodes/chatbot-universal-receive.js",
       "chatbot-slack-receive": "./nodes/chatbot-slack-receive.js",
       "chatbot-viber-receive": "./nodes/chatbot-viber-receive.js",
       "chatbot-messenger-menu": "./nodes/chatbot-messenger-menu.js",
