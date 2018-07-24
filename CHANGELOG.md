@@ -1,3 +1,4 @@
+* **0.13.6** - Added support for nested menu in `Messenger Menu node` via `Function node`
 * **0.13.5** - Some cleanup 
 * **0.13.4** - Added [[Extend node|Extend-node]]
 * **0.13.3** - Fixed a bug with _track_ option and plain file context, added pass through option to `Sender node` to make the outpin pin optional 
