@@ -18,7 +18,12 @@ describe('Validators', function() {
     assert.isFalse(validators.buttons([{}]));
     assert.isTrue(validators.buttons([{type: 'url'}]));
     assert.isTrue(validators.buttons([{type: 'postback'}, {type: 'url'}]));
+    assert.isTrue(validators.buttons([
+      {type: 'postback'},
+      {label: 'subitems', items: [{type: 'postback'}, {type: 'url'}]}
+      ]));
     assert.isFalse(validators.buttons([{type: 'postback'}, {type: 'url'}, {}]));
+    assert.isFalse(validators.buttons([{type: 'wrong-type'}, {type: 'url'}, {}]));
   });
 
   it('validate a generic template', function() {
