@@ -18,6 +18,7 @@ module.exports = function(RED) {
     this.botSlack = config.botSlack;
     this.botFacebook = config.botFacebook;
     this.botViber = config.botViber;
+    this.botUniversal = config.botUniversal;
 
     this.on('input', function(msg) {
 
@@ -31,6 +32,7 @@ module.exports = function(RED) {
       var botSlack = node.botSlack;
       var botFacebook = node.botFacebook;
       var botViber = node.botViber;
+      var botUniversal = node.botUniversal;
 
       if (transport === 'slack' || transport === 'telegram' || transport === 'facebook' || transport === 'viber') {
         var platformNode = null;
@@ -41,6 +43,8 @@ module.exports = function(RED) {
         } else if (transport === 'facebook' && RED.nodes.getNode(botFacebook) != null) {
           platformNode = RED.nodes.getNode(botFacebook).chat;
         } else if (transport === 'viber' && RED.nodes.getNode(botViber) != null) {
+          platformNode = RED.nodes.getNode(botViber).chat;
+        } else if (transport === 'universal' && RED.nodes.getNode(botUniversal) != null) {
           platformNode = RED.nodes.getNode(botViber).chat;
         } else {
           node.error('Chatbot not found or not configured properly');
@@ -102,10 +106,7 @@ module.exports = function(RED) {
           node.send(msg);
         });
       }
-
-
     });
-
   }
 
   RED.nodes.registerType('chatbot-conversation', ChatBotConversation);
