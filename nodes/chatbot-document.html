@@ -20,6 +20,9 @@
     paletteLabel: 'Document',
     label: function() {
       return this.name || 'Document';
+    },
+    oneditprepare: function() {
+      $.RB_Legend();
     }
   });
 </script>
@@ -37,13 +40,7 @@
   <label for="node-input-caption">Caption</label>
   <input type="text" id="node-input-caption" class="platform-telegram-slack" placeholder="Caption">
 </div>
-<div class="redbot-form-legend">
-  Some attributes apply for specific platform:<br>
-  <span class="icon-platform-facebook"></span> = <span style="font-size:10px">Facebook</span>
-  <span class="icon-platform-telegram"></span> = <span style="font-size:10px">Telegram</span>
-  <span class="icon-platform-smooch"></span> = <span style="font-size:10px">Smooch</span>
-  <span class="icon-platform-slack"></span> = <span style="font-size:10px">Slack</span>
-</div>
+<div class="redbot-form-legend"></div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-document"><p>Send a document, automatically zip it if the used platform doesn&#39;t support the file format [Telegram, Facebook].</p>

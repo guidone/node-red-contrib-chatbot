@@ -59,6 +59,7 @@
       }
     },
     oneditprepare: function() {
+      $.RB_Legend();
       $('#node-input-buttons-container')
         .css('min-width','450px')
         .editableList({
@@ -129,13 +130,7 @@
    <input type="checkbox" value="true" id="node-input-sharable" style="width: 20px; margin:0px 0px 0px 15px;">
    <span>Sharable</span>
 </div>
-<div class="redbot-form-legend">
-  Some attributes apply for specific platform:<br>
-  <span class="icon-platform-facebook"></span> = <span style="font-size:10px">Facebook</span>
-  <span class="icon-platform-telegram"></span> = <span style="font-size:10px">Telegram</span>
-  <span class="icon-platform-smooch"></span> = <span style="font-size:10px">Smooch</span>
-  <span class="icon-platform-slack"></span> = <span style="font-size:10px">Slack</span>
-</div>
+<div class="redbot-form-legend"></div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-generic-template"><p>Generic Template is a small card with few lines of text, an optional image and buttons.</p>
@@ -186,7 +181,7 @@
         }
       ]
     }
-  ]      
+  ]
 }
 </code></pre><p>Available parameters for the <code>msg.payload</code></p>
 <dl class="message-properties">

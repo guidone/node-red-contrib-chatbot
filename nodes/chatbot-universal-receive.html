@@ -97,7 +97,7 @@
     <div class="form-row">
       <label for="node-config-input-debug">Debug</label>
       <input type="checkbox" value="true" id="node-config-input-debug">
-      <span class="redbot-form-legend">
+      <span class="redbot-form-hint">
         Show debug information on send/receive
       </span>
     </div>
@@ -194,12 +194,12 @@ node.chat.in(message =&gt; {
   return new Promise((resolve, reject) =&gt; {
     // check that the incoming payload is an actual message
     if (message.originalMessage.text != &#39;&#39;) {
-      message.payload.type = &#39;message&#39;;  
+      message.payload.type = &#39;message&#39;;
       message.payload.content = message.originalMessage.text;
     }
     resolve(message);
   });
-}); 
+});
 </code></pre>
 <p>When a new payload arrives to the input pin and the chatId is extracted from the <code>.onChatId()</code> (as well as other information like messageId, timestamp, language, etc), a neutral version of the RedBot message is passed to the middlewares.
 A neutral message is a regular RedBot message (the messages that flow out of a receiver node) except the type and content key are left blank: is up to the developer to fill in this keys using the information contained in <em>originalMessage</em>.
@@ -217,9 +217,9 @@ node.chat.in(message =&gt; {
     .then(() =&gt; {
       message.payload.type = &#39;message&#39;;
       message.payload.content = message.originalMessage.text;
-      return message; 
+      return message;
     });
-}); 
+});
 </code></pre>
 <p>Note that a middleware should always return a promise that resolves in the translated message that will be injected in the flow.
 If none of the middlewares in the inbound chain is able to infer a message type and fill in the type and content of a neutral message, then the message is discarded (enable the debug option in the receiver configuration to log the discarded messages in the system console).</p>

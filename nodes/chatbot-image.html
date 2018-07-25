@@ -25,6 +25,7 @@
       return this.name || 'Image';
     },
     oneditprepare: function() {
+      $.RB_Legend();
       if (this.filename != null && this.filename !== '' && (this.image == null || this.image === '')) {
         $('#node-input-image').val(this.filename);
       }
@@ -45,14 +46,7 @@
   <label for="node-input-caption">Caption</label>
   <input type="text" id="node-input-caption" placeholder="Caption" class="platform-telegram-slack-viber">
 </div>
-<div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;margin-bottom:10px;">
-  Some attributes apply for specific platform:<br>
-  <span class="icon-platform-facebook"></span> = <span style="font-size:10px">Facebook</span>
-  <span class="icon-platform-telegram"></span> = <span style="font-size:10px">Telegram</span>
-  <span class="icon-platform-smooch"></span> = <span style="font-size:10px">Smooch</span>
-  <span class="icon-platform-slack"></span> = <span style="font-size:10px">Slack</span>
-  <span class="icon-platform-viber"></span> = <span style="font-size:10px">Viber</span>
-</div>
+<div class="redbot-form-legend"></div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-image"><p>The <code>Image node</code> sends an image to the chatbot from a local file, URL or Buffer.</p>
