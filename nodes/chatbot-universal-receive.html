@@ -162,21 +162,23 @@
   </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-universal-receive"><p><strong>Under development</strong></p>
-<p>The <code>Universal Connector node</code> allows to connect the the RedBot ecosystem any kind of messaging service (like email, an SMS gateway, a testing stub, etc). It&#39;s an advanced component and a good kwowledge of JavaScript and Promises is required in order to use it.</p>
+<script type="text/x-red" data-help-name="chatbot-universal-receive"><blockquote>
+<p>This is an experimental feature still in beta, to install <code>npm install node-red-contrib-chatbot@0.14.0-beta-1</code></p>
+</blockquote>
+<p>The <code>Universal Connector node</code> allows to connect the the <strong>RedBot</strong> ecosystem any kind of messaging service (like email, an SMS gateway, a testing stub, etc). It&#39;s an advanced component, a good kwowledge of <strong>JavaScript</strong> and <em>Promises</em> is required in order to use it.</p>
 <p>Unlike other receiver nodes the <code>Universal Connector node</code> has an input pin, this is where the external service will send the payload in order to be translated and injected in the <strong>RedBot</strong> flow.
 The <code>Universal Connector node</code> takes care of providing the chat context, the <em>pass thru</em> and <em>track</em> features, the <em>production</em>/<em>development</em> configuration, etc; while the implementation detail about <strong>how</strong> the incoming message is implemented is left to the user and must be implemented with an [[Extend node|Extend-node]].</p>
-<p>In order to properly <em>translate</em> an incoming message the connector must:</p>
+<p>In order to properly <em>translate</em> an incoming message the implementation in the <code>Extend node</code> must:</p>
 <ol>
-<li>Extract a <strong>chatId </strong>from the payload: it&#39;s a unique identifier of the user in the connected platform (for example the mobile nunmber for a SMS gateway, the email for an email system, etc)</li>
+<li>Extract a <strong>chatId </strong>from the payload: it&#39;s a unique identifier of the conversation in the connected platform (for example the mobile nunmber for a SMS gateway, the email for an email system, etc)</li>
 <li>Extract or infer the message type. Some messaging platform support different type of messages (for example Telegrams supports <em>message</em>, <em>audio</em>, <em>photo</em>, etc) while a service like a SMS gateway just support one type of message.</li>
 <li>Extract the message content
 it also should (but is not mandatory)</li>
-<li>Extract or infer the timestamp of the message</li>
-<li>Extract a messageId to properly reference inbound and outbound messages in the external service timeline</li>
+<li>Extract the <em>timestamp</em> of the message</li>
+<li>Extract a <em>messageId</em> to properly reference inbound and outbound messages in the external service timeline</li>
 </ol>
-<p>Like explained in [[Extend node|Extend-node]] a connector handles inbound messages with a chain of middlewares: chunck of codes executed sequentially in order to accomplish steps 1 to 3, in order to keep the code simple and maintanable is a good practice to let middleware takes care of detecting and translating one kind of message, as soon as a message has been <em>resolved</em> (means that a message type is assigned to the incoming message), the chain of middleware is skipped and the message is injected in the <strong>RedBot</strong>&#39;s flow.</p>
-<p>For example suppose that a SMS gateway calls the Node-RED instance webhook with this payload</p>
+<p>Like explained in [[Extend node|Extend-node]] a connector handles inbound messages with a chain of middlewares: chunck of codes executed sequentially in order to accomplish steps 1 to 3. In order to keep the code simple and maintanable is a good practice to let middleware takes care of detecting and translating one kind of message in each middleware, as soon as a message has been <em>resolved</em> (means that a message <em>type</em> is assigned to the incoming message), the rest of middlewares chain is skipped and the message is injected in the <strong>RedBot</strong>&#39;s flow.</p>
+<p>For example suppose that a SMS gateway calls the <strong>Node-RED</strong> instance webhook with this payload</p>
 <pre><code class="lang-javascript">{
   message: {
     from: &#39;+39347123456&#39;,
@@ -187,42 +189,54 @@ it also should (but is not mandatory)</li>
   }
 }
 </code></pre>
-<p>the code in the <code>Extend node</code> should be</p>
+<p>The <em>from</em> key is a good candidate for the <em>chatId</em> while the content of the message is in the <em>text</em> key.
+the code in the <code>Extend node</code> to handle this</p>
 <pre><code class="lang-javascript">node.chat.onChatId(payload =&gt; payload.message.from);
 node.chat.onMessageId(payload =&gt; payload.message.id);
 node.chat.in(message =&gt; {
   return new Promise((resolve, reject) =&gt; {
     // check that the incoming payload is an actual message
     if (message.originalMessage.text != &#39;&#39;) {
-      message.payload.type = &#39;message&#39;;
+      message.payload.type = &#39;message&#39;;  
       message.payload.content = message.originalMessage.text;
     }
     resolve(message);
   });
-});
+}); 
 </code></pre>
-<p>When a new payload arrives to the input pin and the chatId is extracted from the <code>.onChatId()</code> (as well as other information like messageId, timestamp, language, etc), a neutral version of the RedBot message is passed to the middlewares.
-A neutral message is a regular RedBot message (the messages that flow out of a receiver node) except the type and content key are left blank: is up to the developer to fill in this keys using the information contained in <em>originalMessage</em>.
-If the callback in <code>.onChatId()</code> fails to extract the chatId an exception is raised and the message will never go through the middlewares.</p>
+<p>When a new payload arrives to the input pin the <em>chatId</em> value is extracted from the callback <code>.onChatId()</code> (there are callbacks for other information like <em>messageId</em>, <em>timestamp</em>, <em>language</em>, etc) and a <em>neutral</em> version of the <strong>RedBot</strong> message is passed to the middlewares.
+A <em>neutral message</em> is a regular <strong>RedBot</strong> message (the messages that flow out of a receiver node) except the type and content key are left blank: is up to the developer to fill in this keys using the information contained in <em>originalMessage</em>, all values needed to build a <em>neutral message</em> (<em>chatId</em>, <em>messageId</em>, <em>timestamp</em>, <em>language</em>) are extracted using callbacks.
+If the callback in <code>.onChatId()</code> fails to extract the <em>chatId</em> then an exception is raised and the message will never go through the middlewares.</p>
 <p>In the example above there is additional information in the payload, it&#39;s a good practise use the chat context to store this information, for example</p>
 <pre><code class="lang-javascript">node.chat.onChatId(payload =&gt; payload.message.from);
 node.chat.onMessageId(payload =&gt; payload.message.id);
 node.chat.in(message =&gt; {
   const chat = message.chat();
   // check that the incoming payload is an actual message, if not return and resolve immediately
+  // this will skip to the next middleware
   if (message.originalMessage.text == null) {
     return Promise.resolve(message);
   }
+  // not all context provider return a promise
   return Promise.resolve(chat.set(&#39;name&#39;, message.originalMessage.sender_name))
     .then(() =&gt; {
       message.payload.type = &#39;message&#39;;
       message.payload.content = message.originalMessage.text;
-      return message;
+      return message; 
     });
-});
+}); 
 </code></pre>
-<p>Note that a middleware should always return a promise that resolves in the translated message that will be injected in the flow.
-If none of the middlewares in the inbound chain is able to infer a message type and fill in the type and content of a neutral message, then the message is discarded (enable the debug option in the receiver configuration to log the discarded messages in the system console).</p>
+<p>Note that a middleware should always return a <em>Promise</em> that resolves in the translated message which will be injected in the flow (a warning on the console will log any middleware not returning a Promise).
+If none of the middlewares in the inbound chain is able to infer a message type and fill in the type and content of the neutral message, then the message is discarded (enable the <em>debug</em> option in the receiver configuration to log the discarded messages in the system console).</p>
+<dl class="message-properties">
+
+
+<dt>node.chat.onChatId(func)<span class="property-type">chatId</span><dd>Callback to extract the <em>chatId</em>. The passed function takes the incoming payload as a paramenter and must return a string (a unique identifier of the conversation)</dd>
+<dt>node.chat.onTimestamp(func)<span class="property-type">ts</span><dd>Callback to extract the _ts_ (timestamp). The passed function takes the incoming payload as a paramenter and must return a moment.js value (the date and time of the message), leave blank to get the current date and time</dd>
+<dt>node.chat.onUserId(func)<span class="property-type">userId</span><dd>Callback to extract the <em>userId</em>. The passed function takes the incoming payload as a paramenter and must return a string (a unique identifier of the user)</dd>
+<dt>node.chat.onMessageId(func)<span class="property-type">messageId</span><dd>Callback to extract the <em>messageId</em>. The passed function takes the incoming payload as a paramenter and must return a string (a unique identifier of the incoming message)</dd>
+
+</dl>
 </script>
 
 <script type="text/javascript">

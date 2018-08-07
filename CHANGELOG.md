@@ -1,3 +1,4 @@
+* **0.14.0** - Added `Universal Connector node`
 * **0.13.6** - Added support for nested menu in `Messenger Menu node` via `Function node`
 * **0.13.5** - Some cleanup 
 * **0.13.4** - Added [[Extend node|Extend-node]]
