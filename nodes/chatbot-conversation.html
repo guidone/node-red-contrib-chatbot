@@ -26,6 +26,11 @@
         type: 'chatbot-viber-node',
         required: false
       },
+      botUniversal: {
+        value: '',
+        type: 'chatbot-universal-node',
+        required: false
+      },
       chatId: {
         value: ''
       },
@@ -87,6 +92,7 @@
     <option value="smooch">Smooch</option>
     <option value="telegram">Telegram</option>
     <option value="viber">Viber</option>
+    <option value="universal">Universal</option>
   </select>
 </div>
 <div class="form-row form-row-bot form-row-bot-telegram">
@@ -105,6 +111,10 @@
   <label for="node-input-botViber">Viber Bot</label>
   <input type="text" id="node-input-botViber" placeholder="Viber Bot">
 </div>
+<div class="form-row form-row-bot form-row-bot-universal">
+  <label for="node-input-botUniversal">Universal Bot</label>
+  <input type="text" id="node-input-botUniversal" placeholder="Universal Bot">
+</div>
 <div class="form-row form-row-bot form-row-bot-smooch">
   <label for="node-input-bot">Context</label>
   <input type="text" id="node-input-store" placeholder="Select storage for chat context">
@@ -118,7 +128,7 @@
   <input type="text" id="node-input-chatId" placeholder="Chat id" style="width:150px;">
   <div class="redbot-form-hint">
   The <code>chatId</code> is needed to initiate the conversation (you can grab the chatId from the logs or a debug node),
-  the <code>chatId</code> is unique per user across the different platforms (Telegram, Facebook, Slack).
+  the <code>chatId</code> is unique per user across the different platforms.
   </div>
 </div>
 <div class="form-row form-row-bot form-row-bot-telegram">
@@ -136,6 +146,8 @@
   <span class="icon-platform-telegram"></span> = <span style="font-size:10px">Telegram</span>
   <span class="icon-platform-smooch"></span> = <span style="font-size:10px">Smooch</span>
   <span class="icon-platform-slack"></span> = <span style="font-size:10px">Slack</span>
+  <span class="icon-platform-universal"></span> = <span style="font-size:10px">Universal</span>
+  <span class="icon-platform-viber"></span> = <span style="font-size:10px">Viber</span>
 </div>
 </script>
 

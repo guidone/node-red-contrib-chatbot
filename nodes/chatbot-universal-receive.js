@@ -1,6 +1,6 @@
 var _ = require('underscore');
 var moment = require('moment');
-var ViberServer = require('../lib/platforms/viber-chat');
+var UniversalServer = require('../lib/platforms/universal');
 var ContextProviders = require('../lib/chat-platform/chat-context-factory');
 var utils = require('../lib/helpers/utils');
 var clc = require('cli-color');
@@ -22,25 +22,26 @@ module.exports = function(RED) {
   if (RED.redbot.platforms == null) {
     RED.redbot.platforms = {};
   }
-  RED.redbot.platforms.viber = ViberServer;
+  RED.redbot.platforms.universal = UniversalServer;
 
   var contextProviders = ContextProviders(RED);
 
-  function ViberBotNode(n) {
+  function UniversalBotNode(n) {
     RED.nodes.createNode(this, n);
     var node = this;
     var environment = this.context().global.environment === 'production' ? 'production' : 'development';
     var isUsed = utils.isUsed(RED, node.id);
     var startNode = utils.isUsedInEnvironment(RED, node.id, environment);
-    var viberConfigs = RED.settings.functionGlobalContext.get('viber') || {};
+    var universalConfigs = RED.settings.functionGlobalContext.get('universal') || {};
 
     this.botname = n.botname;
     this.store = n.store;
     this.log = n.log;
+    this.connectorParams = n.connectorParams;
     this.usernames = n.usernames != null ? n.usernames.split(',') : [];
-    //this.polling = n.polling;
-    //this.parseMode = n.parseMode;
-    this.webHook = n.webHook;
+    this.polling = n.polling;
+    this.parseMode = n.parseMode;
+    this.providerToken = n.providerToken;
     this.debug = n.debug;
 
     if (!isUsed) {
@@ -50,43 +51,50 @@ module.exports = function(RED) {
     // exit if the node is not meant to be started in this environment
     if (!startNode) {
       // eslint-disable-next-line no-console
-      console.log(warn('Viber Bot ' + this.botname + ' will NOT be launched, environment is ' + environment));
+      console.log(warn('Universal Connector Bot ' + this.botname + ' will NOT be launched, environment is ' + environment));
       return;
     }
     // eslint-disable-next-line no-console
-    console.log(green('Viber Bot ' + this.botname + ' will be launched, environment is ' + environment));
+    console.log(green('Universal Connector Bot ' + this.botname + ' will be launched, environment is ' + environment));
     // get the context storage node
     var contextStorageNode = RED.nodes.getNode(this.store);
+    // parse JSON config
+    var connectorParams = null;
+    try {
+      connectorParams = JSON.parse(this.connectorParams);
+    } catch(error) {
+      lcd.dump(error, 'Error in JSON configuration of Universal Connector');
+      console.log(lcd.red(this.connectorParams));
+      console.log('');
+      return;
+    }
     // build the configuration object
     var botConfiguration = {
       authorizedUsernames: node.usernames,
-      token: node.credentials != null && node.credentials.token != null ? node.credentials.token.trim() : null,
-      webHook: node.webHook,
-      botname: node.botname,
       logfile: node.log,
       contextProvider: contextStorageNode != null ? contextStorageNode.contextStorage : null,
       contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null,
-      debug: node.debug
+      debug: node.debug,
+      connectorParams: connectorParams
     };
-
     // check if there's a valid configuration in global settings
-    if (viberConfigs[node.botname] != null) {
-      var validation = validators.platform.viber(viberConfigs[node.botname]);
+    if (universalConfigs[node.botname] != null) {
+      var validation = validators.platform.universal(universalConfigs[node.botname]);
       if (validation != null) {
         /* eslint-disable no-console */
         console.log('');
-        console.log(lcd.error('Found a Viber configuration in settings.js "' + node.botname + '", but it\'s invalid.'));
+        console.log(lcd.error('Found a Universal Connector configuration in settings.js "' + node.botname + '", but it\'s invalid.'));
         console.log(lcd.grey('Errors:'));
         console.log(prettyjson.render(validation));
         console.log('');
         return;
       } else {
         console.log('');
-        console.log(lcd.grey('Found a valid Viber configuration in settings.js: "' + node.botname + '":'));
-        console.log(prettyjson.render(viberConfigs[node.botname]));
+        console.log(lcd.grey('Found a valid Universal Connector configuration in settings.js: "' + node.botname + '":'));
+        console.log(prettyjson.render(universalConfigs[node.botname]));
         console.log('');
         /* eslint-enable no-console */
-        botConfiguration = viberConfigs[node.botname];
+        botConfiguration = universalConfigs[node.botname];
       }
     }
     // check if context node
@@ -97,7 +105,7 @@ module.exports = function(RED) {
       botConfiguration.contextParams = {};
     }
     // if chat is not already there and there's a token
-    if (node.chat == null && botConfiguration.token != null) {
+    if (node.chat == null) {
       // check if provider exisst
       if (!contextProviders.hasProvider(botConfiguration.contextProvider)) {
         node.error('Error creating chatbot ' + this.botname + '. The context provider '
@@ -109,20 +117,20 @@ module.exports = function(RED) {
       // try to start the servers
       try {
         node.contextProvider.start();
-        node.chat = ViberServer.createServer({
-          authorizedUsernames: botConfiguration.authorizedUsernames,
-          token: botConfiguration.token,
-          webHook: botConfiguration.webHook,
-          botname: botConfiguration.botname,
-          contextProvider: node.contextProvider,
-          logfile: botConfiguration.logfile,
-          debug: botConfiguration.debug,
-          RED: RED
-        });
+        node.chat = UniversalServer.createServer(_.extend(
+          {
+            authorizedUsernames: botConfiguration.authorizedUsernames,
+            contextProvider: node.contextProvider,
+            logfile: botConfiguration.logfile,
+            debug: botConfiguration.debug,
+            RED: RED
+          },
+          botConfiguration.connectorParams
+        ));
         // add extensions
         RED.nodes.eachNode(function(currentNode) {
           if (currentNode.type === 'chatbot-extend' && !_.isEmpty(currentNode.codeJs)
-            && currentNode.platform === 'viber') {
+            && currentNode.platform === 'universal') {
             try {
               eval(currentNode.codeJs);
             } catch (e) {
@@ -160,7 +168,7 @@ module.exports = function(RED) {
         });
     });
   }
-  RED.nodes.registerType('chatbot-viber-node', ViberBotNode, {
+  RED.nodes.registerType('chatbot-universal-node', UniversalBotNode, {
     credentials: {
       token: {
         type: 'text'
@@ -168,7 +176,7 @@ module.exports = function(RED) {
     }
   });
 
-  function ViberInNode(config) {
+  function UniversalInNode(config) {
 
     RED.nodes.createNode(this, config);
     var node = this;
@@ -185,7 +193,7 @@ module.exports = function(RED) {
       node.chat = this.config.chat;
       if (node.chat) {
         this.status({fill: 'green', shape: 'ring', text: 'connected'});
-        nodeGlobalKey = 'viber_master_' + this.config.id.replace('.','_');
+        nodeGlobalKey = 'universal_master_' + this.config.id.replace('.','_');
         var isMaster = false;
         if (global.get(nodeGlobalKey) == null) {
           isMaster = true;
@@ -212,10 +220,10 @@ module.exports = function(RED) {
             });
         });
       } else {
-        node.warn('Missing or incomplete configuration in Viber Receiver');
+        node.warn('Missing or incomplete configuration in Telegram Receiver');
       }
     } else {
-      node.warn('Missing configuration in Viber Receiver');
+      node.warn('Missing configuration in Telegram Receiver');
     }
 
     this.on('close', function (done) {
@@ -225,10 +233,14 @@ module.exports = function(RED) {
       }
       done();
     });
-  }
-  RED.nodes.registerType('chatbot-viber-receive', ViberInNode);
 
-  function ViberOutNode(config) {
+    this.on('input', function(msg) {
+      node.chat.receive(msg.payload);
+    });
+  }
+  RED.nodes.registerType('chatbot-universal-receive', UniversalInNode);
+
+  function UniversalOutNode(config) {
     RED.nodes.createNode(this, config);
     var node = this;
     var global = this.context().global;
@@ -246,10 +258,10 @@ module.exports = function(RED) {
       if (node.chat) {
         this.status({fill: 'green', shape: 'ring', text: 'connected'});
       } else {
-        node.warn('Missing or incomplete configuration in Viber Receiver');
+        node.warn('Missing or incomplete configuration in Telegram Receiver');
       }
     } else {
-      node.warn('Missing configuration in Viber Receiver');
+      node.warn('Missing configuration in Telegram Receiver');
     }
 
     // relay message
@@ -287,6 +299,6 @@ module.exports = function(RED) {
       });
     });
   }
-  RED.nodes.registerType('chatbot-viber-send', ViberOutNode);
+  RED.nodes.registerType('chatbot-universal-send', UniversalOutNode);
 
 };
