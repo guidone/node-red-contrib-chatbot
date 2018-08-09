@@ -323,5 +323,18 @@ describe('Chat message node', function() {
       });
   });
 
+  it('take message from config even if there is a string at payload', function() {
+    var msg = RED.createMessage('Should not send this');
+    RED.node.config({
+      message: [{message: 'I will send this'}]
+    });
+    MessageBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(function () {
+        assert.equal(RED.node.message().payload.content, 'I will send this');
+      });
+  });
+
 });
 
