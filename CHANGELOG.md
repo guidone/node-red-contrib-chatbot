@@ -1,3 +1,4 @@
+* **0.14.3** - Fixed bug with params resolving in `Message node`  
 * **0.14.2** - Fix message for inline buttons in **Viber** 
 * **0.14.0** - Added `Universal Connector node`
 * **0.13.6** - Added support for nested menu in `Messenger Menu node` via `Function node`
