@@ -1,3 +1,4 @@
+* **0.14.4** - `Universal Receiver node` now receives thw whole message, not just the payload 
 * **0.14.3** - Fixed bug with params resolving in `Message node`  
 * **0.14.2** - Fix message for inline buttons in **Viber** 
 * **0.14.0** - Added `Universal Connector node`
