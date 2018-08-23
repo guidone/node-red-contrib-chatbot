@@ -66,7 +66,9 @@ module.exports = function(RED) {
         connectorParams = JSON.parse(this.connectorParams);
       } catch (error) {
         lcd.dump(error, 'Error in JSON configuration of Universal Connector');
+        // eslint-disable-next-line no-console
         console.log(lcd.red(this.connectorParams));
+        // eslint-disable-next-line no-console
         console.log('');
         return;
       }
