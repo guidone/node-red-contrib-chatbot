@@ -60,13 +60,18 @@ module.exports = function(RED) {
     var contextStorageNode = RED.nodes.getNode(this.store);
     // parse JSON config
     var connectorParams = null;
-    try {
-      connectorParams = JSON.parse(this.connectorParams);
-    } catch(error) {
-      lcd.dump(error, 'Error in JSON configuration of Universal Connector');
-      console.log(lcd.red(this.connectorParams));
-      console.log('');
-      return;
+    if (!_.isEmpty(this.connectorParams))
+    {
+      try {
+        connectorParams = JSON.parse(this.connectorParams);
+      } catch (error) {
+        lcd.dump(error, 'Error in JSON configuration of Universal Connector');
+        // eslint-disable-next-line no-console
+        console.log(lcd.red(this.connectorParams));
+        // eslint-disable-next-line no-console
+        console.log('');
+        return;
+      }
     }
     // build the configuration object
     var botConfiguration = {
@@ -235,7 +240,9 @@ module.exports = function(RED) {
     });
 
     this.on('input', function(msg) {
-      node.chat.receive(msg.payload);
+      if (node.chat != null) {
+        node.chat.receive(msg);
+      }
     });
   }
   RED.nodes.registerType('chatbot-universal-receive', UniversalInNode);
