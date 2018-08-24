@@ -20,6 +20,8 @@
             + '<option value="messageEvent">Message is event ...</option>'
             + '<option value="messageType">Message is type ...</option>'
             + '<option value="notMessageType">Message is not type ...</option>'
+            + '<option value="notPending">No pending requests</option>'
+            + '<option value="pending">Pending requests</option>'
             + '<option value="isTopicEmpty">Topic is not defined</option>'
             + '<option value="isNotTopic">Topic is not ...</option>'
             + '<option value="isTopic">Topic is ...</option>'
@@ -249,6 +251,10 @@
         return 'Message is outbound';
       } else if (rule.type === 'isTopicEmpty') {
         return 'Topic is not defined';
+      } else if (rule.type === 'pending') {
+        return 'Pending requests';
+      } else if (rule.type === 'notPending') {
+        return 'No pending requests';
       } else if (rule.type === 'topicIncludes') {
         return 'Topic includes "' + ($.RedBot.validate.notEmpty(rule.topic) ? rule.topic : '...') + '"';
       } else if (rule.type === 'isNotTopic') {

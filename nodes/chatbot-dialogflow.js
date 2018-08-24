@@ -58,11 +58,19 @@ module.exports = function(RED) {
       var intent = null;
       var variables = null;
       var answer = null;
+      var body = null;
 
-      utils.request(dialogFlow)
+      when(chatContext.set('pending', true))
+        .then(function() {
+          return utils.request(dialogFlow);
+        })
+        .then(function(response) {
+          body = response;
+          return when(chatContext.set('pending', false));
+        })
         .then(
-          function(body) {
-          if (body.result != null && body.result.metadata != null && body.result.metadata.intentName != null) {
+          function() {
+          if (body != null && body.result != null && body.result.metadata != null && body.result.metadata.intentName != null) {
             // test if no match
             if (body.result.action === 'input.unknown') {
               if (debug) {
