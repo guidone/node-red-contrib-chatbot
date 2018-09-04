@@ -38,10 +38,18 @@ module.exports = function(RED) {
 
       var variables = null;
       var intent = null;
+      var res = null;
 
       // call recast
-      client.analyseText(msg.payload.content)
-        .then(function(res) {
+      when(chatContext.set('pending', true))
+        .then(function() {
+          return client.analyseText(msg.payload.content);
+        })
+        .then(function(response) {
+          res = response;
+          return when(chatContext.set('pending', false));
+        })
+        .then(function() {
           if (res.intent()) {
             // evaluate returned entities
             intent = res.intent().slug;

@@ -700,5 +700,87 @@ describe('Chat rules node', function() {
       });
   });
 
+  it('should go through the first is pending', function() {
+    var msg = RED.createMessage({
+      content: 'no command',
+      type: 'referral'
+    }, 'telegram');
+    RED.node.config({
+      rules: [
+        { type: 'pending'},
+        { type: 'catchAll' }
+      ]
+    });
+    msg.chat().set('pending', true);
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(function() {
+        assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
+        assert.isNull(RED.node.message(1));
+      });
+  });
+
+  it('should go through the second is pending', function() {
+    var msg = RED.createMessage({
+      content: 'no command',
+      type: 'referral'
+    }, 'telegram');
+    RED.node.config({
+      rules: [
+        { type: 'pending'},
+        { type: 'catchAll' }
+      ]
+    });
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(function() {
+        assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
+        assert.isNull(RED.node.message(0));
+      });
+  });
+
+  it('should go through the first is not pending', function() {
+    var msg = RED.createMessage({
+      content: 'no command',
+      type: 'referral'
+    }, 'telegram');
+    RED.node.config({
+      rules: [
+        { type: 'notPending'},
+        { type: 'catchAll' }
+      ]
+    });
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(function() {
+        assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
+        assert.isNull(RED.node.message(1));
+      });
+  });
+
+  it('should go through the second is not pending', function() {
+    var msg = RED.createMessage({
+      content: 'no command',
+      type: 'referral'
+    }, 'telegram');
+    RED.node.config({
+      rules: [
+        { type: 'notPending'},
+        { type: 'catchAll' }
+      ]
+    });
+    msg.chat().set('pending', true);
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(function() {
+        assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
+        assert.isNull(RED.node.message(0));
+      });
+  });
+
 });
 

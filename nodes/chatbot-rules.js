@@ -5,6 +5,34 @@ var when = utils.when;
 
 var Types = {
 
+  pending: function(rule, message) {
+    return new Promise(function(resolve, reject) {
+      var chatContext = message.chat();
+      when(chatContext.get('pending'))
+        .then(function(pending) {
+          if (pending) {
+            resolve(rule);
+          } else {
+            reject();
+          }
+        });
+    });
+  },
+
+  notPending: function(rule, message) {
+    return new Promise(function(resolve, reject) {
+      var chatContext = message.chat();
+      when(chatContext.get('pending'))
+        .then(function(pending) {
+          if (!pending) {
+            resolve(rule);
+          } else {
+            reject();
+          }
+        });
+    });
+  },
+
   isVariable: function(rule, message) {
     return new Promise(function(resolve, reject) {
       var chatContext = message.chat();
