@@ -31,6 +31,11 @@
         type: 'chatbot-universal-node',
         required: false
       },
+      botTwilio: {
+        value: '',
+        type: 'chatbot-twilio-node',
+        required: false
+      },
       chatId: {
         value: ''
       },
@@ -92,6 +97,7 @@
     <option value="slack">Slack</option>
     <option value="smooch">Smooch</option>
     <option value="telegram">Telegram</option>
+    <option value="twilio">Twilio</option>
     <option value="viber">Viber</option>
     <option value="universal">Universal</option>
   </select>
@@ -99,6 +105,10 @@
 <div class="form-row form-row-bot form-row-bot-telegram">
   <label for="node-input-botTelegram">Telegram Bot</label>
   <input type="text" id="node-input-botTelegram" placeholder="Telegram Bot">
+</div>
+<div class="form-row form-row-bot form-row-bot-twilio">
+  <label for="node-input-botTelegram">Twilio Bot</label>
+  <input type="text" id="node-input-botTwilio" placeholder="Twilio Bot">
 </div>
 <div class="form-row form-row-bot form-row-bot-slack">
   <label for="node-input-botSlack">Slack Bot</label>

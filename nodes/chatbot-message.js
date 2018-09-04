@@ -11,7 +11,7 @@ module.exports = function(RED) {
     this.message = config.message;
     this.answer = config.answer;
     this.parse_mode = config.parse_mode;
-    this.transports = ['telegram', 'slack', 'facebook', 'smooch', 'viber'];
+    this.transports = ['telegram', 'slack', 'facebook', 'smooch', 'viber', 'twilio'];
 
     this.pickOne = function(messages) {
       var luck = Math.floor(Math.random() * messages.length);

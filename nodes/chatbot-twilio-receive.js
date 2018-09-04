@@ -39,6 +39,7 @@ module.exports = function(RED) {
     this.log = n.log;
     this.usernames = n.usernames != null ? n.usernames.split(',') : [];
     this.accountSid = n.accountSid;
+    this.fromNumber = n.fromNumber;
     this.debug = n.debug;
 
     if (!isUsed) {
@@ -60,6 +61,7 @@ module.exports = function(RED) {
       authorizedUsernames: node.usernames,
       authToken: node.credentials != null && node.credentials.authToken != null ? node.credentials.authToken.trim() : null,
       accountSid: node.accountSid,
+      fromNumber: node.fromNumber,
       logfile: node.log,
       contextProvider: contextStorageNode != null ? contextStorageNode.contextStorage : null,
       contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null,
@@ -93,7 +95,7 @@ module.exports = function(RED) {
       botConfiguration.contextParams = {};
     }
     // if chat is not already there and there's a token
-    if (node.chat == null && botConfiguration.token != null) {
+    if (node.chat == null && botConfiguration.authToken != null) {
       // check if provider exisst
       if (!contextProviders.hasProvider(botConfiguration.contextProvider)) {
         node.error('Error creating chatbot ' + this.botname + '. The context provider '
@@ -109,6 +111,7 @@ module.exports = function(RED) {
           authorizedUsernames: botConfiguration.authorizedUsernames,
           authToken: botConfiguration.authToken,
           accountSid: botConfiguration.accountSid,
+          fromNumber: botConfiguration.fromNumber,
           contextProvider: node.contextProvider,
           logfile: botConfiguration.logfile,
           debug: botConfiguration.debug,
