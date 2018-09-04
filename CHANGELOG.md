@@ -1,3 +1,4 @@
+* **0.14.6** - Added `pending` variable to chat context (supported by `Dialogflow node` and `Recast.ai node`) 
 * **0.14.5** - Removed unused fields from Facebook Profile that were causing permissions problem
 * **0.14.4** - `Universal Receiver node` now receives thw whole message, not just the payload 
 * **0.14.3** - Fixed bug with params resolving in `Message node`  
