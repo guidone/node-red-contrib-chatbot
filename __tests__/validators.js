@@ -223,6 +223,28 @@ describe('Validators', function() {
     assert.isNotNull(validators.platform.facebook(_.extend({}, base, { logfile: 42})));
   });
 
+  it('validates a Twilio configuration', function() {
+    var base = {
+      authorizedUsernames: null,
+      fromNumber: '+39123456',
+      accountSid: '236472347623462376',
+      authToken: 'aiqwgdkansljdeife',
+      contextProvider: 'memory',
+      logfile: null
+    };
+
+    assert.isNull(validators.platform.twilio(base));
+    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { fromNumber: null})));
+    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { fromNumber: ''})));
+    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { authToken: null})));
+    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { authToken: ''})));
+    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { accountSid: null})));
+    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { accountSid: ''})));
+    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { contextProvider: 'wrong_context'})));
+    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { authorizedUsernames: 42})));
+    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { logfile: 42})));
+  });
+
   it('validates an invoice', function() {
 
     var invoice = {
