@@ -67,6 +67,7 @@
             + '<option value="">Select transport</option>'
             + '<option value="facebook">Facebook Messenger</option>'
             + '<option value="telegram">Telegram</option>'
+            + '<option value="twilio">Twilio</option>'
             + '<option value="slack">Slack</option>'
             + '<option value="smooch">Smooch</option>'
             + '</select>')
@@ -132,10 +133,7 @@
       var rule = this.rules[i];
       $('#node-input-rule-container').editableList('addItem', rule);
     }
-
   };
-
-
 
   RED.nodes.registerType('chatbot-rules', {
     category: 'RedBot Flow',
