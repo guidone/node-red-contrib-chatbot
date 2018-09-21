@@ -1,6 +1,13 @@
 var lcd = require('../lib/helpers/lcd');
 var fs = require('fs');
 var moment = require('moment');
+var ChatExpress = require('../lib/chat-platform/chat-platform');
+
+require('../lib/platforms/telegram-chat');
+require('../lib/platforms/slack-chat');
+require('../lib/platforms/twilio-chat');
+require('../lib/platforms/viber-chat');
+require('../lib/platforms/facebook-chat');
 
 var jsonPackage = fs.readFileSync(__dirname + '/../package.json');
 try {
@@ -12,3 +19,5 @@ try {
 } catch(e) {
   lcd.error('Unable to open node-red-contrib-chatbot/package.json');
 }
+
+ChatExpress.showCompatibilityChart();
