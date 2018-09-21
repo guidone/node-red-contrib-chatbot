@@ -41,9 +41,17 @@
           });
         // get options for message type
         var messageTypes = '';
-        for(var idx = 0; idx < node.messageTypes.length; idx++) {
+        var idx;
+        for(idx = 0; idx < node.messageTypes.length; idx++) {
           messageTypes += '<option value="' + node.messageTypes[idx].value + '">'
             + node.messageTypes[idx].label + '</option>';
+        }
+        // build transport options
+        var transportOptions = '';
+        for(idx = 0; idx < node.platforms.length; idx++) {
+          transportOptions += '<option value="' + node.platforms[idx].id + '">'
+            + (node.platforms[idx].name != null ? node.platforms[idx].name : node.platforms[idx].id)
+            + '</option>';
         }
 
         row
@@ -65,11 +73,7 @@
             + '</select>')
           .append('<select class="transport" name="transport" style="display:none;width:40%;margin-left:10px;">'
             + '<option value="">Select transport</option>'
-            + '<option value="facebook">Facebook Messenger</option>'
-            + '<option value="telegram">Telegram</option>'
-            + '<option value="twilio">Twilio</option>'
-            + '<option value="slack">Slack</option>'
-            + '<option value="smooch">Smooch</option>'
+            + transportOptions
             + '</select>')
           .append('<select class="messageType notMessageType" name="messageType" style="display:none;width:40%;margin-left:10px;">'
             + '<option value="">Select type</option>'
@@ -213,7 +217,11 @@
       $.get(nodeRedUrl + 'redbot/globals')
         .done(function(response) {
           node.messageTypes = response.messageTypes;
-          buildRules.call(node);
+          $.get(nodeRedUrl + 'redbot/platforms')
+            .done(function(response) {
+              node.platforms = response.platforms;
+              buildRules.call(node);
+            });
         });
     },
     oneditresize: function() {

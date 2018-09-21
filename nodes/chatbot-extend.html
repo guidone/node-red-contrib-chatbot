@@ -29,6 +29,7 @@
       return 'Extend Chat Server';
     },
     oneditprepare: function() {
+      var _this = this;
       this.editor = RED.editor.createEditor({
         id: 'node-input-func-editor',
         mode: 'ace/mode/javascript',
@@ -49,6 +50,27 @@
           clearInterval: true
         }
       });
+      // get base url
+      var nodeRedUrl = '';
+      if (RED.settings.httpNodeRoot) {
+        nodeRedUrl = RED.settings.httpNodeRoot;
+      }
+      // load platforms
+      $.get(nodeRedUrl + 'redbot/platforms')
+        .done(function(response) {
+          var platforms = response.platforms;
+          // build transport options
+          var idx;
+          var transportOptions = '';
+          for(idx = 0; idx < platforms.length; idx++) {
+            transportOptions += '<option value="' + platforms[idx].id + '">'
+              + (platforms[idx].name != null ? platforms[idx].name : platforms[idx].id)
+              + '</option>';
+          }
+          $('#node-input-platform')
+            .html('<option value="">Select which platform to extend</option>' + transportOptions)
+            .val(_this.platform);
+        });
     },
     oneditresize: function(size) {
       var dialogForm = $('#dialog-form');
@@ -78,12 +100,6 @@
   <div class="form-row form-row-select">
     <label for="node-input-platform" style="width: auto;margin-right:10px;">Extend Platform</label>
     <select id="node-input-platform" placeholder="Select which platform to extend">
-      <option value="Select which platform to extend"></option>
-      <option value="facebook">Facebook Messenger</option>
-      <option value="telegram">Telegram</option>
-      <option value="slack">Slack</option>
-      <option value="universal">Universal Connector</option>
-      <option value="viber">Viber</option>
     </select>
   </div>
   <div class="form-row">
@@ -116,9 +132,9 @@ For example a middleware that handles incoming photo message could be something 
           buffer =&gt; {
             message.payload.content = buffer;
             message.payload.type = &#39;photo&#39;;
-            resolve(message);            
+            resolve(message);
           },
-          error =&gt; reject(`Error downloading &#36;{message.originalMessage.url}`) 
+          error =&gt; reject(`Error downloading &#36;{message.originalMessage.url}`)
         );
     } else {
       resolve(message);
@@ -146,7 +162,7 @@ In case of fatal error, like a broken link, a proper error must be raised with <
     fetch(`http://transfer-bitcoin.ahah/to/&#36;{message.payload.chatId}`, { amount: message.payload.content })
         .then(
           () =&gt; resolve(message),
-          error =&gt; reject(`Not enough funds`) 
+          error =&gt; reject(`Not enough funds`)
         );
   });
 });
