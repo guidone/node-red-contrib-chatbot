@@ -3,6 +3,7 @@
   "version": "0.15.0",
   "description": "REDBot a Chat bot for a full featured chat bot for Telegram**, Facebook Messenger and Slack. Almost no coding skills required",
   "scripts": {
+    "start": "node-red",
     "test": "jest",
     "test-ci": "jest --watch",
     "ngrok": "ngrok http 127.0.0.1:1880",
