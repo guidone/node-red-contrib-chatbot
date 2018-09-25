@@ -47,4 +47,10 @@ module.exports = function(RED) {
     res.send(result);
   });
 
+  // add an endpoint to get a list of context providers
+  RED.httpNode.get('/redbot/platforms', function(req, res) {
+    var platforms = ChatPlatform.getPlatforms();
+    res.send({ platforms: platforms });
+  });
+
 };

@@ -160,6 +160,13 @@ describe('Chat platform framework', function() {
       message.chat().set('customVar', 'ahaha');
       return message;
     });
+    GenericPlatform.registerMessageType('a_kind_of_magic', 'A Kind of Magic');
+
+    assert.isTrue(ChatExpress.isSupported('generic'));
+    assert.isTrue(ChatExpress.isSupported('generic', 'a_kind_of_magic'));
+    assert.isFalse(ChatExpress.isSupported('i_dont_exists'));
+    assert.isFalse(ChatExpress.isSupported('generic', 'strange_type'));
+
     var chatServer = GenericPlatform.createServer({
       contextProvider: contextProviders.getProvider('memory')
     });
