@@ -68,7 +68,8 @@
       "chatbot-dialogflow": "./nodes/chatbot-dialogflow.js",
       "chatbot-invoice": "./nodes/chatbot-invoice.js",
       "chatbot-invoice-shipping": "./nodes/chatbot-invoice-shipping.js",
-      "chatbot-extend": "./nodes/chatbot-extend.js"
+      "chatbot-extend": "./nodes/chatbot-extend.js",
+      "chatbot-support-table": "./nodes/chatbot-support-table.js"
     }
   },
   "maintainers": [
