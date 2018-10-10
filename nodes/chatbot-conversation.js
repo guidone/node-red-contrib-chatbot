@@ -47,7 +47,7 @@ module.exports = function(RED) {
         } else if (transport === 'viber' && RED.nodes.getNode(botViber) != null) {
           platformNode = RED.nodes.getNode(botViber).chat;
         } else if (transport === 'universal' && RED.nodes.getNode(botUniversal) != null) {
-          platformNode = RED.nodes.getNode(botViber).chat;
+          platformNode = RED.nodes.getNode(botUniversal).chat;
         } else if (transport === 'twilio' && RED.nodes.getNode(botTwilio) != null) {
           platformNode = RED.nodes.getNode(botTwilio).chat;
         } else {
