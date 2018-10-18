@@ -198,8 +198,8 @@ In case of fatal error, like a broken link, a proper error must be raised with <
 <dt>node.chat.onTimestamp(func)<dd>Callback to extract the _ts_ (timestamp) in a <code>Universal Connector node</code>. The passed function takes the incoming payload as a paramenter and should return a moment.js value (the date and time of the message), leave blank to get the current date and time</dd>
 <dt>node.chat.onUserId(func)<dd>Callback to extract the <em>userId</em> in a <code>Universal Connector node</code>. The passed function takes the incoming payload as a paramenter and should return a string (a unique identifier of the user)</dd>
 <dt>node.chat.onMessageId(func)<dd>Callback to extract the <em>messageId</em> in a <code>Universal Connector node</code>. The passed function takes the incoming payload as a paramenter and should return a string (a unique identifier of the incoming message)</dd>
-<dt>node.chat.onStart(func)<dd>tbd</dd>
-<dt>node.chat.onStop(func)<dd>tbd</dd>
+<dt>node.chat.onStart(func)<dd>Callback when the node is initialized, must return a promise.</dd>
+<dt>node.chat.onStop(func)<dd>Callback when <strong>Node-RED</strong> is shut down, must return a promise</dd>
 
 </dl>
 <p><img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram">
