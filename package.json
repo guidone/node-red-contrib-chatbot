@@ -9,7 +9,7 @@
     "ngrok": "ngrok http 127.0.0.1:1880",
     "localtunnel": "lt --port 1880",
     "lint": "eslint ./nodes/*.js ./lib",
-    "pull-wiki": "(cd ./wiki && git pull)",
+    "pull-wiki": "git clone https://github.com/guidone/node-red-contrib-chatbot.wiki.git ./wiki",
     "commit-wiki": "git add . && git commit -m \"docs\"",
     "build-docs": "git clone https://github.com/guidone/node-red-contrib-chatbot.wiki.git ./wiki && node ./bin/generate-docs && rm -rf ./wiki",
     "clean": "rm -rf ./wiki",

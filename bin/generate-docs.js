@@ -46,7 +46,7 @@ var mappings = {
   'Telegram-Receiver-node.md': 'chatbot-telegram-receive.html|chatbot-telegram-node',
   'Facebook-Receiver-node.md': 'chatbot-facebook-receive.html|chatbot-facebook-node',
   'Viber-Receiver-node.md': 'chatbot-viber-receive.html|chatbot-viber-node',
-  'Switch-node.md': 'chatbot-switch.html',
+  'Switch-node.md': 'chatbot-rules.html',
   'Inline-Query-node.md': 'chatbot-inline-query.html',
   'Dialog-node.md': 'chatbot-dialog.html',
   'Rules-node.md': 'chatbot-rules.html',
@@ -60,6 +60,7 @@ var mappings = {
   'Keyboard-node.md': 'chatbot-ask.html',
   'Buttons-node.md': 'chatbot-inline-buttons.html',
   'Extend-node.md': 'chatbot-extend.html',
+  'Support-table.md': 'chatbot-support-table.html',
   'Universal-Connector-node.md': 'chatbot-universal-receive.html|chatbot-universal-receive'
 };
 
@@ -139,7 +140,11 @@ _(mappings).map(function(nodeFile, markdownFile) {
 
       var markdownSource = fs.readFileSync(__dirname + '/../wiki/' + markdownFile, 'utf8');
       var htmlSource = marked(markdownSource);
-      var nodeSource = fs.readFileSync(__dirname + '/../nodes/' + nodeFile, 'utf8');
+      try {
+        var nodeSource = fs.readFileSync(__dirname + '/../nodes/' + nodeFile, 'utf8');
+      } catch(e) {
+        reject(e);
+      }
 
       // reformat tables with dl, dt, dd, Node-RED standard
       // table always 3 cell: name of field, type, description
@@ -164,28 +169,32 @@ _(mappings).map(function(nodeFile, markdownFile) {
       var images = collectImages(htmlSource);
 
       fetchImagesBase64(images)
-        .then(function(images64) {
+        .then(
+          function(images64) {
 
-          // now replace all fetched images in base64
-          _(images64).each(function(image) {
-            htmlSource = htmlSource.replace(image.html, '<img src="' + image.base64 + '">');
-          });
+            // now replace all fetched images in base64
+            _(images64).each(function(image) {
+              htmlSource = htmlSource.replace(image.html, '<img src="' + image.base64 + '">');
+            });
 
-          // replace "$" or will mess up with the regular expression
-          htmlSource = htmlSource.replace(/\$/g, '&#36;');
+            // replace "$" or will mess up with the regular expression
+            htmlSource = htmlSource.replace(/\$/g, '&#36;');
 
-          // replace inline documentation
-          var newDoc = '<script type="text\/x-red" data-help-name="' + nodeName + '">' + htmlSource + '</script>';
-          var regexp = new RegExp('<script type=\"text\/x-red\" data-help-name=\"' + nodeName + '\">[\\s\\S]*?<\/script>', 'g');
-          nodeSource = nodeSource.replace(regexp, newDoc);
+            // replace inline documentation
+            var newDoc = '<script type="text\/x-red" data-help-name="' + nodeName + '">' + htmlSource + '</script>';
+            var regexp = new RegExp('<script type=\"text\/x-red\" data-help-name=\"' + nodeName + '\">[\\s\\S]*?<\/script>', 'g');
+            nodeSource = nodeSource.replace(regexp, newDoc);
 
-          fs.writeFileSync(__dirname + '/../nodes/' + nodeFile, nodeSource, 'utf8');
-          // finally resolve
-          resolve();
-        });
+            fs.writeFileSync(__dirname + '/../nodes/' + nodeFile, nodeSource, 'utf8');
+            // finally resolve
+            resolve();
+          },
+          function(error) {
+            reject(error);
+          }
+        );
     });
   });
-
 
 });
 

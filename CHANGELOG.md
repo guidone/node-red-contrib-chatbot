@@ -1,3 +1,8 @@
+* **0.15.4** - Fixed some issues with the [[Extend node|Extend-node]], added support for platform with different names, added [[Support Table|Support-table]] node
+* **0.15.3** - Fixed Facebook permission "locale"
+* **0.15.2** - Better support of message types registration
+* **0.15.1** - Support for _optin.ref_ in Facebook Messenger
+* **0.15.0** - Twilio connector 
 * **0.14.6** - Added `pending` variable to chat context (supported by `Dialogflow node` and `Recast.ai node`) 
 * **0.14.5** - Removed unused fields from Facebook Profile that were causing permissions problem
 * **0.14.4** - `Universal Receiver node` now receives thw whole message, not just the payload 
