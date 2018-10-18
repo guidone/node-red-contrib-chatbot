@@ -1,6 +1,7 @@
 var MessageTemplate = require('../lib/message-template-async');
 var emoji = require('node-emoji');
 var utils = require('../lib/helpers/utils');
+var ChatExpress = require('../lib/chat-platform/chat-platform');
 
 module.exports = function(RED) {
 
@@ -14,8 +15,9 @@ module.exports = function(RED) {
 
     this.on('input', function(msg) {
 
+      var transport = utils.getTransport(msg);
       // check transport compatibility
-      if (!utils.matchTransport(node, msg)) {
+      if (!ChatExpress.isSupported(transport, 'message') && !utils.matchTransport(node, msg)) {
         return;
       }
 

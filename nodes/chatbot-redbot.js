@@ -1,7 +1,6 @@
 var lcd = require('../lib/helpers/lcd');
 var fs = require('fs');
 var moment = require('moment');
-var ChatExpress = require('../lib/chat-platform/chat-platform');
 
 require('../lib/platforms/telegram-chat');
 require('../lib/platforms/slack-chat');
@@ -20,4 +19,3 @@ try {
   lcd.error('Unable to open node-red-contrib-chatbot/package.json');
 }
 
-ChatExpress.showCompatibilityChart();

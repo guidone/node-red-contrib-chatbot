@@ -56,7 +56,7 @@
         nodeRedUrl = RED.settings.httpNodeRoot;
       }
       // load platforms
-      $.get(nodeRedUrl + 'redbot/platforms')
+      $.get(nodeRedUrl + 'redbot/platforms/classes')
         .done(function(response) {
           var platforms = response.platforms;
           // build transport options

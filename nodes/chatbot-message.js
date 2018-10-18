@@ -2,6 +2,7 @@ var _ = require('underscore');
 var utils = require('../lib/helpers/utils');
 var MessageTemplate = require('../lib/message-template-async');
 var emoji = require('node-emoji');
+var ChatExpress = require('../lib/chat-platform/chat-platform');
 
 module.exports = function(RED) {
 
@@ -25,9 +26,10 @@ module.exports = function(RED) {
       var chatId = utils.getChatId(msg);
       var messageId = utils.getMessageId(msg);
       var template = MessageTemplate(msg, node);
+      var transport = utils.getTransport(msg);
 
       // check transport compatibility
-      if (!utils.matchTransport(node, msg)) {
+      if (!ChatExpress.isSupported(transport, 'message') && !utils.matchTransport(node, msg)) {
         return;
       }
 
