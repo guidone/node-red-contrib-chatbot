@@ -188,18 +188,18 @@ In case of fatal error, like a broken link, a proper error must be raised with <
 <dl class="message-properties">
 
 
-<dt>node.chat.use(func)<span class="property-type">The middleware will be execute for inbound and outbound messages, before any middleware registered with <code>.in()</code> and <code>.out()</code></span><dd>undefined</dd>
-<dt>node.chat.in(func)<span class="property-type">The middleware will be execute for inbound, after all middlewares registered with <code>.use()</code></span><dd>undefined</dd>
-<dt>node.chat.out(func)<span class="property-type">The middleware will be execute for all outbounds messages, after all middlewares registered with <code>.use()</code></span><dd>undefined</dd>
-<dt>node.chat.out(myType, func)<span class="property-type">The middleware will be execute for outbound messages of type <em>myType</em>, after all middlewares registered with <code>.use()</code> and <code>.out()</code> without a type</span><dd>undefined</dd>
-<dt>node.chat.registerMessageType(type[, label])<span class="property-type">Register the a message type in order to be available in the drop-down of the <code>Rules node</code></span><dd>undefined</dd>
-<dt>node.chat.registerPlatform(name[, label])<span class="property-type">Register a messaging platform, use the <code>Support Table node</code> to show platforms/available message types</span><dd>undefined</dd>
-<dt>node.chat.onChatId(func)<span class="property-type">Callback to extract the <em>chatId</em> in a <code>Universal Connector node</code>. The passed function takes the incoming payload as a paramenter and should return a string (a unique identifier of the conversation)</span><dd>undefined</dd>
-<dt>node.chat.onTimestamp(func)<span class="property-type">Callback to extract the _ts_ (timestamp) in a <code>Universal Connector node</code>. The passed function takes the incoming payload as a paramenter and should return a moment.js value (the date and time of the message), leave blank to get the current date and time</span><dd>undefined</dd>
-<dt>node.chat.onUserId(func)<span class="property-type">Callback to extract the <em>userId</em> in a <code>Universal Connector node</code>. The passed function takes the incoming payload as a paramenter and should return a string (a unique identifier of the user)</span><dd>undefined</dd>
-<dt>node.chat.onMessageId(func)<span class="property-type">Callback to extract the <em>messageId</em> in a <code>Universal Connector node</code>. The passed function takes the incoming payload as a paramenter and should return a string (a unique identifier of the incoming message)</span><dd>undefined</dd>
-<dt>node.chat.onStart(func)<span class="property-type">tbd</span><dd>undefined</dd>
-<dt>node.chat.onStop(func)<span class="property-type">tbd</span><dd>undefined</dd>
+<dt>node.chat.use(func)<dd>The middleware will be execute for inbound and outbound messages, before any middleware registered with <code>.in()</code> and <code>.out()</code></dd>
+<dt>node.chat.in(func)<dd>The middleware will be execute for inbound, after all middlewares registered with <code>.use()</code></dd>
+<dt>node.chat.out(func)<dd>The middleware will be execute for all outbounds messages, after all middlewares registered with <code>.use()</code></dd>
+<dt>node.chat.out(myType, func)<dd>The middleware will be execute for outbound messages of type <em>myType</em>, after all middlewares registered with <code>.use()</code> and <code>.out()</code> without a type</dd>
+<dt>node.chat.registerMessageType(type[, label])<dd>Register the a message type in order to be available in the drop-down of the <code>Rules node</code></dd>
+<dt>node.chat.registerPlatform(name[, label])<dd>Register a messaging platform, use the <code>Support Table node</code> to show platforms/available message types</dd>
+<dt>node.chat.onChatId(func)<dd>Callback to extract the <em>chatId</em> in a <code>Universal Connector node</code>. The passed function takes the incoming payload as a paramenter and should return a string (a unique identifier of the conversation)</dd>
+<dt>node.chat.onTimestamp(func)<dd>Callback to extract the _ts_ (timestamp) in a <code>Universal Connector node</code>. The passed function takes the incoming payload as a paramenter and should return a moment.js value (the date and time of the message), leave blank to get the current date and time</dd>
+<dt>node.chat.onUserId(func)<dd>Callback to extract the <em>userId</em> in a <code>Universal Connector node</code>. The passed function takes the incoming payload as a paramenter and should return a string (a unique identifier of the user)</dd>
+<dt>node.chat.onMessageId(func)<dd>Callback to extract the <em>messageId</em> in a <code>Universal Connector node</code>. The passed function takes the incoming payload as a paramenter and should return a string (a unique identifier of the incoming message)</dd>
+<dt>node.chat.onStart(func)<dd>tbd</dd>
+<dt>node.chat.onStop(func)<dd>tbd</dd>
 
 </dl>
 <p><img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram">

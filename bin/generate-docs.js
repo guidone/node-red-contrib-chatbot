@@ -159,9 +159,13 @@ _(mappings).map(function(nodeFile, markdownFile) {
         cells = _(cells).map(function(cell) {
           return cell.replace('<td>', '').replace('</td>', '');
         });
+        var cellName = cells[0];
+        var cellType = cells.length >= 3 ? cells[1] : null;
+        var cellDescription = cells.length >= 3 ? cells[2] : cells[1];
         htmlSource = htmlSource.replace(row,
-          '<dt>' + cells[0] + '<span class="property-type">' + cells[1] +'</span>' +
-          '<dd>' + cells[2] + '</dd>'
+          '<dt>' + cellName +
+          (cellType != null ? '<span class="property-type">' + cellType +'</span>' : '') +
+          '<dd>' + cellDescription + '</dd>'
         );
       });
 
