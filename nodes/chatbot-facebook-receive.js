@@ -38,6 +38,7 @@ module.exports = function(RED) {
     this.log = n.log;
     this.debug = n.debug;
     this.usernames = n.usernames != null ? n.usernames.split(',') : [];
+    this.profileFields = n.profileFields;
 
     if (!isUsed) {
       // silently exit, this node is not used
@@ -61,6 +62,7 @@ module.exports = function(RED) {
       verifyToken: node.credentials != null && node.credentials.verify_token != null ? node.credentials.verify_token.trim() : null,
       appSecret: node.credentials != null && node.credentials.app_secret != null ? node.credentials.app_secret.trim() : null,
       logfile: node.log,
+      profileFields: node.profileFields,
       debug: node.debug,
       contextProvider: contextStorageNode != null ? contextStorageNode.contextStorage : null,
       contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null
@@ -113,6 +115,7 @@ module.exports = function(RED) {
           contextProvider: node.contextProvider,
           logfile: botConfiguration.logfile,
           debug: botConfiguration.debug,
+          profileFields: botConfiguration.profileFields,
           RED: RED
         });
         // add extensions
