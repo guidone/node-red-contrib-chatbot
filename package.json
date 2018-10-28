@@ -85,7 +85,7 @@
   "author": "Guido Bellomo <guido.bellomo@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "@slack/client": "^3.14.1",
+    "@slack/client": "^4.8.0",
     "apiai": "^3.0.0",
     "chrono-node": "^1.3.5",
     "cli-color": "^1.1.0",
