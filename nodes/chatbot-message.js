@@ -28,6 +28,10 @@ module.exports = function(RED) {
       var template = MessageTemplate(msg, node);
       var transport = utils.getTransport(msg);
 
+      // check if valid message
+      if (!utils.isValidMessage(msg, node)) {
+        return;
+      }
       // check transport compatibility
       if (!ChatExpress.isSupported(transport, 'message') && !utils.matchTransport(node, msg)) {
         return;

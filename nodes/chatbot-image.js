@@ -23,6 +23,10 @@ module.exports = function(RED) {
       var messageId = utils.getMessageId(msg);
       var filename = 'image';
 
+      // check if valid message
+      if (!utils.isValidMessage(msg, node)) {
+        return;
+      }
       // check transport compatibility
       if (!utils.matchTransport(node, msg)) {
         return;

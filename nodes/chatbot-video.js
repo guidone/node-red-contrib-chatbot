@@ -30,6 +30,10 @@ module.exports = function(RED) {
       var validExtensions = ValidExtensions[transport];
       var file = null;
 
+      // check if valid message
+      if (!utils.isValidMessage(msg, node)) {
+        return;
+      }
       // check transport compatibility
       if (!utils.matchTransport(node, msg)) {
         return;
