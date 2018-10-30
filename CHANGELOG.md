@@ -1,3 +1,4 @@
+* **0.15.5** - Fix issuw with send picture in Facebook
 * **0.15.4** - Fixed some issues with the [[Extend node|Extend-node]], added support for platform with different names, added [[Support Table|Support-table]] node
 * **0.15.3** - Fixed Facebook permission "locale"
 * **0.15.2** - Better support of message types registration
