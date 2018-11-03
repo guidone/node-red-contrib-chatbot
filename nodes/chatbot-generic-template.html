@@ -69,9 +69,7 @@
               platforms: ['facebook', 'slack'],
               badges: true
             });
-            $(container).RB_setButtonData(item, {
-              badges: false
-            });
+            $(container).RB_setButtonData(item);
           },
           removable: true,
           sortable: true
@@ -181,7 +179,7 @@
         }
       ]
     }
-  ]      
+  ]
 }
 </code></pre><p>Available parameters for the <code>msg.payload</code></p>
 <dl class="message-properties">

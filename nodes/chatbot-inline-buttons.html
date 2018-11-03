@@ -456,11 +456,16 @@
     options.badges = options.badges !== false;
 
     var container = $(this);
+    var availablePlatforms = $.isArray(container.data('platforms')) ?
+      container.data('platforms') : ['facebook', 'telegram'];
     var select = $('select[name=type]', container).val(obj.type);
     var panel = $('.panel-' + obj.type, container).show();
     var button = $.RedBot.buttonTypes.findButton(obj.type);
+    // update badges of select with intersection of available platforms and button compatibility
     if (button != null && options.badges) {
-      select.attr('class', button.className);
+      select.attr('class', $.RedBot.platformClass('select', $.RedBot.intersect(availablePlatforms, button.platforms)));
+    } else {
+      select.attr('class', '');
     }
 
     $('input[name=label]', panel).val(obj.label);
@@ -645,8 +650,10 @@
       options.types : ['url', 'postback', 'call', 'share', 'login', 'newline', 'logout', 'location', 'quick-reply', 'dialog', 'key'];
     options.platforms = options.platforms != null ? options.platforms : ['facebook', 'telegram'];
     options.badges = options.badges !== false;
-console.log('only showing platforms', options.platforms);
+
     var container = $(this);
+    // store available platforms in the container
+    container.data('platforms', options.platforms);
     var main = $('<div/>').appendTo(container);
     var cx = options.badges ? $.RedBot.platformClass : function() { return ''; };
 
@@ -658,10 +665,6 @@ console.log('only showing platforms', options.platforms);
         $('.panel-' + type, container).show();
         // find the right button
         var button = $.RedBot.buttonTypes.findButton(type);
-        //console.log('---', button, $.RedBot.platformClass('select', options.platforms));
-        //console.log('intersect', $.RedBot.intersect(options.platforms, button.platforms));
-        //console.log('---', button, $.RedBot.platformClass('select', $.RedBot.intersect(options.platforms, button.platforms)));
-        //var intersected = $.RedBot.intersect(options.platforms, button.platforms);
         // store class only if badges should be shown
         if (button != null && options.badges) {
           $(this).attr('class', cx('select', $.RedBot.intersect(options.platforms, button.platforms)));
