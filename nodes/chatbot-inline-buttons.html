@@ -284,6 +284,23 @@
     });
     return match;
   };
+  $.RedBot.intersect = function(array1, array2) {
+    var result = [];
+    var k = 0;
+    // perhaps use ES6 set
+    for(k = 0; k < array1.length; k++) {
+      if (array2.indexOf(array1[k]) !== -1 && result.indexOf(array1[k]) === -1) {
+        result.push(array1[k]);
+      }
+    }
+    for(k = 0; k < array2.length; k++) {
+      if (array1.indexOf(array2[k]) !== -1 && result.indexOf(array2[k]) === -1) {
+        result.push(array2[k]);
+      }
+    }
+    return result;
+  };
+
   $.RedBot.platformClass = function(control, platforms) {
 
     var base = null;
@@ -439,11 +456,16 @@
     options.badges = options.badges !== false;
 
     var container = $(this);
+    var availablePlatforms = $.isArray(container.data('platforms')) ?
+      container.data('platforms') : ['facebook', 'telegram'];
     var select = $('select[name=type]', container).val(obj.type);
     var panel = $('.panel-' + obj.type, container).show();
     var button = $.RedBot.buttonTypes.findButton(obj.type);
+    // update badges of select with intersection of available platforms and button compatibility
     if (button != null && options.badges) {
-      select.attr('class', button.className);
+      select.attr('class', $.RedBot.platformClass('select', $.RedBot.intersect(availablePlatforms, button.platforms)));
+    } else {
+      select.attr('class', '');
     }
 
     $('input[name=label]', panel).val(obj.label);
@@ -630,6 +652,8 @@
     options.badges = options.badges !== false;
 
     var container = $(this);
+    // store available platforms in the container
+    container.data('platforms', options.platforms);
     var main = $('<div/>').appendTo(container);
     var cx = options.badges ? $.RedBot.platformClass : function() { return ''; };
 
@@ -643,7 +667,7 @@
         var button = $.RedBot.buttonTypes.findButton(type);
         // store class only if badges should be shown
         if (button != null && options.badges) {
-          $(this).attr('class', button.className);
+          $(this).attr('class', cx('select', $.RedBot.intersect(options.platforms, button.platforms)));
         } else {
           $(this).attr('class', '');
         }
@@ -688,12 +712,16 @@
     $('<div/>').css('marginTop','5px')
       .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="value" placeholder="Postback value">'))
       .appendTo(panelPostback);
-    $('<div/>').css('marginTop','5px')
+    var feedbackRow = $('<div/>').css('marginTop','5px')
       .RB_hasPlatform(['telegram', 'slack'], options.platforms)
-      .append('<input class="node-input-rule-type ' + cx('text', ['telegram', 'slack']) + '" type="text" name="answer" placeholder="Button feedback (optional)"/>')
-      .append('<input type="checkbox" name="alert" value="on" style="width: auto;margin:0px 10px 5px 10px;"/>')
-      .append('<span>With popup</span><span class="' + cx('icon', ['telegram']) + '"></span>')
-      .appendTo(panelPostback);
+      .append('<input class="node-input-rule-type ' + cx('text', ['telegram', 'slack']) + '" type="text" name="answer" placeholder="Button feedback (optional)"/>');
+    $('<input type="checkbox" name="alert" value="on" style="width: auto;margin:0px 10px 5px 10px;"/>')
+      .RB_hasPlatform(['telegram'], options.platforms)
+      .appendTo(feedbackRow);
+    $('<span>With popup</span><span class="' + cx('icon', ['telegram']) + '"></span>')
+      .RB_hasPlatform(['telegram'], options.platforms)
+      .appendTo(feedbackRow);
+    feedbackRow.appendTo(panelPostback);
     $('<div/>').css('marginTop','5px')
       .RB_hasPlatform('slack', options.platforms)
       .append('<select name="style" class="' + cx('select', ['slack']) + '" style="width:70%">'
@@ -1281,6 +1309,12 @@ return msg;
     url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEtJREFUGBljDNvW/Z+BAGBBll/pWYLMZQjf3gPmwxWBFMAEUVQCOUzoAtj4cJNApiBbh2wqXBHIBGQJZOtJsw7ZKnRT4dYhW4XueACZqRaCOTsvfwAAAABJRU5ErkJggg==);
     background-position: right 12px top 2px, right 22px top 2px, right 32px top 2px;
     background-repeat: no-repeat, no-repeat, no-repeat;
+  }
+
+  .platform-combo-facebook-slack {
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEJJREFUGBljtIqc8Z+BAGCByR9dlg5jwmnrqJlgNlwRiAcThKuCMpjQBbDxUUxCthLZVBRFyBLIJhJlHVGKGIkJJwAbVQzJXzC/gwAAAABJRU5ErkJggg==), url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEtJREFUGBljDNvW/Z+BAGBBll/pWYLMZQjf3gPmwxWBFMAEUVQCOUzoAtj4cJNApiBbh2wqXBHIBGQJZOtJsw7ZKnRT4dYhW4XueACZqRaCOTsvfwAAAABJRU5ErkJggg==);
+    background-position: right 22px top 2px, right 32px top 2px;
+    background-repeat: no-repeat, no-repeat;
   }
 
   .platform-combo-telegram-facebook-slack-viber {
