@@ -12,6 +12,7 @@ module.exports = function(RED) {
     this.message = config.message;
     this.answer = config.answer;
     this.parse_mode = config.parse_mode;
+    this.silent = config.silent;
     this.transports = ['telegram', 'slack', 'facebook', 'smooch', 'viber', 'twilio'];
 
     this.pickOne = function(messages) {
@@ -43,6 +44,7 @@ module.exports = function(RED) {
       // also try to get an array of messages from config and pick one randomly
       var messages = utils.extractValue(['string','messages', 'number'], 'message', node, msg)
         || utils.extractValue('string', 'answer', node, msg, false);
+      var silent = utils.extractValue('boolean', 'silent', node, msg, false);
 
       var message = _.isArray(messages) ? node.pickOne(messages) : messages;
 
@@ -54,7 +56,8 @@ module.exports = function(RED) {
             content: emoji.emojify(message),
             chatId: chatId,
             messageId: messageId,
-            inbound: false
+            inbound: false,
+            silent: silent
           };
           // reply flag
           msg.payload.options = {};

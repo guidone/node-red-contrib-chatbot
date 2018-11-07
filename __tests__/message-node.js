@@ -23,6 +23,26 @@ describe('Chat message node', function() {
 
   });
 
+  it('should send the message in the config silently (telegram)', function() {
+    var msg = RED.createMessage();
+    RED.node.config({
+      message: 'i am the message',
+      track: false,
+      answer: false,
+      silent: true
+    });
+    MessageBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(function() {
+        assert.equal(RED.node.message().payload.content, 'i am the message');
+        assert.equal(RED.node.message().payload.chatId, 42);
+        assert.equal(RED.node.message().payload.inbound, false);
+        assert.equal(RED.node.message().payload.silent, true);
+      });
+
+  });
+
   it('should send the message in the config (slack)', function() {
     var msg = RED.createMessage(null, 'slack');
     RED.node.config({
