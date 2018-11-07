@@ -10,7 +10,7 @@
       title: {
         value: '',
         validate: function(title) {
-          return $.RedBot.validate.notEmpty(title) && title.length <= 80 ;
+          return $.RedBot.validate.isEmpty(title) || title.length <= 80 ;
         }
       },
       subtitle: {
@@ -179,7 +179,7 @@
         }
       ]
     }
-  ]      
+  ]
 }
 </code></pre><p>Available parameters for the <code>msg.payload</code></p>
 <dl class="message-properties">
