@@ -7,15 +7,72 @@
         required: true
       }
     },
-    oneditprepare: function() {},
     paletteName: 'Dialogflow Token',
     credentials: {
-      token: {
-        type: 'text'
+      email: {
+        type: 'text',
+        validate: function(value) {
+          return $.RedBot.validate.email(value);
+        }
+      },
+      privateKey: {
+        type: 'text',
+        validate: function(value) {
+          return $.RedBot.validate.privateKey(value);
+        }
+      },
+      projectId: {
+        type: 'text',
+        required: true
       }
     },
     label: function () {
       return this.name || 'Dialogflow.com';
+    },
+    oneditprepare: function() {
+      $('#node-config-input-privateKey')
+        .on('blur', function() {
+          var privateKey = $(this).val();
+          var json = null;
+
+          try {
+            json = JSON.parse(privateKey);
+          } catch(e) {
+          }
+
+          if (json != null) {
+            console.log('json not null');
+
+            privateKey = json.private_key;
+            $(this).val(privateKey);
+          } else {
+            privateKey = privateKey.replace(/\\n/g,"\n");
+            $(this).val(privateKey);
+          }
+
+        });
+    },
+    oneditsave: function() {
+
+      /*var credentials = this.credentials;
+      console.log('cred', credentials);
+
+      var privateKey = credentials.privateKey;
+
+      var match = privateKey
+        .replace(/\r/g, '')
+        .replace(/\n/g, '')
+        .match(/-----BEGIN PRIVATE KEY(.*)-----END PRIVATE KEY-----/);
+
+      if (match != null) {
+        privateKey = match[0];
+        console.log('privateKey', privateKey);
+      }
+
+      this.credentials.privateKey = privateKey;
+
+      console.log('new privateKey', privateKey);*/
+
     }
   });
 </script>
@@ -26,8 +83,20 @@
   <input type="text" id="node-config-input-name">
 </div>
 <div class="form-row">
-  <label for="node-config-input-token">Token</label>
-  <input type="text" id="node-config-input-token">
+  <label for="node-config-input-email">Project ID</label>
+  <input type="text" id="node-config-input-projectId">
+</div>
+<div class="form-row">
+  <label for="node-config-input-email">Email</label>
+  <input type="text" id="node-config-input-email">
+</div>
+<div class="form-row">
+  <label for="node-config-input-privateKey">Private Key</label>
+  <textarea
+    type="text"
+    id="node-config-input-privateKey"
+    style="width:100%;height:400px;font-size:11px;font-family:monospace;"
+  />
 </div>
 </script>
 
@@ -186,7 +255,7 @@ May I have a mojito
   payload: {
     intent: &#39;want-drink&#39;,
     answer: &#39;I am the answer&#39;,
-    variables: { 
+    variables: {
       Drinks: &#39;martini rosso&#39;
     }
 }
