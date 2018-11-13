@@ -1,3 +1,4 @@
+* **0.15.8** - DialogFlow node updated to API v2 
 * **0.15.7** - Silent messages for Telegram
 * **0.15.6** - Upgraded Slack lib, removed restriction of configuration name === bot name 
 * **0.15.5** - Fix issue with send picture in Facebook
