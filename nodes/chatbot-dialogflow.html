@@ -34,45 +34,18 @@
         .on('blur', function() {
           var privateKey = $(this).val();
           var json = null;
-
           try {
             json = JSON.parse(privateKey);
           } catch(e) {
           }
-
           if (json != null) {
-            console.log('json not null');
-
             privateKey = json.private_key;
             $(this).val(privateKey);
           } else {
             privateKey = privateKey.replace(/\\n/g,"\n");
             $(this).val(privateKey);
           }
-
         });
-    },
-    oneditsave: function() {
-
-      /*var credentials = this.credentials;
-      console.log('cred', credentials);
-
-      var privateKey = credentials.privateKey;
-
-      var match = privateKey
-        .replace(/\r/g, '')
-        .replace(/\n/g, '')
-        .match(/-----BEGIN PRIVATE KEY(.*)-----END PRIVATE KEY-----/);
-
-      if (match != null) {
-        privateKey = match[0];
-        console.log('privateKey', privateKey);
-      }
-
-      this.credentials.privateKey = privateKey;
-
-      console.log('new privateKey', privateKey);*/
-
     }
   });
 </script>
@@ -87,7 +60,7 @@
   <input type="text" id="node-config-input-projectId">
 </div>
 <div class="form-row">
-  <label for="node-config-input-email">Email</label>
+  <label for="node-config-input-email">Account ID</label>
   <input type="text" id="node-config-input-email">
 </div>
 <div class="form-row">

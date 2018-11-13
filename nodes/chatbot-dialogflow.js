@@ -2,8 +2,6 @@ var _ = require('underscore');
 var utils = require('../lib/helpers/utils');
 var lcd = require('../lib/helpers/lcd');
 var dialogflow = require('dialogflow');
-
-
 var when = utils.when;
 
 module.exports = function(RED) {
@@ -17,14 +15,12 @@ module.exports = function(RED) {
     node.variable = config.variable;
 
     this.on('input', function (msg) {
-
       var chatContext = msg.chat();
       var dialogFlowNode = RED.nodes.getNode(node.dialogflow);
       var language = utils.extractValue('string', 'language', node, msg, false);
       var variable = utils.extractValue('string', 'variable', node, msg, false);
       var debug = utils.extractValue('boolean', 'debug', node, msg, false);
       var chatId = utils.getChatId(msg);
-
 
       // exit if empty credentials
       if (dialogFlowNode == null || dialogFlowNode.credentials == null) {
@@ -47,12 +43,8 @@ module.exports = function(RED) {
       var privateKey = dialogFlowNode.credentials.privateKey;
       var projectId = dialogFlowNode.credentials.projectId;
 
-
-
       var sessionClient = new dialogflow.SessionsClient({
         credentials: {
-          //private_key: private_key,
-          //client_email: 'dialogflow-mdnmfu@guidone-6ce99.iam.gserviceaccount.com'
           private_key: privateKey,
           client_email: email
         }
@@ -61,11 +53,7 @@ module.exports = function(RED) {
       /*
       POST https://language.googleapis.com/v1/documents:analyzeEntities?key=API_KEY
       */
-
-      console.log('projectid', projectId);
-      console.log('chatId', chatId);
       var sessionPath = sessionClient.sessionPath(projectId, String(chatId));
-
       var request = {
         session: sessionPath,
         queryInput: {
@@ -76,30 +64,9 @@ module.exports = function(RED) {
         }
       };
 
-
-
-
-
-
-
-
-
-      /*sessionClient
-        .detectIntent(request)
-        .then(function(responses) {
-
-          console.log('RESP', responses[0].queryResult.intent);
-          console.log('RESP', responses[0].queryResult.parameters);
-
-
-        })
-        .catch(function(error) {
-          console.log('sbaglio', error);
-        })*/
-
-
+      var isFallback = null;
       var intent = null;
-      var variables = null;
+      var variables = {};
       var answer = null;
       var body = null;
 
@@ -107,49 +74,42 @@ module.exports = function(RED) {
         .then(function() {
           return sessionClient.detectIntent(request);
         })
-        /*.then(function() {
-          return utils.request(dialogFlow);
-        })*/
         .then(function(response) {
           body = response;
           return when(chatContext.set('pending', false));
         })
         .then(function() {
-
-          console.log('RESP', body[0].queryResult.intent);
-          console.log('RESP', body[0].queryResult.parameters);
-
-          /*if (body != null && body.result != null && body.result.metadata != null && body.result.metadata.intentName != null) {
-            // test if no match
-            if (body.result.action === 'input.unknown') {
-              if (debug) {
-                lcd.node(body.result.action, {node: node, title: 'Dialogflow.ai'});
-              }
-              // if didn't matched any intent
-              node.send([null, msg]);
-              return Promise.reject();
-            } else {
-              intent = body.result.metadata.intentName;
-              variables = body.result.parameters;
-              answer = body.result.fulfillment != null ? body.result.fulfillment.speech : null;
-              // remove empty vars
-              _(variables).each(function(value, key) {
-                if (value == null) {
-                  delete variables[key];
-                }
-              });
-              return when(!_.isEmpty(variable) ? chatContext.set(variable, intent) : true);
-            }
-          } else {
+          // extract variables
+          if (body == null || !_.isArray(body) || _.isEmpty(body)) {
             return Promise.reject('Error on api.dialogflow.com');
-          }*/
-
-
+          }
+          // parse answer
+          intent = body[0].queryResult.intent != null && body[0].queryResult.intent.displayName ?
+            body[0].queryResult.intent.displayName : null;
+          isFallback = body[0].queryResult.intent != null && body[0].queryResult.intent.isFallback ?
+            body[0].queryResult.intent.isFallback : null;
+          answer = !_.isEmpty(body[0].queryResult.fulfillmentText) ? body[0].queryResult.fulfillmentText : null;
+          // get fields
+          if (body[0].queryResult.parameters != null && body[0].queryResult.parameters.fields) {
+            _(body[0].queryResult.parameters.fields).each(function(value, key) {
+              variables[key] = value.stringValue;
+            });
+          }
+          // if empty, exit from second output and stop here
+          if (intent == null) {
+            // if didn't matched any intent
+            node.send([null, msg]);
+            return Promise.reject();
+          } else {
+            // if found, store the intent in the context and go on
+            return when(!_.isEmpty(variable) ? chatContext.set(variable, intent) : true);
+          }
         })
         .then(function() {
           msg.payload = {
+            isFallback: isFallback,
             intent: intent,
-            variables: variables,
+            variables: !_.isEmpty(variables) ? variables : null,
             answer: answer
           };
           if (debug) {
