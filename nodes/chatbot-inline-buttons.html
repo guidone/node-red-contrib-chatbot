@@ -118,6 +118,14 @@
   $.RedBot.validate.string = function(value) {
     return typeof value === 'string';
   };
+  $.RedBot.validate.email = function(value) {
+    return typeof value === 'string' && value !== '' && value.indexOf('@') !== -1;
+  };
+  $.RedBot.validate.privateKey = function(value) {
+    return $.RedBot.validate.string(value)
+      && value.indexOf('-----BEGIN PRIVATE KEY-----') !== -1
+      && value.indexOf('-----END PRIVATE KEY-----') !== -1;
+  };
   $.RedBot.validate.numberOrVariable = function(value) {
     return $.RedBot.validate.number(value)
       ||
