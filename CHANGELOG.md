@@ -1,3 +1,4 @@
+* **0.15.9** - Fix parsing of Dialogflow.com responses 
 * **0.15.8** - DialogFlow node updated to API v2 
 * **0.15.7** - Silent messages for Telegram
 * **0.15.6** - Upgraded Slack lib, removed restriction of configuration name === bot name 
