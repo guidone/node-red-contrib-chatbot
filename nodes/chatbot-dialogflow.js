@@ -4,6 +4,28 @@ var lcd = require('../lib/helpers/lcd');
 var dialogflow = require('dialogflow');
 var when = utils.when;
 
+function parseFields(fields) {
+  var variables = {};
+
+  _(fields).each(function(value, key) {
+    if (value.kind === 'stringValue') {
+      if (!_.isEmpty(value.stringValue)) {
+        variables[key] = value.stringValue;
+      }
+    } else if (value.kind === 'numberValue') {
+      variables[key] = value.numberValue;
+    } else if (value.kind === 'structValue' ) {
+      variables[key] = parseFields(value.structValue.fields);
+    } else {
+      console.log('Warning: incorrectly handled dialogflow.com response type:');
+      console.log(value);
+    }
+  });
+
+  return variables;
+}
+
+
 module.exports = function(RED) {
 
   function ChatBotDialogflow(config) {
@@ -91,9 +113,7 @@ module.exports = function(RED) {
           answer = !_.isEmpty(body[0].queryResult.fulfillmentText) ? body[0].queryResult.fulfillmentText : null;
           // get fields
           if (body[0].queryResult.parameters != null && body[0].queryResult.parameters.fields) {
-            _(body[0].queryResult.parameters.fields).each(function(value, key) {
-              variables[key] = value.stringValue;
-            });
+            variables = parseFields(body[0].queryResult.parameters.fields);
           }
           // if empty, exit from second output and stop here
           if (intent == null) {
