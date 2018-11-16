@@ -106,8 +106,11 @@ module.exports = function(RED) {
             return Promise.reject('Error on api.dialogflow.com');
           }
           // parse answer
-          intent = body[0].queryResult.intent != null && body[0].queryResult.intent.displayName ?
-            body[0].queryResult.intent.displayName : null;
+          if (body[0].queryResult.intent != null && body[0].queryResult.intent.displayName) {
+            intent = body[0].queryResult.intent.displayName;
+          } else if (!_.isEmpty(body[0].queryResult.action) && body[0].queryResult.action.indexOf('smalltalk.') !== -1) {
+            intent = body[0].queryResult.action;
+          }
           isFallback = body[0].queryResult.intent != null && body[0].queryResult.intent.isFallback ?
             body[0].queryResult.intent.isFallback : null;
           answer = !_.isEmpty(body[0].queryResult.fulfillmentText) ? body[0].queryResult.fulfillmentText : null;
