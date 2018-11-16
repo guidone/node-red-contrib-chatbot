@@ -1,3 +1,4 @@
+* **0.15.10** - Enable small talk for Dialogflow.com
 * **0.15.9** - Fix parsing of Dialogflow.com responses 
 * **0.15.8** - DialogFlow node updated to API v2 
 * **0.15.7** - Silent messages for Telegram
