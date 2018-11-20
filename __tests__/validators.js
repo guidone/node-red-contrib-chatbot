@@ -214,6 +214,7 @@ describe('Validators', function() {
     };
 
     assert.isNull(validators.platform.facebook(base));
+    assert.isNull(validators.platform.facebook(_.extend({}, base, { profileFields: 'first_name'})));
     assert.isNotNull(validators.platform.facebook(_.extend({}, base, { appSecret: null})));
     assert.isNotNull(validators.platform.facebook(_.extend({}, base, { appSecret: ''})));
     assert.isNotNull(validators.platform.facebook(_.extend({}, base, { token: null})));
@@ -221,6 +222,7 @@ describe('Validators', function() {
     assert.isNotNull(validators.platform.facebook(_.extend({}, base, { contextProvider: 'wrong_context'})));
     assert.isNotNull(validators.platform.facebook(_.extend({}, base, { authorizedUsernames: 42})));
     assert.isNotNull(validators.platform.facebook(_.extend({}, base, { logfile: 42})));
+    assert.isNotNull(validators.platform.facebook(_.extend({}, base, { profileFields: 42})));
   });
 
   it('validates a Twilio configuration', function() {
