@@ -30,6 +30,26 @@ describe('Helpers functions', function() {
     assert.isNull(helpers.url('I am not a number'));
   });
 
+  it('should create a padded string and split into partials', function() {
+
+    var message = 'I am a message';
+    var padded = utils.pad(message, 4096);
+    padded += 'the beginning of second partial';
+    padded = utils.pad(padded, 4096*2);
+    padded += 'this is the last partial';
+
+    var partials = utils.split(padded, 4096);
+
+    assert.lengthOf(utils.pad(message, 200), 200);
+    assert.lengthOf(partials, 3);
+    assert.lengthOf(partials[0], 4096);
+    assert.equal(partials[0].substr(0, 14), 'I am a message');
+    assert.lengthOf(partials[1], 4096);
+    assert.equal(partials[1].substr(0, 31), 'the beginning of second partial');
+    assert.lengthOf(partials[2], 24);
+    assert.equal(partials[2], 'this is the last partial');
+  });
+
 });
 
 describe('Value extractors', function() {

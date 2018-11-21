@@ -2,11 +2,11 @@ var lcd = require('../lib/helpers/lcd');
 var fs = require('fs');
 var moment = require('moment');
 
-require('../lib/platforms/telegram-chat');
-require('../lib/platforms/slack-chat');
-require('../lib/platforms/twilio-chat');
-require('../lib/platforms/viber-chat');
-require('../lib/platforms/facebook-chat');
+require('../lib/platforms/telegram');
+require('../lib/platforms/slack');
+require('../lib/platforms/twilio');
+require('../lib/platforms/viber');
+require('../lib/platforms/facebook');
 
 var jsonPackage = fs.readFileSync(__dirname + '/../package.json');
 try {
