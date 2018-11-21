@@ -71,7 +71,7 @@ module.exports = function(RED) {
 
         case 'store':
 
-          node.chat.broadcastStoreMessage()
+          node.chat.broadcastStoreMessage(msg.payload)
             .then(
               function(messageId) {
                 console.log('messageId', messageId);

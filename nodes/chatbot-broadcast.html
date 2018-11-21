@@ -34,12 +34,11 @@
       $('#node-input-command')
         .change(function() {
           var command = $(this).val();
-          $('.only-for').hide();
-          $('.only-for-' + command).show();
+          $('.form-row.only-for').hide();
+          $('.form-row.only-for-' + command).show();
         });
-
-      $('.only-for').hide();
-      $('.only-for-' + this.command).show();
+      $('.form-row.only-for').hide();
+      $('.form-row.only-for-' + this.command).show();
     }
   });
 </script>
@@ -72,7 +71,7 @@
     <label for="node-input-broadcastId">Broadcast Id</label>
     <input type="text" id="node-input-broadcastId" placeholder="Broadcast Id">
   </div>
-  <div class="form-row form-row-broadcast-id only-for-schedule only-for-cancel">
+  <div class="form-row only-for only-for-schedule only-for-cancel">
     <label for="node-input-messageId">Message Id</label>
     <input type="text" id="node-input-messageId" placeholder="Message Id">
   </div>
