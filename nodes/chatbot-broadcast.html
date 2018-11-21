@@ -1,0 +1,65 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-broadcast', {
+    category: 'RedBot Platforms',
+    color: '#FFCC66',
+    defaults: {
+      bot: {
+        value: '',
+        type: 'chatbot-facebook-node',
+        required: true
+      },
+      botProduction: {
+        value: '',
+        type: 'chatbot-facebook-node',
+        required: false
+      },
+      command: {
+        value: 'store'
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'chatbot-receiver.png',
+    paletteLabel: 'Facebook Broadcast',
+    label: function () {
+      return 'Facebook Broadcast';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-broadcast">
+  <div class="form-row">
+    <label for="node-input-bot" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(development)</span></label>
+    <input type="text" id="node-input-bot" placeholder="Bot">
+  </div>
+  <div class="form-row" style="margin-top:25px;">
+    <label for="node-input-botProduction" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(production)</span></label>
+    <input type="text" id="node-input-botProduction" placeholder="Bot">
+  </div>
+  <div class="redbot-form-hint">
+    Bot for <strong>production</strong> will be launched only if the global variable <em>"environment"</em> in <em>settings.js</em> is set to <em>"production"</em>, otherwise will be used the configuration for <strong>development</strong>.
+  </div>
+  <div class="form-row">
+    <label for="node-input-command">Method</label>
+    <select id="node-input-command" placeholder="Broadcast method">
+      <option value="store">Store message</option>
+      <option value="status">Get message status</option>
+      <option value="schedule">Schedule message</option>
+      <option value="list">List scheduled messages</option>
+      <option value="cancel">Cancel scheduled message</option>
+      <option value="metrics">Get message status</option>
+    </select>
+  </div>
+  <div class="form-row form-row-broadcast-id">
+    <label for="node-input-command">Broadcast Id</label>
+    <input type="text" id="node-input-broadcastId" placeholder="Broadcast Id">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-broadcast">
+  <p>Input node for Facebook Messenger.</p>
+</script>
+
+
+
+
