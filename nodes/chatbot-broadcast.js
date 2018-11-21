@@ -9,15 +9,18 @@ module.exports = function(RED) {
   function ChatBotBroadcast(config) {
     RED.nodes.createNode(this, config);
     var node = this;
-    this.command = config.command;
-    this.answer = config.answer;
-    this.broadcastId = config.broadcastId;
+    var global = this.context().global;
+    var environment = global.environment === 'production' ? 'production' : 'development';
 
-    //this.transports = ['telegram', 'slack', 'facebook', 'smooch', 'viber', 'twilio'];
+    this.command = config.command;
+    this.broadcastId = config.broadcastId;
+    this.messageId = config.messageId;
 
     this.bot = config.bot;
     this.botProduction = config.botProduction;
     this.config = RED.nodes.getNode(environment === 'production' ? this.botProduction : this.bot);
+
+
 
     this.config = RED.nodes.getNode(this.bot);
     if (this.config) {
@@ -34,16 +37,62 @@ module.exports = function(RED) {
 
     this.on('input', function(msg) {
 
-      console.log('node chat', node.chat);
 
+      var command = utils.extractValue('string', 'command', node, msg, false);
+      var broadcastId = utils.extractValue('string', 'broadcastId', node, msg, false);
+      var messageId = utils.extractValue('string', 'messageId', node, msg, false);
 
-      var chatId = utils.getChatId(msg);
+      console.log('---broadcastId', broadcastId);
+
+      /*var chatId = utils.getChatId(msg);
       var messageId = utils.getMessageId(msg);
       var template = MessageTemplate(msg, node);
-      var transport = utils.getTransport(msg);
+      var transport = utils.getTransport(msg);*/
+
+      switch(command) {
+        case 'metrics':
+
+          node.chat.broadcastMetrics(broadcastId)
+            .then(
+              function(metrics) {
+                console.log('metrics', metrics);
+                msg.payload = metrics;
+                node.send(msg);
+              },
+              function(error) {
+                console.log('Errrrrr', error);
+
+              }
+            );
 
 
-      node.send(msg)
+          break;
+
+
+        case 'store':
+
+          node.chat.broadcastStoreMessage()
+            .then(
+              function(messageId) {
+                console.log('messageId', messageId);
+                // pass thru a broadcast message
+                msg.payload = {
+                  type: 'broadcast',
+                  messageId: messageId
+                };
+                node.send(msg);
+              },
+              function(error) {
+                // todo handle error
+                console.log('Errrrrr', error);
+              }
+            );
+
+          break;
+
+
+      }
+
 
     });
   }

@@ -15,14 +15,31 @@
       },
       command: {
         value: 'store'
+      },
+      broadcastId: {
+        value: ''
+      },
+      messageId: {
+        value: ''
       }
     },
     inputs: 1,
     outputs: 1,
     icon: 'chatbot-receiver.png',
-    paletteLabel: 'Facebook Broadcast',
+    paletteLabel: 'Broadcast API',
     label: function () {
-      return 'Facebook Broadcast';
+      return 'Broadcast API' + (this.command != null ? ' (' + this.command + ')' : '');
+    },
+    oneditprepare: function() {
+      $('#node-input-command')
+        .change(function() {
+          var command = $(this).val();
+          $('.only-for').hide();
+          $('.only-for-' + command).show();
+        });
+
+      $('.only-for').hide();
+      $('.only-for-' + this.command).show();
     }
   });
 </script>
@@ -43,16 +60,21 @@
     <label for="node-input-command">Method</label>
     <select id="node-input-command" placeholder="Broadcast method">
       <option value="store">Store message</option>
+      <option value="metrics">Get message metrics</option>
       <option value="status">Get message status</option>
       <option value="schedule">Schedule message</option>
       <option value="list">List scheduled messages</option>
       <option value="cancel">Cancel scheduled message</option>
-      <option value="metrics">Get message status</option>
+
     </select>
   </div>
-  <div class="form-row form-row-broadcast-id">
-    <label for="node-input-command">Broadcast Id</label>
+  <div class="form-row only-for only-for-metrics only-for-status">
+    <label for="node-input-broadcastId">Broadcast Id</label>
     <input type="text" id="node-input-broadcastId" placeholder="Broadcast Id">
+  </div>
+  <div class="form-row form-row-broadcast-id only-for-schedule only-for-cancel">
+    <label for="node-input-messageId">Message Id</label>
+    <input type="text" id="node-input-messageId" placeholder="Message Id">
   </div>
 </script>
 
