@@ -1,6 +1,6 @@
 var _ = require('underscore');
 var moment = require('moment');
-var TwilioServer = require('../lib/platforms/twilio-chat');
+var TwilioServer = require('../lib/platforms/twilio');
 var ContextProviders = require('../lib/chat-platform/chat-context-factory');
 var utils = require('../lib/helpers/utils');
 var clc = require('cli-color');

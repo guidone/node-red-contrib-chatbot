@@ -1,6 +1,6 @@
 var _ = require('underscore');
 var moment = require('moment');
-var FacebookServer = require('../lib/platforms/facebook-chat');
+var FacebookServer = require('../lib/platforms/facebook');
 var ContextProviders = require('../lib/chat-platform/chat-context-factory');
 var utils = require('../lib/helpers/utils');
 var clc = require('cli-color');
