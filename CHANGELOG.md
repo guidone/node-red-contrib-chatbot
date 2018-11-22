@@ -1,3 +1,4 @@
+* **0.15.11** - Upgrade Facebook API to 3.*, enable long messages (> 4096) for Telegram
 * **0.15.10** - Enable small talk for Dialogflow.com
 * **0.15.9** - Fix parsing of Dialogflow.com responses 
 * **0.15.8** - DialogFlow node updated to API v2 
