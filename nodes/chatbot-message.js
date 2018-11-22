@@ -45,6 +45,7 @@ module.exports = function(RED) {
       var messages = utils.extractValue(['string','messages', 'number'], 'message', node, msg)
         || utils.extractValue('string', 'answer', node, msg, false);
       var silent = utils.extractValue('boolean', 'silent', node, msg, false);
+      var fallback = utils.extractValue('string', 'fallback', node, msg, false);
 
       var message = _.isArray(messages) ? node.pickOne(messages) : messages;
 
@@ -57,7 +58,8 @@ module.exports = function(RED) {
             chatId: chatId,
             messageId: messageId,
             inbound: false,
-            silent: silent
+            silent: silent,
+            fallback: fallback
           };
           // reply flag
           msg.payload.options = {};
