@@ -15,6 +15,8 @@ module.exports = function(RED) {
     this.command = config.command;
     this.broadcastId = config.broadcastId;
     this.messageId = config.messageId;
+    this.messagingType = config.messagingType;
+    this.notificationType = config.notificationType;
 
     this.bot = config.bot;
     this.botProduction = config.botProduction;
@@ -41,6 +43,8 @@ module.exports = function(RED) {
       var command = utils.extractValue('string', 'command', node, msg, false);
       var broadcastId = utils.extractValue('string', 'broadcastId', node, msg, false);
       var messageId = utils.extractValue('string', 'messageId', node, msg, false);
+      var messagingType = utils.extractValue('string', 'messagingType', node, msg, false);
+      var notificationType = utils.extractValue('string', 'notificationType', node, msg, false);
 
       console.log('---broadcastId', broadcastId);
 
@@ -52,7 +56,8 @@ module.exports = function(RED) {
       switch(command) {
         case 'metrics':
 
-          node.chat.broadcastMetrics(broadcastId)
+          node.chat
+            .broadcastMetrics(broadcastId)
             .then(
               function(metrics) {
                 console.log('metrics', metrics);
@@ -78,7 +83,9 @@ module.exports = function(RED) {
                 // pass thru a broadcast message
                 msg.payload = {
                   type: 'broadcast',
-                  messageId: messageId
+                  messageId: messageId,
+                  messagingType: !_.isEmpty(messagingType) ? messagingType : null,
+                  notificationType: !_.isEmpty(notificationType) ? notificationType : null
                 };
                 node.send(msg);
               },

@@ -21,6 +21,12 @@
       },
       messageId: {
         value: ''
+      },
+      notificationType: {
+        value: 'REGULAR'
+      },
+      messagingType: {
+        value: ''
       }
     },
     inputs: 1,
@@ -55,8 +61,9 @@
   <div class="redbot-form-hint">
     Bot for <strong>production</strong> will be launched only if the global variable <em>"environment"</em> in <em>settings.js</em> is set to <em>"production"</em>, otherwise will be used the configuration for <strong>development</strong>.
   </div>
+  <br/>
   <div class="form-row">
-    <label for="node-input-command">Method</label>
+    <label for="node-input-command" style="width:150px;">Method</label>
     <select id="node-input-command" placeholder="Broadcast method">
       <option value="store">Store message</option>
       <option value="metrics">Get message metrics</option>
@@ -64,16 +71,27 @@
       <option value="schedule">Schedule message</option>
       <option value="list">List scheduled messages</option>
       <option value="cancel">Cancel scheduled message</option>
-
     </select>
   </div>
   <div class="form-row only-for only-for-metrics only-for-status">
-    <label for="node-input-broadcastId">Broadcast Id</label>
-    <input type="text" id="node-input-broadcastId" placeholder="Broadcast Id">
+    <label for="node-input-broadcastId" style="width:150px;">Broadcast Id</label>
+    <input type="text" id="node-input-broadcastId" placeholder="Broadcast Id" style="width:300px;">
   </div>
   <div class="form-row only-for only-for-schedule only-for-cancel">
-    <label for="node-input-messageId">Message Id</label>
-    <input type="text" id="node-input-messageId" placeholder="Message Id">
+    <label for="node-input-messageId" style="width:150px;">Message Id</label>
+    <input type="text" id="node-input-messageId" placeholder="Message Id" style="width:300px;">
+  </div>
+  <div class="form-row only-for only-for-store">
+    <label for="node-input-messagingType" style="width:150px;">Message Type</label>
+    <input type="text" id="node-input-messagingType" placeholder="Messaging Type" style="width:300px;">
+  </div>
+  <div class="form-row only-for only-for-store">
+    <label for="node-input-notificationType" style="width:150px;">Notification Type</label>
+    <select id="node-input-notificationType" placeholder="Broadcast method">
+      <option value="REGULAR">Regular</option>
+      <option value="SILENT_PUSH">Silent Push</option>
+      <option value="NO_PUSH">No Push</option>
+    </select>
   </div>
 </script>
 
