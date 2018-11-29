@@ -27,6 +27,9 @@
       },
       messagingType: {
         value: ''
+      },
+      sendAt: {
+        value: ''
       }
     },
     inputs: 1,
@@ -45,6 +48,25 @@
         });
       $('.form-row.only-for').hide();
       $('.form-row.only-for-' + this.command).show();
+
+      console.log('set date', this.sendAt);
+
+      var sendAt = new Date(this.sendAt);
+
+      if (sendAt instanceof Date && !isNaN(sendAt)) {
+        $('#node-input-sendDate').val(sendAt.getFullYear() + '-' + (sendAt.getMonth() + 1) + '-' + sendAt.getDate());
+        $('#node-input-sendTime').val(sendAt.getHours() + ':' + sendAt.getMinutes());
+      }
+
+    },
+    oneditsave: function() {
+      // parse date
+      var date = $('#node-input-sendDate').val();
+      var time = $('#node-input-sendTime').val();
+      if (date != null && date != '' && time != null && time != '') {
+        var dateTime = new Date(date + ' ' + time);
+        this.sendAt = dateTime.toISOString();
+      }
     }
   });
 </script>
@@ -73,13 +95,18 @@
       <option value="cancel">Cancel scheduled message</option>
     </select>
   </div>
-  <div class="form-row only-for only-for-metrics only-for-status">
+  <div class="form-row only-for only-for-metrics only-for-status only-for-cancel">
     <label for="node-input-broadcastId" style="width:150px;">Broadcast Id</label>
     <input type="text" id="node-input-broadcastId" placeholder="Broadcast Id" style="width:300px;">
   </div>
-  <div class="form-row only-for only-for-schedule only-for-cancel">
+  <div class="form-row only-for">
     <label for="node-input-messageId" style="width:150px;">Message Id</label>
     <input type="text" id="node-input-messageId" placeholder="Message Id" style="width:300px;">
+  </div>
+  <div class="form-row only-for only-for-schedule">
+    <label for="node-input-sendDate" style="width:150px;">Schedule At</label>
+    <input type="date" id="node-input-sendDate" placeholder="Schedule At" style="width:150px;">
+    <input type="time" id="node-input-sendTime" placeholder="Schedule At" style="width:100px;">
   </div>
   <div class="form-row only-for only-for-store">
     <label for="node-input-messagingType" style="width:150px;">Message Type</label>
