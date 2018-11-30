@@ -184,12 +184,15 @@ module.exports = function(RED) {
           global.set(nodeGlobalKey, node.id);
         }
         node.chat.on('message', function (message) {
+          console.log('qua arriva');
           var context = message.chat();
           // check if there is a conversation is going on
           when(context.get('currentConversationNode'))
             .then(function(currentConversationNode) {
+              console.log('qua arriva2');
               // if there's a current converation, then the message must be forwarded
               if (currentConversationNode != null) {
+                console.log('qua arriva3');
                 // if the current node is master, then redirect, if not master do nothing
                 if (isMaster) {
                   when(context.remove('currentConversationNode'))
@@ -199,6 +202,7 @@ module.exports = function(RED) {
                     });
                 }
               } else {
+                console.log('qua arriva4');
                 node.send(message);
               }
             });
