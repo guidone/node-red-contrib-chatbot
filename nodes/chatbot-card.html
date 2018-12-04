@@ -1,0 +1,81 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-card', {
+    category: 'RedBot',
+    color: '#FFCC66',
+    defaults: {
+      cardType: {
+        value: 'simple'
+      },
+      title: {
+        value: ''
+      },
+      content: {
+        value: ''
+      },
+      text: {
+        value: ''
+      },
+      smallImage: {
+        value: ''
+      },
+      largeImage: {
+        value: ''
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'Card',
+    icon: 'chatbot-qr-code.png',
+    label: function() {
+      return 'Card';
+    },
+    oneditprepare: function() {
+      $('#node-config-input-cardType')
+        .change(function() {
+          var type = $(this).val();
+          $('.form-row.only-for').hide();
+          $('.form-row.only-for-' + type).show();
+        });
+      $('.form-row.only-for').hide();
+      $('.form-row.only-for-' + this.cardType).show();
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-card">
+  <div class="form-row">
+    <label for="node-config-input-cardType">Type</label>
+    <select id="node-config-input-cardType" placeholder="Select card type">
+      <option value="simple">Simple</option>
+      <option value="standard">Standard</option>
+      <option value="linkAccount">LinkAccount</option>
+      <option value="askForPermissionsConsent">AskForPermissionsConsent</option>
+    </select>
+  </div>
+  <div class="form-row only-for only-for-simple only-for-standard">
+    <label for="node-input-title">Title</label>
+    <input type="text" id="node-input-title" placeholder="Title">
+  </div>
+  <div class="form-row only-for only-for-simple">
+    <label for="node-input-content">Content</label>
+    <textarea id="node-input-content" placeholder="Content" style="width:93%;height:100px;"></textarea>
+  </div>
+  <div class="form-row only-for only-for-standard">
+    <label for="node-input-text">Text</label>
+    <textarea id="node-input-text" placeholder="Text" style="width:93%;height:100px;"></textarea>
+  </div>
+  <div class="form-row only-for only-for-standard">
+    <label for="node-input-image">Image</label>
+    <span>Small Image Url</span><br/>
+    <input type="text" id="node-input-smallImage" placeholder="Small Image URL">
+    <label for="node-input-image"></label>
+    <span>Large Image Url</span><br/>
+    <input type="text" id="node-input-largeImage" placeholder="Large Image URL">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-card">
+
+</script>
+
+
