@@ -3,6 +3,7 @@ var utils = require('../lib/helpers/utils');
 var MessageTemplate = require('../lib/message-template-async');
 var emoji = require('node-emoji');
 var ChatExpress = require('../lib/chat-platform/chat-platform');
+var append = utils.append;
 
 module.exports = function(RED) {
 
@@ -51,7 +52,7 @@ module.exports = function(RED) {
       template(message)
         .then(function(message) {
           // payload
-          msg.payload = {
+          var payload = {
             type: 'message',
             content: emoji.emojify(message),
             chatId: chatId,
@@ -60,10 +61,12 @@ module.exports = function(RED) {
             silent: silent
           };
           // reply flag
-          msg.payload.options = {};
+          payload.options = {};
           if (answer) {
-            msg.payload.options.reply_to_message_id = messageId;
+            payload.options.reply_to_message_id = messageId;
           }
+          // append
+          append(msg, payload);
           // send out reply
           node.send(msg);
         });
