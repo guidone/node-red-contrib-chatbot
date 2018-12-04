@@ -33,6 +33,7 @@ module.exports = function(RED) {
         case 'simple':
           payload = {
             type: 'card',
+            cardType: 'simple',
             title: title,
             content: content
           };
@@ -40,6 +41,7 @@ module.exports = function(RED) {
         case 'standard':
           payload = {
             type: 'card',
+            cardType: 'standard',
             title: title,
             text: text,
             smallImage: smallImage,
