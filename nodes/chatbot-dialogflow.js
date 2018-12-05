@@ -17,7 +17,9 @@ function parseFields(fields) {
     } else if (value.kind === 'structValue' ) {
       variables[key] = parseFields(value.structValue.fields);
     } else {
+      // eslint-disable-next-line no-console
       console.log('Warning: incorrectly handled dialogflow.com response type:');
+      // eslint-disable-next-line no-console
       console.log(value);
     }
   });

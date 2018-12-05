@@ -9,7 +9,6 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
     var node = this;
     var global = this.context().global;
-    var environment = global.environment === 'production' ? 'production' : 'development';
 
     this.chatId = config.chatId;
     this.transport = config.transport;
