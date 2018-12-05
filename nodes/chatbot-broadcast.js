@@ -58,7 +58,6 @@ module.exports = function(RED) {
             .broadcastMetrics(broadcastId)
             .then(
               function(metrics) {
-                console.log('metrics', metrics);
                 msg.payload = metrics;
                 node.send(msg);
               },
@@ -119,15 +118,17 @@ module.exports = function(RED) {
               },
               node.error
             );
+          break;
         // Get status of a message
         case 'status':
           node.chat.broadcastStatus(broadcastId)
             .then(
-              function(status) {
+              function() {
                 node.send(msg);
               },
               node.error
             );
+          break;
       }
 
     });
