@@ -1,3 +1,4 @@
+* **0.15.13** - Support for Slack commands 
 * **0.15.12** - Broadcast API support for Facebook Messenger 
 * **0.15.11** - Upgrade Facebook API to 3.*, enable long messages (> 4096) for Telegram
 * **0.15.10** - Enable small talk for Dialogflow.com
