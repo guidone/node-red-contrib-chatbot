@@ -119,9 +119,10 @@ return msg;
 <dl class="message-properties">
 
 
-<dt>message<span class="property-type">string</span><dd>array of [string]</dd>
+<dt>message<span class="property-type">string / array of [string]</span><dd>String or array of strings to send. If array, a random one will be chosen</dd>
 <dt>silent<span class="property-type">boolean</span><dd>Do not send notification. <em>Telegram</em></dd>
 <dt>answer<span class="property-type">boolean</span><dd>Send as answer to the previous message. <em>Telegram</em></dd>
+<dt>fallback<span class="property-type">string</span><dd>Fallback message to use in case of a message broadcast containing tokens like {{first_name}} or {{last_name}} and the bot doesn&#39;t have privileges to access profile info. <em>Facebook</em></dd>
 
 </dl>
 <p><img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram">
