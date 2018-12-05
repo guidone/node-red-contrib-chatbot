@@ -25,7 +25,7 @@
     inputs: 1,
     outputs: 1,
     paletteLabel: 'Card',
-    icon: 'chatbot-qr-code.png',
+    icon: 'chatbot-card.png',
     label: function() {
       return 'Card';
     },
@@ -57,20 +57,21 @@
     <input type="text" id="node-input-title" placeholder="Title">
   </div>
   <div class="form-row only-for only-for-simple">
-    <label for="node-input-content">Content</label>
-    <textarea id="node-input-content" placeholder="Content" style="width:93%;height:100px;"></textarea>
+    <label for="node-input-content" style="width:auto;">Content of the card</label>
+    <textarea id="node-input-content" placeholder="" style="width:93%;height:100px;"></textarea>
   </div>
   <div class="form-row only-for only-for-standard">
-    <label for="node-input-text">Text</label>
-    <textarea id="node-input-text" placeholder="Text" style="width:93%;height:100px;"></textarea>
+    <label for="node-input-text" style="width:auto;">Content of the card</label>
+    <textarea id="node-input-text" placeholder="" style="width:93%;height:100px;"></textarea>
   </div>
   <div class="form-row only-for only-for-standard">
-    <label for="node-input-image">Image</label>
-    <span>Small Image Url</span><br/>
-    <input type="text" id="node-input-smallImage" placeholder="Small Image URL">
-    <label for="node-input-image"></label>
-    <span>Large Image Url</span><br/>
-    <input type="text" id="node-input-largeImage" placeholder="Large Image URL">
+    <label for="node-input-image" style="float:left;">Image</label>
+    <div style="margine-left:100px;">
+      <span style="font-size: 13px;color: #666666;">Small Image Url</span><br/>
+      <input type="text" id="node-input-smallImage" placeholder="Enter URL" style="margin-bottom:5px;"><br/>
+      <span style="font-size: 13px;color: #666666;">Large Image Url</span><br/>
+      <input type="text" id="node-input-largeImage" placeholder="Enter URL">
+    </div>
   </div>
 </script>
 

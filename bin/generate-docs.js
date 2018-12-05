@@ -61,6 +61,7 @@ var mappings = {
   'Buttons-node.md': 'chatbot-inline-buttons.html',
   'Extend-node.md': 'chatbot-extend.html',
   'Support-table.md': 'chatbot-support-table.html',
+  'Card-node.md': 'chatbot-card.html',
   'Universal-Connector-node.md': 'chatbot-universal-receive.html|chatbot-universal-receive'
 };
 
