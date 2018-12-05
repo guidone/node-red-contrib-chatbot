@@ -1,0 +1,131 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-broadcast', {
+    category: 'RedBot Platforms',
+    color: '#FFCC66',
+    defaults: {
+      bot: {
+        value: '',
+        type: 'chatbot-facebook-node',
+        required: true
+      },
+      botProduction: {
+        value: '',
+        type: 'chatbot-facebook-node',
+        required: false
+      },
+      command: {
+        value: 'store'
+      },
+      broadcastId: {
+        value: ''
+      },
+      messageId: {
+        value: ''
+      },
+      notificationType: {
+        value: 'REGULAR'
+      },
+      messagingType: {
+        value: ''
+      },
+      sendAt: {
+        value: ''
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'chatbot-receiver.png',
+    paletteLabel: 'Broadcast API',
+    label: function () {
+      return 'Broadcast API' + (this.command != null ? ' (' + this.command + ')' : '');
+    },
+    oneditprepare: function() {
+      $('#node-input-command')
+        .change(function() {
+          var command = $(this).val();
+          $('.form-row.only-for').hide();
+          $('.form-row.only-for-' + command).show();
+        });
+      $('.form-row.only-for').hide();
+      $('.form-row.only-for-' + this.command).show();
+
+      console.log('set date', this.sendAt);
+
+      var sendAt = new Date(this.sendAt);
+
+      if (sendAt instanceof Date && !isNaN(sendAt)) {
+        $('#node-input-sendDate').val(sendAt.getFullYear() + '-' + (sendAt.getMonth() + 1) + '-' + sendAt.getDate());
+        $('#node-input-sendTime').val(sendAt.getHours() + ':' + sendAt.getMinutes());
+      }
+
+    },
+    oneditsave: function() {
+      // parse date
+      var date = $('#node-input-sendDate').val();
+      var time = $('#node-input-sendTime').val();
+      if (date != null && date != '' && time != null && time != '') {
+        var dateTime = new Date(date + ' ' + time);
+        this.sendAt = dateTime.toISOString();
+      }
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-broadcast">
+  <div class="form-row">
+    <label for="node-input-bot" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(development)</span></label>
+    <input type="text" id="node-input-bot" placeholder="Bot">
+  </div>
+  <div class="form-row" style="margin-top:25px;">
+    <label for="node-input-botProduction" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(production)</span></label>
+    <input type="text" id="node-input-botProduction" placeholder="Bot">
+  </div>
+  <div class="redbot-form-hint">
+    Bot for <strong>production</strong> will be launched only if the global variable <em>"environment"</em> in <em>settings.js</em> is set to <em>"production"</em>, otherwise will be used the configuration for <strong>development</strong>.
+  </div>
+  <br/>
+  <div class="form-row">
+    <label for="node-input-command" style="width:150px;">Method</label>
+    <select id="node-input-command" placeholder="Broadcast method">
+      <option value="store">Store message</option>
+      <option value="metrics">Get message metrics</option>
+      <option value="status">Get message status</option>
+      <option value="schedule">Schedule message</option>
+      <option value="list">List scheduled messages</option>
+      <option value="cancel">Cancel scheduled message</option>
+    </select>
+  </div>
+  <div class="form-row only-for only-for-metrics only-for-status only-for-cancel">
+    <label for="node-input-broadcastId" style="width:150px;">Broadcast Id</label>
+    <input type="text" id="node-input-broadcastId" placeholder="Broadcast Id" style="width:300px;">
+  </div>
+  <div class="form-row only-for">
+    <label for="node-input-messageId" style="width:150px;">Message Id</label>
+    <input type="text" id="node-input-messageId" placeholder="Message Id" style="width:300px;">
+  </div>
+  <div class="form-row only-for only-for-schedule">
+    <label for="node-input-sendDate" style="width:150px;">Schedule At</label>
+    <input type="date" id="node-input-sendDate" placeholder="Schedule At" style="width:150px;">
+    <input type="time" id="node-input-sendTime" placeholder="Schedule At" style="width:100px;">
+  </div>
+  <div class="form-row only-for only-for-store">
+    <label for="node-input-messagingType" style="width:150px;">Message Type</label>
+    <input type="text" id="node-input-messagingType" placeholder="Messaging Type" style="width:300px;">
+  </div>
+  <div class="form-row only-for only-for-store">
+    <label for="node-input-notificationType" style="width:150px;">Notification Type</label>
+    <select id="node-input-notificationType" placeholder="Broadcast method">
+      <option value="REGULAR">Regular</option>
+      <option value="SILENT_PUSH">Silent Push</option>
+      <option value="NO_PUSH">No Push</option>
+    </select>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-broadcast">
+  <p>Input node for Facebook Messenger.</p>
+</script>
+
+
+
+

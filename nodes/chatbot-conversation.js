@@ -8,6 +8,8 @@ module.exports = function(RED) {
   function ChatBotConversation(config) {
     RED.nodes.createNode(this, config);
     var node = this;
+    var global = this.context().global;
+    var environment = global.environment === 'production' ? 'production' : 'development';
 
     this.chatId = config.chatId;
     this.transport = config.transport;
@@ -15,11 +17,17 @@ module.exports = function(RED) {
     this.messageId = config.messageId;
     this.store = config.store;
     this.botTelegram = config.botTelegram;
+    this.botTelegramProduction = config.botTelegramProduction;
     this.botSlack = config.botSlack;
+    this.botSlackProduction = config.botSlackProduction;
     this.botFacebook = config.botFacebook;
+    this.botFacebookProduction = config.botFacebookProduction;
     this.botViber = config.botViber;
+    this.botViberProduction = config.botViberProduction;
     this.botUniversal = config.botUniversal;
+    this.botUniversalProduction = config.botUniversalProduction;
     this.botTwilio = config.botTwilio;
+    this.botTwilioProduction = config.botTwilioProduction;
 
     this.on('input', function(msg) {
 
@@ -29,12 +37,12 @@ module.exports = function(RED) {
       var messageId = utils.extractValue('string', 'messageId', node, msg, false)
         || utils.extractValue('number', 'messageId', node, msg, false);
       var contextMessageId = utils.extractValue('boolean', 'contextMessageId', node, msg, false);
-      var botTelegram = node.botTelegram;
-      var botSlack = node.botSlack;
-      var botFacebook = node.botFacebook;
-      var botViber = node.botViber;
-      var botUniversal = node.botUniversal;
-      var botTwilio = node.botTwilio;
+      var botTelegram = global.environment === 'production' ? node.botTelegramProduction : node.botTelegram;
+      var botSlack = global.environment === 'production' ? node.botSlackProduction : node.botSlack;
+      var botFacebook = global.environment === 'production' ? node.botFacebookProduction : node.botFacebook;
+      var botViber = global.environment === 'production' ? node.botViberProduction : node.botViber;
+      var botUniversal = global.environment === 'production' ? node.botUniversalProduction : node.botUniversal;
+      var botTwilio = global.environment === 'production' ? node.botTwilioProduction : node.botTwilio;
 
       if (transport !== 'smooch') {
         var platformNode = null;

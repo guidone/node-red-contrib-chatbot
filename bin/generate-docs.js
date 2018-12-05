@@ -60,6 +60,7 @@ var mappings = {
   'Keyboard-node.md': 'chatbot-ask.html',
   'Buttons-node.md': 'chatbot-inline-buttons.html',
   'Extend-node.md': 'chatbot-extend.html',
+  'Broadcast-node.md': 'chatbot-broadcast.html',
   'Support-table.md': 'chatbot-support-table.html',
   'Universal-Connector-node.md': 'chatbot-universal-receive.html|chatbot-universal-receive'
 };

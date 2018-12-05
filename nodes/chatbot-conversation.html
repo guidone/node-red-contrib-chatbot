@@ -11,7 +11,17 @@
         type: 'chatbot-telegram-node',
         required: false
       },
+      botTelegramProduction: {
+        value: "",
+        type: 'chatbot-telegram-node',
+        required: false
+      },
       botSlack: {
+        value: '',
+        type: 'chatbot-slack-node',
+        required: false
+      },
+      botSlackProduction: {
         value: '',
         type: 'chatbot-slack-node',
         required: false
@@ -21,7 +31,17 @@
         type: 'chatbot-facebook-node',
         required: false
       },
+      botFacebookProduction: {
+        value: '',
+        type: 'chatbot-facebook-node',
+        required: false
+      },
       botViber: {
+        value: '',
+        type: 'chatbot-viber-node',
+        required: false
+      },
+      botViberProduction: {
         value: '',
         type: 'chatbot-viber-node',
         required: false
@@ -31,7 +51,17 @@
         type: 'chatbot-universal-node',
         required: false
       },
+      botUniversalProduction: {
+        value: '',
+        type: 'chatbot-universal-node',
+        required: false
+      },
       botTwilio: {
+        value: '',
+        type: 'chatbot-twilio-node',
+        required: false
+      },
+      botTwilioProduction: {
         value: '',
         type: 'chatbot-twilio-node',
         required: false
@@ -102,29 +132,53 @@
     <option value="universal">Universal</option>
   </select>
 </div>
-<div class="form-row form-row-bot form-row-bot-telegram">
-  <label for="node-input-botTelegram">Telegram Bot</label>
+<div class="form-row form-row-bot form-row-bot-telegram" style="margin-left:104px;">
+  <div>Telegram Bot <span class="redbot-environment">(development)</span></div>
   <input type="text" id="node-input-botTelegram" placeholder="Telegram Bot">
 </div>
-<div class="form-row form-row-bot form-row-bot-twilio">
-  <label for="node-input-botTelegram">Twilio Bot</label>
+<div class="form-row form-row-bot form-row-bot-telegram" style="margin-left:104px;">
+  <div>Telegram Bot <span class="redbot-environment">(production)</span></div>
+  <input type="text" id="node-input-botTelegramProduction" placeholder="Telegram Bot">
+</div>
+<div class="form-row form-row-bot form-row-bot-twilio" style="margin-left:104px;">
+  <div>Twilio Bot <span class="redbot-environment">(development)</span></div>
   <input type="text" id="node-input-botTwilio" placeholder="Twilio Bot">
 </div>
-<div class="form-row form-row-bot form-row-bot-slack">
-  <label for="node-input-botSlack">Slack Bot</label>
+<div class="form-row form-row-bot form-row-bot-twilio" style="margin-left:104px;">
+  <div>Twilio Bot <span class="redbot-environment">(production)</span></div>
+  <input type="text" id="node-input-botTwilioProduction" placeholder="Twilio Bot">
+</div>
+<div class="form-row form-row-bot form-row-bot-slack" style="margin-left:104px;">
+  <div>Slack Bot <span class="redbot-environment">(development)</span></div>
   <input type="text" id="node-input-botSlack" placeholder="Slack Bot">
 </div>
-<div class="form-row form-row-bot form-row-bot-facebook">
-  <label for="node-input-botFacebook">Facebook Bot</label>
+<div class="form-row form-row-bot form-row-bot-slack" style="margin-left:104px;">
+  <div>Slack Bot <span class="redbot-environment">(production)</span></div>
+  <input type="text" id="node-input-botSlackProduction" placeholder="Slack Bot">
+</div>
+<div class="form-row form-row-bot form-row-bot-facebook" style="margin-left:104px;">
+  <div>Facebook Bot <span class="redbot-environment">(development)</span></div>
   <input type="text" id="node-input-botFacebook" placeholder="Facebook Bot">
 </div>
-<div class="form-row form-row-bot form-row-bot-viber">
-  <label for="node-input-botViber">Viber Bot</label>
+<div class="form-row form-row-bot form-row-bot-facebook" style="margin-left:104px;">
+  <div>Facebook Bot <span class="redbot-environment">(production)</span></div>
+  <input type="text" id="node-input-botFacebookProduction" placeholder="Facebook Bot">
+</div>
+<div class="form-row form-row-bot form-row-bot-viber" style="margin-left:104px;">
+  <div>Viber Bot <span class="redbot-environment">(development)</span></div>
   <input type="text" id="node-input-botViber" placeholder="Viber Bot">
 </div>
-<div class="form-row form-row-bot form-row-bot-universal">
-  <label for="node-input-botUniversal">Universal Bot</label>
+<div class="form-row form-row-bot form-row-bot-viber" style="margin-left:104px;">
+  <div>Viber Bot <span class="redbot-environment">(production)</span></div>
+  <input type="text" id="node-input-botViberProduction" placeholder="Viber Bot">
+</div>
+<div class="form-row form-row-bot form-row-bot-universal" style="margin-left:104px;">
+  <div>Universal Bot <span class="redbot-environment">(development)</span></div>
   <input type="text" id="node-input-botUniversal" placeholder="Universal Bot">
+</div>
+<div class="form-row form-row-bot form-row-bot-universal" style="margin-left:104px;">
+  <div>Universal Bot <span class="redbot-environment">(production)</span></div>
+  <input type="text" id="node-input-botUniversalProduction" placeholder="Universal Bot">
 </div>
 <div class="form-row form-row-bot form-row-bot-smooch">
   <label for="node-input-bot">Context</label>
@@ -134,6 +188,7 @@
   To extend <strong>RedBot</strong> with a new chat context provider see <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Creating-a-Chat-Context-Provider" target="_blank">this tutorial</a>.
   </div>
 </div>
+<br/>
 <div class="form-row">
   <label for="node-input-name">ChatId</label>
   <input type="text" id="node-input-chatId" placeholder="Chat id" style="width:150px;">
