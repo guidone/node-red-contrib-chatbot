@@ -1,0 +1,110 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-alexa-speech', {
+    category: 'RedBot',
+    color: '#FFCC66',
+    defaults: {
+      speechType: {
+        value: 'plainText'
+      },
+      text: {
+        value: ''
+      },
+      ssml: {
+        value: ''
+      },
+      playBehavior: {
+        value: 'enqueue'
+      },
+      reprompt: {
+        value: false
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'Alexa Speech',
+    icon: 'chatbot-card.png',
+    label: function() {
+      return 'Alexa Speech';
+    },
+    oneditsave: function() {
+      if ($('#node-input-speechType').val() === 'ssml') {
+        $('#node-input-ssml').val(this.editor.getValue());
+        $('#node-input-text').val('');
+      } else {
+        $('#node-input-ssml').val('');
+      }
+      // destroy the editor
+      this.editor.destroy();
+      delete this.editor;
+    },
+    oneditprepare: function() {
+      $('#node-input-speechType')
+        .change(function() {
+          var type = $(this).val();
+          $('.form-row.only-for').hide();
+          $('.form-row.only-for-' + type).show();
+        });
+      $('.form-row.only-for').hide();
+      $('.form-row.only-for-' + this.speechType).show();
+
+      this.editor = RED.editor.createEditor({
+        id: 'node-input-ssml-editor',
+        mode: 'ace/mode/html',
+        value: $('#node-input-ssml').val(),
+        globals: {
+          node: true,
+          msg:true,
+          context:true,
+          RED: true,
+          util: true,
+          flow: true,
+          global: true,
+          console: true,
+          Buffer: true,
+          setTimeout: true,
+          clearTimeout: true,
+          setInterval: true,
+          clearInterval: true
+        }
+      });
+
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-alexa-speech">
+  <div class="form-row">
+    <label for="node-input-speechType">Type</label>
+    <select id="node-input-speechType" placeholder="Select speech type" style="width:auto;">
+      <option value="plainText">Plain Text</option>
+      <option value="ssml">Speech Synthesis Markup Language</option>
+    </select>
+  </div>
+  <div class="form-row only-for only-for-plainText">
+    <label for="node-input-text">Text</label>
+    <textarea id="node-input-text" placeholder="" style="width:93%;height:100px;"></textarea>
+  </div>
+  <div class="form-row only-for only-for-ssml">
+    <label for="node-input-ssml" style="width:auto;">Speech Synthesis Markup Language</label>
+    <input type="hidden" id="node-input-ssml" autofocus="autofocus">
+    <div style="height: 150px; min-height:150px;" class="node-text-editor" id="node-input-ssml-editor"></div>
+  </div>
+  <div class="form-row">
+    <label for="node-input-playBehavior">Play Behaviour</label>
+    <select id="node-input-playBehavior" placeholder="Select speech type" style="width:auto;">
+      <option value="enqueue">Enqueue</option>
+      <option value="replaceAll">Replace All</option>
+      <option value="replaceEnqueue">Replace Enquueue</option>
+    </select>
+  </div>
+  <div class="form-row">
+    <label for="node-input-reprompt">Reprompt</label>
+    <input type="checkbox" value="true" id="node-input-reprompt">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-alexa-speech">
+
+</script>
+
+

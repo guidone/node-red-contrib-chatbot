@@ -73,7 +73,8 @@
       "chatbot-support-table": "./nodes/chatbot-support-table.js",
       "chatbot-card": "./nodes/chatbot-card.js",
       "chatbot-directive": "./nodes/chatbot-directive.js",
-      "chatbot-broadcast": "./nodes/chatbot-broadcast.js"
+      "chatbot-broadcast": "./nodes/chatbot-broadcast.js",
+      "chatbot-alexa-speech": "./nodes/chatbot-alexa-speech.js"
     }
   },
   "maintainers": [

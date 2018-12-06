@@ -17,7 +17,7 @@ var Types = {
 
   isIntent: function(rule, message) {
     return new Promise(function(resolve, reject) {
-      if (message.payload != null && message.payload.type === 'intent' && message.payload.dialogState === rule.state) {
+      if (message.payload != null && message.payload.type === 'intent') {
         resolve(rule);
       } else {
         reject();
@@ -27,7 +27,7 @@ var Types = {
 
   dialogState: function(rule, message) {
     return new Promise(function(resolve, reject) {
-      if (message.payload != null && message.payload.type === 'intent') {
+      if (message.payload != null && message.payload.type === 'intent' && message.payload.dialogState === rule.state) {
         resolve(rule);
       } else {
         reject();
