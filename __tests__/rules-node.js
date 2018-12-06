@@ -661,7 +661,8 @@ describe('Chat rules node', function() {
   it('should go through the first if the message is event', function() {
     var msg = RED.createMessage({
       content: 'no command',
-      type: 'new-user'
+      type: 'event',
+      eventType: 'new-user'
     }, 'telegram');
     RED.node.config({
       rules: [
@@ -682,7 +683,8 @@ describe('Chat rules node', function() {
   it('should go through the second if the message is a different event', function() {
     var msg = RED.createMessage({
       content: 'no command',
-      type: 'referral'
+      type: 'event',
+      eventType: 'referral'
     }, 'telegram');
     RED.node.config({
       rules: [
@@ -703,7 +705,8 @@ describe('Chat rules node', function() {
   it('should go through the first is pending', function() {
     var msg = RED.createMessage({
       content: 'no command',
-      type: 'referral'
+      type: 'event',
+      eventType: 'referral'
     }, 'telegram');
     RED.node.config({
       rules: [
@@ -724,7 +727,8 @@ describe('Chat rules node', function() {
   it('should go through the second is pending', function() {
     var msg = RED.createMessage({
       content: 'no command',
-      type: 'referral'
+      type: 'event',
+      eventType: 'referral'
     }, 'telegram');
     RED.node.config({
       rules: [
@@ -744,7 +748,8 @@ describe('Chat rules node', function() {
   it('should go through the first is not pending', function() {
     var msg = RED.createMessage({
       content: 'no command',
-      type: 'referral'
+      type: 'event',
+      eventType: 'referral'
     }, 'telegram');
     RED.node.config({
       rules: [
@@ -764,7 +769,8 @@ describe('Chat rules node', function() {
   it('should go through the second is not pending', function() {
     var msg = RED.createMessage({
       content: 'no command',
-      type: 'referral'
+      type: 'event',
+      eventType: 'referral'
     }, 'telegram');
     RED.node.config({
       rules: [

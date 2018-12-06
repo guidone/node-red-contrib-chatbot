@@ -72,6 +72,7 @@
       "chatbot-extend": "./nodes/chatbot-extend.js",
       "chatbot-support-table": "./nodes/chatbot-support-table.js",
       "chatbot-card": "./nodes/chatbot-card.js",
+      "chatbot-directive": "./nodes/chatbot-directive.js",
       "chatbot-broadcast": "./nodes/chatbot-broadcast.js"
     }
   },

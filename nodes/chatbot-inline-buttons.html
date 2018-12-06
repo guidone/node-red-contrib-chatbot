@@ -224,6 +224,8 @@
       return false;
     }
     switch(rule.type) {
+      case 'dialogState':
+        return $.RedBot.validate.notEmpty(rule.state);
       case 'environment':
         return $.RedBot.validate.notEmpty(rule.environment);
       case 'topicIncludes':
@@ -243,6 +245,9 @@
         return $.RedBot.validate.notEmpty(rule.transport);
       case 'messageEvent':
         return $.RedBot.validate.notEmpty(rule.event);
+      case 'isIntentName':
+        return $.RedBot.validate.notEmpty(rule.intent);
+      case 'isIntent':
       case 'outbound':
       case 'inbound':
       case 'isTopicEmpty':

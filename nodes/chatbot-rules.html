@@ -12,24 +12,35 @@
         row
           .append('<select name="type" style="width:30%">'
             + '<option value="">Select rule</option>'
-            + '<option value="command">Message is command ...</option>'
-            + '<option value="anyCommand">Message is a command</option>'
-            + '<option value="environment">Environment is ...</option>'
-            + '<option value="outbound">Message is outbound</option>'
-            + '<option value="inbound">Message is inbound</option>'
-            + '<option value="messageEvent">Message is event ...</option>'
-            + '<option value="messageType">Message is type ...</option>'
-            + '<option value="notMessageType">Message is not type ...</option>'
+            + '<optgroup label="Intent">'
+            + '  <option value="isIntent">Is intent</option>'
+            + '  <option value="isIntentName">Is intent ...</option>'
+            + '</optgroup>'
+            + '<optgroup label="Message">'
+            + '  <option value="command">Message is command ...</option>'
+            + '  <option value="anyCommand">Message is a command</option>'
+            + '  <option value="environment">Environment is ...</option>'
+            + '  <option value="outbound">Message is outbound</option>'
+            + '  <option value="inbound">Message is inbound</option>'
+            + '  <option value="messageEvent">Message is event ...</option>'
+            + '  <option value="messageType">Message is type ...</option>'
+            + '  <option value="notMessageType">Message is not type ...</option>'
+            + '</optgroup>'
+            + '<optgroup label="Topic">'
+            + '  <option value="isTopicEmpty">Topic is not defined</option>'
+            + '  <option value="isNotTopic">Topic is not ...</option>'
+            + '  <option value="isTopic">Topic is ...</option>'
+            + '  <option value="topicIncludes">Topic includes ...</option>'
+            + '</optgroup>'
+            + '<optgroup label="Chat context">'
+            + '  <option value="hasNotVariable">Variable ... is not defined</option>'
+            + '  <option value="hasVariable">Variable ... is defined</option>'
+            + '  <option value="isVariable">Variable ... is ...</option>'
+            + '</optgroup>'
+            + '<option value="dialogState">Dialog state is ...</option>'
+            + '<option value="transport">Transport is ...</option>'
             + '<option value="notPending">No pending requests</option>'
             + '<option value="pending">Pending requests</option>'
-            + '<option value="isTopicEmpty">Topic is not defined</option>'
-            + '<option value="isNotTopic">Topic is not ...</option>'
-            + '<option value="isTopic">Topic is ...</option>'
-            + '<option value="topicIncludes">Topic includes ...</option>'
-            + '<option value="transport">Transport is ...</option>'
-            + '<option value="hasNotVariable">Variable ... is not defined</option>'
-            + '<option value="hasVariable">Variable ... is defined</option>'
-            + '<option value="isVariable">Variable ... is ...</option>'
             + '<option value="catchAll">If nothing of above applies</option>'
             + '</select>')
           .change(function() {
@@ -56,6 +67,7 @@
 
         row
           .append('<input class="hasNotVariable hasVariable" style="display:none;width:50%;margin-left:10px;" type="text" name="variable" placeholder="Context variable"/>')
+          .append('<input class="isIntentName" style="display:none;width:50%;margin-left:10px;" type="text" name="intent" placeholder="Intent name"/>')
           .append('<input class="isVariable" style="display:none;width:25%;margin-left:10px;" type="text" name="variableName" placeholder="Name"/>')
           .append('<span class="isVariable" style="display:none;">&nbsp;is&nbsp;</span>')
           .append('<input class="isVariable" style="display:none;width:25%;margin-left:0px;" type="text" name="variableValue" placeholder="Value"/>')
@@ -66,10 +78,17 @@
             + '<option value="production">production</option>'
             + '<option value="development">development</option>'
             + '</select>')
+          .append('<select class="dialogState" name="state" style="display:none;width:40%;margin-left:10px;">'
+            + '<option value="">Select state</option>'
+            + '<option value="started">Started</option>'
+            + '<option value="in_progress">In progress</option>'
+            + '<option value="completed">Completed</option>'
+            + '</select>')
           .append('<select class="messageEvent" name="event" style="display:none;width:40%;margin-left:10px;">'
             + '<option value="">Select type</option>'
             + '<option value="new-user">New user(s)</option>'
             + '<option value="referral">Referral</option>'
+            + '<option value="start">Start</option>'
             + '</select>')
           .append('<select class="transport" name="transport" style="display:none;width:40%;margin-left:10px;">'
             + '<option value="">Select transport</option>'
@@ -114,7 +133,13 @@
           $('input[name=variableValue]', container).val(rule.value);
         }
         if (rule.event != null) {
-          $('input[name=event]', container).val(rule.event);
+          $('select[name=event]', container).val(rule.event);
+        }
+        if (rule.state != null) {
+          $('select[name=state]', container).val(rule.state);
+        }
+        if (rule.intent != null) {
+          $('input[name=intent]', container).val(rule.intent);
         }
       },
       removeItem: function(opt) {
@@ -199,7 +224,12 @@
           if (type === 'messageEvent') {
             obj.event = rule.find('select[name=event]').val();
           }
-          console.log('---', obj);
+          if (type === 'dialogState') {
+            obj.state = rule.find('select[name=state]').val();
+          }
+          if (type === 'isIntentName') {
+            obj.intent = rule.find('input[name=intent]').val();
+          }
           node.rules.push(obj);
         }
       });
@@ -239,6 +269,19 @@
       var rule = this.rules[index];
       if (rule.type === 'catchAll') {
         return 'If no rule applies';
+      } if (rule.type === 'isIntent') {
+        return 'Message is intent';
+      } else if (rule.type === 'isIntentName') {
+        return 'Intent is "' + ($.RedBot.validate.notEmpty(rule.intent) ? rule.intent : '...') + '"';
+      } else if (rule.type === 'dialogState') {
+        var stateLabel = null;
+        switch(rule.state) {
+          case 'started': stateLabel = 'started'; break;
+          case 'in_progress': stateLabel = 'in progress'; break;
+          case 'completed': stateLabel = 'completed'; break;
+          default: stateLabel = '...';
+        }
+        return 'Dialog state is "' + stateLabel + '"';
       } else if (rule.type === 'messageType') {
         return 'Message type is "' + ($.RedBot.validate.notEmpty(rule.messageType) ? rule.messageType : '...') + '"';
       } else if (rule.type === 'messageEvent') {

@@ -16,24 +16,34 @@ module.exports = function(RED) {
 
       msg = RED.util.cloneMessage(msg);
 
-      var command = this.command;
-      var fieldValue = this.fieldValue;
-      var fieldType = this.fieldType;
-      var fieldName = this.fieldName;
-      var chatId = utils.getChatId(msg);
+      var fieldValue = node.fieldValue;
+      var command = utils.extractValue('string', 'command', node, msg, false);
+      var fieldType = utils.extractValue('string', 'fieldType', node, msg, false);
+      var fieldName = utils.extractValue('string', 'fieldName', node, msg, false);
 
       var chatContext = msg.chat();
       if (chatContext == null) {
-        node.error('Unable to find a chat context for chatId: ' + chatId);
+        lcd.title('Error: invalid chat context  (id:' + node.id + ')');
+        // eslint-disable-next-line no-console
+        console.log(lcd.warn(
+          'A chat context was not found fot this message, perhaps the flow needs a \'Conversation node\''
+        ));
+        node.error('invalid chat context: A chat context was not found fot this message, perhaps the flow needs a \'Conversation node\'');
         return;
       }
-      if (_.isEmpty(fieldName)) {
+      /*if (_.isEmpty(fieldName)) {
         node.error('Invalid variable name');
         return;
-      }
+      }*/
 
       var task = when(true);
-      if (command === 'get') {
+      if (command === 'intent') {
+        console.log('-----------');
+        console.log('salveggio ---', msg.payload.variables);
+        task = task.then(function() {
+          return chatContext.set(msg.payload.variables);
+        });
+      } if (command === 'get') {
         when(chatContext.get(fieldName))
           .then(function(value) {
             msg.payload = value;
@@ -63,7 +73,8 @@ module.exports = function(RED) {
         }
       }
       // finally
-      task.then(function() {
+      task
+        .then(function() {
           node.send(msg);
         });
     });
