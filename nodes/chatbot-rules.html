@@ -15,6 +15,9 @@
             + '<optgroup label="Intent">'
             + '  <option value="isIntent">Is intent</option>'
             + '  <option value="isIntentName">Is intent ...</option>'
+            + '  <option value="isIntentStatus">Is intent status ...</option>'
+            + '  <option value="isIntentConfirmationStatus">Is intent confirmation ...</option>'
+            + '  <option value="isSlotConfirmationStatus">Is slot ... confirmation ...</option>'
             + '</optgroup>'
             + '<optgroup label="Message">'
             + '  <option value="command">Message is command ...</option>'
@@ -90,6 +93,13 @@
             + '<option value="referral">Referral</option>'
             + '<option value="start">Start</option>'
             + '</select>')
+          .append('<input class="isSlotConfirmationStatus" style="display:none;width:25%;margin-left:10px;" type="text" name="slot" placeholder="Slot"/>')
+          .append('<select class="isSlotConfirmationStatus isIntentConfirmationStatus" name="confirmationStatus" style="display:none;width:25%;margin-left:10px;">'
+            + '<option value="">Select status</option>'
+            + '<option value="node">None</option>'
+            + '<option value="confirmed">Confirmed</option>'
+            + '<option value="denied">Denied</option>'
+            + '</select>')
           .append('<select class="transport" name="transport" style="display:none;width:40%;margin-left:10px;">'
             + '<option value="">Select transport</option>'
             + transportOptions
@@ -138,9 +148,16 @@
         if (rule.state != null) {
           $('select[name=state]', container).val(rule.state);
         }
+        if (rule.confirmationStatus != null) {
+          $('select[name=confirmationStatus]', container).val(rule.confirmationStatus);
+        }
         if (rule.intent != null) {
           $('input[name=intent]', container).val(rule.intent);
         }
+        if (rule.slot != null) {
+          $('input[name=slot]', container).val(rule.slot);
+        }
+
       },
       removeItem: function(opt) {
         var rules = $('#node-input-rule-container').editableList('items');
@@ -230,6 +247,13 @@
           if (type === 'isIntentName') {
             obj.intent = rule.find('input[name=intent]').val();
           }
+          if (type === 'isIntentConfirmationStatus') {
+            obj.confirmationStatus = rule.find('select[name=confirmationStatus]').val();
+          }
+          if (type === 'isSlotConfirmationStatus') {
+            obj.confirmationStatus = rule.find('select[name=confirmationStatus]').val();
+            obj.slot = rule.find('input[name=slot]').val();
+          }
           node.rules.push(obj);
         }
       });
@@ -315,6 +339,11 @@
       } else if (rule.type === 'isVariable') {
         return 'Variable "' + ($.RedBot.validate.notEmpty(rule.variable) ? rule.variable : '...') + '" is equal to "'
           + ($.RedBot.validate.notEmpty(rule.value) ? rule.value : '...') + '"';
+      } else if (rule.type === 'isIntentConfirmationStatus') {
+        return 'Intent confirmation status is "' + ($.RedBot.validate.notEmpty(rule.confirmationStatus) ? rule.confirmationStatus : '...') + '"';
+      } else if (rule.type === 'isSlotConfirmationStatus') {
+        return 'Slot "' + ($.RedBot.validate.notEmpty(rule.slot) ? rule.slot : '...') + '" confirmation status is "'
+          + ($.RedBot.validate.notEmpty(rule.confirmationStatus) ? rule.confirmationStatus : '...') + '"';
       }
     }
   });
