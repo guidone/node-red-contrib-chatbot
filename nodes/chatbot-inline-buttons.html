@@ -219,15 +219,18 @@
         return false;
     }
   };
+  $.RedBot.validate.confirmationStatus = function(status) {
+    return _.contains(['none', 'confirmed', 'denied'], status);
+  };
   $.RedBot.validate.rule = function(rule) {
     if (rule == null) {
       return false;
     }
     switch(rule.type) {
       case 'isSlotConfirmationStatus':
-        return $.RedBot.validate.notEmpty(rule.slot) && $.RedBot.validate.notEmpty(rule.confirmationStatus);
+        return $.RedBot.validate.notEmpty(rule.slot) && $.RedBot.validate.confirmationStatus(rule.confirmationStatus);
       case 'isIntentConfirmationStatus':
-        return $.RedBot.validate.notEmpty(rule.confirmationStatus);
+        return $.RedBot.validate.confirmationStatus(rule.confirmationStatus);
       case 'dialogState':
         return $.RedBot.validate.notEmpty(rule.state);
       case 'environment':

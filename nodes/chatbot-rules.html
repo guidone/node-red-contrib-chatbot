@@ -18,6 +18,7 @@
             + '  <option value="isIntentStatus">Is intent status ...</option>'
             + '  <option value="isIntentConfirmationStatus">Is intent confirmation ...</option>'
             + '  <option value="isSlotConfirmationStatus">Is slot ... confirmation ...</option>'
+            + '  <option value="isNotSlotConfirmationStatus">Is slot ... confirmation not ...</option>'
             + '</optgroup>'
             + '<optgroup label="Message">'
             + '  <option value="command">Message is command ...</option>'
@@ -92,11 +93,12 @@
             + '<option value="new-user">New user(s)</option>'
             + '<option value="referral">Referral</option>'
             + '<option value="start">Start</option>'
+            + '<option value="endSession">End Session</option>'
             + '</select>')
           .append('<input class="isSlotConfirmationStatus" style="display:none;width:25%;margin-left:10px;" type="text" name="slot" placeholder="Slot"/>')
-          .append('<select class="isSlotConfirmationStatus isIntentConfirmationStatus" name="confirmationStatus" style="display:none;width:25%;margin-left:10px;">'
+          .append('<select class="isSlotConfirmationStatus isIntentConfirmationStatus isNotSlotConfirmationStatus" name="confirmationStatus" style="display:none;width:25%;margin-left:10px;">'
             + '<option value="">Select status</option>'
-            + '<option value="node">None</option>'
+            + '<option value="none">None</option>'
             + '<option value="confirmed">Confirmed</option>'
             + '<option value="denied">Denied</option>'
             + '</select>')

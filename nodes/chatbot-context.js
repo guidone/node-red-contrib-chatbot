@@ -38,8 +38,6 @@ module.exports = function(RED) {
 
       var task = when(true);
       if (command === 'intent') {
-        console.log('-----------');
-        console.log('salveggio ---', msg.payload.variables);
         task = task.then(function() {
           return chatContext.set(msg.payload.variables);
         });

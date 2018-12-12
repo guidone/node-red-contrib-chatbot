@@ -45,8 +45,6 @@ module.exports = function(RED) {
         payload.ssml = ssml;
       }
 
-      console.log('---', msg.payload);
-
       template(payload)
         .then(function(translated) {
           console.log('speech translated', translated);
