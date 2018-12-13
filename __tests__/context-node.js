@@ -133,4 +133,31 @@ describe('Chat context node', function() {
       });
   });
 
+  it('should set variable of an intent', function () {
+    var msg = RED.createMessage({
+      type: 'intent',
+      variables: {
+        variable1: 'one',
+        variable2: 42,
+        variable3: true
+      }
+    });
+    RED.node.config({
+      command: 'intent'
+    });
+    ContextBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(function () {
+        assert.equal(RED.node.message().payload.type, 'intent');
+        assert.isObject(RED.node.message().payload.variables);
+        assert.equal(RED.node.message().payload.variables.variable1, 'one');
+        assert.equal(RED.node.message().payload.variables.variable2, 42);
+        assert.equal(RED.node.message().payload.variables.variable3, true);
+        assert.equal(msg.chat().get('variable1'), 'one');
+        assert.equal(msg.chat().get('variable2'), 42);
+        assert.equal(msg.chat().get('variable3'), true);
+      });
+  });
+
 });

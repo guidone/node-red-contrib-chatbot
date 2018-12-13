@@ -19,12 +19,11 @@ module.exports = function(RED) {
     this.on('input', function(msg) {
 
       var template = MessageTemplate(msg, node);
-      var cardType = utils.extractValue('string', 'cardType', node, msg);
-      var text = utils.extractValue('string', 'text', node, msg);
-      var title = utils.extractValue('string', 'title', node, msg);
-      var content = utils.extractValue('string', 'content', node, msg);
-      var smallImage = utils.extractValue('string', 'smallImage', node, msg);
-      var largeImage = utils.extractValue('string', 'largeImage', node, msg);
+      var cardType = utils.extractValue('string', 'cardType', node, msg, false);
+      var text = utils.extractValue('string', 'text', node, msg, false);
+      var title = utils.extractValue('string', 'title', node, msg, false);
+      var smallImage = utils.extractValue('string', 'smallImage', node, msg, false);
+      var largeImage = utils.extractValue('string', 'largeImage', node, msg, false);
 
       var payload = null;
       switch(cardType) {
@@ -33,7 +32,7 @@ module.exports = function(RED) {
             type: 'card',
             cardType: 'simple',
             title: title,
-            content: content
+            content: text
           };
           break;
         case 'standard':
@@ -50,12 +49,10 @@ module.exports = function(RED) {
           break;
         case 'askForPermissionsConsent':
           break;
-
       }
 
       template(payload)
         .then(function(translated) {
-          console.log('tranlated', translated);
           append(msg, translated);
           node.send(msg);
         });
