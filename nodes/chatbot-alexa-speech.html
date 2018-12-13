@@ -71,6 +71,9 @@
     category: 'RedBot',
     color: '#FFCC66',
     defaults: {
+      name: {
+        value: ''
+      },
       speechType: {
         value: 'plainText'
       },
@@ -92,7 +95,8 @@
     paletteLabel: 'Alexa Speech',
     icon: 'chatbot-card.png',
     label: function() {
-      return 'Alexa Speech';
+      return (this.name != null && this.name !== '' ? this.name : 'Alexa Speech')
+        + (this.reprompt ? ' (Repropmpt)' : '');
     },
     oneditsave: function() {
       if ($('#node-input-speechType').val() === 'ssml') {
@@ -163,6 +167,10 @@
 
 <script type="text/x-red" data-template-name="chatbot-alexa-speech">
   <div class="form-row">
+    <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row">
     <label for="node-input-speechType">Type</label>
     <select id="node-input-speechType" placeholder="Select speech type" style="width:auto;">
       <option value="plainText">Plain Text</option>
@@ -191,7 +199,7 @@
     <select id="node-input-playBehavior" placeholder="Select speech type" style="width:auto;">
       <option value="enqueue">Enqueue</option>
       <option value="replaceAll">Replace All</option>
-      <option value="replaceEnqueue">Replace Enquueue</option>
+      <option value="replaceEnqueued">Replace Enquueued</option>
     </select>
   </div>
   <div class="form-row">

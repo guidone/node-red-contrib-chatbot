@@ -1,0 +1,113 @@
+var _ = require('underscore');
+var assert = require('chai').assert;
+var RED = require('../lib/red-stub')();
+var AlexaSpeechBlock = require('../nodes/chatbot-alexa-speech');
+
+describe('Chat alexa speech node', function() {
+
+  it('should send the speech with plain text', function() {
+    var msg = RED.createMessage(null, 'alexa');
+    RED.node.config({
+      speechType: 'plainText',
+      text: 'Hi {{name}}!',
+      playBehavior: 'enqueue',
+      reprompt: false
+    });
+    msg.chat().set('name', 'Guidone');
+    AlexaSpeechBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(function() {
+        assert.equal(RED.node.message().payload.type, 'speech');
+        assert.equal(RED.node.message().payload.speechType, 'PlainText');
+        assert.equal(RED.node.message().payload.playBehavior, 'ENQUEUE');
+        assert.equal(RED.node.message().payload.reprompt, false);
+        assert.equal(RED.node.message().payload.text, 'Hi Guidone!');
+      });
+  });
+
+  it('should send the speech with ssml', function() {
+    var msg = RED.createMessage(null, 'alexa');
+    RED.node.config({
+      speechType: 'ssml',
+      ssml: '<speech>Hi {{name}}!</speech>',
+      playBehavior: 'replaceAll',
+      reprompt: false
+    });
+    msg.chat().set('name', 'Guidone');
+    AlexaSpeechBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(function() {
+        assert.equal(RED.node.message().payload.type, 'speech');
+        assert.equal(RED.node.message().payload.speechType, 'SSML');
+        assert.equal(RED.node.message().payload.playBehavior, 'REPLACE_ALL');
+        assert.equal(RED.node.message().payload.reprompt, false);
+        assert.equal(RED.node.message().payload.ssml, '<speech>Hi Guidone!</speech>');
+      });
+  });
+
+  it('should send the speech with ssml using the payload string', function() {
+    var msg = RED.createMessage('<speech>Hi {{name}}!</speech>', 'alexa');
+    RED.node.config({
+      speechType: 'ssml',
+      playBehavior: 'replaceAll',
+      reprompt: false
+    });
+    msg.chat().set('name', 'Guidone');
+    AlexaSpeechBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(function() {
+        assert.equal(RED.node.message().payload.type, 'speech');
+        assert.equal(RED.node.message().payload.speechType, 'SSML');
+        assert.equal(RED.node.message().payload.playBehavior, 'REPLACE_ALL');
+        assert.equal(RED.node.message().payload.reprompt, false);
+        assert.equal(RED.node.message().payload.ssml, '<speech>Hi Guidone!</speech>');
+      });
+  });
+
+  it('should send the speech with ssml using the payload params', function() {
+    var msg = RED.createMessage({
+      speechType: 'ssml',
+      ssml: '<speech>Hi {{name}}!</speech>',
+      playBehavior: 'replaceAll',
+      reprompt: false
+    }, 'alexa');
+    RED.node.config({});
+    msg.chat().set('name', 'Guidone');
+    AlexaSpeechBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(function() {
+        assert.equal(RED.node.message().payload.type, 'speech');
+        assert.equal(RED.node.message().payload.speechType, 'SSML');
+        assert.equal(RED.node.message().payload.playBehavior, 'REPLACE_ALL');
+        assert.equal(RED.node.message().payload.reprompt, false);
+        assert.equal(RED.node.message().payload.ssml, '<speech>Hi Guidone!</speech>');
+      });
+  });
+
+  it('should not send for an unknown platform', function() {
+    var msg = RED.createMessage(null, 'unknown');
+    RED.node.config({
+      speechType: 'plainText',
+      text: 'The message',
+      playBehavior: 'enqueue',
+      reprompt: false
+    });
+    AlexaSpeechBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(
+        function () {
+          // should fail
+        },
+        function() {
+          assert.isNull(RED.node.message());
+          assert.equal(RED.node.error(), 'This node is not available for transport: unknown');
+        });
+  });
+
+});
+

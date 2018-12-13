@@ -18,8 +18,6 @@ module.exports = function(RED) {
 
     this.on('input', function(msg) {
 
-      var chatId = utils.getChatId(msg);
-      var messageId = utils.getMessageId(msg);
       var template = MessageTemplate(msg, node);
       var cardType = utils.extractValue('string', 'cardType', node, msg);
       var text = utils.extractValue('string', 'text', node, msg);
@@ -55,10 +53,6 @@ module.exports = function(RED) {
 
       }
 
-      console.log('---', msg.payload);
-
-
-
       template(payload)
         .then(function(translated) {
           console.log('tranlated', translated);
@@ -67,6 +61,6 @@ module.exports = function(RED) {
         });
     });
   }
-  RED.nodes.registerType('chatbot-card', ChatBotCard);
+  RED.nodes.registerType('chatbot-alexa-card', ChatBotCard);
 
 };

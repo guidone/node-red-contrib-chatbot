@@ -1,5 +1,5 @@
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-card', {
+  RED.nodes.registerType('chatbot-alexa-card', {
     category: 'RedBot',
     color: '#FFCC66',
     defaults: {
@@ -24,7 +24,7 @@
     },
     inputs: 1,
     outputs: 1,
-    paletteLabel: 'Card',
+    paletteLabel: 'Alexa Card',
     icon: 'chatbot-card.png',
     label: function() {
       return 'Alexa Card';
@@ -42,7 +42,7 @@
   });
 </script>
 
-<script type="text/x-red" data-template-name="chatbot-card">
+<script type="text/x-red" data-template-name="chatbot-alexa-card">
   <div class="form-row">
     <label for="node-config-cardType">Type</label>
     <select id="node-config-cardType" placeholder="Select card type">
@@ -75,7 +75,7 @@
   </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-card">
+<script type="text/x-red" data-help-name="chatbot-alexa-card">
 
 </script>
 

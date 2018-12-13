@@ -56,10 +56,17 @@
           });
         // get options for message type
         var messageTypes = '';
+        var eventTypes = '';
         var idx;
         for(idx = 0; idx < node.messageTypes.length; idx++) {
-          messageTypes += '<option value="' + node.messageTypes[idx].value + '">'
+          messageTypes += '<option value="' + node.messageTypes[idx].value
+            + '" class="' + $.RedBot.platformClass('select', node.messageTypes[idx].platforms) + '">'
             + node.messageTypes[idx].label + '</option>';
+        }
+        for(idx = 0; idx < node.eventTypes.length; idx++) {
+          eventTypes += '<option value="' + node.eventTypes[idx].value
+            + '" class="' + $.RedBot.platformClass('select', node.eventTypes[idx].platforms) + '">'
+            + node.eventTypes[idx].value + '</option>';
         }
         // build transport options
         var transportOptions = '';
@@ -90,10 +97,7 @@
             + '</select>')
           .append('<select class="messageEvent" name="event" style="display:none;width:40%;margin-left:10px;">'
             + '<option value="">Select type</option>'
-            + '<option value="new-user">New user(s)</option>'
-            + '<option value="referral">Referral</option>'
-            + '<option value="start">Start</option>'
-            + '<option value="endSession">End Session</option>'
+            + eventTypes
             + '</select>')
           .append('<input class="isSlotConfirmationStatus" style="display:none;width:25%;margin-left:10px;" type="text" name="slot" placeholder="Slot"/>')
           .append('<select class="isSlotConfirmationStatus isIntentConfirmationStatus isNotSlotConfirmationStatus" name="confirmationStatus" style="display:none;width:25%;margin-left:10px;">'
@@ -112,6 +116,9 @@
             + '</select>');
         var finalspan = $('<span/>',{style:"float: right;margin-top: 6px;"}).appendTo(row);
         finalspan.append('&nbsp;&#8594; <span class="node-input-rule-index">' + (i + 1) + '</span>');
+
+        $('select[name="event"]', container).RB_comboWithPlatformLabels();
+        $('select[name="messageType"]', container).RB_comboWithPlatformLabels();
 
         // finally set data
         if (rule.type != null) {
@@ -139,13 +146,13 @@
           $('select[name=environment]', container).val(rule.environment);
         }
         if (rule.messageType != null) {
-          $('select[name=messageType]', container).val(rule.messageType);
+          $('select[name=messageType]', container).RB_setComboWithPlatformLabels(rule.messageType);
         }
         if (rule.value != null) {
           $('input[name=variableValue]', container).val(rule.value);
         }
         if (rule.event != null) {
-          $('select[name=event]', container).val(rule.event);
+          $('select[name=event]', container).RB_setComboWithPlatformLabels(rule.event);
         }
         if (rule.state != null) {
           $('select[name=state]', container).val(rule.state);
@@ -273,6 +280,7 @@
       $.get(nodeRedUrl + 'redbot/globals')
         .done(function(response) {
           node.messageTypes = response.messageTypes;
+          node.eventTypes = response.eventTypes;
           $.get(nodeRedUrl + 'redbot/platforms')
             .done(function(response) {
               node.platforms = response.platforms;

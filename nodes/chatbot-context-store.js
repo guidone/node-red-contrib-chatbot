@@ -44,6 +44,11 @@ module.exports = function(RED) {
       .sortBy(function(type) {
         return type.label;
       });
+    // collect message types
+    result.eventTypes = _(ChatPlatform.getEvents())
+      .sortBy(function(event) {
+        return event.name;
+      });
     res.send(result);
   });
 

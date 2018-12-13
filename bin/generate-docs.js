@@ -62,7 +62,8 @@ var mappings = {
   'Extend-node.md': 'chatbot-extend.html',
   'Broadcast-node.md': 'chatbot-broadcast.html',
   'Support-table.md': 'chatbot-support-table.html',
-  'Card-node.md': 'chatbot-card.html',
+  'Card-alexa-node.md': 'chatbot-alexa-card.html',
+  'Alexa-Speech-node.md': 'chatbot-alexa-speech.html',
   'Universal-Connector-node.md': 'chatbot-universal-receive.html|chatbot-universal-receive'
 };
 

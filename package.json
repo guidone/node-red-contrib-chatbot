@@ -71,7 +71,7 @@
       "chatbot-invoice-shipping": "./nodes/chatbot-invoice-shipping.js",
       "chatbot-extend": "./nodes/chatbot-extend.js",
       "chatbot-support-table": "./nodes/chatbot-support-table.js",
-      "chatbot-card": "./nodes/chatbot-card.js",
+      "chatbot-alexa-card": "./nodes/chatbot-alexa-card.js",
       "chatbot-directive": "./nodes/chatbot-directive.js",
       "chatbot-broadcast": "./nodes/chatbot-broadcast.js",
       "chatbot-alexa-speech": "./nodes/chatbot-alexa-speech.js"
