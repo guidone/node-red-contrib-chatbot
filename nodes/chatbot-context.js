@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var lcd = require('../lib/helpers/lcd');
 var utils = require('../lib/helpers/utils');
 var when = utils.when;
 

@@ -1,4 +1,3 @@
-var _ = require('underscore');
 var MessageTemplate = require('../lib/message-template-async');
 var utils = require('../lib/helpers/utils');
 var append = utils.append;

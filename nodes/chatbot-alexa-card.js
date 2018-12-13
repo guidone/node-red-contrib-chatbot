@@ -1,4 +1,3 @@
-var qr = require('qr-image');
 var MessageTemplate = require('../lib/message-template-async');
 var utils = require('../lib/helpers/utils');
 var append = utils.append;
