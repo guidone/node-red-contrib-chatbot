@@ -12,7 +12,6 @@ module.exports = function(RED) {
     this.cardType = config.cardType;
     this.text = config.text;
     this.title = config.title;
-    this.content = config.content;
     this.smallImage = config.smallImage;
     this.largeImage = config.largeImage;
 
