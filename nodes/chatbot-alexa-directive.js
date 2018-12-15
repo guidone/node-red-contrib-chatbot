@@ -4,7 +4,7 @@ var append = utils.append;
 
 module.exports = function(RED) {
 
-  function ChatBotDirective(config) {
+  function ChatBotAlexaDirective(config) {
     RED.nodes.createNode(this, config);
     var node = this;
     this.directiveType = config.directiveType;
@@ -13,8 +13,8 @@ module.exports = function(RED) {
     this.on('input', function(msg) {
 
       var template = MessageTemplate(msg, node);
-      var directiveType = utils.extractValue('string', 'directiveType', node, msg);
-      var slot = utils.extractValue('string', 'slot', node, msg);
+      var directiveType = utils.extractValue('string', 'directiveType', node, msg, false);
+      var slot = utils.extractValue('string', 'slot', node, msg, false);
       var payload = {
         type: 'directive',
         directiveType: directiveType
@@ -35,6 +35,6 @@ module.exports = function(RED) {
         });
     });
   }
-  RED.nodes.registerType('chatbot-directive', ChatBotDirective);
+  RED.nodes.registerType('chatbot-alexa-directive', ChatBotAlexaDirective);
 
 };

@@ -1,5 +1,5 @@
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-directive', {
+  RED.nodes.registerType('chatbot-alexa-directive', {
     category: 'RedBot',
     color: '#FFCC66',
     defaults: {
@@ -22,7 +22,7 @@
     paletteLabel: 'Alexa Directive',
     icon: 'chatbot-card.png',
     label: function() {
-      return 'Directive';
+      return 'Alexa Directive';
     },
     oneditprepare: function() {
       $('#node-input-directiveType')
@@ -41,7 +41,7 @@
   });
 </script>
 
-<script type="text/x-red" data-template-name="chatbot-directive">
+<script type="text/x-red" data-template-name="chatbot-alexa-directive">
   <div class="form-row">
     <label for="node-input-directiveType">Type</label>
     <select id="node-input-directiveType" placeholder="Select directive type">
@@ -59,7 +59,7 @@
   </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-directive">
+<script type="text/x-red" data-help-name="chatbot-alexa-directive">
 
 </script>
 
