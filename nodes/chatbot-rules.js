@@ -5,17 +5,6 @@ var when = utils.when;
 
 var Types = {
 
-  isNotSlotConfirmationStatus: function(rule, message) {
-    return new Promise(function(resolve, reject) {
-      if (message.payload != null && message.payload.type === 'intent' && message.payload.slotConfirmationStatus != null
-        && message.payload.slotConfirmationStatus[rule.slot] !== rule.confirmationStatus) {
-        resolve(rule);
-      } else {
-        reject();
-      }
-    });
-  },
-
   isSlotConfirmationStatus: function(rule, message) {
     return new Promise(function(resolve, reject) {
       if (message.payload != null && message.payload.type === 'intent' && message.payload.slotConfirmationStatus != null
