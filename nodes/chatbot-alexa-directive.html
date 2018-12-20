@@ -4,7 +4,7 @@
     color: '#FFCC66',
     defaults: {
       directiveType: {
-        value: 'simple'
+        value: ''
       },
       slot: {
         value: '',
@@ -20,7 +20,7 @@
     inputs: 1,
     outputs: 1,
     paletteLabel: 'Alexa Directive',
-    icon: 'chatbot-card.png',
+    icon: 'chatbot-directive.png',
     label: function() {
       return 'Alexa Directive';
     },
@@ -37,6 +37,9 @@
       if (this.directiveType != null) {
         $('.form-row.only-for-' + this.directiveType.replace('.', '-')).show();
       }
+    },
+    outputLabels: function() {
+      return this.directiveType != null ? this.directiveType : '';
     }
   });
 </script>
