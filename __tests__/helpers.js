@@ -123,18 +123,32 @@ describe('Value extractors', function() {
     var msg = RED.createMessage({ });
     assert.isEmpty(msg.payload);
     // step 2
-    utils.append(msg, { type: 'message', content: 'the message' });
+    utils.append(msg, { type: 'message', content: 'the message', inbound: false });
     assert.isObject(msg.payload);
     assert.equal(msg.payload.type, 'message');
     assert.equal(msg.payload.content, 'the message');
     // step 3
-    utils.append(msg, { type: 'event', content: 'monkey island' });
+    utils.append(msg, { type: 'event', content: 'monkey island', inbound: false });
     assert.isArray(msg.payload);
     assert.lengthOf(msg.payload, 2);
     assert.equal(msg.payload[0].type, 'message');
     assert.equal(msg.payload[0].content, 'the message');
     assert.equal(msg.payload[1].type, 'event');
     assert.equal(msg.payload[1].content, 'monkey island');
+  });
+
+  it('should not append messages to payload if a message is inbound', function() {
+    // step 1
+    var msg = RED.createMessage({
+      type: 'message',
+      content: 'I am a message'
+    });
+
+    utils.append(msg, { type: 'message', content: 'the message' });
+
+    assert.isObject(msg.payload);
+    assert.equal(msg.payload.type, 'message');
+    assert.equal(msg.payload.content, 'the message');
   });
 
   it('should pad a string', function() {
