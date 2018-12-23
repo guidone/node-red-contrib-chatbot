@@ -27,7 +27,7 @@
     paletteLabel: 'Context',
     icon: 'chatbot-context.png',
     label: function() {
-      return 'Context';
+      return 'Context' + (this.command != null ? ' (' + this.command + ')' : '');
     },
     oneditprepare: function() {
       $('#node-input-fieldValue').typedInput({
