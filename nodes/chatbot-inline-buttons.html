@@ -1,25 +1,6 @@
 <script type="text/javascript">
 
   $.RedBot = {};
-  $.RedBot.messageTypes = [
-    {value: 'audio', label: 'Audio'},
-    {value: 'buttons', label: 'Buttons'},
-    {value: 'command', label: 'Command'},
-    {value: 'contact', label: 'Contact'},
-    {value: 'dialog', label: 'Dialog'},
-    {value: 'document', label: 'Document'},
-    {value: 'inline-buttons', label: 'Inline buttons'},
-    {value: 'inline-query', label: 'Inline Query'},
-    {value: 'invoice', label: 'Invoice'},
-    {value: 'invoice-shipping', label: 'Invoice Shipping Query'},
-    {value: 'location', label: 'Location'},
-    {value: 'message', label: 'Text'},
-    {value: 'photo', label: 'Photo'},
-    {value: 'payment', label: 'Payment'},
-    {value: 'request', label: 'Request'},
-    {value: 'response', label: 'Dialog Response'},
-    {value: 'video', label: 'Video'}
-  ];
   $.RedBot.buttonTypes = [
     {
       type: 'url',
@@ -219,11 +200,20 @@
         return false;
     }
   };
+  $.RedBot.validate.confirmationStatus = function(status) {
+    return ['none', 'confirmed', 'denied'].indexOf(status) !== -1;
+  };
   $.RedBot.validate.rule = function(rule) {
     if (rule == null) {
       return false;
     }
     switch(rule.type) {
+      case 'isSlotConfirmationStatus':
+        return $.RedBot.validate.notEmpty(rule.slot) && $.RedBot.validate.confirmationStatus(rule.confirmationStatus);
+      case 'isIntentConfirmationStatus':
+        return $.RedBot.validate.confirmationStatus(rule.confirmationStatus);
+      case 'dialogState':
+        return $.RedBot.validate.notEmpty(rule.state);
       case 'environment':
         return $.RedBot.validate.notEmpty(rule.environment);
       case 'topicIncludes':
@@ -243,6 +233,9 @@
         return $.RedBot.validate.notEmpty(rule.transport);
       case 'messageEvent':
         return $.RedBot.validate.notEmpty(rule.event);
+      case 'isIntentName':
+        return $.RedBot.validate.notEmpty(rule.intent);
+      case 'isIntent':
       case 'outbound':
       case 'inbound':
       case 'isTopicEmpty':
@@ -339,20 +332,61 @@
     if (platforms.indexOf('viber') !== -1) {
       platformClasses.push('viber');
     }
-
+    if (platforms.indexOf('alexa') !== -1) {
+      platformClasses.push('alexa');
+    }
+    if (platforms.indexOf('twilio') !== -1) {
+      platformClasses.push('twilio');
+    }
     return platformClasses.length !== 0 ? base + '-' + platformClasses.join('-') : '';
   };
   $.RB_Legend = function() {
     $('.redbot-form-legend').each(function() {
       var dom = $(this);
       dom.html('Some attributes apply for specific platform:<br>\n' +
+        '  <span class="icon-platform-alexa"></span> = <span style="font-size:10px">Alexa</span>\n' +
         '  <span class="icon-platform-facebook"></span> = <span style="font-size:10px">Facebook</span>\n' +
-        '  <span class="icon-platform-telegram"></span> = <span style="font-size:10px">Telegram</span>\n' +
         '  <span class="icon-platform-smooch"></span> = <span style="font-size:10px">Smooch</span>\n' +
         '  <span class="icon-platform-slack"></span> = <span style="font-size:10px">Slack</span>\n' +
+        '  <span class="icon-platform-twilio"></span> = <span style="font-size:10px">Twilio</span>\n' +
+        '  <span class="icon-platform-telegram"></span> = <span style="font-size:10px">Telegram</span>\n' +
         '  <span class="icon-platform-universal"></span> = <span style="font-size:10px">Universal</span>\n' +
         '  <span class="icon-platform-viber"></span> = <span style="font-size:10px">Viber</span>')
     });
+  };
+  $.fn.RB_setComboWithPlatformLabels = function(value) {
+    var combo = $(this);
+    $(this).val(value);
+    var selected = $('option[value=' + value + ']', this);
+    combo
+      .attr('class')
+      .split(' ')
+      .forEach(function(className) {
+        if (className.indexOf('platform-') !== -1) {
+          combo.removeClass(className);
+        }
+      });
+    if (selected != null) {
+      combo.addClass(selected.attr('class'));
+    }
+  };
+  $.fn.RB_comboWithPlatformLabels = function() {
+    $(this)
+      .change(function() {
+        var combo = $(this);
+        var selected = $('option[value=' + combo.val() + ']', this);
+        combo
+          .attr('class')
+          .split(' ')
+          .forEach(function(className) {
+            if (className.indexOf('platform-') !== -1) {
+              combo.removeClass(className);
+            }
+          });
+        if (selected != null) {
+          combo.addClass(selected.attr('class'));
+        }
+      });
   };
   $.fn.RB_OptionsEditor = function(command, options) {
 
@@ -1176,6 +1210,26 @@ return msg;
     vertical-align: middle;
   }
 
+  .icon-platform-twilio {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADNJREFUGBljfGfk9Z+BAGCByQue3Qpjwun3xt5gNiO6SSDFMEmYaiYYAx89GBVh+A6bBwDzEA1NPYkyaAAAAABJRU5ErkJggg==');
+    margin-left: 3px;
+    margin-right: 3px;
+    vertical-align: middle;
+  }
+
+  .icon-platform-alexa {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEJJREFUGBljVD799z8DAcCCLH/HhAnOVTnzD86GKwIpQJZA5iO0wvVhMuAmgaSQrUNWiqII3TqYQqKsI0oRIzHhBABD+hL/gIpxvwAAAABJRU5ErkJggg==');
+    margin-left: 3px;
+    margin-right: 3px;
+    vertical-align: middle;
+  }
+
 
   .platform-facebook {
     background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEJJREFUGBljtIqc8Z+BAGCByR9dlg5jwmnrqJlgNlwRiAcThKuCMpjQBbDxUUxCthLZVBRFyBLIJhJlHVGKGIkJJwAbVQzJXzC/gwAAAABJRU5ErkJggg==);
@@ -1210,6 +1264,12 @@ return msg;
   .platform-smooch {
     background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAENJREFUGBljXOyx/T8DAcAEk4/Z7gFjgmlkPlwRSAYmAaNhulAULfHcAVYIopEBiiKQBLoCkBiGIpAgOqCeIkZiwgkAEPoRCUXTyWoAAAAASUVORK5CYII=);
     background-position: right 2px top 2px;
+    background-repeat: no-repeat;
+  }
+
+  .platform-combo-alexa {
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEJJREFUGBljVD799z8DAcCCLH/HhAnOVTnzD86GKwIpQJZA5iO0wvVhMuAmgaSQrUNWiqII3TqYQqKsI0oRIzHhBABD+hL/gIpxvwAAAABJRU5ErkJggg==');
+    background-position: right 12px top 2px;
     background-repeat: no-repeat;
   }
 
@@ -1335,6 +1395,17 @@ return msg;
     url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAIAAABv85FHAAAANklEQVQImWNsKL/MgAMwQaj6Dh24EJzNhEsT5XKNFVcg1tR36DRWXCHFTIhWuCZ0fcgSDAwMAO+nENww2Up1AAAAAElFTkSuQmCC);
     background-position: right 12px top 2px, right 22px top 2px, right 32px top 2px, right 42px top 2px;
     background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+  }
+
+  .platform-combo-telegram-facebook-slack-viber-alexa-twilio {
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADRJREFUGBlj1F764D8DAcACk78SJQ9jwmmdZQ/BbLgimABIMYwNU80EY+Cjh4QidJ+BPAQAUcEMK/ZfXe8AAAAASUVORK5CYII=),
+    url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEJJREFUGBljtIqc8Z+BAGCByR9dlg5jwmnrqJlgNlwRiAcThKuCMpjQBbDxUUxCthLZVBRFyBLIJhJlHVGKGIkJJwAbVQzJXzC/gwAAAABJRU5ErkJggg==),
+    url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEtJREFUGBljDNvW/Z+BAGBBll/pWYLMZQjf3gPmwxWBFMAEUVQCOUzoAtj4cJNApiBbh2wqXBHIBGQJZOtJsw7ZKnRT4dYhW4XueACZqRaCOTsvfwAAAABJRU5ErkJggg==),
+    url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAIAAABv85FHAAAANklEQVQImWNsKL/MgAMwQaj6Dh24EJzNhEsT5XKNFVcg1tR36DRWXCHFTIhWuCZ0fcgSDAwMAO+nENww2Up1AAAAAElFTkSuQmCC),
+    url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEJJREFUGBljVD799z8DAcCCLH/HhAnOVTnzD86GKwIpQJZA5iO0wvVhMuAmgaSQrUNWiqII3TqYQqKsI0oRIzHhBABD+hL/gIpxvwAAAABJRU5ErkJggg=='),
+    url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADNJREFUGBljfGfk9Z+BAGCByQue3Qpjwun3xt5gNiO6SSDFMEmYaiYYAx89GBVh+A6bBwDzEA1NPYkyaAAAAABJRU5ErkJggg==');
+    background-position: right 12px top 2px, right 22px top 2px, right 32px top 2px, right 42px top 2px, right 52px top 2px, right 62px top 2px;
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat;
   }
 
   .redbot-form-hint {

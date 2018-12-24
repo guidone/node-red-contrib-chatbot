@@ -27,6 +27,7 @@
       "chatbot-twilio-receive": "./nodes/chatbot-twilio-receive.js",
       "chatbot-facebook-receive": "./nodes/chatbot-facebook-receive.js",
       "chatbot-viber-receive": "./nodes/chatbot-viber-receive.js",
+      "chatbot-alexa-receive": "./nodes/chatbot-alexa-receive.js",
       "chatbot-redbot": "./nodes/chatbot-redbot.js",
       "chatbot-message": "./nodes/chatbot-message.js",
       "chatbot-analytics": "./nodes/chatbot-analytics.js",
@@ -70,7 +71,10 @@
       "chatbot-invoice-shipping": "./nodes/chatbot-invoice-shipping.js",
       "chatbot-extend": "./nodes/chatbot-extend.js",
       "chatbot-support-table": "./nodes/chatbot-support-table.js",
-      "chatbot-broadcast": "./nodes/chatbot-broadcast.js"
+      "chatbot-alexa-card": "./nodes/chatbot-alexa-card.js",
+      "chatbot-alexa-directive": "./nodes/chatbot-alexa-directive.js",
+      "chatbot-broadcast": "./nodes/chatbot-broadcast.js",
+      "chatbot-alexa-speech": "./nodes/chatbot-alexa-speech.js"
     }
   },
   "maintainers": [

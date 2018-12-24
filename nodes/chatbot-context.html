@@ -14,7 +14,12 @@
       },
       fieldName: {
         value: '',
-        required: true
+        validate: function(value) {
+          if (this.command !== 'intent' && $.RedBot.validate.isEmpty(value)) {
+            return false;
+          }
+          return true;
+        }
       }
     },
     inputs: 1,
@@ -22,7 +27,7 @@
     paletteLabel: 'Context',
     icon: 'chatbot-context.png',
     label: function() {
-      return 'Context';
+      return 'Context' + (this.command != null ? ' (' + this.command + ')' : '');
     },
     oneditprepare: function() {
       $('#node-input-fieldValue').typedInput({
@@ -31,37 +36,42 @@
         typeField: $('#node-input-fieldType')
       });
       $('#node-input-command').change(function() {
-        if ($('#node-input-command').val() == 'set') {
-          $('.form-row-context-fieldValue').show();
-        } else {
-          $('.form-row-context-fieldValue').hide();
-        }
+        var command = $(this).val();
+        $('.only-for').hide();
+        $('.only-for-' + command).show();
       });
+      $('.only-for').hide();
+      $('.only-for-' + this.command).show();
     },
     oneditsave: function() {
       $("#node-input-template").val(this.editor.getValue());
       delete this.editor;
-    },
+    }
   });
 </script>
 
 <script type="text/x-red" data-template-name="chatbot-context">
 <div class="form-row">
-  <label for="node-input-command"><i class="icon-cog"></i> Command</label>
-  <select id="node-input-command" placeholder="Language to match" style="width: 150px;">
+  <label for="node-input-command">Command</label>
+  <select id="node-input-command" placeholder="Language to match" style="width: 250px;">
     <option value="get">Get</option>
     <option value="set">Set</option>
     <option value="delete">Delete</option>
+    <option value="intent">Store values from intent</option>
   </select>
 </div>
-<div class="form-row">
-  <label for="node-input-fieldName"><i class="icon-tag"></i> Variable</label>
+<div class="form-row only-for only-for-set only-for-get only-for-delete">
+  <label for="node-input-fieldName">Variable</label>
   <input type="text" id="node-input-fieldName" placeholder="Variable" style="width:250px;">
 </div>
-<div class="form-row form-row-context-fieldValue">
+<div class="form-row only-for only-for-fieldValue">
   <label for="node-input-fieldValue"><i class="icon-pencil"></i> Value</label>
   <input type="text" id="node-input-fieldValue" placeholder="" style="width:250px;">
   <input type="hidden" id="node-input-fieldType">
+</div>
+<div class="form-row only-for only-for-intent">
+  Store variables extracted from a NPL service (like <b>Alexa</b>, <b>Dialogflow.com</b>, <b>Recast.ai</b>) from an <i>intent</i> message
+  type
 </div>
 </script>
 

@@ -1,0 +1,69 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-alexa-directive', {
+    category: 'RedBot',
+    color: '#FFCC66',
+    defaults: {
+      directiveType: {
+        value: ''
+      },
+      slot: {
+        value: '',
+        validate: function(value) {
+          if ((this.directiveType === 'Dialog.ElicitSlot' || this.directiveType === 'Dialog.ConfirmSlot')
+            && $.RedBot.validate.isEmpty(value)) {
+            return false;
+          }
+          return true;
+        }
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'Alexa Directive',
+    icon: 'chatbot-directive.png',
+    label: function() {
+      return 'Alexa Directive';
+    },
+    oneditprepare: function() {
+      $('#node-input-directiveType')
+        .change(function() {
+          var type = $(this).val();
+          $('.form-row.only-for').hide();
+          if (type != null) {
+            $('.form-row.only-for-' + type.replace('.', '-')).show();
+          }
+        });
+      $('.form-row.only-for').hide();
+      if (this.directiveType != null) {
+        $('.form-row.only-for-' + this.directiveType.replace('.', '-')).show();
+      }
+    },
+    outputLabels: function() {
+      return this.directiveType != null ? this.directiveType : '';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-alexa-directive">
+  <div class="form-row">
+    <label for="node-input-directiveType">Type</label>
+    <select id="node-input-directiveType" placeholder="Select directive type">
+      <option value="">Select directive</option>
+      <option value="EndSession">End session</option>
+      <option value="Dialog.Delegate">Dialog.Delegate</option>
+      <option value="Dialog.ElicitSlot">Dialog.ElicitSlot</option>
+      <option value="Dialog.ConfirmSlot">Dialog.ConfirmSlot</option>
+      <option value="Dialog.ConfirmIntent">Dialog.ConfirmIntent</option>
+    </select>
+  </div>
+  <div class="form-row only-for only-for-Dialog-ElicitSlot only-for-Dialog-ConfirmSlot">
+    <label for="node-input-slot" style="width:auto;">Slot Name</label>
+    <input type="text" id="node-input-slot" placeholder="Enter slot name">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-alexa-directive">
+
+</script>
+
+

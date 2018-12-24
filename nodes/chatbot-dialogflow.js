@@ -132,6 +132,7 @@ module.exports = function(RED) {
         })
         .then(function() {
           msg.payload = {
+            type: 'intent',
             isFallback: isFallback,
             intent: intent,
             variables: !_.isEmpty(variables) ? variables : null,

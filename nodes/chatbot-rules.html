@@ -12,24 +12,39 @@
         row
           .append('<select name="type" style="width:30%">'
             + '<option value="">Select rule</option>'
-            + '<option value="command">Message is command ...</option>'
-            + '<option value="anyCommand">Message is a command</option>'
-            + '<option value="environment">Environment is ...</option>'
-            + '<option value="outbound">Message is outbound</option>'
-            + '<option value="inbound">Message is inbound</option>'
-            + '<option value="messageEvent">Message is event ...</option>'
-            + '<option value="messageType">Message is type ...</option>'
-            + '<option value="notMessageType">Message is not type ...</option>'
+            + '<optgroup label="Intent">'
+            + '  <option value="isIntent">Is intent</option>'
+            + '  <option value="isIntentName">Is intent ...</option>'
+            + '  <option value="isIntentStatus">Is intent status ...</option>'
+            + '  <option value="isIntentConfirmationStatus">Is intent confirmation ...</option>'
+            + '  <option value="isSlotConfirmationStatus">Is slot ... confirmation ...</option>'
+            + '  <option value="isNotSlotConfirmationStatus">Is slot ... confirmation not ...</option>'
+            + '</optgroup>'
+            + '<optgroup label="Message">'
+            + '  <option value="command">Message is command ...</option>'
+            + '  <option value="anyCommand">Message is a command</option>'
+            + '  <option value="environment">Environment is ...</option>'
+            + '  <option value="outbound">Message is outbound</option>'
+            + '  <option value="inbound">Message is inbound</option>'
+            + '  <option value="messageEvent">Message is event ...</option>'
+            + '  <option value="messageType">Message is type ...</option>'
+            + '  <option value="notMessageType">Message is not type ...</option>'
+            + '</optgroup>'
+            + '<optgroup label="Topic">'
+            + '  <option value="isTopicEmpty">Topic is not defined</option>'
+            + '  <option value="isNotTopic">Topic is not ...</option>'
+            + '  <option value="isTopic">Topic is ...</option>'
+            + '  <option value="topicIncludes">Topic includes ...</option>'
+            + '</optgroup>'
+            + '<optgroup label="Chat context">'
+            + '  <option value="hasNotVariable">Variable ... is not defined</option>'
+            + '  <option value="hasVariable">Variable ... is defined</option>'
+            + '  <option value="isVariable">Variable ... is ...</option>'
+            + '</optgroup>'
+            + '<option value="dialogState">Dialog state is ...</option>'
+            + '<option value="transport">Transport is ...</option>'
             + '<option value="notPending">No pending requests</option>'
             + '<option value="pending">Pending requests</option>'
-            + '<option value="isTopicEmpty">Topic is not defined</option>'
-            + '<option value="isNotTopic">Topic is not ...</option>'
-            + '<option value="isTopic">Topic is ...</option>'
-            + '<option value="topicIncludes">Topic includes ...</option>'
-            + '<option value="transport">Transport is ...</option>'
-            + '<option value="hasNotVariable">Variable ... is not defined</option>'
-            + '<option value="hasVariable">Variable ... is defined</option>'
-            + '<option value="isVariable">Variable ... is ...</option>'
             + '<option value="catchAll">If nothing of above applies</option>'
             + '</select>')
           .change(function() {
@@ -41,10 +56,17 @@
           });
         // get options for message type
         var messageTypes = '';
+        var eventTypes = '';
         var idx;
         for(idx = 0; idx < node.messageTypes.length; idx++) {
-          messageTypes += '<option value="' + node.messageTypes[idx].value + '">'
+          messageTypes += '<option value="' + node.messageTypes[idx].value
+            + '" class="' + $.RedBot.platformClass('select', node.messageTypes[idx].platforms) + '">'
             + node.messageTypes[idx].label + '</option>';
+        }
+        for(idx = 0; idx < node.eventTypes.length; idx++) {
+          eventTypes += '<option value="' + node.eventTypes[idx].value
+            + '" class="' + $.RedBot.platformClass('select', node.eventTypes[idx].platforms) + '">'
+            + node.eventTypes[idx].value + '</option>';
         }
         // build transport options
         var transportOptions = '';
@@ -56,6 +78,7 @@
 
         row
           .append('<input class="hasNotVariable hasVariable" style="display:none;width:50%;margin-left:10px;" type="text" name="variable" placeholder="Context variable"/>')
+          .append('<input class="isIntentName" style="display:none;width:50%;margin-left:10px;" type="text" name="intent" placeholder="Intent name"/>')
           .append('<input class="isVariable" style="display:none;width:25%;margin-left:10px;" type="text" name="variableName" placeholder="Name"/>')
           .append('<span class="isVariable" style="display:none;">&nbsp;is&nbsp;</span>')
           .append('<input class="isVariable" style="display:none;width:25%;margin-left:0px;" type="text" name="variableValue" placeholder="Value"/>')
@@ -66,10 +89,22 @@
             + '<option value="production">production</option>'
             + '<option value="development">development</option>'
             + '</select>')
+          .append('<select class="dialogState" name="state" style="display:none;width:40%;margin-left:10px;">'
+            + '<option value="">Select state</option>'
+            + '<option value="started">Started</option>'
+            + '<option value="in_progress">In progress</option>'
+            + '<option value="completed">Completed</option>'
+            + '</select>')
           .append('<select class="messageEvent" name="event" style="display:none;width:40%;margin-left:10px;">'
             + '<option value="">Select type</option>'
-            + '<option value="new-user">New user(s)</option>'
-            + '<option value="referral">Referral</option>'
+            + eventTypes
+            + '</select>')
+          .append('<input class="isSlotConfirmationStatus" style="display:none;width:25%;margin-left:10px;" type="text" name="slot" placeholder="Slot"/>')
+          .append('<select class="isSlotConfirmationStatus isIntentConfirmationStatus isNotSlotConfirmationStatus" name="confirmationStatus" style="display:none;width:25%;margin-left:10px;">'
+            + '<option value="">Select status</option>'
+            + '<option value="none">None</option>'
+            + '<option value="confirmed">Confirmed</option>'
+            + '<option value="denied">Denied</option>'
             + '</select>')
           .append('<select class="transport" name="transport" style="display:none;width:40%;margin-left:10px;">'
             + '<option value="">Select transport</option>'
@@ -81,6 +116,9 @@
             + '</select>');
         var finalspan = $('<span/>',{style:"float: right;margin-top: 6px;"}).appendTo(row);
         finalspan.append('&nbsp;&#8594; <span class="node-input-rule-index">' + (i + 1) + '</span>');
+
+        $('select[name="event"]', container).RB_comboWithPlatformLabels();
+        $('select[name="messageType"]', container).RB_comboWithPlatformLabels();
 
         // finally set data
         if (rule.type != null) {
@@ -108,14 +146,27 @@
           $('select[name=environment]', container).val(rule.environment);
         }
         if (rule.messageType != null) {
-          $('select[name=messageType]', container).val(rule.messageType);
+          $('select[name=messageType]', container).RB_setComboWithPlatformLabels(rule.messageType);
         }
         if (rule.value != null) {
           $('input[name=variableValue]', container).val(rule.value);
         }
         if (rule.event != null) {
-          $('input[name=event]', container).val(rule.event);
+          $('select[name=event]', container).RB_setComboWithPlatformLabels(rule.event);
         }
+        if (rule.state != null) {
+          $('select[name=state]', container).val(rule.state);
+        }
+        if (rule.confirmationStatus != null) {
+          $('select[name=confirmationStatus]', container).val(rule.confirmationStatus);
+        }
+        if (rule.intent != null) {
+          $('input[name=intent]', container).val(rule.intent);
+        }
+        if (rule.slot != null) {
+          $('input[name=slot]', container).val(rule.slot);
+        }
+
       },
       removeItem: function(opt) {
         var rules = $('#node-input-rule-container').editableList('items');
@@ -199,7 +250,19 @@
           if (type === 'messageEvent') {
             obj.event = rule.find('select[name=event]').val();
           }
-          console.log('---', obj);
+          if (type === 'dialogState') {
+            obj.state = rule.find('select[name=state]').val();
+          }
+          if (type === 'isIntentName') {
+            obj.intent = rule.find('input[name=intent]').val();
+          }
+          if (type === 'isIntentConfirmationStatus') {
+            obj.confirmationStatus = rule.find('select[name=confirmationStatus]').val();
+          }
+          if (type === 'isSlotConfirmationStatus') {
+            obj.confirmationStatus = rule.find('select[name=confirmationStatus]').val();
+            obj.slot = rule.find('input[name=slot]').val();
+          }
           node.rules.push(obj);
         }
       });
@@ -217,6 +280,7 @@
       $.get(nodeRedUrl + 'redbot/globals')
         .done(function(response) {
           node.messageTypes = response.messageTypes;
+          node.eventTypes = response.eventTypes;
           $.get(nodeRedUrl + 'redbot/platforms')
             .done(function(response) {
               node.platforms = response.platforms;
@@ -239,6 +303,19 @@
       var rule = this.rules[index];
       if (rule.type === 'catchAll') {
         return 'If no rule applies';
+      } if (rule.type === 'isIntent') {
+        return 'Message is intent';
+      } else if (rule.type === 'isIntentName') {
+        return 'Intent is "' + ($.RedBot.validate.notEmpty(rule.intent) ? rule.intent : '...') + '"';
+      } else if (rule.type === 'dialogState') {
+        var stateLabel = null;
+        switch(rule.state) {
+          case 'started': stateLabel = 'started'; break;
+          case 'in_progress': stateLabel = 'in progress'; break;
+          case 'completed': stateLabel = 'completed'; break;
+          default: stateLabel = '...';
+        }
+        return 'Dialog state is "' + stateLabel + '"';
       } else if (rule.type === 'messageType') {
         return 'Message type is "' + ($.RedBot.validate.notEmpty(rule.messageType) ? rule.messageType : '...') + '"';
       } else if (rule.type === 'messageEvent') {
@@ -272,6 +349,11 @@
       } else if (rule.type === 'isVariable') {
         return 'Variable "' + ($.RedBot.validate.notEmpty(rule.variable) ? rule.variable : '...') + '" is equal to "'
           + ($.RedBot.validate.notEmpty(rule.value) ? rule.value : '...') + '"';
+      } else if (rule.type === 'isIntentConfirmationStatus') {
+        return 'Intent confirmation status is "' + ($.RedBot.validate.notEmpty(rule.confirmationStatus) ? rule.confirmationStatus : '...') + '"';
+      } else if (rule.type === 'isSlotConfirmationStatus') {
+        return 'Slot "' + ($.RedBot.validate.notEmpty(rule.slot) ? rule.slot : '...') + '" confirmation status is "'
+          + ($.RedBot.validate.notEmpty(rule.confirmationStatus) ? rule.confirmationStatus : '...') + '"';
       }
     }
   });

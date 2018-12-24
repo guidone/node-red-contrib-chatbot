@@ -661,7 +661,8 @@ describe('Chat rules node', function() {
   it('should go through the first if the message is event', function() {
     var msg = RED.createMessage({
       content: 'no command',
-      type: 'new-user'
+      type: 'event',
+      eventType: 'new-user'
     }, 'telegram');
     RED.node.config({
       rules: [
@@ -682,7 +683,8 @@ describe('Chat rules node', function() {
   it('should go through the second if the message is a different event', function() {
     var msg = RED.createMessage({
       content: 'no command',
-      type: 'referral'
+      type: 'event',
+      eventType: 'referral'
     }, 'telegram');
     RED.node.config({
       rules: [
@@ -703,7 +705,8 @@ describe('Chat rules node', function() {
   it('should go through the first is pending', function() {
     var msg = RED.createMessage({
       content: 'no command',
-      type: 'referral'
+      type: 'event',
+      eventType: 'referral'
     }, 'telegram');
     RED.node.config({
       rules: [
@@ -724,7 +727,8 @@ describe('Chat rules node', function() {
   it('should go through the second is pending', function() {
     var msg = RED.createMessage({
       content: 'no command',
-      type: 'referral'
+      type: 'event',
+      eventType: 'referral'
     }, 'telegram');
     RED.node.config({
       rules: [
@@ -744,7 +748,8 @@ describe('Chat rules node', function() {
   it('should go through the first is not pending', function() {
     var msg = RED.createMessage({
       content: 'no command',
-      type: 'referral'
+      type: 'event',
+      eventType: 'referral'
     }, 'telegram');
     RED.node.config({
       rules: [
@@ -764,7 +769,8 @@ describe('Chat rules node', function() {
   it('should go through the second is not pending', function() {
     var msg = RED.createMessage({
       content: 'no command',
-      type: 'referral'
+      type: 'event',
+      eventType: 'referral'
     }, 'telegram');
     RED.node.config({
       rules: [
@@ -779,6 +785,117 @@ describe('Chat rules node', function() {
       .then(function() {
         assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
         assert.isNull(RED.node.message(0));
+      });
+  });
+
+  it('should go through the first if intent', function() {
+    var msg = RED.createMessage({
+      type: 'intent',
+      intent: 'my_intent'
+    }, 'telegram');
+    RED.node.config({
+      rules: [
+        { type: 'isIntent' },
+        { type: 'catchAll' }
+      ]
+    });
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(function() {
+        assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
+        assert.isNull(RED.node.message(1));
+      });
+  });
+
+  it('should go through the second if intent my_intent', function() {
+    var msg = RED.createMessage({
+      type: 'intent',
+      intent: 'my_intent'
+    }, 'telegram');
+    RED.node.config({
+      rules: [
+        { type: 'isIntentName', intent: 'not_my_intent' },
+        { type: 'isIntentName', intent: 'my_intent' },
+        { type: 'catchAll' }
+      ]
+    });
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(function() {
+        assert.isNull(RED.node.message(0));
+        assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
+        assert.isNull(RED.node.message(2));
+      });
+  });
+
+  it('should go through the first if intent my_intent is confirmed', function() {
+    var msg = RED.createMessage({
+      type: 'intent',
+      intent: 'my_intent',
+      confirmationStatus: 'confirmed'
+    }, 'telegram');
+    RED.node.config({
+      rules: [
+        { type: 'isIntentConfirmationStatus', confirmationStatus: 'confirmed' },
+        { type: 'catchAll' }
+      ]
+    });
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(function() {
+        assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
+        assert.isNull(RED.node.message(1));
+      });
+  });
+
+  it('should go through the first if slot room if my_intent is confirmed', function() {
+    var msg = RED.createMessage({
+      type: 'intent',
+      intent: 'my_intent',
+      confirmationStatus: 'confirmed',
+      variables : {
+        room: 'kitchen'
+      },
+      slotConfirmationStatus: {
+        room: 'confirmed'
+      }
+    }, 'telegram');
+    RED.node.config({
+      rules: [
+        { type: 'isSlotConfirmationStatus', slot: 'room', confirmationStatus: 'confirmed' },
+        { type: 'catchAll' }
+      ]
+    });
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(function() {
+        assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
+        assert.isNull(RED.node.message(1));
+      });
+  });
+
+  it('should go through the first if dialog is pending', function() {
+    var msg = RED.createMessage({
+      type: 'intent',
+      intent: 'my_intent',
+      dialogState: 'pending'
+    }, 'telegram');
+    RED.node.config({
+      rules: [
+        { type: 'dialogState', state: 'pending' },
+        { type: 'catchAll' }
+      ]
+    });
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(function() {
+        assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
+        assert.isNull(RED.node.message(1));
       });
   });
 

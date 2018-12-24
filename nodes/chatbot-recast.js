@@ -78,6 +78,7 @@ module.exports = function(RED) {
         })
         .then(function() {
           msg.payload = {
+            type: 'intent',
             variables: variables,
             intent: intent
           };

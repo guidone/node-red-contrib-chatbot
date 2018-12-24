@@ -5,6 +5,58 @@ var when = utils.when;
 
 var Types = {
 
+  isSlotConfirmationStatus: function(rule, message) {
+    return new Promise(function(resolve, reject) {
+      if (message.payload != null && message.payload.type === 'intent' && message.payload.slotConfirmationStatus != null
+        && message.payload.slotConfirmationStatus[rule.slot] === rule.confirmationStatus) {
+        resolve(rule);
+      } else {
+        reject();
+      }
+    });
+  },
+
+  isIntentConfirmationStatus: function(rule, message) {
+    return new Promise(function(resolve, reject) {
+      if (message.payload != null && message.payload.type === 'intent'
+        && message.payload.confirmationStatus === rule.confirmationStatus) {
+        resolve(rule);
+      } else {
+        reject();
+      }
+    });
+  },
+
+  isIntentName: function(rule, message) {
+    return new Promise(function(resolve, reject) {
+      if (message.payload != null && message.payload.type === 'intent' && message.payload.intent === rule.intent) {
+        resolve(rule);
+      } else {
+        reject();
+      }
+    });
+  },
+
+  isIntent: function(rule, message) {
+    return new Promise(function(resolve, reject) {
+      if (message.payload != null && message.payload.type === 'intent') {
+        resolve(rule);
+      } else {
+        reject();
+      }
+    });
+  },
+
+  dialogState: function(rule, message) {
+    return new Promise(function(resolve, reject) {
+      if (message.payload != null && message.payload.type === 'intent' && message.payload.dialogState === rule.state) {
+        resolve(rule);
+      } else {
+        reject();
+      }
+    });
+  },
+
   pending: function(rule, message) {
     return new Promise(function(resolve, reject) {
       var chatContext = message.chat();
@@ -79,7 +131,7 @@ var Types = {
   messageEvent: function(rule, message) {
     return new Promise(function(resolve, reject) {
       if (message != null && message.payload != null) {
-        if (message.payload.type === rule.event) {
+        if (message.payload.type === 'event' && message.payload.eventType === rule.event) {
           resolve(rule);
         } else {
           reject();

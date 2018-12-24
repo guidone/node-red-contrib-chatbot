@@ -1,0 +1,215 @@
+<script type="text/javascript">
+  var RedBotAlexaTags = [
+    {
+      id: '1',
+      label: '&lt;amazon:effect&gt; - Applies Amazon-specific effects to the speech',
+      value: '<amazon:effect name="whispered"></amazon:effect>'
+    },
+    {
+      id: '2',
+      label: '&lt;audio&gt; - Play external or predefined MP£',
+      value: '<audio src="soundbank:" />'
+    },
+    {
+      id: '3',
+      label: '&lt;break&gt; - Represents a pause in the speech',
+      value: '<break strength="weak"/>'
+    },
+    {
+      id: '4',
+      label: '&lt;emphasis&gt; - Emphasize the tagged words',
+      value: '<emphasis level="strong">really like</emphasis>'
+    },
+    {
+      id: '5',
+      label: '&lt;lang&gt; - adapts the pronunciation',
+      value: '<lang xml:lang="it-IT">ciao</lang>'
+    },
+    {
+      id: '7',
+      label: '&lt;p&gt; - provides extra-strong breaks before and after the paragraph',
+      value: '<p></p>'
+    },
+    {
+      id: '8',
+      label: '&lt;phoneme&gt; - phonemic/phonetic pronunciation',
+      value: '<phoneme alphabet="ipa" ph=""></phoneme>'
+    },
+    {
+      id: '9',
+      label: '&lt;prosody&gt; - modifies the volume, pitch, and rate of the tagged speech',
+      value: '<prosody volume="x-loud" pitch="x-high" rate="x-slow"></prosody>'
+    },
+    {
+      id: '10',
+      label: '&lt;s&gt; - represents a sentence with strong breaks before and after the tag',
+      value: '<s></s>'
+    },
+    {
+      id: '11',
+      label: '&lt;say-as&gt; - describes how the text should be interpreted',
+      value: '<say-as interpret-as="digits"></say-as>'
+    },
+    {
+      id: '12',
+      label: '&lt;sub&gt; - pronounce the specified word or phrase as a different word or phrase',
+      value: '<sub alias=""></sub>'
+    },
+    {
+      id: '13',
+      label: '&lt;voice&gt; - speak the text with the specified Amazon Polly voice',
+      value: '<voice name="Carla"></voice>'
+    },
+    {
+      id: '14',
+      label: '&lt;w&gt; - customizes the pronunciation of words by specifying the word\'s part of speech',
+      value: '<w role="amazon:VB">read</w>'
+    }
+  ];
+
+  RED.nodes.registerType('chatbot-alexa-speech', {
+    category: 'RedBot',
+    color: '#FFCC66',
+    defaults: {
+      name: {
+        value: ''
+      },
+      speechType: {
+        value: 'plainText'
+      },
+      text: {
+        value: ''
+      },
+      ssml: {
+        value: '<speak>\n\n</speak>'
+      },
+      playBehavior: {
+        value: 'enqueue'
+      },
+      reprompt: {
+        value: false
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'Alexa Speech',
+    icon: 'chatbot-voice.png',
+    label: function() {
+      return (this.name != null && this.name !== '' ? this.name : 'Alexa Speech')
+        + (this.reprompt ? ' (Repropmpt)' : '');
+    },
+    oneditsave: function() {
+      if ($('#node-input-speechType').val() === 'ssml') {
+        $('#node-input-ssml').val(this.editor.getValue());
+        $('#node-input-text').val('');
+      } else {
+        $('#node-input-ssml').val('');
+      }
+      // destroy the editor
+      this.editor.destroy();
+      delete this.editor;
+    },
+    oneditprepare: function() {
+      var _this = this;
+      $('#node-input-speechType')
+        .change(function() {
+          var type = $(this).val();
+          $('.form-row.only-for').hide();
+          $('.form-row.only-for-' + type).show();
+        });
+      $('.form-row.only-for').hide();
+      $('.form-row.only-for-' + this.speechType).show();
+      $('.btn-add-tag')
+        .click(function(e) {
+          e.preventDefault();
+          $('.add-tag').show();
+        });
+      this.editor = RED.editor.createEditor({
+        id: 'node-input-ssml-editor',
+        mode: 'ace/mode/html',
+        value: $('#node-input-ssml').val(),
+        globals: {
+          node: true,
+          msg:true,
+          context:true,
+          RED: true,
+          util: true,
+          flow: true,
+          global: true,
+          console: true,
+          Buffer: true,
+          setTimeout: true,
+          clearTimeout: true,
+          setInterval: true,
+          clearInterval: true
+        }
+      });
+      var select = $('#alexa-ssml-tags')
+        .change(function() {
+          var id = $(this).val();
+          var snippet = null;
+          RedBotAlexaTags.forEach(function(option) {
+            if (option.id === id) {
+              snippet = option.value;
+            }
+          });
+          if (snippet != null) {
+            _this.editor.session.insert(_this.editor.getCursorPosition(), snippet);
+          }
+          $('.add-tag').hide();
+        });
+      RedBotAlexaTags.forEach(function(option) {
+        select.append('<option value="' + option.id + '">' + option.label + '</option>');
+      });
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-alexa-speech">
+  <div class="form-row">
+    <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row">
+    <label for="node-input-speechType">Type</label>
+    <select id="node-input-speechType" placeholder="Select speech type" style="width:auto;">
+      <option value="plainText">Plain Text</option>
+      <option value="ssml">Speech Synthesis Markup Language</option>
+    </select>
+  </div>
+  <div class="form-row only-for only-for-plainText">
+    <label for="node-input-text">Text</label>
+    <textarea id="node-input-text" placeholder="" style="width:93%;height:100px;"></textarea>
+  </div>
+  <div class="form-row only-for only-for-ssml">
+    <label for="node-input-ssml" style="width:auto;">
+      Speech Synthesis Markup Language
+      <a href="#" style="font-size:12px;" class="btn-add-tag">(add tag)</a>
+    </label>
+    <input type="hidden" id="node-input-ssml" autofocus="autofocus">
+    <div class="add-tag" style="display:none;margin-bottom:5px;">
+      <select id="alexa-ssml-tags" style="width:100%;">
+        <option value="">Select tags</option>
+      </select>
+    </div>
+    <div style="height: 150px; min-height:150px;" class="node-text-editor" id="node-input-ssml-editor"></div>
+  </div>
+  <div class="form-row">
+    <label for="node-input-playBehavior">Play Behaviour</label>
+    <select id="node-input-playBehavior" placeholder="Select speech type" style="width:auto;">
+      <option value="enqueue">Enqueue</option>
+      <option value="replaceAll">Replace All</option>
+      <option value="replaceEnqueued">Replace Enquueued</option>
+    </select>
+  </div>
+  <div class="form-row">
+    <label for="node-input-reprompt">Reprompt</label>
+    <input type="checkbox" value="true" id="node-input-reprompt">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-alexa-speech">
+
+</script>
+
+
