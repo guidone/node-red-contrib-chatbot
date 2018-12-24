@@ -192,6 +192,7 @@ In case of fatal error, like a broken link, a proper error must be raised with <
 <dt>node.chat.in(func)<dd>The middleware will be execute for inbound, after all middlewares registered with <code>.use()</code></dd>
 <dt>node.chat.out(func)<dd>The middleware will be execute for all outbounds messages, after all middlewares registered with <code>.use()</code></dd>
 <dt>node.chat.out(myType, func)<dd>The middleware will be execute for outbound messages of type <em>myType</em>, after all middlewares registered with <code>.use()</code> and <code>.out()</code> without a type</dd>
+<dt>node.chat.registerEvent(name[, label])<dd>Register the an event in order to be available in the drop-down of the <code>Rules node</code></dd>
 <dt>node.chat.registerMessageType(type[, label])<dd>Register the a message type in order to be available in the drop-down of the <code>Rules node</code></dd>
 <dt>node.chat.registerPlatform(name[, label])<dd>Register a messaging platform, use the <code>Support Table node</code> to show platforms/available message types</dd>
 <dt>node.chat.onChatId(func)<dd>Callback to extract the <em>chatId</em> in a <code>Universal Connector node</code>. The passed function takes the incoming payload as a paramenter and should return a string (a unique identifier of the conversation)</dd>
@@ -202,10 +203,7 @@ In case of fatal error, like a broken link, a proper error must be raised with <
 <dt>node.chat.onStop(func)<dd>Callback when <strong>Node-RED</strong> is shut down, must return a promise</dd>
 
 </dl>
-<p><img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram">
-<img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook">
-<img src="https://img.shields.io/badge/platform-Slack-green.svg" alt="Slack">
-<img src="https://img.shields.io/badge/platform-Viber-8079d0.svg" alt="Viber"></p>
+<p>This node is available for all platforms</p>
 </script>
 
 
