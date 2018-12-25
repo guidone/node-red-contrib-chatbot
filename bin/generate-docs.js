@@ -45,6 +45,8 @@ var mappings = {
   'Slack-Receiver-node.md': 'chatbot-slack-receive.html|chatbot-slack-node',
   'Telegram-Receiver-node.md': 'chatbot-telegram-receive.html|chatbot-telegram-node',
   'Facebook-Receiver-node.md': 'chatbot-facebook-receive.html|chatbot-facebook-node',
+  'Alexa-Receiver-node.md': 'chatbot-alexa-receive.html|chatbot-alexa-node',
+  'Twilio-Receiver-node.md': 'chatbot-twilio-receive.html|chatbot-twilio-node',
   'Viber-Receiver-node.md': 'chatbot-viber-receive.html|chatbot-viber-node',
   'Switch-node.md': 'chatbot-rules.html',
   'Inline-Query-node.md': 'chatbot-inline-query.html',
