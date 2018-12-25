@@ -4,7 +4,7 @@ var moment = require('moment');
 
 require('../lib/platforms/telegram');
 require('../lib/platforms/slack');
-require('../lib/platforms/twilio');
+require('../lib/platforms/twilio/twilio');
 require('../lib/platforms/viber');
 require('../lib/platforms/facebook/facebook');
 
