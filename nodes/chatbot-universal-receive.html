@@ -68,7 +68,7 @@
 
 <script type="text/x-red" data-template-name="chatbot-universal-node">
   <div class="form-row">
-    <label for="node-config-input-botname"><i class="icon-bookmark"></i> Bot-Name</label>
+    <label for="node-config-input-botname"><i class="icon-bookmark"></i> Bot Name</label>
     <input type="text" id="node-config-input-botname">
   </div>
   <div class="form-editable">
@@ -194,12 +194,12 @@ node.chat.in(message =&gt; {
   return new Promise((resolve, reject) =&gt; {
     // check that the incoming payload is an actual &quot;text&quot; message
     if (message.originalMessage.sms != null &amp;&amp; message.originalMessage.sms.text != &#39;&#39;) {
-      message.payload.type = &#39;message&#39;;  
+      message.payload.type = &#39;message&#39;;
       message.payload.content = message.originalMessage.sms.text;
     }
     resolve(message);
   });
-}); 
+});
 </code></pre>
 <p>When a new payload arrives to the input pin the <em>chatId</em> value is extracted from the callback <code>.onChatId()</code> (there are callbacks for other information like <em>messageId</em>, <em>timestamp</em>, <em>language</em>, etc) and a <em>neutral</em> version of the <strong>RedBot</strong> message is passed to the middlewares.
 A <em>neutral message</em> is a regular <strong>RedBot</strong> message (the messages that flow out of a receiver node) except the type and content key are left blank: is up to the developer to fill in this keys using the information contained in <em>originalMessage</em>, all values needed to build a <em>neutral message</em> (<em>chatId</em>, <em>messageId</em>, <em>timestamp</em>, <em>language</em>) are extracted using callbacks.
@@ -219,9 +219,9 @@ node.chat.in(message =&gt; {
     .then(() =&gt; {
       message.payload.type = &#39;message&#39;;
       message.payload.content = message.originalMessage.sms.text;
-      return message; 
+      return message;
     });
-}); 
+});
 </code></pre>
 <p>Note that a middleware should always return a <em>Promise</em> that returns the received message (passed as parameter of the middleware) and that will be injected in the flow (a warning on the console will log any middleware not returning a Promise).</p>
 <p>If none of the middlewares in the inbound chain is able to infer a message type and fill in the type and content of the neutral message, then the message is discarded (enable the <em>debug</em> option in the receiver configuration to log the discarded messages in the system console).</p>
