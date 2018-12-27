@@ -36,6 +36,8 @@ module.exports = function(RED) {
     this.botname = n.botname;
     this.store = n.store;
     this.log = n.log;
+    this.username = n.username;
+    this.iconEmoji = n.iconEmoji;
     this.debug = n.debug;
     this.usernames = n.usernames != null ? n.usernames.split(',') : [];
 
@@ -60,7 +62,9 @@ module.exports = function(RED) {
       contextProvider: contextStorageNode != null ? contextStorageNode.contextStorage : null,
       contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null,
       debug: node.debug,
-      logfile: node.log
+      logfile: node.log,
+      username: node.username,
+      iconEmoji: node.iconEmoji
     };
     // check if there's a valid configuration in global settings
     if (slackConfigs[node.botname] != null) {
@@ -109,6 +113,8 @@ module.exports = function(RED) {
           contextProvider: node.contextProvider,
           logfile: botConfiguration.logfile,
           debug: botConfiguration.debug,
+          username: botConfiguration.username,
+          iconEmoji: botConfiguration.iconEmoji,
           RED: RED
         });
         // add extensions
