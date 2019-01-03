@@ -66,6 +66,16 @@
         type: 'chatbot-twilio-node',
         required: false
       },
+      botDiscord: {
+        value: '',
+        type: 'chatbot-discord-node',
+        required: false
+      },
+      botDiscordProduction: {
+        value: '',
+        type: 'chatbot-discord-node',
+        required: false
+      },
       chatId: {
         value: ''
       },
@@ -125,12 +135,21 @@
     <option value="">Select transport</option>
     <option value="facebook">Facebook Messenger</option>
     <option value="slack">Slack</option>
+    <option value="discord">Discord</option>
     <option value="smooch">Smooch</option>
     <option value="telegram">Telegram</option>
     <option value="twilio">Twilio</option>
     <option value="viber">Viber</option>
     <option value="universal">Universal</option>
   </select>
+</div>
+<div class="form-row form-row-bot form-row-bot-discord" style="margin-left:104px;">
+  <div>Discord Bot <span class="redbot-environment">(development)</span></div>
+  <input type="text" id="node-input-botDiscord" placeholder="Discord Bot">
+</div>
+<div class="form-row form-row-bot form-row-bot-discord" style="margin-left:104px;">
+  <div>Discord Bot <span class="redbot-environment">(production)</span></div>
+  <input type="text" id="node-input-botDiscordProduction" placeholder="Discord Bot">
 </div>
 <div class="form-row form-row-bot form-row-bot-telegram" style="margin-left:104px;">
   <div>Telegram Bot <span class="redbot-environment">(development)</span></div>

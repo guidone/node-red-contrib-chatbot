@@ -4,6 +4,7 @@ var _ = require('underscore');
 var utils = require('../lib/helpers/utils');
 var fetchers = require('../lib/helpers/fetchers');
 var validators = require('../lib/helpers/validators');
+var ChatExpress = require('../lib/chat-platform/chat-platform');
 
 module.exports = function(RED) {
 
@@ -22,13 +23,14 @@ module.exports = function(RED) {
       var chatId = utils.getChatId(msg);
       var messageId = utils.getMessageId(msg);
       var filename = 'image';
+      var transport = utils.getTransport(msg);
 
       // check if valid message
       if (!utils.isValidMessage(msg, node)) {
         return;
       }
       // check transport compatibility
-      if (!utils.matchTransport(node, msg)) {
+      if (!ChatExpress.isSupported(transport, 'message') && !utils.matchTransport(node, msg)) {
         return;
       }
 
