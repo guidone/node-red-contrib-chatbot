@@ -56,7 +56,6 @@ module.exports = function(RED) {
     // build the configuration object
     var botConfiguration = {
       botname: node.botname,
-      token: node.credentials != null && node.credentials.token != null ? node.credentials.token.trim() : null,
       contextProvider: contextStorageNode != null ? contextStorageNode.contextStorage : null,
       contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null,
       debug: node.debug,
@@ -89,8 +88,8 @@ module.exports = function(RED) {
       botConfiguration.contextProvider = 'memory';
       botConfiguration.contextParams = {};
     }
-    // if chat is not already there and there's a token
-    if (node.chat == null && botConfiguration.token != null) {
+    // if chat is not already there
+    if (node.chat == null) {
       // check if provider exisst
       if (!contextProviders.hasProvider(botConfiguration.contextProvider)) {
         node.error('Error creating chatbot ' + node.botname + '. The context provider '
@@ -105,7 +104,6 @@ module.exports = function(RED) {
         node.chat = AlexaServer.createServer({
           botname: botConfiguration.botname,
           authorizedUsernames: botConfiguration.usernames,
-          token: botConfiguration.token,
           contextProvider: node.contextProvider,
           logfile: botConfiguration.logfile,
           debug: botConfiguration.debug,
@@ -153,11 +151,7 @@ module.exports = function(RED) {
     });
   }
   RED.nodes.registerType('chatbot-alexa-node', AlexaBotNode, {
-    credentials: {
-      token: {
-        type: 'text'
-      }
-    }
+    credentials: {}
   });
 
   function AlexaInNode(config) {
