@@ -10,6 +10,10 @@
         value: '',
         required: false
       },
+      clientId: {
+        value: '',
+        required: false
+      },
       username: {
         value: ''
       },
@@ -44,6 +48,25 @@
             $('.form-warning .bot-name').html('"' + node.botname + '"');
           }
         });
+
+      $('#discordAuthorize')
+        .click(function (e) {
+          e.preventDefault();
+          var clientId = $('#node-config-input-clientId').val();
+          var oauthUrl = 'https://discordapp.com/oauth2/authorize?&client_id=' + clientId + '&scope=bot&permissions=8';
+          window.open(oauthUrl);
+        });
+
+      $('#node-config-input-clientId')
+        .keyup(function() {
+          var clientId = $('#node-config-input-clientId').val();
+          $('#discordAuthorize').attr('disabled', clientId == null || clientId === '');
+          $('#discordAuthorizeContainer').attr('style', clientId == null || clientId === '' ? 'opacity:0.5' : '');
+        });
+
+      var clientId = node.clientId;
+      $('#discordAuthorize').attr('disabled', clientId == null || clientId === '');
+      $('#discordAuthorizeContainer').attr('style', clientId == null || clientId === '' ? 'opacity:0.5' : '');
     },
     paletteName: 'Discord Bot',
     credentials: {
@@ -63,6 +86,19 @@
     <input type="text" id="node-config-input-botname">
   </div>
   <div class="form-editable">
+    <div class="form-row">
+      <label for="node-config-input-clientId">Client Id</label>
+      <input type="text" id="node-config-input-clientId">
+      <div id="discordAuthorizeContainer">
+        <button
+          type="button"
+          id="discordAuthorize"
+          style="padding: 6px 14px;  margin-top: 6px;margin-left: 104px;"
+          class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+          Authorize Application Bot
+        </button>
+      </div>
+    </div>
     <div class="form-row">
       <label for="node-config-input-token">Token</label>
       <input type="text" id="node-config-input-token">
@@ -87,20 +123,6 @@
       <div class="redbot-form-hint">
         Select the chat context provider to use with this bot, if none is selected then non-persistent "memory" will be used.<br>
         To extend <strong>RedBot</strong> with a new chat context provider see <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Creating-a-Chat-Context-Provider" target="_blank">this tutorial</a>.
-      </div>
-    </div>
-    <div class="form-row">
-      <label for="node-config-input-username">Username</label>
-      <input type="text" id="node-config-input-username">
-      <div class="redbot-form-hint">
-        Override default chatbot username (requires <i>chat:write:user</i> permission)
-      </div>
-    </div>
-    <div class="form-row">
-      <label for="node-config-input-iconEmoji">Icon Emoji</label>
-      <input type="text" id="node-config-input-iconEmoji">
-      <div class="redbot-form-hint">
-      Override default chatbot icon (requires <i>chat:write:user</i> permission)
       </div>
     </div>
     <div class="form-row">
