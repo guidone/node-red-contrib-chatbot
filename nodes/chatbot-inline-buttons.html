@@ -338,6 +338,9 @@
     if (platforms.indexOf('twilio') !== -1) {
       platformClasses.push('twilio');
     }
+    if (platforms.indexOf('discord') !== -1) {
+      platformClasses.push('discord');
+    }
     return platformClasses.length !== 0 ? base + '-' + platformClasses.join('-') : '';
   };
   $.RB_Legend = function() {
@@ -345,6 +348,7 @@
       var dom = $(this);
       dom.html('Some attributes apply for specific platform:<br>\n' +
         '  <span class="icon-platform-alexa"></span> = <span style="font-size:10px">Alexa</span>\n' +
+        '  <span class="icon-platform-discord"></span> = <span style="font-size:10px">Discord</span>\n' +
         '  <span class="icon-platform-facebook"></span> = <span style="font-size:10px">Facebook</span>\n' +
         '  <span class="icon-platform-smooch"></span> = <span style="font-size:10px">Smooch</span>\n' +
         '  <span class="icon-platform-slack"></span> = <span style="font-size:10px">Slack</span>\n' +
@@ -1160,6 +1164,16 @@ return msg;
      vertical-align: middle;
    }
 
+  .icon-platform-discord {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADxJREFUGBljVFPT+s9AALDA5G/evApjgml1dW04H64IJIIsAdIE4zPBleNh0FkRisORfQhzNMipjMSEEwBROQx6SDYaygAAAABJRU5ErkJggg==');
+    margin-left: 3px;
+    margin-right: 3px;
+    vertical-align: middle;
+  }
+
   .icon-platform-facebook {
     display: inline-block;
     width: 9px;
@@ -1406,6 +1420,24 @@ return msg;
     url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADNJREFUGBljfGfk9Z+BAGCByQue3Qpjwun3xt5gNiO6SSDFMEmYaiYYAx89GBVh+A6bBwDzEA1NPYkyaAAAAABJRU5ErkJggg==');
     background-position: right 12px top 2px, right 22px top 2px, right 32px top 2px, right 42px top 2px, right 52px top 2px, right 62px top 2px;
     background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat;
+  }
+
+  .platform-combo-telegram-facebook-slack-viber-discord {
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADRJREFUGBlj1F764D8DAcACk78SJQ9jwmmdZQ/BbLgimABIMYwNU80EY+Cjh4QidJ+BPAQAUcEMK/ZfXe8AAAAASUVORK5CYII=),
+    url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEJJREFUGBljtIqc8Z+BAGCByR9dlg5jwmnrqJlgNlwRiAcThKuCMpjQBbDxUUxCthLZVBRFyBLIJhJlHVGKGIkJJwAbVQzJXzC/gwAAAABJRU5ErkJggg==),
+    url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEtJREFUGBljDNvW/Z+BAGBBll/pWYLMZQjf3gPmwxWBFMAEUVQCOUzoAtj4cJNApiBbh2wqXBHIBGQJZOtJsw7ZKnRT4dYhW4XueACZqRaCOTsvfwAAAABJRU5ErkJggg==),
+    url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAIAAABv85FHAAAANklEQVQImWNsKL/MgAMwQaj6Dh24EJzNhEsT5XKNFVcg1tR36DRWXCHFTIhWuCZ0fcgSDAwMAO+nENww2Up1AAAAAElFTkSuQmCC),
+    url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADxJREFUGBljVFPT+s9AALDA5G/evApjgml1dW04H64IJIIsAdIE4zPBleNh0FkRisORfQhzNMipjMSEEwBROQx6SDYaygAAAABJRU5ErkJggg==');
+    background-position: right 12px top 2px, right 22px top 2px, right 32px top 2px, right 42px top 2px, right 52px top 2px;
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat;
+  }
+
+  .platform-combo-telegram-facebook-alexa {
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAADRJREFUGBlj1F764D8DAcACk78SJQ9jwmmdZQ/BbLgimABIMYwNU80EY+Cjh4QidJ+BPAQAUcEMK/ZfXe8AAAAASUVORK5CYII=),
+    url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEJJREFUGBljtIqc8Z+BAGCByR9dlg5jwmnrqJlgNlwRiAcThKuCMpjQBbDxUUxCthLZVBRFyBLIJhJlHVGKGIkJJwAbVQzJXzC/gwAAAABJRU5ErkJggg==),
+    url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAEJJREFUGBljVD799z8DAcCCLH/HhAnOVTnzD86GKwIpQJZA5iO0wvVhMuAmgaSQrUNWiqII3TqYQqKsI0oRIzHhBABD+hL/gIpxvwAAAABJRU5ErkJggg==');
+    background-position: right 12px top 2px, right 22px top 2px, right 32px top 2px;
+    background-repeat: no-repeat, no-repeat, no-repeat;
   }
 
   .redbot-form-hint {
