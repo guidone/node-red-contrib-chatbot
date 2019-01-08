@@ -65,7 +65,7 @@ var mappings = {
   'Extend-node.md': 'chatbot-extend.html',
   'Broadcast-node.md': 'chatbot-broadcast.html',
   'Support-table.md': 'chatbot-support-table.html',
-  'Card-alexa-node.md': 'chatbot-alexa-card.html',
+  'Alexa-Card-node.md': 'chatbot-alexa-card.html',
   'Alexa-Speech-node.md': 'chatbot-alexa-speech.html',
   'Alexa-Directive-node.md': 'chatbot-alexa-directive.html',
   'Universal-Connector-node.md': 'chatbot-universal-receive.html|chatbot-universal-receive'
@@ -127,6 +127,82 @@ function fetchImagesBase64(images) {
   });
 }
 
+const transformers = {
+
+  table: html => {
+    // reformat tables with dl, dt, dd, Node-RED standard
+    // table always 3 cell: name of field, type, description
+    html = html.replace(/<table>/g, '<dl class="message-properties">');
+    html = html.replace(/<\/table>/g, '</dl>');
+    html = html.replace(/<thead>[\s\S]*?<\/thead>/g, '');
+    html = html.replace(/<tbody>/g, '');
+    html = html.replace(/<\/tbody>/g, '');
+    var matches = html.match(/<tr>([\s\S]*?)<\/tr>/g);
+    _(matches).each(function(row) {
+      var cells = row.match(/<td>([\s\S]*?)<\/td>/g);
+      cells = _(cells).map(function(cell) {
+        return cell.replace('<td>', '').replace('</td>', '');
+      });
+      var cellName = cells[0];
+      var cellType = cells.length >= 3 ? cells[1] : null;
+      var cellDescription = cells.length >= 3 ? cells[2] : cells[1];
+      html = html.replace(row,
+        '<dt>' + cellName +
+        (cellType != null ? '<span class="property-type">' + cellType +'</span>' : '') +
+        '<dd>' + cellDescription + '</dd>'
+      );
+    });
+
+    return html;
+  },
+
+  downloadImages: html => {
+    // get all images and transform them into base64 (GitHub will deny images in iframe)
+    const images = collectImages(html);
+    return new Promise((resolve, reject) => {
+      fetchImagesBase64(images)
+        .then(images64 => {
+            // now replace all fetched images in base64
+            _(images64).each(image => html = html.replace(image.html, '<img src="' + image.base64 + '">'));
+            resolve(html);
+          },
+          reject
+          );
+    });
+  },
+
+  fixRogueDollar: html => {
+    return html.replace(/\$/g, '&#36;');
+  },
+
+  translateWikiLinks: html => {
+
+    const matchLinks = html.match(/\[\[.*?\|.*?\]\]/g);
+
+    if (matchLinks == null) {
+      return html;
+    }
+
+    // create mapping
+    const mappings = {};
+    matchLinks.forEach(link => {
+      const split = link.replace('[[', '').replace(']]', '').split('|');
+      mappings[link] = { label: split[0], link: split[1] };
+    });
+
+    // replace
+    matchLinks.forEach(link => {
+      const wikiLink = `<a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/${mappings[link].link}"
+      target="_blank">${mappings[link].label}</a>`;
+      html = html.replace(link, wikiLink);
+    });
+
+    return html;
+  }
+
+};
+
+
 
 console.log(orange('Generating inline documentation...'));
 
@@ -155,7 +231,7 @@ _(mappings).map(function(nodeFile, markdownFile) {
 
       // reformat tables with dl, dt, dd, Node-RED standard
       // table always 3 cell: name of field, type, description
-      htmlSource = htmlSource.replace(/<table>/g, '<dl class="message-properties">');
+      /*htmlSource = htmlSource.replace(/<table>/g, '<dl class="message-properties">');
       htmlSource = htmlSource.replace(/<\/table>/g, '</dl>');
       htmlSource = htmlSource.replace(/<thead>[\s\S]*?<\/thead>/g, '');
       htmlSource = htmlSource.replace(/<tbody>/g, '');
@@ -174,22 +250,33 @@ _(mappings).map(function(nodeFile, markdownFile) {
           (cellType != null ? '<span class="property-type">' + cellType +'</span>' : '') +
           '<dd>' + cellDescription + '</dd>'
         );
-      });
+      });*/
+
+      let chain = Promise.resolve(htmlSource);
+
+      chain
+        .then(htmlSource => transformers.table(htmlSource))
+        .then(htmlSource => transformers.downloadImages(htmlSource))
+        .then(htmlSource => transformers.fixRogueDollar(htmlSource))
+        .then(htmlSource => transformers.translateWikiLinks(htmlSource))
+
 
       // get all images and transform them into base64 (GitHub will deny images in iframe)
-      var images = collectImages(htmlSource);
+      //var images = collectImages(htmlSource);
 
-      fetchImagesBase64(images)
+      //fetchImagesBase64(images)
         .then(
-          function(images64) {
+          function(htmlSource) {
 
             // now replace all fetched images in base64
-            _(images64).each(function(image) {
-              htmlSource = htmlSource.replace(image.html, '<img src="' + image.base64 + '">');
-            });
+            //_(images64).each(function(image) {
+            //  htmlSource = htmlSource.replace(image.html, '<img src="' + image.base64 + '">');
+            //});
+
+
 
             // replace "$" or will mess up with the regular expression
-            htmlSource = htmlSource.replace(/\$/g, '&#36;');
+            //htmlSource = htmlSource.replace(/\$/g, '&#36;');
 
             // replace inline documentation
             var newDoc = '<script type="text\/x-red" data-help-name="' + nodeName + '">' + htmlSource + '</script>';
@@ -217,8 +304,10 @@ tasks.then(
     fs.writeFileSync(__dirname + '/../CHANGELOG.md', changelog, 'utf8');
     console.log(green('All done.'));
   },
-  function() {
-    clc.red('Something went wrong');
+  function(error) {
+    console.log(clc.red('Something went wrong'));
+    console.log(error);
+    process.exit(1);
   }
 );
 

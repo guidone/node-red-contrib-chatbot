@@ -1,3 +1,7 @@
+* **0.16.3** - Fixed un-needed token in Alexa 
+* **0.16.2** - Added Slack extensions (username, icon_emoji) 
+* **0.16.1** - Fixed "+" for Twilio numbers
+* **0.16.0** - Alexa support, refactored [[intent message|Intent-message]], changed format of event message, message chaining. See [[all changes in 0.16.0|all-changes-in-0.16.0]]
 * **0.15.13** - Support for Slack commands 
 * **0.15.12** - Broadcast API support for Facebook Messenger 
 * **0.15.11** - Upgrade Facebook API to 3.*, enable long messages (> 4096) for Telegram

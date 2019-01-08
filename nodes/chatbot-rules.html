@@ -376,7 +376,8 @@
   </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-rules"><p>Rules node is a multi-output node that allows to control the flow of the chatbot based on simple rules (for example <em>&quot;The topic is myTopic&quot;</em>, <em>&quot;The context variable myVar is not defined&quot;</em>). This node replace the [[Topic node|Topic-node]] that will deprecated soon.</p>
+<script type="text/x-red" data-help-name="chatbot-rules"><p>Rules node is a multi-output node that allows to control the flow of the chatbot based on simple rules (for example <em>&quot;The topic is myTopic&quot;</em>, <em>&quot;The context variable myVar is not defined&quot;</em>). This node replace the <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Topic-node"
+      target="_blank">Topic node</a> that will deprecated soon.</p>
 <p>The first rule that matches trigger the redirect of the incoming message to the related output and stops the chain of rules.</p>
 <p>This node is useful to create loops in the flow, for example to keep asking some questions to the user until a list of needed information (context variables) are filled.</p>
 <p>Rules can be created programmatically by an upstream <code>Function node</code> passing array of rules in the message payload:</p>
