@@ -247,6 +247,22 @@ describe('Validators', function() {
     assert.isNotNull(validators.platform.twilio(_.extend({}, base, { logfile: 42})));
   });
 
+  it('validates a Discord configuration', function() {
+    var base = {
+      authorizedUsernames: null,
+      clientId: '1234567',
+      token: 'aiqwgdkansljdeife',
+      contextProvider: 'memory',
+      logfile: null
+    };
+
+    assert.isNull(validators.platform.discord(base));
+    assert.isNotNull(validators.platform.discord(_.extend({}, base, { clientId: null })));
+    assert.isNotNull(validators.platform.discord(_.extend({}, base, { token: null })));
+    assert.isNotNull(validators.platform.discord(_.extend({}, base, { authorizedUsernames: 42 })));
+    assert.isNotNull(validators.platform.discord(_.extend({}, base, { logfile: 42 })));
+  });
+
   it('validates a Alexa configuration', function() {
     var base = {
       authorizedUsernames: null,
@@ -281,6 +297,20 @@ describe('Validators', function() {
     assert.isFalse(validators.invoice(Object.assign(invoice, { payload: null })));
     assert.isFalse(validators.invoice(Object.assign(invoice, { prices: null })));
     assert.isFalse(validators.invoice(Object.assign(invoice, { currency: null })));
+  });
+
+  it('validates a filename of image', function() {
+
+    var filenameIsImage = validators.filenameIsImage;
+
+    assert.isTrue(filenameIsImage('/mydir/my-image.jpg'));
+    assert.isTrue(filenameIsImage('/mydir/my-image.jpeg'));
+    assert.isTrue(filenameIsImage('/mydir/my-image.png'));
+    assert.isTrue(filenameIsImage('/mydir/my-image.gif'));
+    assert.isTrue(filenameIsImage('http://www.javascript-jedi.com/mydir/my-image.png'));
+    assert.isFalse(filenameIsImage('http://www.javascript-jedi.com/mydir/my-image.pdf'));
+    assert.isFalse(filenameIsImage('/mydir/my-image.doc'));
+
   });
 
 });

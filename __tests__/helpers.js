@@ -170,5 +170,25 @@ describe('Value extractors', function() {
     assert.equal(splitted[2], 'done.');
   });
 
+  it('should clone a message and payload (shallow clone)', function() {
+    var message = {
+      array1: [1, 2, 3],
+      payload: {
+        array2: [4, 5, 6],
+        value1: 'value string',
+        age: 42
+      }
+    };
+    var cloned = utils.cloneMessage(message);
+
+    assert.strictEqual(message, message);
+    assert.notStrictEqual(message, cloned);
+    assert.notStrictEqual(message.payload, cloned.payload);
+    assert.strictEqual(message.array1, message.array1);
+    assert.strictEqual(message.payload.array2, message.payload.array2);
+    assert.strictEqual(message.payload.value1, message.payload.value1);
+    assert.strictEqual(message.payload.age, message.payload.age);
+  });
+
 });
 
