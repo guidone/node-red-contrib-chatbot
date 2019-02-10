@@ -59,6 +59,7 @@ module.exports = function(RED) {
     var botConfiguration = {
       botname: node.botname,
       token: node.credentials != null && node.credentials.token != null ? node.credentials.token.trim() : null,
+      oauthToken: node.credentials != null && node.credentials.oauthToken != null ? node.credentials.oauthToken.trim() : null,
       contextProvider: contextStorageNode != null ? contextStorageNode.contextStorage : null,
       contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null,
       debug: node.debug,
@@ -110,6 +111,7 @@ module.exports = function(RED) {
           botname: botConfiguration.botname,
           authorizedUsernames: botConfiguration.usernames,
           token: botConfiguration.token,
+          oauthToken : botConfiguration.oauthToken,
           contextProvider: node.contextProvider,
           logfile: botConfiguration.logfile,
           debug: botConfiguration.debug,
@@ -161,6 +163,9 @@ module.exports = function(RED) {
   RED.nodes.registerType('chatbot-slack-node', SlackBotNode, {
     credentials: {
       token: {
+        type: 'text'
+      },
+      oauthToken: {
         type: 'text'
       }
     }
