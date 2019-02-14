@@ -2,6 +2,7 @@ var _ = require('underscore');
 var nlp = require('compromise');
 var moment = require('moment');
 var utils = require('../lib/helpers/utils');
+var cloneMessage = utils.cloneMessage;
 
 module.exports = function(RED) {
 
@@ -21,7 +22,7 @@ module.exports = function(RED) {
     this.parseVariable = config.parseVariable;
 
     this.on('input', function(msg) {
-      msg = RED.util.cloneMessage(msg);
+      msg = cloneMessage(msg);
       var parseType = this.parseType;
       var parseVariable = this.parseVariable;
       var chatContext = msg.chat();

@@ -27,6 +27,8 @@ module.exports = function(RED) {
     this.botUniversalProduction = config.botUniversalProduction;
     this.botTwilio = config.botTwilio;
     this.botTwilioProduction = config.botTwilioProduction;
+    this.botDiscord = config.botDiscord;
+    this.botDiscordProduction = config.botDiscordProduction;
 
     this.on('input', function(msg) {
 
@@ -42,6 +44,7 @@ module.exports = function(RED) {
       var botViber = global.environment === 'production' ? node.botViberProduction : node.botViber;
       var botUniversal = global.environment === 'production' ? node.botUniversalProduction : node.botUniversal;
       var botTwilio = global.environment === 'production' ? node.botTwilioProduction : node.botTwilio;
+      var botDiscord = global.environment === 'production' ? node.botDiscordProduction : node.botDiscord;
 
       if (transport !== 'smooch') {
         var platformNode = null;
@@ -57,6 +60,8 @@ module.exports = function(RED) {
           platformNode = RED.nodes.getNode(botUniversal).chat;
         } else if (transport === 'twilio' && RED.nodes.getNode(botTwilio) != null) {
           platformNode = RED.nodes.getNode(botTwilio).chat;
+        } else if (transport === 'discord' && RED.nodes.getNode(botDiscord) != null) {
+          platformNode = RED.nodes.getNode(botDiscord).chat;
         } else {
           node.error('Chatbot not found or not configured properly');
           return;

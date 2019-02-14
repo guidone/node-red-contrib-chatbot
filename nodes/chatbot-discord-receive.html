@@ -1,0 +1,259 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-discord-node', {
+    category: 'config',
+    defaults: {
+      botname: {
+        value: '',
+        required: true
+      },
+      usernames: {
+        value: '',
+        required: false
+      },
+      clientId: {
+        value: '',
+        required: false
+      },
+      username: {
+        value: ''
+      },
+      iconEmoji: {
+        value: ''
+      },
+      store: {
+        value: '',
+        type: 'chatbot-context-store',
+        required: false
+      },
+      log: {
+        value: null
+      },
+      debug: {
+        value: false
+      }
+    },
+    oneditprepare: function() {
+      var node = this;
+      var nodeRedUrl = '';
+      if (RED.settings.httpNodeRoot) {
+        nodeRedUrl = RED.settings.httpNodeRoot;
+      }
+      // fetch available context providers
+      $.get(nodeRedUrl + 'redbot/globals')
+        .done(function(response) {
+          if (response != null && response.discord != null && response.discord[node.botname] != null) {
+            $('#node-config-input-botname').prop('readonly', true);
+            $('.form-editable').addClass('hidden');
+            $('.form-warning').removeClass('hidden');
+            $('.form-warning .bot-name').html('"' + node.botname + '"');
+          }
+        });
+
+      $('#discordAuthorize')
+        .click(function (e) {
+          e.preventDefault();
+          var clientId = $('#node-config-input-clientId').val();
+          var oauthUrl = 'https://discordapp.com/oauth2/authorize?&client_id=' + clientId + '&scope=bot&permissions=8';
+          window.open(oauthUrl);
+        });
+
+      $('#node-config-input-clientId')
+        .keyup(function() {
+          var clientId = $('#node-config-input-clientId').val();
+          $('#discordAuthorize').attr('disabled', clientId == null || clientId === '');
+          $('#discordAuthorizeContainer').attr('style', clientId == null || clientId === '' ? 'opacity:0.5' : '');
+        });
+
+      var clientId = node.clientId;
+      $('#discordAuthorize').attr('disabled', clientId == null || clientId === '');
+      $('#discordAuthorizeContainer').attr('style', clientId == null || clientId === '' ? 'opacity:0.5' : '');
+    },
+    paletteName: 'Discord Bot',
+    credentials: {
+      token: {
+        type: 'text'
+      }
+    },
+    label: function () {
+      return this.botname;
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-discord-node">
+  <div class="form-row">
+    <label for="node-config-input-botname"><i class="icon-bookmark"></i> Bot Name</label>
+    <input type="text" id="node-config-input-botname">
+  </div>
+  <div class="form-editable">
+    <div class="form-row">
+      <label for="node-config-input-clientId">Client Id</label>
+      <input type="text" id="node-config-input-clientId">
+      <div id="discordAuthorizeContainer">
+        <button
+          type="button"
+          id="discordAuthorize"
+          style="padding: 6px 14px;  margin-top: 6px;margin-left: 104px;"
+          class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+          Authorize Application Bot
+        </button>
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-token">Token</label>
+      <input type="text" id="node-config-input-token">
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-usernames">Users</label>
+      <input type="text" id="node-config-input-usernames">
+      <div class="redbot-form-hint">
+        Comma separated list of userId authorized to use the chatBot
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-log">Log file</label>
+      <input type="text" id="node-config-input-log">
+      <div class="redbot-form-hint">
+        Store inbound and outbound messages to file
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="node-input-bot">Context</label>
+      <input type="text" id="node-config-input-store" placeholder="Select storage for chat context">
+      <div class="redbot-form-hint">
+        Select the chat context provider to use with this bot, if none is selected then non-persistent "memory" will be used.<br>
+        To extend <strong>RedBot</strong> with a new chat context provider see <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Creating-a-Chat-Context-Provider" target="_blank">this tutorial</a>.
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-debug">Debug</label>
+      <input type="checkbox" value="true" id="node-config-input-debug">
+      <div class="redbot-form-hint">
+        Show debug information on send/receive
+      </div>
+    </div>
+  </div>
+  <div class="form-warning hidden">
+    This bot configuration is stored in <b>Node-RED</b> <em>settings.js</em> and cannot be modified from the UI, check
+    the section <code>functionGlobalContext</code> near the key <em class="bot-name">""</em>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-discord-node">
+</script>
+
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-discord-receive', {
+    category: 'RedBot Platforms',
+    color: '#FFCC66',
+    defaults: {
+      bot: {
+        value: '',
+        type: 'chatbot-discord-node',
+        required: true
+      },
+      botProduction: {
+        value: "",
+        type: 'chatbot-discord-node',
+        required: false
+      },
+    },
+    inputs: 0,
+    outputs: 1,
+    icon: 'chatbot-receiver.png',
+    paletteLabel: 'Discord In',
+    label: function () {
+      return "Discord Receiver";
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-discord-receive">
+  <div class="form-row">
+    <label for="node-input-bot" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(development)</span></label>
+    <input type="text" id="node-input-bot" placeholder="Bot">
+  </div>
+  <div class="form-row" style="margin-top:25px;">
+    <label for="node-input-botProduction" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(production)</span></label>
+    <input type="text" id="node-input-botProduction" placeholder="Bot">
+  </div>
+  <div class="redbot-form-hint">
+    Bot for <strong>production</strong> will be launched only if the global variable <em>"environment"</em> in <em>settings.js</em> is set to <em>"production"</em>, otherwise will be used the configuration for <strong>development</strong>.
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-discord-receive">
+  <p>Input node for Discord.</p>
+</script>
+
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-discord-send', {
+    category: 'RedBot Platforms',
+    color: '#FFCC66',
+    defaults: {
+      bot: {
+        value: '',
+        type: 'chatbot-discord-node',
+        required: true
+      },
+      botProduction: {
+        value: "",
+        type: 'chatbot-discord-node',
+        required: false
+      },
+      track: {
+        value: false
+      },
+      passThrough: {
+        value: false
+      },
+      outputs: {
+        value: 0
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'chatbot-sender.png',
+    paletteLabel: 'Discord Out',
+    label: function () {
+      return 'Discord Sender';
+    },
+    oneditsave: function() {
+      var track = $('#node-input-track').is(':checked');
+      var passThrough = $('#node-input-passThrough').is(':checked');
+      this.outputs = track || passThrough ? 1 : 0;
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-discord-send">
+ <div class="form-row">
+    <label for="node-input-bot" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(development)</span></label>
+    <input type="text" id="node-input-bot" placeholder="Bot">
+  </div>
+  <div class="form-row" style="margin-top:25px;">
+    <label for="node-input-botProduction" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(production)</span></label>
+    <input type="text" id="node-input-botProduction" placeholder="Bot">
+  </div>
+  <div class="redbot-form-hint">
+    Bot for <strong>production</strong> will be launched only if the global variable <em>"environment"</em> in <em>settings.js</em> is set to <em>"production"</em>, otherwise will be used the configuration for <strong>development</strong>.
+  </div>
+  <div class="form-row" style="margin-top:25px;">
+    <label for="node-input-track" style="margin-bottom:0px;">Track</label>
+    <input type="checkbox" value="true" id="node-input-track" style="margin-top:0px;">
+    <div class="redbot-form-hint">
+    Track response of the user for this message: any further answer will be redirect to the output pin.
+    </div>
+    <label for="node-input-track" style="margin-bottom:0px;margin-top:15px;">Pass Through</label>
+    <input type="checkbox" value="true" id="node-input-passThrough" style="margin-top:0px;">
+    <div class="redbot-form-hint">
+    Forward the message to the output pin after sending (useful to chain messages and keep the right order)
+    </div>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-discord-send">
+  <p>Output node for Discord.</p>
+</script>
+
+
