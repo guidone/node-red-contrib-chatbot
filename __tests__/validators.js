@@ -191,7 +191,8 @@ describe('Validators', function() {
       token: 'xoxb-00000000-1111111111111',
       authorizedUsernames: null,
       contextProvider: 'memory',
-      logfile: null
+      logfile: null,
+      oauthToken: '12345678901234567890'
     };
 
     assert.isNull(validators.platform.slack(base));
