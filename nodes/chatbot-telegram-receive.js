@@ -42,6 +42,7 @@ module.exports = function(RED) {
     this.parseMode = n.parseMode;
     this.providerToken = n.providerToken;
     this.debug = n.debug;
+    this.webHook = n.webHook;
 
     if (!isUsed) {
       // silently exit, this node is not used
@@ -67,7 +68,8 @@ module.exports = function(RED) {
       logfile: node.log,
       contextProvider: contextStorageNode != null ? contextStorageNode.contextStorage : null,
       contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null,
-      debug: node.debug
+      debug: node.debug,
+      webHook: node.webHook
     };
     // check if there's a valid configuration in global settings
     if (telegramConfigs[node.botname] != null) {
@@ -118,6 +120,7 @@ module.exports = function(RED) {
           contextProvider: node.contextProvider,
           logfile: botConfiguration.logfile,
           debug: botConfiguration.debug,
+          webHook: botConfiguration.webHook,
           RED: RED
         });
         // add extensions
