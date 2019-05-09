@@ -1072,8 +1072,11 @@
 <li><strong>Log Out</strong>: Starts the account unlinking flow. <em>[Facebook]</em></li>
 <li><strong>New row</strong>: Telegram supports buttons layout with multiple row, this element just starts a new one. <em>[Telegram, Viber]</em></li>
 </ul>
-<p><strong>Telegram</strong> supports a visual feedback, visible in the client, when a <code>Postback</code> or <code>URL</code> buttons is pressed.
-<strong>Facebook</strong> supports some extra parameters in the <code>URL</code> button, like the size of the web view and  <a href="https://developers.facebook.com/docs/messenger-platform/webview">messenger extensions</a> and a maximum od three buttons.</p>
+<p>Platform exceptions</p>
+<ul>
+<li><strong>Telegram</strong> supports a visual feedback, visible in the client, when a <code>Postback</code> or <code>URL</code> buttons is pressed</li>
+<li><strong>Facebook</strong> supports some extra parameters in the <code>URL</code> button, like the size of the web view and  <a href="https://developers.facebook.com/docs/messenger-platform/webview">messenger extensions</a> and a maximum od three buttons.</li>
+</ul>
 <p>Buttons can be created programmatically by an upstream <code>Function node</code> passing array of buttons in the message payload:</p>
 <pre><code>msg.payload = [
   {
