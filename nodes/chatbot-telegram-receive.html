@@ -34,15 +34,36 @@
         value: false
       },
       webHook: {
-        value: ''
+        value: '',
+        validate: function(value) {
+          if (this.connectMode === 'webHook') {
+            return $.RedBot.validate.url(value);
+          }
+          return true;
+        }
+      },
+      connectMode: {
+        value: 'polling'
       }
     },
     oneditprepare: function() {
-      $("#node-config-input-polling").spinner({min: 0, step: 100});
+      $("#node-config-input-polling").spinner({ min: 0, step: 100 });
       var node = this;
       var nodeRedUrl = '';
       if (RED.settings.httpNodeRoot) {
         nodeRedUrl = RED.settings.httpNodeRoot;
+      }
+      // change connection mode
+      $('#node-config-input-connectMode')
+        .change(function() {
+          $('.form-row-mode').hide();
+          $('.form-row-mode-' + $(this).val()).show();
+        });
+      $('.form-row-mode').hide();
+      $('.form-row-mode-' + this.connectMode).show();
+      if (this.connectMode == null || this.connectMode === '') {
+        $('#node-config-input-connectMode').val('polling');
+        $('.form-row-mode-polling').show();
       }
       // fetch available context providers
       $.get(nodeRedUrl + 'redbot/globals')
@@ -81,22 +102,32 @@
       <label for="node-config-input-providerToken">Provider Token</label>
       <input type="text" id="node-config-input-providerToken">
     </div>
-    <div class="form-row">
+    <div class="form-row form-row-method">
+      <label for="node-config-input-connectMode">Connect Mode</label>
+      <select id="node-config-input-connectMode" placeholder="Select connect mode">
+        <option value="polling">Polling</option>
+        <option value="webHook">Web Hook</option>
+      </select>
+    </div>
+    <div class="form-row form-row-mode form-row-mode-polling">
       <label for="node-config-input-polling">Polling</label>
       <input type="text" id="node-config-input-polling" style="text-align:end; width:60px !important"> ms
+    </div>
+    <div class="form-row form-row-mode form-row-mode-webHook">
+      <label for="node-config-input-webHook">Web Hook</label>
+      <input type="text" id="node-config-input-webHook">
+      <div class="redbot-form-hint">
+        Needs to be a public and secure internet address, accessible outside the local network and must hit your instance at the
+        address <code>https://your.instance.com/redbot/telegram</code>.
+        Use <b>ngrok</b> to create a bridge to your local environment while in development mode, for example something
+        like  <code>https://123456.ngrok.io/redbot/telegram</code>
+      </div>
     </div>
     <div class="form-row">
       <label for="node-config-input-usernames">Users</label>
       <input type="text" id="node-config-input-usernames">
       <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
         Comma separated list of userId authorized to use the chatBot
-      </div>
-    </div>
-    <div class="form-row">
-      <label for="node-config-input-webHook">Web Hook</label>
-      <input type="text" id="node-config-input-webHook">
-      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
-        help on web hook
       </div>
     </div>
     <div class="form-row">
