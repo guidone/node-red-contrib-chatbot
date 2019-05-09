@@ -166,6 +166,15 @@ describe('Validators', function() {
     assert.isFalse(validators.invoiceItems([{ label: null, amount: '1.23' }]));
   });
 
+  it('Validates a URL', function() {
+    assert.isTrue(validators.url('http://www.google.com'));
+    assert.isFalse(validators.secureUrl('http://www.google.com'));
+    assert.isTrue(validators.secureUrl('https://www.google.com'));
+    assert.isTrue(validators.url('http://www.google.com/barabba'));
+    assert.isFalse(validators.url('www.google.com/barabba'));
+    assert.isFalse(validators.url('http://google/barabba'));
+  });
+
   it('validates a Telegram configuration', function() {
     var base = {
       authorizedUsernames: '12213123',
@@ -173,11 +182,22 @@ describe('Validators', function() {
       polling: 1000,
       parseMode: 'none',
       contextProvider: 'memory',
-      logfile: null
+      logfile: null,
+      connectMode: 'polling'
     };
 
     assert.isNull(validators.platform.telegram(base));
+    assert.isNull(validators.platform.telegram(_.extend({}, base, { connectMode: null })));
     assert.isNotNull(validators.platform.telegram(_.extend({}, base, { polling: 'aaaa'})));
+    assert.isNotNull(validators.platform.telegram(_.extend({}, base, { connectMode: 'webHook' })));
+    assert.isNull(validators.platform.telegram(_.extend({}, base, {
+      connectMode: 'webHook',
+      webHook: 'https://1234.endpoint.it/blabla'
+    })));
+    assert.isNotNull(validators.platform.telegram(_.extend({}, base, {
+      connectMode: 'webHook',
+      webHook: 'http://1234.endpoint.it/blabla'
+    })));
     assert.isNotNull(validators.platform.telegram(_.extend({}, base, { token: null})));
     assert.isNotNull(validators.platform.telegram(_.extend({}, base, { token: ''})));
     assert.isNotNull(validators.platform.telegram(_.extend({}, base, { contextProvider: 'wrong_context'})));
