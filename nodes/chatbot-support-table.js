@@ -1,4 +1,4 @@
-var ChatExpress = require('../lib/chat-platform/chat-platform');
+var { ChatExpress } = require('chat-platform');
 
 module.exports = function(RED) {
   function ChatBotSupportTable(config) {

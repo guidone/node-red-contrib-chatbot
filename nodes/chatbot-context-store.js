@@ -1,5 +1,5 @@
 var _ = require('underscore');
-var ChatPlatform = require('../lib/chat-platform/chat-platform');
+var { ChatExpress: ChatPlatform } = require('chat-platform');
 
 module.exports = function(RED) {
 

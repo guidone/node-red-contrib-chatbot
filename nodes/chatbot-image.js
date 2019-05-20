@@ -4,7 +4,7 @@ var _ = require('underscore');
 var utils = require('../lib/helpers/utils');
 var fetchers = require('../lib/helpers/fetchers');
 var validators = require('../lib/helpers/validators');
-var ChatExpress = require('../lib/chat-platform/chat-platform');
+var { ChatExpress } = require('chat-platform');
 
 module.exports = function(RED) {
 
