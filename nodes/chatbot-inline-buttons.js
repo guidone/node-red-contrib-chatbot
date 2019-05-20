@@ -1,7 +1,7 @@
 var MessageTemplate = require('../lib/message-template-async');
 var emoji = require('node-emoji');
 var utils = require('../lib/helpers/utils');
-var ChatExpress = require('../lib/chat-platform/chat-platform');
+var { ChatExpress } = require('chat-platform');
 
 module.exports = function(RED) {
 

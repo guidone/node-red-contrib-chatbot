@@ -2,7 +2,7 @@ var _ = require('underscore');
 var utils = require('../lib/helpers/utils');
 var MessageTemplate = require('../lib/message-template-async');
 var emoji = require('node-emoji');
-var ChatExpress = require('../lib/chat-platform/chat-platform');
+var { ChatExpress } = require('chat-platform');
 var append = utils.append;
 
 module.exports = function(RED) {
