@@ -76,7 +76,20 @@
         type: 'chatbot-discord-node',
         required: false
       },
+      botSinchSMS: {
+        value: '',
+        type: 'chatbot-sinch-sms-node',
+        required: false
+      },
+      botSinchSMSProduction: {
+        value: '',
+        type: 'chatbot-sinch-sms-node',
+        required: false
+      },
       chatId: {
+        value: ''
+      },
+      userId: {
         value: ''
       },
       transport: {
@@ -98,6 +111,10 @@
     outputs: 1,
     oneditprepare: function() {
       var _this = this;
+
+      // RED.nodes.eachConfig(node => { console.log('-', node); })
+
+
       $.RB_Legend();
       $('#node-input-contextMessageId').on('change', function() {
         var checked = $(this).is(':checked');
@@ -130,19 +147,23 @@
   <input type="text" id="node-input-name" placeholder="Name">
 </div>
 <div class="form-row">
-  <label for="node-input-transport">Transport</label>
+  <label for="node-input-transport">Transport (FIX)</label>
   <select id="node-input-transport">
     <option value="">Select transport</option>
     <option value="facebook">Facebook Messenger</option>
     <option value="slack">Slack</option>
     <option value="discord">Discord</option>
     <option value="smooch">Smooch</option>
+    <option value="sinch-sms">Sinch SMS</option>
     <option value="telegram">Telegram</option>
     <option value="twilio">Twilio</option>
     <option value="viber">Viber</option>
     <option value="universal">Universal</option>
   </select>
 </div>
+
+
+
 <div class="form-row form-row-bot form-row-bot-discord" style="margin-left:104px;">
   <div>Discord Bot <span class="redbot-environment">(development)</span></div>
   <input type="text" id="node-input-botDiscord" placeholder="Discord Bot">
@@ -174,6 +195,14 @@
 <div class="form-row form-row-bot form-row-bot-slack" style="margin-left:104px;">
   <div>Slack Bot <span class="redbot-environment">(production)</span></div>
   <input type="text" id="node-input-botSlackProduction" placeholder="Slack Bot">
+</div>
+<div class="form-row form-row-bot form-row-bot-sinch-sms" style="margin-left:104px;">
+  <div>Sinch SMS Bot <span class="redbot-environment">(development)</span></div>
+  <input type="text" id="node-input-botSinchSMS" placeholder="Sinch Bot">
+</div>
+<div class="form-row form-row-bot form-row-bot-sinch-sms" style="margin-left:104px;">
+  <div>Sinch SMS Bot <span class="redbot-environment">(production)</span></div>
+  <input type="text" id="node-input-botSinchSMSProduction" placeholder="Sinch Bot">
 </div>
 <div class="form-row form-row-bot form-row-bot-facebook" style="margin-left:104px;">
   <div>Facebook Bot <span class="redbot-environment">(development)</span></div>
@@ -216,6 +245,14 @@
   the <code>chatId</code> is unique per user across the different platforms.
   </div>
 </div>
+<div class="form-row">
+  <label for="node-input-name">UserId</label>
+  <input type="text" id="node-input-userId" placeholder="User id" style="width:150px;">
+  <div class="redbot-form-hint">
+    **tbd some help**
+  </div>
+</div>
+
 <div class="form-row form-row-bot form-row-bot-telegram">
   <label for="node-input-name">MessageId</label>
   <input type="text" id="node-input-messageId" class="platform-telegram" placeholder="Message Id" style="width:150px;">
