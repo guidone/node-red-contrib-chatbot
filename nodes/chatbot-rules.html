@@ -41,8 +41,11 @@
             + '  <option value="hasVariable">Variable ... is defined</option>'
             + '  <option value="isVariable">Variable ... is ...</option>'
             + '</optgroup>'
+            + '<optgroup label="Transport">'
+            + '  <option value="transport">Transport is ...</option>'
+            + '  <option value="isTransportAvailable">Transport ... is available</option>'
+            + '</optgroup>'
             + '<option value="dialogState">Dialog state is ...</option>'
-            + '<option value="transport">Transport is ...</option>'
             + '<option value="notPending">No pending requests</option>'
             + '<option value="pending">Pending requests</option>'
             + '<option value="catchAll">If nothing of above applies</option>'
@@ -106,10 +109,11 @@
             + '<option value="confirmed">Confirmed</option>'
             + '<option value="denied">Denied</option>'
             + '</select>')
-          .append('<select class="transport" name="transport" style="display:none;width:40%;margin-left:10px;">'
+          .append('<select class="transport isTransportAvailable" name="transport" style="display:none;width:40%;margin-left:10px;">'
             + '<option value="">Select transport</option>'
             + transportOptions
             + '</select>')
+          .append('<span class="isTransportAvailable" style="display:none;"> is available</span>')
           .append('<select class="messageType notMessageType" name="messageType" style="display:none;width:40%;margin-left:10px;">'
             + '<option value="">Select type</option>'
             + messageTypes
@@ -244,7 +248,7 @@
           if (type === 'messageType' || type === 'notMessageType') {
             obj.messageType = rule.find('select[name=messageType]').val();
           }
-          if (type === 'transport') {
+          if (type === 'transport' || type === 'isTransportAvailable') {
             obj.transport = rule.find('select[name=transport]').val();
           }
           if (type === 'messageEvent') {
@@ -338,6 +342,10 @@
         return 'Pending requests';
       } else if (rule.type === 'notPending') {
         return 'No pending requests';
+      } else if (rule.type === 'transport') {
+        return 'Trasport is "' + ($.RedBot.validate.notEmpty(rule.transport) ? rule.transport : '...') + '"';
+      } else if (rule.type === 'isTransportAvailable') {
+        return 'Trasport "' + ($.RedBot.validate.notEmpty(rule.transport) ? rule.transport : '...') + '" is available';
       } else if (rule.type === 'topicIncludes') {
         return 'Topic includes "' + ($.RedBot.validate.notEmpty(rule.topic) ? rule.topic : '...') + '"';
       } else if (rule.type === 'isNotTopic') {
