@@ -1,154 +1,153 @@
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-conversation', {
-    category: 'RedBot',
-    color: '#FFCC66',
-    defaults: {
-      name: {
-        value: ''
-      },
-      botTelegram: {
-        value: "",
-        type: 'chatbot-telegram-node',
-        required: false
-      },
-      botTelegramProduction: {
-        value: "",
-        type: 'chatbot-telegram-node',
-        required: false
-      },
-      botSlack: {
-        value: '',
-        type: 'chatbot-slack-node',
-        required: false
-      },
-      botSlackProduction: {
-        value: '',
-        type: 'chatbot-slack-node',
-        required: false
-      },
-      botFacebook: {
-        value: '',
-        type: 'chatbot-facebook-node',
-        required: false
-      },
-      botFacebookProduction: {
-        value: '',
-        type: 'chatbot-facebook-node',
-        required: false
-      },
-      botViber: {
-        value: '',
-        type: 'chatbot-viber-node',
-        required: false
-      },
-      botViberProduction: {
-        value: '',
-        type: 'chatbot-viber-node',
-        required: false
-      },
-      botUniversal: {
-        value: '',
-        type: 'chatbot-universal-node',
-        required: false
-      },
-      botUniversalProduction: {
-        value: '',
-        type: 'chatbot-universal-node',
-        required: false
-      },
-      botTwilio: {
-        value: '',
-        type: 'chatbot-twilio-node',
-        required: false
-      },
-      botTwilioProduction: {
-        value: '',
-        type: 'chatbot-twilio-node',
-        required: false
-      },
-      botDiscord: {
-        value: '',
-        type: 'chatbot-discord-node',
-        required: false
-      },
-      botDiscordProduction: {
-        value: '',
-        type: 'chatbot-discord-node',
-        required: false
-      },
-      botSinchSMS: {
-        value: '',
-        type: 'chatbot-sinch-sms-node',
-        required: false
-      },
-      botSinchSMSProduction: {
-        value: '',
-        type: 'chatbot-sinch-sms-node',
-        required: false
-      },
-      botSinchWhatsApp: {
-        value: '',
-        type: 'chatbot-sinch-whatsapp-node',
-        required: false
-      },
-      botSinchWhatsAppProduction: {
-        value: '',
-        type: 'chatbot-sinch-whatsapp-node',
-        required: false
-      },
-      chatId: {
-        value: ''
-      },
-      userId: {
-        value: ''
-      },
-      transport: {
-        value: ''
-      },
-      messageId: {
-        value: ''
-      },
-      contextMessageId: {
-        value: false
-      },
-      store: {
-        value: '',
-        type: 'chatbot-context-store',
-        required: false
-      }
-    },
-    inputs: 1,
-    outputs: 1,
-    oneditprepare: function() {
-      var _this = this;
+  (function() {
 
-      // RED.nodes.eachConfig(node => { console.log('-', node); })
+    function fillConfig(select, transport) {
+      console.log('fill', transport);
 
+      let configurationOptions = ['<option value="">Select bot configuration</option>'];
 
-      $.RB_Legend();
-      $('#node-input-contextMessageId').on('change', function() {
-        var checked = $(this).is(':checked');
-        if (checked) {
-          $('#node-input-messageId').val('{{messageId}}').attr('disabled', true);
-        } else {
-          $('#node-input-messageId').val(_this.messageId).attr('disabled', false);
+      RED.nodes.eachConfig(node => {
+        if (node.type === `chatbot-${transport}-node`) {
+          configurationOptions.push(`<option value="${node.id}">${node.botname}</option>`);
         }
       });
+
+      $(select)
+        .html(configurationOptions)
+        .attr('disabled', false);
+    }
+
+    function enableChatId() {
+      $('input[type="radio"][value="userId"]').attr('checked', false);
+      $('input[type="radio"][value="chatId"]').attr('checked', true);
+      $('#node-input-userId').val('').attr('disabled', true);
+      $('#node-input-chatId').attr('disabled', false);
+      $('.form-row-chatId').removeClass('hidden');
+    }
+
+    function enableUserId() {
+      $('input[type="radio"][value="userId"]').attr('checked', true);
+      $('input[type="radio"][value="chatId"]').attr('checked', false);
+      $('#node-input-chatId').val('').attr('disabled', true);
+      $('#node-input-userId').attr('disabled', false);
+      $('#node-input-transport').val(null);
+      $('#node-input-botDevelopment').val(null).attr('disabled', true);
+      $('#node-input-botProduction').val(null).attr('disabled', true);
+      $('.form-row-chatId').addClass('hidden');
+    }
+
+    function buildConfigSelector() {
+      const node = this;
+
+      let transportOptions = this.platforms.map(platform => {
+        return `<option value="${platform.id}">${platform.name}</option>`;
+      });
+      transportOptions = ['<option value="">Select platform</option>', ...transportOptions];
+
+
       $('#node-input-transport')
+        .html(transportOptions)
         .change(function() {
           var transport = $(this).val();
-          $('.form-row-bot').hide();
-          $('.form-row-bot-' + transport).show();
+          console.log('select', transport);
+          $('#node-input-botDevelopment').val('');
+          $('#node-input-botProduction').val('');
+          if (transport !== '' && transport != null) {
+            fillConfig('#node-input-botDevelopment', transport);
+            fillConfig('#node-input-botProduction', transport);
+          }
         });
-      $('.form-row-bot').hide();
-      $('.form-row-bot-' + _this.transport).show();
-    },
-    paletteLabel: 'Conversation',
-    icon: 'chatbot-conversation.png',
-    label: function() {
-      return this.name || 'Conversation';
+      // click in radio items
+      $('input[type="radio"][value="userId"]')
+        .click(function() {
+          enableUserId();
+        });
+
+      $('input[type="radio"][value="chatId"]')
+        .click(function() {
+          enableChatId();
+        });
+      // enable current config or default
+      if (node.chatId != null && node.chatId !== '') {
+        enableChatId();
+      } else if (node.userId != null && node.userId !== '') {
+        enableUserId();
+      } else {
+        enableChatId();
+      }
+      // pre-fill with current config
+      if (node.transport != null && node.transport !== '') {
+        $('#node-input-transport').val(node.transport);
+        fillConfig('#node-input-botDevelopment', node.transport);
+        fillConfig('#node-input-botProduction', node.transport);
+        $('#node-input-botDevelopment').val(node.botDevelopment);
+        $('#node-input-botProduction').val(node.botProduction);
+      }
     }
-  });
+
+    RED.nodes.registerType('chatbot-conversation', {
+      category: 'RedBot',
+      color: '#FFCC66',
+      defaults: {
+        name: {
+          value: ''
+        },
+        botDevelopment: {
+          value: '',
+          validate: function() {
+            return $.RedBot.validate.isEmpty(this.chatId) || $.RedBot.validate.notEmpty(this.botDevelopment);
+          }
+        },
+        botProduction: {
+          value: '',
+          required: false
+        },
+        chatId: {
+          value: '',
+          validate: function(value) {
+            return $.RedBot.validate.notEmpty(this.userId) || $.RedBot.validate.notEmpty(value);
+          }
+        },
+        userId: {
+          value: '',
+          validate: function(value) {
+            return $.RedBot.validate.notEmpty(this.chatId) || $.RedBot.validate.notEmpty(value);
+          }
+        },
+        transport: {
+          value: '',
+          validate: function() {
+            return $.RedBot.validate.isEmpty(this.chatId) || $.RedBot.validate.notEmpty(this.transport);
+          }
+        }
+      },
+      inputs: 1,
+      outputs: 1,
+      oneditprepare: function() {
+        var node = this;
+        var nodeRedUrl = '';
+        if (RED.settings.httpNodeRoot) {
+          nodeRedUrl = RED.settings.httpNodeRoot;
+        }
+        $.get(nodeRedUrl + 'redbot/globals')
+          .done(function(response) {
+            node.messageTypes = response.messageTypes;
+            node.eventTypes = response.eventTypes;
+            $.get(nodeRedUrl + 'redbot/platforms')
+              .done(function(response) {
+                node.platforms = response.platforms;
+                buildConfigSelector.call(node);
+              });
+          });
+      },
+      paletteLabel: 'Conversation',
+      icon: 'chatbot-conversation.png',
+      label: function() {
+        return this.name || 'Conversation';
+      }
+    });
+
+  })();
 </script>
 
 <script type="text/x-red" data-template-name="chatbot-conversation">
@@ -157,128 +156,43 @@
   <input type="text" id="node-input-name" placeholder="Name">
 </div>
 <div class="form-row">
-  <label for="node-input-transport">Transport (FIX)</label>
+  <input type="radio" value="chatId" style="margin-top:-4px;margin-right:6px;width:inherit;">
+  <span class="label-radio">ChatId</span>
+  <input type="text" id="node-input-chatId" placeholder="Chat id" style="width:150px;">
+</div>
+<div class="form-row form-row-chatId" style="padding-left:20px">
+  <label for="node-input-transport">Transport</label>
   <select id="node-input-transport">
     <option value="">Select transport</option>
-    <option value="facebook">Facebook Messenger</option>
-    <option value="slack">Slack</option>
-    <option value="discord">Discord</option>
-    <option value="smooch">Smooch</option>
-    <option value="sinch-sms">Sinch SMS</option>
-    <option value="sinch-whatsapp">Sinch WhatsApp</option>
-    <option value="telegram">Telegram</option>
-    <option value="twilio">Twilio</option>
-    <option value="viber">Viber</option>
-    <option value="universal">Universal</option>
   </select>
 </div>
-
-
-
-<div class="form-row form-row-bot form-row-bot-discord" style="margin-left:104px;">
-  <div>Discord Bot <span class="redbot-environment">(development)</span></div>
-  <input type="text" id="node-input-botDiscord" placeholder="Discord Bot">
+<div class="form-row form-row-chatId" style="padding-left:20px">
+  <div>Bot Configuration for <span class="redbot-environment">development</span></div>
+  <select id="node-input-botDevelopment">
+    <option value="">Select configuration</option>
+  </select>
 </div>
-<div class="form-row form-row-bot form-row-bot-discord" style="margin-left:104px;">
-  <div>Discord Bot <span class="redbot-environment">(production)</span></div>
-  <input type="text" id="node-input-botDiscordProduction" placeholder="Discord Bot">
+<div class="form-row form-row-chatId" style="padding-left:20px">
+  <div>Bot Configuration for <span class="redbot-environment">production</span></div>
+  <select id="node-input-botProduction">
+    <option value="">Select configuration</option>
+  </select>
 </div>
-<div class="form-row form-row-bot form-row-bot-telegram" style="margin-left:104px;">
-  <div>Telegram Bot <span class="redbot-environment">(development)</span></div>
-  <input type="text" id="node-input-botTelegram" placeholder="Telegram Bot">
-</div>
-<div class="form-row form-row-bot form-row-bot-telegram" style="margin-left:104px;">
-  <div>Telegram Bot <span class="redbot-environment">(production)</span></div>
-  <input type="text" id="node-input-botTelegramProduction" placeholder="Telegram Bot">
-</div>
-<div class="form-row form-row-bot form-row-bot-twilio" style="margin-left:104px;">
-  <div>Twilio Bot <span class="redbot-environment">(development)</span></div>
-  <input type="text" id="node-input-botTwilio" placeholder="Twilio Bot">
-</div>
-<div class="form-row form-row-bot form-row-bot-twilio" style="margin-left:104px;">
-  <div>Twilio Bot <span class="redbot-environment">(production)</span></div>
-  <input type="text" id="node-input-botTwilioProduction" placeholder="Twilio Bot">
-</div>
-<div class="form-row form-row-bot form-row-bot-slack" style="margin-left:104px;">
-  <div>Slack Bot <span class="redbot-environment">(development)</span></div>
-  <input type="text" id="node-input-botSlack" placeholder="Slack Bot">
-</div>
-<div class="form-row form-row-bot form-row-bot-slack" style="margin-left:104px;">
-  <div>Slack Bot <span class="redbot-environment">(production)</span></div>
-  <input type="text" id="node-input-botSlackProduction" placeholder="Slack Bot">
-</div>
-<div class="form-row form-row-bot form-row-bot-sinch-sms" style="margin-left:104px;">
-  <div>Sinch SMS Bot <span class="redbot-environment">(development)</span></div>
-  <input type="text" id="node-input-botSinchSMS" placeholder="Sinch SMS Bot">
-</div>
-<div class="form-row form-row-bot form-row-bot-sinch-sms" style="margin-left:104px;">
-  <div>Sinch SMS Bot <span class="redbot-environment">(production)</span></div>
-  <input type="text" id="node-input-botSinchSMSProduction" placeholder="Sinch SMS Bot">
-</div>
-<div class="form-row form-row-bot form-row-bot-sinch-whatsapp" style="margin-left:104px;">
-  <div>Sinch SMS Bot <span class="redbot-environment">(development)</span></div>
-  <input type="text" id="node-input-botSinchWhatsApp" placeholder="Sinch WhatsApp Bot">
-</div>
-<div class="form-row form-row-bot form-row-bot-sinch-whatsapp" style="margin-left:104px;">
-  <div>Sinch SMS Bot <span class="redbot-environment">(production)</span></div>
-  <input type="text" id="node-input-botSinchWhatsAppProduction" placeholder="Sinch WhatsApp Bot">
-</div>
-<div class="form-row form-row-bot form-row-bot-facebook" style="margin-left:104px;">
-  <div>Facebook Bot <span class="redbot-environment">(development)</span></div>
-  <input type="text" id="node-input-botFacebook" placeholder="Facebook Bot">
-</div>
-<div class="form-row form-row-bot form-row-bot-facebook" style="margin-left:104px;">
-  <div>Facebook Bot <span class="redbot-environment">(production)</span></div>
-  <input type="text" id="node-input-botFacebookProduction" placeholder="Facebook Bot">
-</div>
-<div class="form-row form-row-bot form-row-bot-viber" style="margin-left:104px;">
-  <div>Viber Bot <span class="redbot-environment">(development)</span></div>
-  <input type="text" id="node-input-botViber" placeholder="Viber Bot">
-</div>
-<div class="form-row form-row-bot form-row-bot-viber" style="margin-left:104px;">
-  <div>Viber Bot <span class="redbot-environment">(production)</span></div>
-  <input type="text" id="node-input-botViberProduction" placeholder="Viber Bot">
-</div>
-<div class="form-row form-row-bot form-row-bot-universal" style="margin-left:104px;">
-  <div>Universal Bot <span class="redbot-environment">(development)</span></div>
-  <input type="text" id="node-input-botUniversal" placeholder="Universal Bot">
-</div>
-<div class="form-row form-row-bot form-row-bot-universal" style="margin-left:104px;">
-  <div>Universal Bot <span class="redbot-environment">(production)</span></div>
-  <input type="text" id="node-input-botUniversalProduction" placeholder="Universal Bot">
-</div>
-<div class="form-row form-row-bot form-row-bot-smooch">
-  <label for="node-input-bot">Context</label>
-  <input type="text" id="node-input-store" placeholder="Select storage for chat context">
+<div class="form-row" style="padding-left:20px>
   <div class="redbot-form-hint">
-  Select the chat context provider to use with this message, if none is selected then non-persistent "memory" will be used.<br>
-  To extend <strong>RedBot</strong> with a new chat context provider see <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Creating-a-Chat-Context-Provider" target="_blank">this tutorial</a>.
-  </div>
-</div>
-<br/>
-<div class="form-row">
-  <label for="node-input-name">ChatId</label>
-  <input type="text" id="node-input-chatId" placeholder="Chat id" style="width:150px;">
-  <div class="redbot-form-hint">
-  The <code>chatId</code> is needed to initiate the conversation (you can grab the chatId from the logs or a debug node),
-  the <code>chatId</code> is unique per user across the different platforms.
+    The <code>chatId</code> is needed to initiate the conversation (you can grab the chatId from the logs or a debug node),
+    the <code>chatId</code> is unique per user across the different platforms.
   </div>
 </div>
 <div class="form-row">
-  <label for="node-input-name">UserId</label>
+  <input type="radio" value="userId" style="margin-top:-4px;margin-right:6px;width:inherit;">
+  <span class="label-radio">UserId</span>
   <input type="text" id="node-input-userId" placeholder="User id" style="width:150px;">
-  <div class="redbot-form-hint">
-    **tbd some help**
-  </div>
 </div>
-
-<div class="form-row form-row-bot form-row-bot-telegram">
-  <label for="node-input-name">MessageId</label>
-  <input type="text" id="node-input-messageId" class="platform-telegram" placeholder="Message Id" style="width:150px;">
-  <input type="checkbox" value="true" id="node-input-contextMessageId" style="width:20px;"> Use context <em>{messageId}</em>
+<div class="form-row" style="padding-left:20px>
   <div class="redbot-form-hint">
-    Specify a <code>messageId</code> to edit a message already sent to the user. Use context <code>messageId</code> to
-     edit the last sent message.
+    The <code>chatId</code> is needed to initiate the conversation (you can grab the chatId from the logs or a debug node),
+    the <code>chatId</code> is unique per user across the different platforms.
   </div>
 </div>
 <div class="redbot-form-legend"></div>
