@@ -7,7 +7,7 @@ const Types = {
 
   isTransportAvailable(rule, message) {
     return new Promise((resolve, reject) => {
-      message.isTransportAvailable(rule.transport)
+      message.isTransportAvailable(rule.transport, message)
         .then(
           isAvailable => {
             if (isAvailable) {
