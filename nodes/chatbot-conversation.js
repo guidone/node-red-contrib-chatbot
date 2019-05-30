@@ -22,6 +22,8 @@ module.exports = function(RED) {
     this.botSlackProduction = config.botSlackProduction;
     this.botSinchSMS = config.botSinchSMS;
     this.botSinchSMSProduction = config.botSinchSMSProduction;
+    this.botSinchWhatsApp = config.botSinchWhatsApp;
+    this.botSinchWhatsAppProduction = config.botSinchWhatsAppProduction;
     this.botFacebook = config.botFacebook;
     this.botFacebookProduction = config.botFacebookProduction;
     this.botViber = config.botViber;
@@ -47,6 +49,7 @@ module.exports = function(RED) {
       var botTelegram = global.environment === 'production' ? node.botTelegramProduction : node.botTelegram;
       var botSlack = global.environment === 'production' ? node.botSlackProduction : node.botSlack;
       var botSinchSMS = global.environment === 'production' ? node.botSinchSMSProduction : node.botSinchSMS;
+      var botSinchWhatsApp = global.environment === 'production' ? node.botSinchWhatsAppProduction : node.botSinchWhatsApp;
       var botFacebook = global.environment === 'production' ? node.botFacebookProduction : node.botFacebook;
       var botViber = global.environment === 'production' ? node.botViberProduction : node.botViber;
       var botUniversal = global.environment === 'production' ? node.botUniversalProduction : node.botUniversal;
@@ -59,6 +62,8 @@ module.exports = function(RED) {
         var platformNode = null;
         if (transport === 'sinch-sms' && RED.nodes.getNode(botSinchSMS) != null) {
           platformNode = RED.nodes.getNode(botSinchSMS).chat;
+        } else if (transport === 'sinch-whatsapp' && RED.nodes.getNode(botSinchWhatsApp) != null) {
+          platformNode = RED.nodes.getNode(botSinchWhatsApp).chat;
         } else if (transport === 'slack' && RED.nodes.getNode(botSlack) != null) {
           platformNode = RED.nodes.getNode(botSlack).chat;
         } else if (transport === 'telegram' && RED.nodes.getNode(botTelegram) != null) {

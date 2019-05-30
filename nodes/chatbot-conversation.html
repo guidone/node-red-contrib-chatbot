@@ -86,6 +86,16 @@
         type: 'chatbot-sinch-sms-node',
         required: false
       },
+      botSinchWhatsApp: {
+        value: '',
+        type: 'chatbot-sinch-whatsapp-node',
+        required: false
+      },
+      botSinchWhatsAppProduction: {
+        value: '',
+        type: 'chatbot-sinch-whatsapp-node',
+        required: false
+      },
       chatId: {
         value: ''
       },
@@ -155,6 +165,7 @@
     <option value="discord">Discord</option>
     <option value="smooch">Smooch</option>
     <option value="sinch-sms">Sinch SMS</option>
+    <option value="sinch-whatsapp">Sinch WhatsApp</option>
     <option value="telegram">Telegram</option>
     <option value="twilio">Twilio</option>
     <option value="viber">Viber</option>
@@ -198,11 +209,19 @@
 </div>
 <div class="form-row form-row-bot form-row-bot-sinch-sms" style="margin-left:104px;">
   <div>Sinch SMS Bot <span class="redbot-environment">(development)</span></div>
-  <input type="text" id="node-input-botSinchSMS" placeholder="Sinch Bot">
+  <input type="text" id="node-input-botSinchSMS" placeholder="Sinch SMS Bot">
 </div>
 <div class="form-row form-row-bot form-row-bot-sinch-sms" style="margin-left:104px;">
   <div>Sinch SMS Bot <span class="redbot-environment">(production)</span></div>
-  <input type="text" id="node-input-botSinchSMSProduction" placeholder="Sinch Bot">
+  <input type="text" id="node-input-botSinchSMSProduction" placeholder="Sinch SMS Bot">
+</div>
+<div class="form-row form-row-bot form-row-bot-sinch-whatsapp" style="margin-left:104px;">
+  <div>Sinch SMS Bot <span class="redbot-environment">(development)</span></div>
+  <input type="text" id="node-input-botSinchWhatsApp" placeholder="Sinch WhatsApp Bot">
+</div>
+<div class="form-row form-row-bot form-row-bot-sinch-whatsapp" style="margin-left:104px;">
+  <div>Sinch SMS Bot <span class="redbot-environment">(production)</span></div>
+  <input type="text" id="node-input-botSinchWhatsAppProduction" placeholder="Sinch WhatsApp Bot">
 </div>
 <div class="form-row form-row-bot form-row-bot-facebook" style="margin-left:104px;">
   <div>Facebook Bot <span class="redbot-environment">(development)</span></div>
