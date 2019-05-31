@@ -44,6 +44,7 @@
             + '<optgroup label="Transport">'
             + '  <option value="transport">Transport is ...</option>'
             + '  <option value="isTransportAvailable">Transport ... is available</option>'
+            + '  <option value="isTransportPreferred">Transport ... is preferred</option>'
             + '</optgroup>'
             + '<option value="dialogState">Dialog state is ...</option>'
             + '<option value="notPending">No pending requests</option>'
@@ -109,11 +110,12 @@
             + '<option value="confirmed">Confirmed</option>'
             + '<option value="denied">Denied</option>'
             + '</select>')
-          .append('<select class="transport isTransportAvailable" name="transport" style="display:none;width:40%;margin-left:10px;">'
+          .append('<select class="transport isTransportAvailable isTransportPreferred" name="transport" style="display:none;width:40%;margin-left:10px;">'
             + '<option value="">Select transport</option>'
             + transportOptions
             + '</select>')
           .append('<span class="isTransportAvailable" style="display:none;"> is available</span>')
+          .append('<span class="isTransportPreferred" style="display:none;"> is preferred</span>')
           .append('<select class="messageType notMessageType" name="messageType" style="display:none;width:40%;margin-left:10px;">'
             + '<option value="">Select type</option>'
             + messageTypes
@@ -248,7 +250,7 @@
           if (type === 'messageType' || type === 'notMessageType') {
             obj.messageType = rule.find('select[name=messageType]').val();
           }
-          if (type === 'transport' || type === 'isTransportAvailable') {
+          if (type === 'transport' || type === 'isTransportAvailable' || type === 'isTransportPreferred') {
             obj.transport = rule.find('select[name=transport]').val();
           }
           if (type === 'messageEvent') {
@@ -346,6 +348,8 @@
         return 'Trasport is "' + ($.RedBot.validate.notEmpty(rule.transport) ? rule.transport : '...') + '"';
       } else if (rule.type === 'isTransportAvailable') {
         return 'Trasport "' + ($.RedBot.validate.notEmpty(rule.transport) ? rule.transport : '...') + '" is available';
+      } else if (rule.type === 'isTransportPreferred') {
+        return 'Trasport "' + ($.RedBot.validate.notEmpty(rule.transport) ? rule.transport : '...') + '" is preferred';
       } else if (rule.type === 'topicIncludes') {
         return 'Topic includes "' + ($.RedBot.validate.notEmpty(rule.topic) ? rule.topic : '...') + '"';
       } else if (rule.type === 'isNotTopic') {
