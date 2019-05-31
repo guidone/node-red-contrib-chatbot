@@ -1,7 +1,7 @@
 <script type="text/javascript">
 
   RED.nodes.registerType('chatbot-listen-lexicon',{
-    category: 'RedBot Parsers',
+    category: 'SinchBot Parsers',
     color: '#FFCC66',
     defaults: {
       name: {
@@ -107,7 +107,7 @@ toyota
 chrisler
 </code></pre><p>At this point the listen node it&#39;s able to use rules like</p>
 <pre><code>1. &quot;drive[verb]&quot; &quot;[car]-&gt;my_car&quot;
-2. &quot;my&quot; &quot;car[noun]&quot; &quot;is&quot; &quot;[car]-&gt;my_car&quot; 
+2. &quot;my&quot; &quot;car[noun]&quot; &quot;is&quot; &quot;[car]-&gt;my_car&quot;
 </code></pre><p>And this will match sentences like</p>
 <pre><code>&quot;my car is a Lamborghini&quot;
 // MATCH, msg.chat(&#39;my_car&#39;) = &quot;lamborghini&quot;

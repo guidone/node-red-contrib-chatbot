@@ -1,6 +1,6 @@
 <script type="text/javascript">
   RED.nodes.registerType('chatbot-authorized', {
-    category: 'RedBot Flow',
+    category: 'SinchBot Flow',
     color: '#FFCC66',
     defaults: {
     },
@@ -28,7 +28,7 @@ Promise.resolve(chat.get(&#39;authorized&#39;))
 <pre><code class="lang-javascript">// this middleware will be execute before any &#39;in&#39; middleware
 node.chat.use(function(message) {
   const chat = message.chat();
-  // always return a promise, this ensure it&#39;s a promise even if using the 
+  // always return a promise, this ensure it&#39;s a promise even if using the
   // sync memory context
   return Promise.resolve(chat.get(&#39;chatId&#39;))
     .then(chatId =&gt; Promise.resolve(myAuthScheme(chatId)))

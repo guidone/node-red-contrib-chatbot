@@ -229,6 +229,7 @@
         return $.RedBot.validate.notEmpty(rule.command);
       case 'messageType':
         return $.RedBot.validate.notEmpty(rule.messageType);
+      case 'isTransportPreferred':
       case 'isTransportAvailable':
       case 'transport':
         return $.RedBot.validate.notEmpty(rule.transport);
@@ -965,7 +966,7 @@
   };
 
   RED.nodes.registerType('chatbot-inline-buttons', {
-    category: 'RedBot',
+    category: 'SinchBot',
     color: '#FFCC66',
     defaults: {
       name: {
