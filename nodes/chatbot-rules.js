@@ -5,6 +5,22 @@ const when = utils.when;
 
 const Types = {
 
+  isTransportPreferred(rule, message) {
+    return new Promise((resolve, reject) => {
+      message.isTransportPreferred(rule.transport, message)
+        .then(
+          isAvailable => {
+            if (isAvailable) {
+              resolve(rule)
+            } else {
+              reject();
+            }
+          },
+          () => reject()
+        );
+    });
+  },
+
   isTransportAvailable(rule, message) {
     return new Promise((resolve, reject) => {
       message.isTransportAvailable(rule.transport, message)
