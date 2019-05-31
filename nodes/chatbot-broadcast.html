@@ -132,10 +132,10 @@ A [[Conversation node|Conversation-node]] is required in order at the beginning 
 <pre><code>Hello {{first_name}} {{last_name}}!
 </code></pre><p>that will be replaced by the recipient&#39;s first name and last name.</p>
 <p>If the <code>Facebook sender</code> has the the pass-thru option enabled, the resulting message will the <em>broadcastId</em> which can be used to fetch the status and the metrics of the broadcasted message.</p>
-<pre><code>{
+<pre><code>{ 
   // ...
   payload: {
-    broadcastId: &#39;123456&#39;
+    broadcastId: &#39;123456&#39; 
   }
 };
 </code></pre><p>A <code>broadcast</code> message (which is basically a message stored on Facebook Messenger server ready to be sent) can also  be scheduled</p>
