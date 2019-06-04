@@ -1,6 +1,6 @@
 <script type="text/javascript">
   RED.nodes.registerType('chatbot-dialog', {
-    category: 'RedBot',
+    category: $.RedBot.config.name,
     color: '#FFCC66',
     defaults: {
       submitLabel: {
@@ -104,10 +104,10 @@ Dialogs supports three field types: <code>text</code>, <code>textarea</code> and
 and contains the response hash (key is the name of the field, value is the answer). In order to extract the hash from the <code>response</code> message use a <code>Parse node</code> using the <em>Dialog response</em> type. Use the <code>Switch node</code> to redirect the <code>response</code> message to the proper <code>Parse node</code>.</li>
 </ol>
 <p>After the parse node the <code>message.payload</code> will contain</p>
-<pre><code>{ 
+<pre><code>{
   my_text_field: &#39;test&#39;,
   my_textarea_field: &#39;sadasda&#39;,
-  my_select_field: &#39;one&#39; 
+  my_select_field: &#39;one&#39;
 }
 </code></pre><dl class="message-properties">
 
