@@ -21,6 +21,7 @@
   },
   "node-red": {
     "nodes": {
+      "redbot-config": "./redbot.config.js",
       "chatbot-telegram-receive": "./nodes/chatbot-telegram-receive.js",
       "chatbot-discord-receive": "./nodes/chatbot-discord-receive.js",
       "chatbot-universal-receive": "./nodes/chatbot-universal-receive.js",

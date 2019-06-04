@@ -2,8 +2,6 @@
   (function() {
 
     function fillConfig(select, transport) {
-      console.log('fill', transport);
-
       let configurationOptions = ['<option value="">Select bot configuration</option>'];
 
       RED.nodes.eachConfig(node => {
@@ -86,7 +84,7 @@
     }
 
     RED.nodes.registerType('chatbot-conversation', {
-      category: 'RedBot',
+      category: $.RedBot.config.name,
       color: '#FFCC66',
       defaults: {
         name: {
