@@ -127,7 +127,7 @@ P.S. After a chatbot is created in the <strong>Viber</strong> platform, it will 
 
 <script type="text/javascript">
   RED.nodes.registerType('chatbot-viber-receive', {
-    category: 'RedBot Platforms',
+    category: $.RedBot.config.name + ' Platforms',
     color: '#FFCC66',
     defaults: {
       bot: {
@@ -171,7 +171,7 @@ P.S. After a chatbot is created in the <strong>Viber</strong> platform, it will 
 
 <script type="text/javascript">
   RED.nodes.registerType('chatbot-viber-send', {
-    category: 'RedBot Platforms',
+    category: $.RedBot.config.name + ' Platforms',
     color: '#FFCC66',
     defaults: {
       bot: {

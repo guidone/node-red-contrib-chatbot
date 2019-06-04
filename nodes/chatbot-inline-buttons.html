@@ -1,6 +1,5 @@
 <script type="text/javascript">
 
-  $.RedBot = {};
   $.RedBot.buttonTypes = [
     {
       type: 'url',
@@ -966,7 +965,7 @@
   };
 
   RED.nodes.registerType('chatbot-inline-buttons', {
-    category: 'RedBot',
+    category: $.RedBot.config.name,
     color: '#FFCC66',
     defaults: {
       name: {

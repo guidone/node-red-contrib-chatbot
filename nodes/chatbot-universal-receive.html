@@ -124,7 +124,7 @@
 
 <script type="text/javascript">
   RED.nodes.registerType('chatbot-universal-receive', {
-    category: 'RedBot Platforms',
+    category: $.RedBot.config.name + ' Platforms',
     color: '#FFCC66',
     defaults: {
       bot: {
@@ -230,7 +230,7 @@ node.chat.in(message =&gt; {
 
 <script type="text/javascript">
   RED.nodes.registerType('chatbot-universal-send', {
-    category: 'RedBot Platforms',
+    category: $.RedBot.config.name + ' Platforms',
     color: '#FFCC66',
     defaults: {
       bot: {
