@@ -1,5 +1,5 @@
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-alexa-node', {
+  $.RedBot.registerType('chatbot-alexa-node', {
     category: 'config',
     defaults: {
       botname: {
@@ -118,7 +118,7 @@ For this reason the flow (nodes between the receiver to the sender nodes) cannot
 </script>
 
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-alexa-receive', {
+  $.RedBot.registerType('chatbot-alexa-receive', {
     category: $.RedBot.config.name + ' Platforms',
     color: '#FFCC66',
     defaults: {
@@ -162,7 +162,7 @@ For this reason the flow (nodes between the receiver to the sender nodes) cannot
 </script>
 
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-alexa-send', {
+  $.RedBot.registerType('chatbot-alexa-send', {
     category: $.RedBot.config.name + ' Platforms',
     color: '#FFCC66',
     defaults: {

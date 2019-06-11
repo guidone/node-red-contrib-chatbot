@@ -21,6 +21,7 @@
   },
   "node-red": {
     "nodes": {
+      "chatbot-redbot": "./nodes/chatbot-redbot.js",
       "redbot-config": "./redbot.config.js",
       "chatbot-telegram-receive": "./nodes/chatbot-telegram-receive.js",
       "chatbot-discord-receive": "./nodes/chatbot-discord-receive.js",
@@ -29,7 +30,6 @@
       "chatbot-facebook-receive": "./nodes/chatbot-facebook-receive.js",
       "chatbot-viber-receive": "./nodes/chatbot-viber-receive.js",
       "chatbot-alexa-receive": "./nodes/chatbot-alexa-receive.js",
-      "chatbot-redbot": "./nodes/chatbot-redbot.js",
       "chatbot-message": "./nodes/chatbot-message.js",
       "chatbot-analytics": "./nodes/chatbot-analytics.js",
       "chatbot-context": "./nodes/chatbot-context.js",
