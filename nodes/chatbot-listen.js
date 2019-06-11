@@ -1,15 +1,17 @@
-var _ = require('underscore');
-var NplMatcher = require('../lib/npl-matcher');
-var helpers = require('../lib/helpers/regexps');
-var utils = require('../lib/helpers/utils');
-var when = utils.when;
-var clc = require('cli-color');
-var prettyjson = require('prettyjson');
+const _ = require('underscore');
+const NplMatcher = require('../lib/npl-matcher');
+const helpers = require('../lib/helpers/regexps');
+const utils = require('../lib/helpers/utils');
+const when = utils.when;
+const clc = require('cli-color');
+const prettyjson = require('prettyjson');
+const RegisterType = require('../lib/node-installer');
 
-var green = clc.greenBright;
-var grey = clc.blackBright;
+const green = clc.greenBright;
+const grey = clc.blackBright;
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   function ChatBotListen(config) {
     RED.nodes.createNode(this, config);
@@ -96,5 +98,5 @@ module.exports = function(RED) {
     });
   }
 
-  RED.nodes.registerType('chatbot-listen', ChatBotListen);
+  registerType('chatbot-listen', ChatBotListen);
 };

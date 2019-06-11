@@ -1,8 +1,10 @@
-var lcd = require('../lib/helpers/lcd');
-var utils = require('../lib/helpers/utils');
-var when = utils.when;
+const lcd = require('../lib/helpers/lcd');
+const utils = require('../lib/helpers/utils');
+const when = utils.when;
+const RegisterType = require('../lib/node-installer');
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   function ChatBotContext(config) {
     RED.nodes.createNode(this, config);
@@ -77,6 +79,6 @@ module.exports = function(RED) {
         });
     });
   }
-  RED.nodes.registerType('chatbot-context', ChatBotContext);
+  registerType('chatbot-context', ChatBotContext);
 
 };

@@ -1,6 +1,8 @@
-var utils = require('../lib/helpers/utils');
+const utils = require('../lib/helpers/utils');
+const RegisterType = require('../lib/node-installer');
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   function ChatBotInlineQuery(config) {
     RED.nodes.createNode(this, config);
@@ -38,6 +40,6 @@ module.exports = function(RED) {
       node.send(msg);
     });
   }
-  RED.nodes.registerType('chatbot-inline-query', ChatBotInlineQuery);
+  registerType('chatbot-inline-query', ChatBotInlineQuery);
 
 };

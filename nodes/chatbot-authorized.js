@@ -1,7 +1,9 @@
-var utils = require('../lib/helpers/utils');
-var when = utils.when;
+const utils = require('../lib/helpers/utils');
+const when = utils.when;
+const RegisterType = require('../lib/node-installer');
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   function ChatBotAuthorized(config) {
     RED.nodes.createNode(this, config);
@@ -22,5 +24,5 @@ module.exports = function(RED) {
     });
   }
 
-  RED.nodes.registerType('chatbot-authorized', ChatBotAuthorized);
+  registerType('chatbot-authorized', ChatBotAuthorized);
 };

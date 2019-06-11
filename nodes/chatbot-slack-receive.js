@@ -1,18 +1,20 @@
-var _ = require('underscore');
-var moment = require('moment');
-var SlackServer = require('../lib/platforms/slack');
-var ContextProviders = require('../lib/chat-platform/chat-context-factory');
-var utils = require('../lib/helpers/utils');
-var clc = require('cli-color');
-var lcd = require('../lib/helpers/lcd');
-var prettyjson = require('prettyjson');
-var validators = require('../lib/helpers/validators');
+const _ = require('underscore');
+const moment = require('moment');
+const SlackServer = require('../lib/platforms/slack');
+const ContextProviders = require('../lib/chat-platform/chat-context-factory');
+const utils = require('../lib/helpers/utils');
+const clc = require('cli-color');
+const lcd = require('../lib/helpers/lcd');
+const prettyjson = require('prettyjson');
+const validators = require('../lib/helpers/validators');
+const RegisterType = require('../lib/node-installer');
 
-var when = utils.when;
-var warn = clc.yellow;
-var green = clc.green;
+const when = utils.when;
+const warn = clc.yellow;
+const green = clc.green;
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   // register Slack server
   if (RED.redbot == null) {
@@ -160,7 +162,7 @@ module.exports = function(RED) {
         });
     });
   }
-  RED.nodes.registerType('chatbot-slack-node', SlackBotNode, {
+  registerType('chatbot-slack-node', SlackBotNode, {
     credentials: {
       token: {
         type: 'text'
@@ -229,7 +231,7 @@ module.exports = function(RED) {
       done();
     });
   }
-  RED.nodes.registerType('chatbot-slack-receive', SlackInNode);
+  registerType('chatbot-slack-receive', SlackInNode);
 
   function SlackOutNode(config) {
     RED.nodes.createNode(this, config);
@@ -290,6 +292,6 @@ module.exports = function(RED) {
       });
     });
   }
-  RED.nodes.registerType('chatbot-slack-send', SlackOutNode);
+  registerType('chatbot-slack-send', SlackOutNode);
 
 };

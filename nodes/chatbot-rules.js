@@ -1,6 +1,8 @@
 const utils = require('../lib/helpers/utils');
 const helpers = require('../lib/helpers/regexps');
 const _ = require('underscore');
+const RegisterType = require('../lib/node-installer');
+
 const when = utils.when;
 
 const Types = {
@@ -409,6 +411,7 @@ function executeRules(rules, message, global, current) {
 }
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   function ChatBotRules(config) {
     RED.nodes.createNode(this, config);
@@ -434,5 +437,5 @@ module.exports = function(RED) {
     });
   }
 
-  RED.nodes.registerType('chatbot-rules', ChatBotRules);
+  registerType('chatbot-rules', ChatBotRules);
 };

@@ -3,9 +3,11 @@ const { flattenValidationErrors, extractValue, getChatId, matchTransport, getTra
 const ChatExpress = require('../lib/chat-platform/chat-platform');
 const _ = require('underscore');
 const validators = require('../lib/helpers/validators');
+const RegisterType = require('../lib/node-installer');
 const lcd = require('../lib/helpers/lcd');
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   function ChatBotInvoice(config) {
     RED.nodes.createNode(this, config);
@@ -94,5 +96,5 @@ module.exports = function(RED) {
     });
   }
 
-  RED.nodes.registerType('chatbot-invoice', ChatBotInvoice);
+  registerType('chatbot-invoice', ChatBotInvoice);
 };

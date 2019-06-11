@@ -1,17 +1,19 @@
-var _ = require('underscore');
-var moment = require('moment');
-var SmoochBot = require('../lib/smooch/smooch-bot');
-var ChatContextStore = require('../lib/chat-context-store');
-var ChatLog = require('../lib/chat-log');
-var helpers = require('../lib/smooch/helpers');
-var clc = require('cli-color');
+const _ = require('underscore');
+const moment = require('moment');
+const SmoochBot = require('../lib/smooch/smooch-bot');
+const ChatContextStore = require('../lib/chat-context-store');
+const ChatLog = require('../lib/chat-log');
+const helpers = require('../lib/smooch/helpers');
+const clc = require('cli-color');
+const RegisterType = require('../lib/node-installer');
 
-var DEBUG = false;
-var green = clc.greenBright;
-var white = clc.white;
-var grey = clc.blackBright;
+const DEBUG = false;
+const green = clc.greenBright;
+const white = clc.white;
+const grey = clc.blackBright;
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   function SmoochBotNode(n) {
     RED.nodes.createNode(this, n);
@@ -190,7 +192,7 @@ module.exports = function(RED) {
 
   }
 
-  RED.nodes.registerType('chatbot-smooch-node', SmoochBotNode, {
+  registerType('chatbot-smooch-node', SmoochBotNode, {
     credentials: {
       keyId: {
         type: 'text'
@@ -230,7 +232,7 @@ module.exports = function(RED) {
       node.warn('Missing configuration in Facebook Messenger Receiver');
     }
   }
-  RED.nodes.registerType('chatbot-smooch-receive', SmoochInNode);
+  registerType('chatbot-smooch-receive', SmoochInNode);
 
 
   function SmoochOutNode(config) {
@@ -348,7 +350,6 @@ module.exports = function(RED) {
 
     });
   }
-
-  RED.nodes.registerType('chatbot-smooch-send', SmoochOutNode);
+  registerType('chatbot-smooch-send', SmoochOutNode);
 
 };

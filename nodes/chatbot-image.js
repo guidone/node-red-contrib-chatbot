@@ -1,12 +1,14 @@
-var Path = require('path');
-var sanitize = require('sanitize-filename');
-var _ = require('underscore');
-var utils = require('../lib/helpers/utils');
-var fetchers = require('../lib/helpers/fetchers');
-var validators = require('../lib/helpers/validators');
-var { ChatExpress } = require('chat-platform');
+const Path = require('path');
+const sanitize = require('sanitize-filename');
+const _ = require('underscore');
+const utils = require('../lib/helpers/utils');
+const fetchers = require('../lib/helpers/fetchers');
+const validators = require('../lib/helpers/validators');
+const { ChatExpress } = require('chat-platform');
+const RegisterType = require('../lib/node-installer');
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   function ChatBotImage(config) {
     RED.nodes.createNode(this, config);
@@ -79,5 +81,5 @@ module.exports = function(RED) {
     });
   }
 
-  RED.nodes.registerType('chatbot-image', ChatBotImage);
+  registerType('chatbot-image', ChatBotImage);
 };

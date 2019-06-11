@@ -1,8 +1,9 @@
-var _ = require('underscore');
-var utils = require('../lib/helpers/utils');
-var lcd = require('../lib/helpers/lcd');
-var dialogflow = require('dialogflow');
-var when = utils.when;
+const _ = require('underscore');
+const utils = require('../lib/helpers/utils');
+const lcd = require('../lib/helpers/lcd');
+const dialogflow = require('dialogflow');
+const when = utils.when;
+const RegisterType = require('../lib/node-installer');
 
 function parseFields(fields) {
   var variables = {};
@@ -29,6 +30,7 @@ function parseFields(fields) {
 
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   function ChatBotDialogflow(config) {
     RED.nodes.createNode(this, config);
@@ -151,13 +153,13 @@ module.exports = function(RED) {
     });
   }
 
-  RED.nodes.registerType('chatbot-dialogflow', ChatBotDialogflow);
+  registerType('chatbot-dialogflow', ChatBotDialogflow);
 
   function DialogflowToken(n) {
     RED.nodes.createNode(this, n);
   }
 
-  RED.nodes.registerType('chatbot-dialogflow-token', DialogflowToken, {
+  registerType('chatbot-dialogflow-token', DialogflowToken, {
     credentials: {
       email: {
         type: 'text'

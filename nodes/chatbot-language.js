@@ -1,7 +1,9 @@
-var _ = require('underscore');
-var lngDetector = new (require('languagedetect'));
+const _ = require('underscore');
+const lngDetector = new (require('languagedetect'));
+const RegisterType = require('../lib/node-installer');
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   function ChatBotLanguage(config) {
     RED.nodes.createNode(this, config);
@@ -59,6 +61,6 @@ module.exports = function(RED) {
       node.send([null, msg]);
     });
   }
-  RED.nodes.registerType('chatbot-language', ChatBotLanguage);
+  registerType('chatbot-language', ChatBotLanguage);
 
 };
