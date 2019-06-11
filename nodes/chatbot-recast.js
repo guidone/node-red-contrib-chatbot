@@ -1,12 +1,14 @@
-var _ = require('underscore');
-var utils = require('../lib/helpers/utils');
-var recastai = require('recastai');
-var moment = require('moment');
-var lcd = require('../lib/helpers/lcd');
+const _ = require('underscore');
+const utils = require('../lib/helpers/utils');
+const recastai = require('recastai');
+const moment = require('moment');
+const lcd = require('../lib/helpers/lcd');
+const RegisterType = require('../lib/node-installer');
 
-var when = utils.when;
+const when = utils.when;
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   function ChatBotRecast(config) {
     RED.nodes.createNode(this, config);
@@ -95,13 +97,13 @@ module.exports = function(RED) {
     });
   }
 
-  RED.nodes.registerType('chatbot-recast', ChatBotRecast);
+  registerType('chatbot-recast', ChatBotRecast);
 
   function RecastToken(n) {
     RED.nodes.createNode(this, n);
   }
 
-  RED.nodes.registerType('chatbot-recast-token', RecastToken, {
+  registerType('chatbot-recast-token', RecastToken, {
     credentials: {
       token: {
         type: 'text'

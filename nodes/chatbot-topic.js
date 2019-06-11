@@ -1,6 +1,8 @@
-var utils = require('../lib/helpers/utils');
+const utils = require('../lib/helpers/utils');
+const RegisterType = require('../lib/node-installer');
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   function ChatBotTopic(config) {
     RED.nodes.createNode(this, config);
@@ -36,5 +38,5 @@ module.exports = function(RED) {
     });
   }
 
-  RED.nodes.registerType('chatbot-topic', ChatBotTopic);
+  registerType('chatbot-topic', ChatBotTopic);
 };

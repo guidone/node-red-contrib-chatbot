@@ -1,9 +1,11 @@
-var MessageTemplate = require('../lib/message-template-async');
-var utils = require('../lib/helpers/utils');
-var _ = require('underscore');
-var validators = require('../lib/helpers/validators');
+const MessageTemplate = require('../lib/message-template-async');
+const utils = require('../lib/helpers/utils');
+const _ = require('underscore');
+const validators = require('../lib/helpers/validators');
+const RegisterType = require('../lib/node-installer');
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   function ChatBotInvoice(config) {
     RED.nodes.createNode(this, config);
@@ -90,5 +92,5 @@ module.exports = function(RED) {
     });
   }
 
-  RED.nodes.registerType('chatbot-invoice', ChatBotInvoice);
+  registerType('chatbot-invoice', ChatBotInvoice);
 };

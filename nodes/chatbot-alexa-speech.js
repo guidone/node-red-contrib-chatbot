@@ -1,8 +1,10 @@
-var MessageTemplate = require('../lib/message-template-async');
-var utils = require('../lib/helpers/utils');
-var append = utils.append;
+const MessageTemplate = require('../lib/message-template-async');
+const utils = require('../lib/helpers/utils');
+const append = utils.append;
+const RegisterType = require('../lib/node-installer');
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   var txType = {
     plainText: 'PlainText',
@@ -51,6 +53,5 @@ module.exports = function(RED) {
         });
     });
   }
-  RED.nodes.registerType('chatbot-alexa-speech', ChatBotAlexaSpeech);
-
+  registerType('chatbot-alexa-speech', ChatBotAlexaSpeech);
 };

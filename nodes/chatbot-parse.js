@@ -1,10 +1,13 @@
-var _ = require('underscore');
-var nlp = require('compromise');
-var moment = require('moment');
-var utils = require('../lib/helpers/utils');
-var cloneMessage = utils.cloneMessage;
+const _ = require('underscore');
+const nlp = require('compromise');
+const moment = require('moment');
+const utils = require('../lib/helpers/utils');
+const RegisterType = require('../lib/node-installer');
+
+const cloneMessage = utils.cloneMessage;
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   var yesWords = ['yes', 'on', 'true', 'yeah', 'ya', 'si'];
   var noWords = ['no', 'off', 'false', 'nei', 'nein'];
@@ -124,6 +127,6 @@ module.exports = function(RED) {
 
     });
   }
-  RED.nodes.registerType('chatbot-parse', ChatBotParse);
+  registerType('chatbot-parse', ChatBotParse);
 
 };

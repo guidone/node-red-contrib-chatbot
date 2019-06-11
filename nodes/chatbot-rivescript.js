@@ -1,10 +1,13 @@
-var _ = require('underscore');
-var RiveScript = require('rivescript');
-var helpers = require('../lib/helpers/regexps');
-var utils = require('../lib/helpers/utils');
-var when = utils.when;
+const _ = require('underscore');
+const RiveScript = require('rivescript');
+const helpers = require('../lib/helpers/regexps');
+const utils = require('../lib/helpers/utils');
+const RegisterType = require('../lib/node-installer');
+
+const when = utils.when;
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   function ChatBotRivescript(config) {
     RED.nodes.createNode(this, config);
@@ -98,5 +101,5 @@ module.exports = function(RED) {
     });
   }
 
-  RED.nodes.registerType('chatbot-rivescript', ChatBotRivescript);
+  registerType('chatbot-rivescript', ChatBotRivescript);
 };

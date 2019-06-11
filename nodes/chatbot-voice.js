@@ -1,9 +1,11 @@
-var _ = require('underscore');
-var MessageTemplate = require('../lib/message-template-async');
-var request = require('request').defaults({ encoding: null });
-var utils = require('../lib/helpers/utils');
+const _ = require('underscore');
+const MessageTemplate = require('../lib/message-template-async');
+const request = require('request').defaults({ encoding: null });
+const utils = require('../lib/helpers/utils');
+const RegisterType = require('../lib/node-installer');
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   function ChatBotVoice(config) {
     RED.nodes.createNode(this, config);
@@ -64,5 +66,5 @@ module.exports = function(RED) {
     });
   }
 
-  RED.nodes.registerType('chatbot-voice', ChatBotVoice);
+  registerType('chatbot-voice', ChatBotVoice);
 };
