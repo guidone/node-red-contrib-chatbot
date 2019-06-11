@@ -1,17 +1,19 @@
-var _ = require('underscore');
-var fs = require('fs');
-var Path = require('path');
-var utils = require('../lib/helpers/utils');
-var sanitize = require('sanitize-filename');
-var mime = require('mime');
+const _ = require('underscore');
+const fs = require('fs');
+const Path = require('path');
+const utils = require('../lib/helpers/utils');
+const sanitize = require('sanitize-filename');
+const mime = require('mime');
+const RegisterType = require('../lib/node-installer');
 
-var ValidExtensions = {
+const ValidExtensions = {
   'facebook': ['.mp4'],
   'telegram': ['.mp4'],
   'slack': ['.mp4']
 };
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   function ChatBotVideo(config) {
     RED.nodes.createNode(this, config);
@@ -128,5 +130,5 @@ module.exports = function(RED) {
     });
   }
 
-  RED.nodes.registerType('chatbot-video', ChatBotVideo);
+  registerType('chatbot-video', ChatBotVideo);
 };

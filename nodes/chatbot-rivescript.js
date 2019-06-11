@@ -4,6 +4,7 @@ const RiveScript = require('rivescript');
 const lcd = require('../lib/helpers/lcd');
 const helpers = require('../lib/helpers/regexps');
 const { when, getChatId, extractValue } = require('../lib/helpers/utils');
+const RegisterType = require('../lib/node-installer');
 
 const getOrCreateBot = ({ script, scriptFile, context, debug }) => {
   return new Promise((resolve, reject) => {
@@ -46,6 +47,7 @@ const getOrCreateBot = ({ script, scriptFile, context, debug }) => {
 };
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   function ChatBotRivescript(config) {
     RED.nodes.createNode(this, config);
@@ -139,5 +141,5 @@ module.exports = function(RED) {
     });
   }
 
-  RED.nodes.registerType('chatbot-rivescript', ChatBotRivescript);
+  registerType('chatbot-rivescript', ChatBotRivescript);
 };

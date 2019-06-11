@@ -1,7 +1,9 @@
-var _ = require('underscore');
-var { ChatExpress: ChatPlatform } = require('chat-platform');
+const _ = require('underscore');
+const { ChatExpress: ChatPlatform } = require('chat-platform');
+const RegisterType = require('../lib/node-installer');
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   function ChatBotContextStore(config) {
     RED.nodes.createNode(this, config);
@@ -18,7 +20,7 @@ module.exports = function(RED) {
       console.log('Invalid JSON in context storage params (' + this.name + ')');
     }
   }
-  RED.nodes.registerType('chatbot-context-store', ChatBotContextStore);
+  registerType('chatbot-context-store', ChatBotContextStore);
 
   // add an endpoint to get a list of context providers
   RED.httpNode.get('/redbot/context-providers', function(req, res) {

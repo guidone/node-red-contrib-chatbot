@@ -1,10 +1,12 @@
-var _ = require('underscore');
-var fs = require('fs');
-var Path = require('path');
-var sanitize = require('sanitize-filename');
-var utils = require('../lib/helpers/utils');
+const _ = require('underscore');
+const fs = require('fs');
+const Path = require('path');
+const sanitize = require('sanitize-filename');
+const utils = require('../lib/helpers/utils');
+const RegisterType = require('../lib/node-installer');
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   function ChatBotAudio(config) {
     RED.nodes.createNode(this, config);
@@ -56,5 +58,5 @@ module.exports = function(RED) {
 
   }
 
-  RED.nodes.registerType('chatbot-audio', ChatBotAudio);
+  registerType('chatbot-audio', ChatBotAudio);
 };
