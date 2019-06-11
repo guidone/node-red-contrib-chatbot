@@ -64,7 +64,7 @@ describe('Chat conversation node', () => {
       });
   });
 
-  // todo add tests for userId
+
 
 
 });
