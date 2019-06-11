@@ -1,5 +1,5 @@
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-universal-node', {
+  $.RedBot.registerType('chatbot-universal-node', {
     category: 'config',
     defaults: {
       botname: {
@@ -123,7 +123,7 @@
 
 
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-universal-receive', {
+  $.RedBot.registerType('chatbot-universal-receive', {
     category: $.RedBot.config.name + ' Platforms',
     color: '#FFCC66',
     defaults: {
@@ -229,7 +229,7 @@ node.chat.in(message =&gt; {
 </script>
 
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-universal-send', {
+  $.RedBot.registerType('chatbot-universal-send', {
     category: $.RedBot.config.name + ' Platforms',
     color: '#FFCC66',
     defaults: {

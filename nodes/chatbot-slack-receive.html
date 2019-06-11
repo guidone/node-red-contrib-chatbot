@@ -1,5 +1,5 @@
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-slack-node', {
+  $.RedBot.registerType('chatbot-slack-node', {
     category: 'config',
     defaults: {
       botname: {
@@ -154,7 +154,7 @@ We&#39;ll use <strong>ngrok</strong> to create a https tunnel for our local <str
 </script>
 
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-slack-receive', {
+  $.RedBot.registerType('chatbot-slack-receive', {
     category: $.RedBot.config.name + ' Platforms',
     color: '#FFCC66',
     defaults: {
@@ -198,7 +198,7 @@ We&#39;ll use <strong>ngrok</strong> to create a https tunnel for our local <str
 </script>
 
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-slack-send', {
+  $.RedBot.registerType('chatbot-slack-send', {
     category: $.RedBot.config.name + ' Platforms',
     color: '#FFCC66',
     defaults: {

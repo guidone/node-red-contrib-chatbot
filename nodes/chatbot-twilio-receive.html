@@ -1,5 +1,5 @@
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-twilio-node', {
+  $.RedBot.registerType('chatbot-twilio-node', {
     category: 'config',
     defaults: {
       botname: {
@@ -143,7 +143,7 @@ To verify that everything is working fine, try a simple flow to send out an SMS<
 
 
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-twilio-receive', {
+  $.RedBot.registerType('chatbot-twilio-receive', {
     category: $.RedBot.config.name + ' Platforms',
     color: '#FFCC66',
     defaults: {
@@ -187,7 +187,7 @@ To verify that everything is working fine, try a simple flow to send out an SMS<
 </script>
 
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-twilio-send', {
+  $.RedBot.registerType('chatbot-twilio-send', {
     category: $.RedBot.config.name + ' Platforms',
     color: '#FFCC66',
     defaults: {
