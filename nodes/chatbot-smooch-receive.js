@@ -1,7 +1,7 @@
 const _ = require('underscore');
 const moment = require('moment');
 const SmoochBot = require('../lib/smooch/smooch-bot');
-const ChatContextStore = require('../lib/chat-context-store');
+const { ContextProviders } = require('chat-platform');
 const ChatLog = require('../lib/chat-log');
 const helpers = require('../lib/smooch/helpers');
 const clc = require('cli-color');
