@@ -12,7 +12,7 @@
       },
       platform: {
         value: '',
-        required: true
+        required: false
       },
       noerr: {
         value: 0,
@@ -68,7 +68,7 @@
               + '</option>';
           }
           $('#node-input-platform')
-            .html('<option value="">Select which platform to extend</option>' + transportOptions)
+            .html('<option value="">All platforms</option>' + transportOptions)
             .val(_this.platform);
         });
     },

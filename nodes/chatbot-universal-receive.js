@@ -1,7 +1,6 @@
 const _ = require('underscore');
 const moment = require('moment');
-const UniversalServer = require('../lib/platforms/universal');
-const ContextProviders = require('../lib/chat-platform/chat-context-factory');
+const { UniversalPlatform: UniversalServer, ContextProviders } = require('chat-platform');
 const utils = require('../lib/helpers/utils');
 const clc = require('cli-color');
 const lcd = require('../lib/helpers/lcd');
