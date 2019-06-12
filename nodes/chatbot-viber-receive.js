@@ -1,7 +1,7 @@
 const _ = require('underscore');
 const moment = require('moment');
 const ViberServer = require('../lib/platforms/viber');
-const ContextProviders = require('../lib/chat-platform/chat-context-factory');
+const { ContextProviders } = require('chat-platform');
 const utils = require('../lib/helpers/utils');
 const clc = require('cli-color');
 const lcd = require('../lib/helpers/lcd');
