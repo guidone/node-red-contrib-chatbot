@@ -21,6 +21,7 @@
       $('#node-input-userId').val('').attr('disabled', true);
       $('#node-input-chatId').attr('disabled', false);
       $('.form-row-chatId').removeClass('hidden');
+      $('.form-row-userId').addClass('hidden');
     }
 
     function enableUserId() {
@@ -32,6 +33,7 @@
       $('#node-input-botDevelopment').val(null).attr('disabled', true);
       $('#node-input-botProduction').val(null).attr('disabled', true);
       $('.form-row-chatId').addClass('hidden');
+      $('.form-row-userId').removeClass('hidden');
     }
 
     function buildConfigSelector() {
@@ -117,6 +119,13 @@
           validate: function() {
             return $.RedBot.validate.isEmpty(this.chatId) || $.RedBot.validate.notEmpty(this.transport);
           }
+        },
+        store: {
+          value: '',
+          type: 'chatbot-context-store',
+          validate: function() {
+            return $.RedBot.validate.isEmpty(this.userId) || $.RedBot.validate.notEmpty(this.store);
+          }
         }
       },
       inputs: 1,
@@ -158,6 +167,12 @@
   <span class="label-radio">ChatId</span>
   <input type="text" id="node-input-chatId" placeholder="Chat id" style="width:150px;">
 </div>
+<div class="form-row" style="padding-left:20px>
+  <div class="redbot-form-hint">
+    The <code>chatId</code> is needed to initiate the conversation (you can grab the chatId from the logs or a debug node),
+    the <code>chatId</code> is unique per user across the different platforms.
+  </div>
+</div>
 <div class="form-row form-row-chatId" style="padding-left:20px">
   <label for="node-input-transport">Transport</label>
   <select id="node-input-transport">
@@ -176,11 +191,8 @@
     <option value="">Select configuration</option>
   </select>
 </div>
-<div class="form-row" style="padding-left:20px>
-  <div class="redbot-form-hint">
-    The <code>chatId</code> is needed to initiate the conversation (you can grab the chatId from the logs or a debug node),
-    the <code>chatId</code> is unique per user across the different platforms.
-  </div>
+<div class="form-row form-row-chatId" style="padding-left:20px">
+  &nbsp;
 </div>
 <div class="form-row">
   <input type="radio" value="userId" style="margin-top:-4px;margin-right:6px;width:inherit;">
@@ -192,6 +204,10 @@
     The <code>userId</code> is a unique indentifier for a user in a multi-transport chatbot. It's possible to initiate
     a conversation with just the <code>userId</code> (if the resolver <em>chatId-userId</em> is defined in the <code>Extend node</code>).
   </div>
+</div>
+<div class="form-row form-row-userId" style="padding-left:20px;">
+  <label for="node-input-bot">Context</label>
+  <input type="text" id="node-input-store" placeholder="Select storage for chat context">
 </div>
 <div class="redbot-form-legend"></div>
 </script>
