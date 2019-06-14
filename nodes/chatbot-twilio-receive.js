@@ -1,7 +1,7 @@
 const _ = require('underscore');
 const moment = require('moment');
 const TwilioServer = require('../lib/platforms/twilio/twilio');
-const { ContextProviders } = require('chat-platform');
+const { ContextProviders, ChatExpress } = require('chat-platform');
 const utils = require('../lib/helpers/utils');
 const clc = require('cli-color');
 const lcd = require('../lib/helpers/lcd');
@@ -105,7 +105,10 @@ module.exports = function(RED) {
         return;
       }
       // create a factory for the context provider
-      node.contextProvider = contextProviders.getProvider(botConfiguration.contextProvider, botConfiguration.contextParams);
+      node.contextProvider = contextProviders.getProvider(
+        botConfiguration.contextProvider,
+        { ...botConfiguration.contextParams, id: this.store }
+      );
       // try to start the servers
       try {
         node.contextProvider.start();
@@ -156,6 +159,8 @@ module.exports = function(RED) {
         .then(function() {
           node.chat = null;
           node.contextProvider = null;
+          ChatExpress.reset();
+          ContextProviders.reset();
           done();
         });
     });

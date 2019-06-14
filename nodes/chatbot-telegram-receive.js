@@ -169,6 +169,7 @@ module.exports = function(RED) {
           node.chat = null;
           node.contextProvider = null;
           ChatExpress.reset();
+          ContextProviders.reset();
           done();
         });
     });
