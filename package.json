@@ -28,7 +28,6 @@
       "chatbot-universal-receive": "./nodes/chatbot-universal-receive.js",
       "chatbot-slack-receive": "./nodes/chatbot-slack-receive.js",
       "chatbot-twilio-receive": "./nodes/chatbot-twilio-receive.js",
-      "chatbot-smooch-receive": "./nodes/chatbot-smooch-receive.js",
       "chatbot-facebook-receive": "./nodes/chatbot-facebook-receive.js",
       "chatbot-viber-receive": "./nodes/chatbot-viber-receive.js",
       "chatbot-alexa-receive": "./nodes/chatbot-alexa-receive.js",
@@ -92,7 +91,7 @@
   "author": "Guido Bellomo <guido.bellomo@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "chat-platform": "1.0.4",
+    "chat-platform": "1.0.5",
     "@slack/client": "^4.8.0",
     "apiai": "^3.0.0",
     "chrono-node": "^1.3.5",
