@@ -1,7 +1,9 @@
-var MessageTemplate = require('../lib/message-template-async');
-var utils = require('../lib/helpers/utils');
-var _ = require('underscore');
-var validators = require('../lib/helpers/validators');
+const MessageTemplate = require('../lib/message-template-async');
+const { flattenValidationErrors, extractValue, getChatId, matchTransport, getTransport } = require('../lib/helpers/utils');
+const ChatExpress = require('../lib/chat-platform/chat-platform');
+const _ = require('underscore');
+const validators = require('../lib/helpers/validators');
+const lcd = require('../lib/helpers/lcd');
 
 module.exports = function(RED) {
 
@@ -24,32 +26,35 @@ module.exports = function(RED) {
     this.photoHeight = config.photoHeight;
     this.transports = ['telegram'];
 
-    this.on('input', function(msg) {
+    this.on('input', msg => {
+      const chatId = getChatId(msg);
+      const transport = getTransport(msg);
+
       // check transport compatibility
-      if (!utils.matchTransport(node, msg)) {
+      if (!ChatExpress.isSupported(transport, 'message') && !matchTransport(node, msg)) {
         return;
       }
-      var chatId = utils.getChatId(msg);
-      var template = MessageTemplate(msg, node);
 
-      var title = utils.extractValue('string', 'title', node, msg, false);
-      var description = utils.extractValue('string', 'description', node, msg, false);
-      var currency = utils.extractValue('string', 'currency', node, msg, false);
-      var payload = utils.extractValue('string', 'payload', node, msg, false);
-      var photoUrl = utils.extractValue('string', 'photoUrl', node, msg, false);
-      var photoWidth = utils.extractValue('integer', 'photoWidth', node, msg, false)
-        || utils.extractValue('variable', 'photoWidth', node, msg, false);
-      var photoHeight = utils.extractValue('integer', 'photoHeight', node, msg, false)
-        || utils.extractValue('variable', 'photoHeight', node, msg, false);
-      var needName = utils.extractValue('boolean', 'needName', node, msg, false);
-      var needEmail = utils.extractValue('boolean', 'needEmail', node, msg, false);
-      var needPhoneNumber = utils.extractValue('boolean', 'needPhoneNumber', node, msg, false);
-      var needShippingAddress = utils.extractValue('boolean', 'needShippingAddress', node, msg, false);
-      var isFlexible = utils.extractValue('boolean', 'isFlexible', node, msg, false);
-      var prices = utils.extractValue('invoiceItems', 'prices', node, msg, false);
+      const template = MessageTemplate(msg, node);
+
+      const title = extractValue('string', 'title', node, msg, false);
+      const description = extractValue('string', 'description', node, msg, false);
+      const currency = extractValue('string', 'currency', node, msg, false);
+      const payload = extractValue('string', 'payload', node, msg, false);
+      const photoUrl = extractValue('string', 'photoUrl', node, msg, false);
+      const photoWidth = extractValue('integer', 'photoWidth', node, msg, false)
+        || extractValue('variable', 'photoWidth', node, msg, false);
+      const photoHeight = extractValue('integer', 'photoHeight', node, msg, false)
+        || extractValue('variable', 'photoHeight', node, msg, false);
+      const needName = extractValue('boolean', 'needName', node, msg, false);
+      const needEmail = extractValue('boolean', 'needEmail', node, msg, false);
+      const needPhoneNumber = extractValue('boolean', 'needPhoneNumber', node, msg, false);
+      const needShippingAddress = extractValue('boolean', 'needShippingAddress', node, msg, false);
+      const isFlexible = extractValue('boolean', 'isFlexible', node, msg, false);
+      const prices = extractValue('array', 'prices', node, msg, false);
 
       // payload that can be translated
-      var invoicePayload = {
+      const invoicePayload = {
         title: title,
         description: description,
         payload: payload,
@@ -61,16 +66,15 @@ module.exports = function(RED) {
       };
 
       template(invoicePayload)
-        .then(function(invoicePayload) {
+        .then(invoicePayload => {
           invoicePayload.photoWidth = !_.isEmpty(invoicePayload.photoWidth) ? parseInt(invoicePayload.photoWidth, 10) : null;
           invoicePayload.photoHeight = !_.isEmpty(invoicePayload.photoHeight) ? parseInt(invoicePayload.photoHeight, 10) : null;
           // check again, validation may insert wrong values
-          if (!validators.invoiceItems(invoicePayload.prices)) {
-            node.error('Invalid prices in Invoice node: ' + JSON.stringify(invoicePayload.prices));
-            return;
-          }
+
           if (!validators.invoice(invoicePayload)) {
-            node.error('Invalid values in Invoice node: ' + JSON.stringify(invoicePayload));
+            const errors = validators.invoiceErrors(invoicePayload);
+            lcd.node(errors, { title: 'Invalid invoice', node });
+            node.error('Invalid invoice: ' + JSON.stringify(invoicePayload) + ' - ' + flattenValidationErrors(errors));
             return;
           }
           // merge template
