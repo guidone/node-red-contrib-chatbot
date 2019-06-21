@@ -10,5 +10,11 @@
     "rules": {
         "quotes": ["error", "single"],
         "no-useless-escape": 0
+    },
+    "parserOptions":{
+        "ecmaVersion": 6,
+        "ecmaFeatures": {
+            "experimentalObjectRestSpread": true
+        }
     }
 }
