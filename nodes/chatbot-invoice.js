@@ -1,6 +1,6 @@
 const MessageTemplate = require('../lib/message-template-async');
 const { flattenValidationErrors, extractValue, getChatId, matchTransport, getTransport } = require('../lib/helpers/utils');
-const ChatExpress = require('../lib/chat-platform/chat-platform');
+const { ChatExpress } = require('chat-platform');
 const _ = require('underscore');
 const validators = require('../lib/helpers/validators');
 const RegisterType = require('../lib/node-installer');
