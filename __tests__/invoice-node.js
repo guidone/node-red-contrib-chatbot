@@ -1,13 +1,12 @@
-var _ = require('underscore');
-var assert = require('chai').assert;
-var RED = require('../lib/red-stub')();
-var InvoiceBlock = require('../nodes/chatbot-invoice');
+const _ = require('underscore');
+const assert = require('chai').assert;
+const RED = require('../lib/red-stub')();
+const InvoiceBlock = require('../nodes/chatbot-invoice');
 
-describe('Invoice Shipping node', function() {
+describe('Invoice Shipping node', () => {
 
-  it('prepare an invoice in config', function() {
-    var msg = RED.createMessage({
-    });
+  it('prepare an invoice in config', () => {
+    const msg = RED.createMessage({});
     RED.node.config({
       title: 'Invoice title',
       description: 'Invoice description',
@@ -29,8 +28,8 @@ describe('Invoice Shipping node', function() {
     InvoiceBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function () {
-        var message = RED.node.message();
+      .then(() => {
+        const message = RED.node.message();
         assert.equal(message.payload.type, 'invoice');
         assert.equal(message.payload.title, 'Invoice title');
         assert.equal(message.payload.description, 'Invoice description');
@@ -49,8 +48,8 @@ describe('Invoice Shipping node', function() {
       });
   });
 
-  it('prepare an invoice in message payload', function() {
-    var msg = RED.createMessage({
+  it('prepare an invoice in message payload', () => {
+    const msg = RED.createMessage({
       title: 'Invoice title',
       description: 'Invoice description',
       currency: 'EUR',
@@ -73,8 +72,8 @@ describe('Invoice Shipping node', function() {
     InvoiceBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function () {
-        var message = RED.node.message();
+      .then(() => {
+        const message = RED.node.message();
         assert.equal(message.payload.type, 'invoice');
         assert.equal(message.payload.title, 'Invoice title');
         assert.equal(message.payload.description, 'Invoice description');
@@ -93,8 +92,8 @@ describe('Invoice Shipping node', function() {
       });
   });
 
-  it('prepare an invoice with wrong template substitution', function() {
-    var msg = RED.createMessage({
+  it('prepare an invoice with wrong template substitution', () => {
+    const msg = RED.createMessage({
       title: 'Invoice title',
       description: 'Invoice description',
       currency: 'EUR',
@@ -118,14 +117,12 @@ describe('Invoice Shipping node', function() {
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
       .then(
-        function () {
-        },
-        function(error) {
-          assert.include(error, 'Invalid prices in Invoice node');
+        () => {},
+        error => {
+          assert.include(error, `Invalid invoice: {"title":"Invoice title","description":"Invoice description","payload":"MY PAYLOAD","prices":[{"label":"Price 1","amount":"12"},{"label":"Price 2","amount":"NOWAY"}],"photoUrl":null,"photoHeight":null,"photoWidth":null,"currency":"EUR"} - prices[1] -> amount: Missing or invalid amount (must be number or variable)`);
           assert.include(error, 'NOWAY');
         });
   });
-
 
 });
 
