@@ -24,15 +24,22 @@
       return this.name || 'RiveScript';
     },
     oneditprepare: function() {
-      $('#node-input-outputs').spinner({
-        min: 1
-      });
+
+      var isScriptFile = this.scriptFile != null && this.scriptFile !== '';
       this.editor = RED.editor.createEditor({
         id: 'node-input-script-editor',
         mode: 'ace/mode/text',
         value: $('#node-input-script').val(),
         globals: {}
       });
+
+      $('#node-input-useScriptFile')
+        .click(function() {
+          console.log('clicked', $(this).val());
+        })
+        .attr('checked', isScriptFile);
+
+      window.a = this.editor;
       this.editor.focus();
     },
     oneditsave: function() {
@@ -59,6 +66,7 @@
 </div>
 <div class="form-row form-row-scriptFile">
   <label for="node-input-name">Script File</label>
+  <input type="checkbox" value="true" id="node-input-useScriptFile">
   <input type="text" id="node-input-scriptFile" placeholder="Script File">
 </div>
 <div class="form-row">
