@@ -9,6 +9,9 @@
       script: {
         value: '! version = 2.0\n\n'
       },
+      scriptFile: {
+        value: ''
+      },
       debug: {
         value: false
       }
@@ -53,6 +56,10 @@
   <label for="node-input-name"><i class="icon-tag"></i> Name</label>
   <input type="text" id="node-input-name" placeholder="Name">
   <input type="hidden" id="node-input-script" autofocus="autofocus">
+</div>
+<div class="form-row form-row-scriptFile">
+  <label for="node-input-name">Script File</label>
+  <input type="text" id="node-input-scriptFile" placeholder="Script File">
 </div>
 <div class="form-row">
   <div style="height: 250px; min-height:150px;" class="node-text-editor" id="node-input-script-editor"></div>
