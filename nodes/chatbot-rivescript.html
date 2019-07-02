@@ -24,23 +24,33 @@
       return this.name || 'RiveScript';
     },
     oneditprepare: function() {
-
+      var node = this;
+      function updateUI(type) {
+        if (type === 'script-file') {
+          $('.form-row-editor').hide();
+          $('#node-input-scriptFile').attr('disabled', false);
+          $('input[value="script-file"]').prop('checked', true);
+          node.editor.setValue('');
+        } else if (type === 'script') {
+          $('.form-row-editor').show();
+          $('#node-input-scriptFile').attr('disabled', true).val('');
+          $('input[value="script"]').prop('checked', true);
+          node.editor.setValue('! version = 2.0\n\n');
+        }
+      }
       var isScriptFile = this.scriptFile != null && this.scriptFile !== '';
-      this.editor = RED.editor.createEditor({
+      node.editor = RED.editor.createEditor({
         id: 'node-input-script-editor',
         mode: 'ace/mode/text',
         value: $('#node-input-script').val(),
         globals: {}
       });
-
-      $('#node-input-useScriptFile')
+      $('input[name="rivescript-type"]')
         .click(function() {
-          console.log('clicked', $(this).val());
-        })
-        .attr('checked', isScriptFile);
-
-      window.a = this.editor;
-      this.editor.focus();
+          updateUI($(this).val());
+        });
+      updateUI(isScriptFile ? 'script-file' : 'script');
+      node.editor.setValue(this.script);
     },
     oneditsave: function() {
       $('#node-input-script').val(this.editor.getValue());
@@ -49,9 +59,9 @@
     oneditresize: function(size) {
       var dialogForm = $('#dialog-form');
       var rowName = $('.form-row-name', dialogForm);
-      var rowInfo = $('.form-row-info', dialogForm);
+      var rowScriptFile = $('.form-row-scriptFile', dialogForm);
       var rowDebug = $('.form-row-debug', dialogForm);
-      var height = dialogForm.height() - rowName.height() - rowInfo.height() - rowDebug.height() - 30;
+      var height = dialogForm.height() - rowName.height() - rowScriptFile.height() - rowDebug.height() - 30;
       $('.node-text-editor').css('height', height + 'px');
       this.editor.resize();
     }
@@ -65,20 +75,17 @@
   <input type="hidden" id="node-input-script" autofocus="autofocus">
 </div>
 <div class="form-row form-row-scriptFile">
-  <label for="node-input-name">Script File</label>
-  <input type="checkbox" value="true" id="node-input-useScriptFile">
-  <input type="text" id="node-input-scriptFile" placeholder="Script File">
+  <input type="radio" value="script-file" name="rivescript-type" style="width:20px;margin-top:-2px;"> Script file
+  <input type="text" id="node-input-scriptFile" placeholder="*.rive" style="width:250px;">
 </div>
-<div class="form-row">
+<div class="form-row form-row-scriptFile">
+  <input type="radio" value="script" name="rivescript-type" style="width:20px;margin-top:-2px;"> RiveScript
+</div>
+<div class="form-row form-row-editor">
   <div style="height: 250px; min-height:150px;" class="node-text-editor" id="node-input-script-editor"></div>
 </div>
-<div class="form-row form-row-info">
-  <div style="font-size: 12px;color: #999999;line-height: 14px;">
-    <b>RiveScript</b> used to elaborate the answer, read the <a target="_blank" href="https://www.rivescript.com/docs/tutorial">tutorial here</a>
-  </div>
-</div>
 <div class="form-row form-row-debug">
-  <label for="node-input-answer"><i class="icon-wrench"></i> Debug</label>
+  <label for="node-input-answer">Debug</label>
   <input type="checkbox" value="true" id="node-input-debug">
   <span style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;display:block;">
     Show <b>Rivescript</b> debug information in the Node-RED debug panel

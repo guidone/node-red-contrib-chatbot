@@ -96,7 +96,6 @@ module.exports = function(RED) {
               return bot.reply(chatId, content);
             })
             .then(reply => {
-              console.log('answer', reply);
               if (reply.match(/^ERR:/)) {
                 // pass thru
                 return Promise.reject(false);
@@ -114,7 +113,6 @@ module.exports = function(RED) {
               return Promise.all([reply, when(chatContext.set(variablesToPutBack))]);
             })
             .then(([reply]) => {
-              console.log('done', reply);
               // payload
               msg.payload = reply;
               // send out reply
@@ -122,6 +120,7 @@ module.exports = function(RED) {
             })
             .catch(error => {
               if (error instanceof Error) {
+                // todo improve error reporting
                 console.log('error', error);
               } else {
                 // pass thru
@@ -130,6 +129,7 @@ module.exports = function(RED) {
             });
         })
         .catch(error => {
+          // todo improve error reporting
           console.log('error creating rivescript bot');
 
         })
