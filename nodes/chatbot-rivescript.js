@@ -5,7 +5,7 @@ const lcd = require('../lib/helpers/lcd');
 const helpers = require('../lib/helpers/regexps');
 const { when, getChatId, extractValue } = require('../lib/helpers/utils');
 
-const getOrCreateBot = ({ script, scriptFile, context, debug, node }) => {
+const getOrCreateBot = ({ script, scriptFile, context, debug }) => {
   return new Promise((resolve, reject) => {
     if (context.get('rivebot') != null) {
       resolve(context.get('rivebot'));
@@ -82,7 +82,7 @@ module.exports = function(RED) {
       }
 
       // create and cache the rivescript bot for this node, on deploy it will be reloaded
-      getOrCreateBot({ script, scriptFile, context, debug, node })
+      getOrCreateBot({ script, scriptFile, context, debug })
         .then(bot => {
           // rivescript bot initialized
           when(chatContext != null ? chatContext.all() : {})
