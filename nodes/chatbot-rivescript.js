@@ -5,7 +5,7 @@ const lcd = require('../lib/helpers/lcd');
 const helpers = require('../lib/helpers/regexps');
 const { when, getChatId, extractValue } = require('../lib/helpers/utils');
 
-const getOrCreateBot = ({ script, scriptFile, context, debug }) => {
+const getOrCreateBot = ({ script, scriptFile, context, debug, node }) => {
   return new Promise((resolve, reject) => {
     if (context.get('rivebot') != null) {
       resolve(context.get('rivebot'));
@@ -14,7 +14,10 @@ const getOrCreateBot = ({ script, scriptFile, context, debug }) => {
       let bot = new RiveScript({
         utf8: true,
         debug: debug,
-        onDebug: debug ? str => node.warn(str) : null
+        onDebug: !debug ? null : str => {
+          // eslint-disable-next-line no-console
+          console.log(lcd.green('[RIVESCRIPT] ') + lcd.grey(str));
+        }
       });
       bot.stream(script);
       bot.sortReplies();
@@ -25,7 +28,10 @@ const getOrCreateBot = ({ script, scriptFile, context, debug }) => {
       let bot = new RiveScript({
         utf8: true,
         debug: debug,
-        onDebug: debug ? str => node.warn(str) : null
+        onDebug: !debug ? null : str => {
+          // eslint-disable-next-line no-console
+          console.log(lcd.green('[RIVESCRIPT] ') + lcd.grey(str));
+        }
       });
       bot.loadFile(scriptFile)
         .then(() => {
@@ -59,7 +65,6 @@ module.exports = function(RED) {
     });
 
     this.on('input', msg => {
-      const debug = _.isBoolean(node.debug) ? node.debug : false;
       const chatId = getChatId(msg);
       const context = node.context();
       const chatContext = msg.chat();
@@ -68,6 +73,7 @@ module.exports = function(RED) {
       const content = extractValue('string', 'content', node, msg, false);
       const script = extractValue('string', 'script', node, msg, false);
       const scriptFile = extractValue('string', 'scriptFile', node, msg, false);
+      const debug = extractValue('boolean', 'debug', node, msg, false);
 
       // skip if command
       if (_.isEmpty(content) || helpers.isCommand(content)) {
@@ -76,7 +82,7 @@ module.exports = function(RED) {
       }
 
       // create and cache the rivescript bot for this node, on deploy it will be reloaded
-      getOrCreateBot({ script, scriptFile, context, debug })
+      getOrCreateBot({ script, scriptFile, context, debug, node })
         .then(bot => {
           // rivescript bot initialized
           when(chatContext != null ? chatContext.all() : {})
