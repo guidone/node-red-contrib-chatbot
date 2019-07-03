@@ -1,6 +1,7 @@
 const _ = require('underscore');
 const RiveScript = require('rivescript');
 
+const lcd = require('../lib/helpers/lcd');
 const helpers = require('../lib/helpers/regexps');
 const { when, getChatId, extractValue } = require('../lib/helpers/utils');
 
@@ -28,7 +29,6 @@ const getOrCreateBot = ({ script, scriptFile, context, debug }) => {
       });
       bot.loadFile(scriptFile)
         .then(() => {
-          console.log('loaded!!');
           bot.sortReplies();
           // store in context
           context.set('rivebot', bot);
@@ -120,8 +120,7 @@ module.exports = function(RED) {
             })
             .catch(error => {
               if (error instanceof Error) {
-                // todo improve error reporting
-                console.log('error', error);
+                lcd.dump(error, 'Runtime error in Rivescript');
               } else {
                 // pass thru
                 node.send([null, msg]);
@@ -129,9 +128,7 @@ module.exports = function(RED) {
             });
         })
         .catch(error => {
-          // todo improve error reporting
-          console.log('error creating rivescript bot');
-
+          lcd.dump(error, 'Error creating Rivescript bot');
         })
     });
   }
