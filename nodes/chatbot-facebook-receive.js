@@ -39,6 +39,7 @@ module.exports = function(RED) {
     this.store = n.store;
     this.log = n.log;
     this.debug = n.debug;
+    this.multiWebHook = n.multiWebHook;
     this.usernames = n.usernames != null ? n.usernames.split(',') : [];
     this.profileFields = n.profileFields;
 
@@ -66,6 +67,7 @@ module.exports = function(RED) {
       logfile: node.log,
       profileFields: node.profileFields,
       debug: node.debug,
+      multiWebHook: node.multiWebHook,
       contextProvider: contextStorageNode != null ? contextStorageNode.contextStorage : null,
       contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null
     };
@@ -120,6 +122,7 @@ module.exports = function(RED) {
           contextProvider: node.contextProvider,
           logfile: botConfiguration.logfile,
           debug: botConfiguration.debug,
+          multiWebHook: botConfiguration.multiWebHook,
           profileFields: botConfiguration.profileFields,
           RED: RED
         });
