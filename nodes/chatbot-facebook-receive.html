@@ -21,6 +21,9 @@
       debug: {
         value: false
       },
+      multiWebHook: {
+        value: false
+      },
       profileFields: {
         value: 'first_name,last_name'
       }
@@ -121,9 +124,16 @@
     </div>
     <div class="form-row">
       <label for="node-config-input-debug">Debug</label>
-      <input type="checkbox" value="true" id="node-config-input-debug">
+      <input type="checkbox" value="true" id="node-config-input-debug" style="margin-top:0px;">
       <span class="redbot-form-hint">
         Show debug information on send/receive
+      </span>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-multiWebHook" style="width:auto;">Support multiple chatbots</label>
+      <input type="checkbox" value="true" id="node-config-input-multiWebHook" style="margin-top:0px;">
+      <span class="redbot-form-hint">
+        Supports multiple Facebook Messenger chatbots using different callbacks (<em>http://my.host.com/redbot/facebook/1234abcd</em>)
       </span>
     </div>
   </div>
