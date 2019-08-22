@@ -53,6 +53,7 @@ describe('Universal Connector', function() {
     chatServer.out('a-message-type', function(message) {
       return new Promise(function(resolve) {
         message.message_id = '444';
+        message.a_custom_key = 42;
         sendFunction();
         resolve(message);
       });
@@ -100,6 +101,10 @@ describe('Universal Connector', function() {
       })
       .then(function(message) {
         assert.equal(message.message_id, '444');
+        assert.equal(message.a_custom_key, 42);
+        assert.isFunction(message.chat);
+        assert.isFunction(message.api);
+        assert.isObject(message.originalMessage);
         expect(sendFunction).to.have.been.called();
       });
   });
