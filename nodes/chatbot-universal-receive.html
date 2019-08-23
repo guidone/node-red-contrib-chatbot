@@ -248,9 +248,6 @@ node.chat.in(message =&gt; {
       },
       passThrough: {
         value: false
-      },
-      outputs: {
-        value: 0
       }
     },
     inputs: 1,
@@ -259,11 +256,6 @@ node.chat.in(message =&gt; {
     paletteLabel: 'Universal Out',
     label: function () {
       return 'Universal Sender';
-    },
-    oneditsave: function() {
-      var track = $('#node-input-track').is(':checked');
-      var passThrough = $('#node-input-passThrough').is(':checked');
-      this.outputs = track || passThrough ? 1 : 0;
     }
   });
 </script>

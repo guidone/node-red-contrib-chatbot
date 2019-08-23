@@ -302,6 +302,13 @@ module.exports = function(RED) {
         // forward if not tracking
         if (node.passThrough) {
           node.send(message);
+        } else {
+          const cloned = {...message};
+          delete cloned.api;
+          delete cloned.chat;
+          delete cloned.client;
+          delete cloned.originalMessage;
+          node.send(cloned);
         }
       });
     });
