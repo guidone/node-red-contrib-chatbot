@@ -4,3 +4,4 @@ node_modules
 /wiki
 .DS_Store
 /ngrok
+.vscode/settings.json
