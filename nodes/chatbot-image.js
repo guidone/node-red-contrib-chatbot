@@ -30,7 +30,7 @@ module.exports = function(RED) {
         return;
       }
       // check transport compatibility
-      if (!ChatExpress.isSupported(transport, 'message') && !utils.matchTransport(node, msg)) {
+      if (!ChatExpress.isSupported(transport, 'image') && !utils.matchTransport(node, msg)) {
         return;
       }
 

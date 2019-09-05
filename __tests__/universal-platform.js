@@ -102,7 +102,7 @@ describe('Universal Connector', function() {
       .then(function(message) {
         assert.equal(message.message_id, '444');
         assert.equal(message.a_custom_key, 42);
-        assert.isFunction(message.chat);
+        assert.isFunction(message.chat);4
         assert.isFunction(message.api);
         assert.isObject(message.originalMessage);
         expect(sendFunction).to.have.been.called();
