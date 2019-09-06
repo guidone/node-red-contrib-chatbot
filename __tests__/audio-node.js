@@ -119,7 +119,7 @@ describe('Chat audio node', () => {
     const msg = RED.createMessage(null, 'facebook');
     RED.node.config({
       name: 'my file',
-      filename: __dirname + '/dummy/audio.mp3'
+      audio: __dirname + '/dummy/audio.mp3'
     });
     AudioBlock(RED);
     RED.node.get().emit('input', msg);
@@ -138,7 +138,7 @@ describe('Chat audio node', () => {
     const msg = RED.createMessage(null, 'facebook');
     RED.node.config({
       name: 'my file',
-      filename: __dirname + '/dummy/audio.mp3'
+      audio: __dirname + '/dummy/audio.mp3'
     });
     AudioBlock(RED);
     RED.node.get().emit('input', msg);
@@ -157,7 +157,7 @@ describe('Chat audio node', () => {
     const msg = RED.createMessage(null, 'facebook');
     RED.node.config({
       name: 'my file',
-      filename: __dirname + '/dummy/video.mov'
+      audio: __dirname + '/dummy/video.mov'
     });
     AudioBlock(RED);
     RED.node.get().emit('input', msg);

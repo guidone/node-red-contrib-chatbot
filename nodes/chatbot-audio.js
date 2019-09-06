@@ -7,7 +7,7 @@ const utils = require('../lib/helpers/utils');
 const RegisterType = require('../lib/node-installer');
 const validators = require('../lib/helpers/validators');
 const fetchers = require('../lib/helpers/fetchers-obj');
-const ChatExpress = require('../lib/chat-platform/chat-platform');
+const { ChatExpress } = require('chat-platform');
 
 const ValidExtensions = {
   'facebook': ['.mp3'],
@@ -21,14 +21,14 @@ module.exports = function(RED) {
   function ChatBotAudio(config) {
     RED.nodes.createNode(this, config);
     const node = this;
-    this.filename = config.filename;
+    
     this.audio = config.audio;
     this.name = config.name;
     this.transports = ['telegram', 'slack', 'facebook'];
 
     this.on('input', function(msg) {
 
-      let filename = node.filename;
+      let audio = node.audio;
       const name = node.name;
       const chatId = utils.getChatId(msg);
       const messageId = utils.getMessageId(msg);
@@ -46,7 +46,7 @@ module.exports = function(RED) {
 
       let content = utils.extractValue('filepath', 'audio', node, msg)
         || utils.extractValue('buffer', 'audio', node, msg)
-        || utils.extractValue('filepath', 'filename', node, msg, false, true);
+        || utils.extractValue('filepath', 'filename', node, msg, false, true); // no payload, yes message
       let caption = utils.extractValue('string', 'caption', node, msg, false);
 
       // TODO: move the validate audio file to chat platform methods
@@ -70,23 +70,6 @@ module.exports = function(RED) {
         return;
       }
 
-      // if filename is still empty
-      // todo move this into the then chain, use filename from fetcher and not from this context
-      if (_.isEmpty(filename)) {
-        if (!_.isEmpty(msg.filename)) {
-          // try to get filename from a message if it comes from a node-red file node
-          filename = Path.basename(msg.filename);
-        } if (msg.payload != null && !_.isEmpty(msg.payload.filename)) {
-          // try to get filename from a message if it comes from a node-red file node
-          filename = Path.basename(msg.payload.filename);
-        } else if (_.isString(msg.payload) && !_.isEmpty(msg.payload) && msg.payload.length < 256) {
-          // use from payload, pay attention to huge text files
-          filename = sanitize(msg.payload);
-        } else if (!_.isEmpty(name)) {
-          filename = sanitize(name);
-        }
-      }
-
       fetcher(content)
         // TODO: add here size check
         .then(file => {
@@ -98,6 +81,24 @@ module.exports = function(RED) {
           }
           return file;
         })
+        .then(file => {
+          // if filename is still empty then try to use some info of the current node
+          if (_.isEmpty(file.filename)) {
+            if (!_.isEmpty(msg.filename)) {
+              // try to get filename from a message if it comes from a node-red file node
+              file.filename = Path.basename(msg.filename);
+            } if (msg.payload != null && !_.isEmpty(msg.payload.filename)) {
+              // try to get filename from a message if it comes from a node-red file node
+              file.filename = Path.basename(msg.payload.filename);
+            } else if (_.isString(msg.payload) && !_.isEmpty(msg.payload) && msg.payload.length < 256) {
+              // use from payload, pay attention to huge text files
+              file.filename = sanitize(msg.payload);
+            } else if (!_.isEmpty(name)) {
+              file.filename = sanitize(name);
+            }
+          }  
+          return file;
+        })
         .then(
           file => {
             // send out reply
@@ -107,7 +108,7 @@ module.exports = function(RED) {
                 type: 'audio',
                 content: file.buffer,
                 caption,
-                filename,
+                filename: file.filename,
                 chatId: chatId,
                 messageId: messageId,
                 inbound: false
