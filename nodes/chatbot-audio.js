@@ -1,5 +1,4 @@
 const _ = require('underscore');
-const fs = require('fs');
 const Path = require('path');
 const sanitize = require('sanitize-filename');
 
@@ -23,12 +22,12 @@ module.exports = function(RED) {
     const node = this;
     
     this.audio = config.audio;
+    this.duration = config.duration;
     this.name = config.name;
     this.transports = ['telegram', 'slack', 'facebook'];
 
     this.on('input', function(msg) {
 
-      let audio = node.audio;
       const name = node.name;
       const chatId = utils.getChatId(msg);
       const messageId = utils.getMessageId(msg);
@@ -48,6 +47,7 @@ module.exports = function(RED) {
         || utils.extractValue('buffer', 'audio', node, msg)
         || utils.extractValue('filepath', 'filename', node, msg, false, true); // no payload, yes message
       let caption = utils.extractValue('string', 'caption', node, msg, false);
+      let duration = utils.extractValue('number', 'duration', node, msg);
 
       // TODO: move the validate audio file to chat platform methods
 
@@ -55,10 +55,8 @@ module.exports = function(RED) {
       let fetcher = null;
       if (validators.filepath(content)) {
         fetcher = fetchers.file;
-        filename = Path.basename(content);
       } else if (validators.url(content)) {
         fetcher = fetchers.url;
-        filename = sanitize(name);
       } else if (validators.buffer(content)) {
         fetcher = fetchers.identity;
       } else if (_.isString(content) && content.length > 4064) {
@@ -101,6 +99,7 @@ module.exports = function(RED) {
         })
         .then(
           file => {
+            console.log('--->', file)
             // send out reply
             node.send({
               ...msg,
@@ -108,6 +107,7 @@ module.exports = function(RED) {
                 type: 'audio',
                 content: file.buffer,
                 caption,
+                duration,
                 filename: file.filename,
                 chatId: chatId,
                 messageId: messageId,
