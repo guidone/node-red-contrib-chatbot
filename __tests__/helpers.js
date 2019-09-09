@@ -118,6 +118,12 @@ describe('Value extractors', function() {
     assert.equal(extractValue('hash', 'anHash', RED.node , msg3), null);
   });
 
+  it('should extract filepath', () => {
+    const msg = RED.createMessage({ randomValue: 42 });
+    const MyNode = { ...RED.node, video: '/web/node-red-contrib-chatbot/__tests__/dummy/audio.mp3' };
+    assert.equal(extractValue('filepath', 'video', MyNode, msg), '/web/node-red-contrib-chatbot/__tests__/dummy/audio.mp3');
+  })
+
   it('should append messages to payload', function() {
     // step 1
     var msg = RED.createMessage({ });
