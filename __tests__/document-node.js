@@ -4,19 +4,21 @@ var assert = require('chai').assert;
 var RED = require('../lib/red-stub')();
 var DocumentBlock = require('../nodes/chatbot-document');
 
-describe('Chat document node', function() {
+require('../lib/platforms/telegram');
+require('../lib/platforms/facebook/facebook');
+describe('Chat document node', () => {
 
-  it('should send a local pdf document with filename parameter Telegram', function () {
-    var msg = RED.createMessage(null, 'telegram');
+  it('should send a local pdf document with filename parameter Telegram', () => {
+    const msg = RED.createMessage(null, 'telegram');
     RED.node.config({
       name: 'my file',
-      filename: __dirname + '/dummy/file.pdf'
+      document: __dirname + '/dummy/file.pdf'
     });
     DocumentBlock(RED);
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'document');
         assert.equal(RED.node.message().payload.mimeType, 'application/pdf');
         assert.equal(RED.node.message().payload.inbound, false);
@@ -26,15 +28,15 @@ describe('Chat document node', function() {
       });
   });
 
-  it('should send a local pdf document with filename parameter in upstream node Telegram', function () {
-    var msg = RED.createMessage(null, 'telegram');
+  it('should send a local pdf document with filename parameter in upstream node Telegram', () => {
+    const msg = RED.createMessage(null, 'telegram');
     msg.filename = __dirname + '/dummy/file.pdf';
     RED.node.config({});
     DocumentBlock(RED);
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'document');
         assert.equal(RED.node.message().payload.mimeType, 'application/pdf');
         assert.equal(RED.node.message().payload.inbound, false);
@@ -44,17 +46,17 @@ describe('Chat document node', function() {
       });
   });
 
-  it('should send a document from bin a file with Telegram', function () {
-    var msg = RED.createMessage(null, 'telegram');
+  it('should send a document from bin a file with Telegram', () => {
+    const msg = RED.createMessage(null, 'telegram');
     RED.node.config({
       name: 'my file',
-      filename: __dirname + '/dummy/file.bin'
+      document: __dirname + '/dummy/file.bin'
     });
     DocumentBlock(RED);
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'document');
         assert.equal(RED.node.message().payload.mimeType, 'application/zip');
         assert.equal(RED.node.message().payload.inbound, false);
@@ -64,17 +66,17 @@ describe('Chat document node', function() {
       });
   });
 
-  it('should send a document from image a file with Telegram', function () {
-    var msg = RED.createMessage(null, 'telegram');
+  it('should send a document from image a file with Telegram', () => {
+    const msg = RED.createMessage(null, 'telegram');
     RED.node.config({
       name: 'my file',
-      filename: __dirname + '/dummy/image.png'
+      document: __dirname + '/dummy/image.png'
     });
     DocumentBlock(RED);
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'document');
         assert.equal(RED.node.message().payload.mimeType, 'application/zip');
         assert.equal(RED.node.message().payload.inbound, false);
@@ -84,8 +86,8 @@ describe('Chat document node', function() {
       });
   });
 
-  it('should send a buffer document with Telegram using name for mime type', function () {
-    var msg = RED.createMessage(fs.readFileSync(__dirname + '/dummy/image.png'), 'telegram');
+  it('should send a buffer document with Telegram using name for mime type', () => {
+    const msg = RED.createMessage(fs.readFileSync(__dirname + '/dummy/image.png'), 'telegram');
     RED.node.config({
       name: 'my-file.zip'
     });
@@ -93,7 +95,7 @@ describe('Chat document node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'document');
         assert.equal(RED.node.message().payload.mimeType, 'application/zip');
         assert.equal(RED.node.message().payload.inbound, false);
@@ -103,17 +105,17 @@ describe('Chat document node', function() {
       });
   });
 
-  it('should send a buffer document with Telegram from a RedBot file node', function () {
-    var msg = RED.createMessage({
-      file: fs.readFileSync(__dirname + '/dummy/image.png'),
-      filename: '/dummy/image.png'
+  it('should send a buffer document with Telegram from a RedBot file node', () => {
+    const msg = RED.createMessage({
+      document: fs.readFileSync(__dirname + '/dummy/image.png')
     }, 'telegram');
+    msg.filename = '/dummy/image.png';
     RED.node.config({});
     DocumentBlock(RED);
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'document');
         assert.equal(RED.node.message().payload.mimeType, 'application/zip');
         assert.equal(RED.node.message().payload.inbound, false);
@@ -123,26 +125,33 @@ describe('Chat document node', function() {
       });
   });
 
-  it('should send a buffer document with Telegram without using name for mime type', function () {
-    var msg = RED.createMessage(fs.readFileSync(__dirname + '/dummy/image.png'), 'telegram');
+  it('should send a buffer document with Telegram without using name for mime type', () => {
+    const msg = RED.createMessage(fs.readFileSync(__dirname + '/dummy/image.png'), 'telegram');
     RED.node.config({});
     DocumentBlock(RED);
 
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.error(), 'Unknown file type, use the "name" parameter to specify the file name and extension as default');
+
+    return RED.node.get().await()
+      .then(
+        () => {},
+        () => {
+        assert.equal(RED.node.error(), 'Unknown file type, use the "name" parameter to specify the file name and extension as default');
+        }
+      );
   });
 
-  it('should send a document from pdf a file with Facebook', function () {
-    var msg = RED.createMessage(null, 'facebook');
+  it('should send a document from pdf a file with Facebook', () => {
+    const msg = RED.createMessage(null, 'facebook');
     RED.node.config({
       name: 'my file',
-      filename: __dirname + '/dummy/file.pdf'
+      document: __dirname + '/dummy/file.pdf'
     });
     DocumentBlock(RED);
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'document');
         assert.equal(RED.node.message().payload.mimeType, 'application/pdf');
         assert.equal(RED.node.message().payload.inbound, false);
@@ -152,17 +161,17 @@ describe('Chat document node', function() {
       });
   });
 
-  it('should send a document from image a file with Facebook', function () {
-    var msg = RED.createMessage(null, 'facebook');
+  it('should send a document from image a file with Facebook', () => {
+    const msg = RED.createMessage(null, 'facebook');
     RED.node.config({
       name: 'my file',
-      filename: __dirname + '/dummy/image.png'
+      document: __dirname + '/dummy/image.png'
     });
     DocumentBlock(RED);
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'document');
         assert.equal(RED.node.message().payload.mimeType, 'image/png');
         assert.equal(RED.node.message().payload.inbound, false);
@@ -172,8 +181,8 @@ describe('Chat document node', function() {
       });
   });
 
-  it('should send a local pdf document with a wrong filename parameter in upstream node Telegram', function () {
-    var msg = RED.createMessage(null, 'telegram');
+  it('should send a local pdf document with a wrong filename parameter in upstream node Telegram', () => {
+    const msg = RED.createMessage(null, 'telegram');
     msg.filename = __dirname + '/dummy/file-wrong.pdf';
     RED.node.config({});
     DocumentBlock(RED);
@@ -181,11 +190,9 @@ describe('Chat document node', function() {
 
     return RED.node.get().await()
       .then(
-        function() {
-          // do nothing
-        },
-        function() {
-          assert.include(RED.node.error(), 'File doesn\'t exist:');
+        () => {},
+        () => {
+          assert.include(RED.node.error(), 'Error opening file');
           assert.include(RED.node.error(), 'file-wrong.pdf');
         }
       );

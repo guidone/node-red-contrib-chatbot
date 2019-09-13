@@ -1,14 +1,17 @@
 const _ = require('underscore');
-const Path = require('path');
-const sanitize = require('sanitize-filename');
 const { ChatExpress } = require('chat-platform');
 
 const validators = require('../lib/helpers/validators');
-const utils = require('../lib/helpers/utils');
 const RegisterType = require('../lib/node-installer');
 const fetchers = require('../lib/helpers/fetchers-obj');
-
-const mime = require('mime');
+const { 
+  enrichFilePayload, 
+  isValidMessage, 
+  getChatId, 
+  getMessageId, 
+  getTransport, 
+  extractValue 
+} = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
@@ -24,12 +27,12 @@ module.exports = function(RED) {
     this.on('input', function(msg) {
 
       const name = node.name;
-      const chatId = utils.getChatId(msg);
-      const messageId = utils.getMessageId(msg);
-      const transport = utils.getTransport(msg);
+      const chatId = getChatId(msg);
+      const messageId = getMessageId(msg);
+      const transport = getTransport(msg);
        
       // check if valid message
-      if (!utils.isValidMessage(msg, node)) {
+      if (!isValidMessage(msg, node)) {
         return;
       }
       // check transport compatibility
@@ -37,10 +40,11 @@ module.exports = function(RED) {
         return;
       }
 
-      let content = utils.extractValue('filepath', 'video', node, msg)
-        || utils.extractValue('buffer', 'video', node, msg)
-        || utils.extractValue('filepath', 'filename', node, msg, false, true, false); // no payload, yes message
-      let caption = utils.extractValue('string', 'caption', node, msg, false);
+      let content = extractValue('filepath', 'video', node, msg)
+        || extractValue('url', 'video', node, msg)
+        || extractValue('buffer', 'video', node, msg)
+        || extractValue('filepath', 'filename', node, msg, false, true, false); // no payload, yes message
+      let caption = extractValue('string', 'caption', node, msg, false);
   
       // get the content
       let fetcher = null;
@@ -60,6 +64,7 @@ module.exports = function(RED) {
       }
 
       fetcher(content)
+        .then(file => enrichFilePayload(file, msg, node))  
         .then(file => {
           // check if a valid file
           const error = ChatExpress.isValidFile(transport, 'video', file);
@@ -67,29 +72,6 @@ module.exports = function(RED) {
             node.error(error);
             throw error;
           }
-          return file;
-        })
-        .then(file => {
-          // if filename is still empty then try to use some info of the current node
-          // TODO: move this to utils
-          if (_.isEmpty(file.filename)) {
-            if (!_.isEmpty(msg.filename)) {
-              // try to get filename from a message if it comes from a node-red file node
-              file.filename = Path.basename(msg.filename);
-            } if (msg.payload != null && !_.isEmpty(msg.payload.filename)) {
-              // try to get filename from a message if it comes from a node-red file node
-              file.filename = Path.basename(msg.payload.filename);
-            } else if (_.isString(msg.payload) && !_.isEmpty(msg.payload) && msg.payload.length < 256) {
-              // use from payload, pay attention to huge text files
-              file.filename = sanitize(msg.payload);
-            } else if (!_.isEmpty(name)) {
-              file.filename = sanitize(name);
-            }
-          }
-          // if mimetype is still empty, try to get from the filename
-          if (_.isEmpty(file.mimeType) && !_.isEmpty(file.filename)) {
-            file.mimeType = mime.lookup(file.filename);
-          }  
           return file;
         })
         .then(

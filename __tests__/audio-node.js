@@ -83,10 +83,10 @@ describe('Chat audio node', () => {
       });
   });
 
-  it('should send a video with Telegram from a RedBot file node', () => {
+  it.only('should send an audio with Telegram from a RedBot file node', () => {
     const msg = RED.createMessage({
       audio: fs.readFileSync(__dirname + '/dummy/audio.mp3'),
-      filename: '/dummy/file.mp4'
+      filename: '/dummy/file.mp3'
     }, 'telegram');
     RED.node.config({});
     AudioBlock(RED);
@@ -97,7 +97,7 @@ describe('Chat audio node', () => {
         assert.equal(RED.node.message().payload.type, 'audio');
         assert.equal(RED.node.message().payload.inbound, false);
         assert.instanceOf(RED.node.message().payload.content, Buffer);
-        assert.equal(RED.node.message().payload.filename, 'file.mp4');
+        assert.equal(RED.node.message().payload.filename, 'file.mp3');
         assert.equal(RED.node.message().originalMessage.chat.id, 42);
       });
   });
