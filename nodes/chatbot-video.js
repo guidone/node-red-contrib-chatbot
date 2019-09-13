@@ -25,8 +25,6 @@ module.exports = function(RED) {
     this.caption = config.caption;
 
     this.on('input', function(msg) {
-
-      const name = node.name;
       const chatId = getChatId(msg);
       const messageId = getMessageId(msg);
       const transport = getTransport(msg);

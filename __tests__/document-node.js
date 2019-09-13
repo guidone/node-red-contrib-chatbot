@@ -1,8 +1,7 @@
-var _ = require('underscore');
-var fs = require('fs');
-var assert = require('chai').assert;
-var RED = require('../lib/red-stub')();
-var DocumentBlock = require('../nodes/chatbot-document');
+const fs = require('fs');
+const assert = require('chai').assert;
+const RED = require('../lib/red-stub')();
+const DocumentBlock = require('../nodes/chatbot-document');
 
 require('../lib/platforms/telegram');
 require('../lib/platforms/facebook/facebook');
