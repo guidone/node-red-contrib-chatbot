@@ -5,6 +5,8 @@ const AudioBlock = require('../nodes/chatbot-audio');
 const path = require('path')
 const testDir = path.dirname(module.parent.filename)
 
+require('../lib/platforms/telegram');
+require('../lib/platforms/facebook/facebook');
 
 describe('Chat audio node', () => {
 

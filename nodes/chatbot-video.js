@@ -8,6 +8,8 @@ const utils = require('../lib/helpers/utils');
 const RegisterType = require('../lib/node-installer');
 const fetchers = require('../lib/helpers/fetchers-obj');
 
+const mime = require('mime');
+
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
 
@@ -31,10 +33,10 @@ module.exports = function(RED) {
         return;
       }
       // check transport compatibility
-      if (!ChatExpress.isSupported(transport, 'video') && !utils.matchTransport(node, msg)) {
+      if (!ChatExpress.isSupported(transport, 'video')) {
         return;
       }
-  
+
       let content = utils.extractValue('filepath', 'video', node, msg)
         || utils.extractValue('buffer', 'video', node, msg)
         || utils.extractValue('filepath', 'filename', node, msg, false, true, false); // no payload, yes message
@@ -56,9 +58,8 @@ module.exports = function(RED) {
         node.error('Don\'t know how to handle: ' + content);
         return;
       }
-  
+
       fetcher(content)
-        // TODO: add here size check
         .then(file => {
           // check if a valid file
           const error = ChatExpress.isValidFile(transport, 'video', file);
@@ -84,6 +85,10 @@ module.exports = function(RED) {
             } else if (!_.isEmpty(name)) {
               file.filename = sanitize(name);
             }
+          }
+          // if mimetype is still empty, try to get from the filename
+          if (_.isEmpty(file.mimeType) && !_.isEmpty(file.filename)) {
+            file.mimeType = mime.lookup(file.filename);
           }  
           return file;
         })
@@ -95,6 +100,7 @@ module.exports = function(RED) {
               payload: {
                 type: 'video',
                 content: file.buffer,
+                mimeType: file.mimeType,
                 caption,            
                 filename: file.filename,
                 chatId: chatId,

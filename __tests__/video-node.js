@@ -1,22 +1,24 @@
-var _ = require('underscore');
 var fs = require('fs');
 var assert = require('chai').assert;
 var RED = require('../lib/red-stub')();
 var VideoBlock = require('../nodes/chatbot-video');
 
+require('../lib/platforms/telegram');
+require('../lib/platforms/facebook/facebook');
+
 describe('Chat video node', function() {
 
-  it('should send a local mp4 file with filename parameter Telegram', function () {
+  it('should send a local mp4 file with filename parameter Telegram', () => {
     var msg = RED.createMessage(null, 'telegram');
     RED.node.config({
       name: 'my file',
-      filename: __dirname + '/dummy/file.mp4'
+      video: __dirname + '/dummy/file.mp4'
     });
     VideoBlock(RED);
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'video');
         assert.equal(RED.node.message().payload.mimeType, 'video/mp4');
         assert.equal(RED.node.message().payload.inbound, false);
@@ -26,15 +28,15 @@ describe('Chat video node', function() {
       });
   });
 
-  it('should send a local mp4 vide with filename parameter in upstream node Telegram', function () {
-    var msg = RED.createMessage(null, 'telegram');
+  it('should send a local mp4 vide with filename parameter in upstream node Telegram', () => {
+    const msg = RED.createMessage(null, 'telegram');
     msg.filename = __dirname + '/dummy/file.mp4';
     RED.node.config({});
     VideoBlock(RED);
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'video');
         assert.equal(RED.node.message().payload.mimeType, 'video/mp4');
         assert.equal(RED.node.message().payload.inbound, false);
@@ -44,19 +46,25 @@ describe('Chat video node', function() {
       });
   });
 
-  it('should send a local video file with a wrong filename parameter in upstream node Telegram', function () {
-    var msg = RED.createMessage(null, 'telegram');
+  it('should send a local video file with a wrong filename parameter in upstream node Telegram', () => {
+    const msg = RED.createMessage(null, 'telegram');
     msg.filename = __dirname + '/dummy/file-wrong.mp4';
     RED.node.config({});
     VideoBlock(RED);
     RED.node.get().emit('input', msg);
 
-    assert.include(RED.node.error(), 'File doesn\'t exist:');
-    assert.include(RED.node.error(), 'file-wrong.mp4');
+    return RED.node.get().await()
+      .then(
+        () => {},
+        () => {
+          assert.include(RED.node.error(), 'Error opening file');
+          assert.include(RED.node.error(), 'file-wrong.mp4');
+        }
+      );
   });
 
-  it('should send a video with Telegram using name for mime type', function () {
-    var msg = RED.createMessage(fs.readFileSync(__dirname + '/dummy/file.mp4'), 'telegram');
+  it('should send a video with Telegram using name to get mime type', () => {
+    const msg = RED.createMessage(fs.readFileSync(__dirname + '/dummy/file.mp4'), 'telegram');
     RED.node.config({
       name: 'my-file.mp4'
     });
@@ -64,7 +72,7 @@ describe('Chat video node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'video');
         assert.equal(RED.node.message().payload.mimeType, 'video/mp4');
         assert.equal(RED.node.message().payload.inbound, false);
@@ -74,9 +82,9 @@ describe('Chat video node', function() {
       });
   });
 
-  it('should send a video with Telegram from a RedBot file node', function () {
-    var msg = RED.createMessage({
-      file: fs.readFileSync(__dirname + '/dummy/file.mp4'),
+  it('should send a video with Telegram from a RedBot file node', () => {
+    const msg = RED.createMessage({
+      video: fs.readFileSync(__dirname + '/dummy/file.mp4'),
       filename: '/dummy/file.mp4'
     }, 'telegram');
     RED.node.config({});
@@ -84,7 +92,7 @@ describe('Chat video node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'video');
         assert.equal(RED.node.message().payload.mimeType, 'video/mp4');
         assert.equal(RED.node.message().payload.inbound, false);
@@ -94,26 +102,32 @@ describe('Chat video node', function() {
       });
   });
 
-  it('should send a buffer document with Telegram without using name for mime type', function () {
-    var msg = RED.createMessage(fs.readFileSync(__dirname + '/dummy/file.mp4'), 'telegram');
+  it('should send a buffer document with Telegram without using name for mime type', () => {
+    const msg = RED.createMessage(fs.readFileSync(__dirname + '/dummy/file.mp4'), 'telegram');
     RED.node.config({});
     VideoBlock(RED);
 
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.error(), 'Unknown file type, use the "name" parameter to specify the file name and extension as default');
+    return RED.node.get().await()
+      .then(
+        () => {},
+        () => {
+          assert.equal(RED.node.error(), 'Unknown file type, use the "name" parameter to specify the file name and extension as default');
+        }
+      );
   });
 
-  it('should send a video from a file with Facebook', function () {
-    var msg = RED.createMessage(null, 'facebook');
+  it('should send a video from a file with Facebook', () => {
+    const msg = RED.createMessage(null, 'facebook');
     RED.node.config({
       name: 'my file',
-      filename: __dirname + '/dummy/file.mp4'
+      video: __dirname + '/dummy/file.mp4'
     });
     VideoBlock(RED);
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'video');
         assert.equal(RED.node.message().payload.mimeType, 'video/mp4');
         assert.equal(RED.node.message().payload.inbound, false);
@@ -123,17 +137,17 @@ describe('Chat video node', function() {
       });
   });
 
-  it('should send a video from a file with Facebook', function () {
-    var msg = RED.createMessage(null, 'facebook');
+  it('should send a video from a file with Facebook', () => {
+    const msg = RED.createMessage(null, 'facebook');
     RED.node.config({
       name: 'my file',
-      filename: __dirname + '/dummy/file.mp4'
+      video: __dirname + '/dummy/file.mp4'
     });
     VideoBlock(RED);
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'video');
         assert.equal(RED.node.message().payload.mimeType, 'video/mp4');
         assert.equal(RED.node.message().payload.inbound, false);
@@ -144,15 +158,21 @@ describe('Chat video node', function() {
   });
 
   it('should send an unsupported video format from file with Facebook', function () {
-    var msg = RED.createMessage(null, 'facebook');
+    const msg = RED.createMessage(null, 'facebook');
     RED.node.config({
       name: 'my file',
-      filename: __dirname + '/dummy/video.mov'
+      video: __dirname + '/dummy/video.mov'
     });
     VideoBlock(RED);
     RED.node.get().emit('input', msg);
 
-    assert.equal(RED.node.error(), 'Unsupported file format for video node, allowed formats: .mp4');
+    return RED.node.get().await()
+      .then(
+        () => {},
+        () => {
+          assert.equal(RED.node.error(), 'Unsupported file format for video node, allowed formats: .mp4');
+        }
+      );
   });
 
 });

@@ -8,12 +8,6 @@ const validators = require('../lib/helpers/validators');
 const fetchers = require('../lib/helpers/fetchers-obj');
 const { ChatExpress } = require('chat-platform');
 
-const ValidExtensions = {
-  'facebook': ['.mp3'],
-  'telegram': ['.mp3'],
-  'slack': ['.mp3']
-};
-
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
 
@@ -24,7 +18,6 @@ module.exports = function(RED) {
     this.audio = config.audio;
     this.duration = config.duration;
     this.name = config.name;
-    this.transports = ['telegram', 'slack', 'facebook'];
 
     this.on('input', function(msg) {
 
@@ -32,14 +25,13 @@ module.exports = function(RED) {
       const chatId = utils.getChatId(msg);
       const messageId = utils.getMessageId(msg);
       const transport = utils.getTransport(msg);
-      const validExtensions = ValidExtensions[transport];
 
       // check if valid message
       if (!utils.isValidMessage(msg, node)) {
         return;
       }
       // check transport compatibility
-      if (!ChatExpress.isSupported(transport, 'audio') && !utils.matchTransport(node, msg)) {
+      if (!ChatExpress.isSupported(transport, 'audio')) {
         return;
       }
 
@@ -48,8 +40,6 @@ module.exports = function(RED) {
         || utils.extractValue('filepath', 'filename', node, msg, false, true); // no payload, yes message
       let caption = utils.extractValue('string', 'caption', node, msg, false);
       let duration = utils.extractValue('number', 'duration', node, msg);
-
-      // TODO: move the validate audio file to chat platform methods
 
       // get the content
       let fetcher = null;
@@ -69,11 +59,10 @@ module.exports = function(RED) {
       }
 
       fetcher(content)
-        // TODO: add here size check
         .then(file => {
-          // if the file has a not a valid extension, stop it
-          if (!_.isEmpty(file.extension) && !_(validExtensions).contains(file.extension)) {
-            const error = 'Unsupported file format for audio node, allowed formats: ' + validExtensions.join(', '); 
+          // check if a valid file
+          const error = ChatExpress.isValidFile(transport, 'audio', file);
+          if (error != null) { 
             node.error(error);
             throw error;
           }
@@ -99,7 +88,6 @@ module.exports = function(RED) {
         })
         .then(
           file => {
-            console.log('--->', file)
             // send out reply
             node.send({
               ...msg,
