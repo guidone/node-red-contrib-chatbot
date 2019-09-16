@@ -122,7 +122,17 @@ describe('Value extractors', function() {
     const msg = RED.createMessage({ randomValue: 42 });
     const MyNode = { ...RED.node, video: '/web/node-red-contrib-chatbot/__tests__/dummy/audio.mp3' };
     assert.equal(extractValue('filepath', 'video', MyNode, msg), '/web/node-red-contrib-chatbot/__tests__/dummy/audio.mp3');
-  })
+  });
+
+  it('should extract a string with variables', () => {
+    const msg1 = RED.createMessage({ video: 'A simple string' });
+    const msg2 = RED.createMessage({ video: 'A simple string with var {{myvar}}' });
+    const msg3 = RED.createMessage({ video: 42 });
+    const MyNode = { ...RED.node };
+    assert.isNull(extractValue('stringWithVariables', 'video', RED.node, msg1));
+    assert.equal(extractValue('stringWithVariables', 'video', RED.node, msg2), 'A simple string with var {{myvar}}');
+    assert.isNull(extractValue('stringWithVariables', 'video', RED.node, msg3));
+  });
 
   it('should append messages to payload', function() {
     // step 1

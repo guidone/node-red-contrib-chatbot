@@ -8,6 +8,33 @@ require('../lib/platforms/facebook/facebook');
 
 describe('Chat video node', function() {
 
+  it('should send a local mp4 file using chat context variables', () => {
+    var msg = RED.createMessage(null, 'telegram');
+    RED.node.config({
+      name: 'my file',
+      video: '{{myfile}}',
+      caption: '{{mycaption}} for {{myfile}}'
+      //video: __dirname + '/dummy/file.mp4'
+    });
+    msg.chat().set({
+      myfile: __dirname + '/dummy/file.mp4',
+      vat: '42',
+      mycaption: 'I am a caption'
+    });
+    VideoBlock(RED);
+    RED.node.get().emit('input', msg);
+
+    return RED.node.get().await()
+      .then(() => {
+        assert.equal(RED.node.message().payload.type, 'video');
+        assert.equal(RED.node.message().payload.mimeType, 'video/mp4');
+        assert.equal(RED.node.message().payload.inbound, false);
+        assert.instanceOf(RED.node.message().payload.content, Buffer);
+        assert.equal(RED.node.message().payload.filename, 'file.mp4');
+        assert.equal(RED.node.message().originalMessage.chat.id, 42);
+      });
+  });
+
   it('should send a local mp4 file with filename parameter Telegram', () => {
     var msg = RED.createMessage(null, 'telegram');
     RED.node.config({
