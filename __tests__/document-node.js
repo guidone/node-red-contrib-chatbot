@@ -7,6 +7,32 @@ require('../lib/platforms/telegram');
 require('../lib/platforms/facebook/facebook');
 describe('Chat document node', () => {
 
+  it('should send a local pdf document with filename parameter using context variables', () => {
+    const msg = RED.createMessage(null, 'telegram');
+    RED.node.config({
+      name: 'my file',
+      document: '{{myfile}}',
+      caption: '{{mycaption}} for {{myfile}}'
+    });
+    msg.chat().set({
+      myfile: __dirname + '/dummy/file.pdf',
+      mycaption: 'I am a caption'
+    });
+    DocumentBlock(RED);
+    RED.node.get().emit('input', msg);
+
+    return RED.node.get().await()
+      .then(() => {
+        assert.equal(RED.node.message().payload.type, 'document');
+        assert.equal(RED.node.message().payload.mimeType, 'application/pdf');
+        assert.equal(RED.node.message().payload.caption, 'I am a caption for __tests__/dummy/file.pdf');
+        assert.equal(RED.node.message().payload.inbound, false);
+        assert.instanceOf(RED.node.message().payload.content, Buffer);
+        assert.equal(RED.node.message().payload.filename, 'file.pdf');
+        assert.equal(RED.node.message().originalMessage.chat.id, 42);
+      });
+  });
+
   it('should send a local pdf document with filename parameter Telegram', () => {
     const msg = RED.createMessage(null, 'telegram');
     RED.node.config({

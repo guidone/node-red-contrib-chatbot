@@ -14,11 +14,9 @@ describe('Chat video node', function() {
       name: 'my file',
       video: '{{myfile}}',
       caption: '{{mycaption}} for {{myfile}}'
-      //video: __dirname + '/dummy/file.mp4'
     });
     msg.chat().set({
       myfile: __dirname + '/dummy/file.mp4',
-      vat: '42',
       mycaption: 'I am a caption'
     });
     VideoBlock(RED);
