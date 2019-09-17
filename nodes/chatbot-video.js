@@ -45,8 +45,7 @@ module.exports = function(RED) {
         || extractValue('buffer', 'video', node, msg)
         || extractValue('stringWithVariables', 'video', node, msg)
         || extractValue('filepath',  'filename', node, msg, false, true, false); // no payload, yes message
-      let caption = extractValue('string', 'caption', node, msg, false)
-        || extractValue('stringWithVariables', 'caption', node, msg, false);
+      let caption = extractValue('string', 'caption', node, msg, false);
   
       template({ content, caption })
         .then(({ content, caption }) => {
