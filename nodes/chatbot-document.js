@@ -15,7 +15,6 @@ const {
   extractValue 
 } = require('../lib/helpers/utils');
 
-
 // TODO: move inside patforms
 /*
 const ValidExtensions = {
@@ -26,7 +25,6 @@ const ValidExtensions = {
 };
 */
 
-
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
 
@@ -34,7 +32,7 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
     const node = this;
     this.filename = config.filename;
-    this.doc = config.document;
+    this.document = config.document;
     this.name = config.name;
     this.caption = config.caption;
 
@@ -52,16 +50,11 @@ module.exports = function(RED) {
       if (!ChatExpress.isSupported(transport, 'document')) {
         return;
       }
-      // this non-sense it's because in jest node.document is not writable
-      // TODO: fix this in test env
-      let content = extractValue('filepath', 'document', node, msg, true, true, false)
-        || extractValue('filepath', 'doc', node, msg, false, false, true)
-        || extractValue('stringWithVariables', 'document', node, msg, true, true, false)
-        || extractValue('stringWithVariables', 'doc', node, msg, false, false, true)
-        || extractValue('url', 'document', node, msg, true, true, false)
-        || extractValue('url', 'doc', node, msg, false, false, true)
-        || extractValue('buffer', 'document', node, msg, true, true, false)
-        || extractValue('buffer', 'doc', node, msg, false, false, true)        
+    
+      let content = extractValue('filepath', 'document', node, msg, true, true, true)
+        || extractValue('stringWithVariables', 'document', node, msg, true, true, true)
+        || extractValue('url', 'document', node, msg, true, true, true)
+        || extractValue('buffer', 'document', node, msg, true, true, true)
         || extractValue('filepath', 'filename', node, msg, false, true, false); // no payload, yes message
       let caption = extractValue('string', 'caption', node, msg, false);
 
