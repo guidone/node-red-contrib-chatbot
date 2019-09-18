@@ -28,7 +28,8 @@ describe('Chat audio node', () => {
       .then(() => {
         assert.equal(RED.node.message().payload.type, 'audio');
         assert.equal(RED.node.message().payload.inbound, false);
-        assert.equal(RED.node.message().payload.caption, 'I am a caption for __tests__/dummy/audio.mp3');
+        assert.include(RED.node.message().payload.caption, 'I am a caption for');
+        assert.include(RED.node.message().payload.caption, '__tests__/dummy/audio.mp3');
         assert.instanceOf(RED.node.message().payload.content, Buffer);
         assert.equal(RED.node.message().payload.filename, 'audio.mp3');
         assert.equal(RED.node.message().originalMessage.chat.id, 42);
@@ -193,7 +194,7 @@ describe('Chat audio node', () => {
       .then(
         () => {},
         () => {
-          assert.equal(RED.node.error(), 'Unsupported file format for audio node, allowed formats: .mp3');
+          assert.equal(RED.node.error(), 'Unsupported file format for audio node "video.mov", allowed formats: .mp3');
         }
       );
   });

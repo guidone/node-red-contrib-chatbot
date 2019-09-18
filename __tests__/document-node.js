@@ -25,7 +25,8 @@ describe('Chat document node', () => {
       .then(() => {
         assert.equal(RED.node.message().payload.type, 'document');
         assert.equal(RED.node.message().payload.mimeType, 'application/pdf');
-        assert.equal(RED.node.message().payload.caption, 'I am a caption for __tests__/dummy/file.pdf');
+        assert.include(RED.node.message().payload.caption, 'I am a caption for');
+        assert.include(RED.node.message().payload.caption, '__tests__/dummy/file.pdf');
         assert.equal(RED.node.message().payload.inbound, false);
         assert.instanceOf(RED.node.message().payload.content, Buffer);
         assert.equal(RED.node.message().payload.filename, 'file.pdf');

@@ -15,15 +15,6 @@ const {
   extractValue 
 } = require('../lib/helpers/utils');
 
-// TODO: move inside patforms
-/*
-const ValidExtensions = {
-  'facebook': ['.pdf', '.png', '.jpg', '.zip', '.gif'],
-  'telegram': ['.pdf', '.gif', '.zip'],
-  'slack': ['.pdf', '.zip'],
-  'viber': ['*']
-};
-*/
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);

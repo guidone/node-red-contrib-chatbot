@@ -195,7 +195,7 @@ describe('Chat video node', function() {
       .then(
         () => {},
         () => {
-          assert.equal(RED.node.error(), 'Unsupported file format for video node, allowed formats: .mp4');
+          assert.equal(RED.node.error(), 'Unsupported file format for video node "video.mov", allowed formats: .mp4');
         }
       );
   });
