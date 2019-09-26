@@ -49,7 +49,6 @@
         .html(transportOptions)
         .change(function() {
           var transport = $(this).val();
-          console.log('select', transport);
           $('#node-input-botDevelopment').val('');
           $('#node-input-botProduction').val('');
           if (transport !== '' && transport != null) {
@@ -103,16 +102,10 @@
           required: false
         },
         chatId: {
-          value: '',
-          validate: function(value) {
-            return $.RedBot.validate.notEmpty(this.userId) || $.RedBot.validate.notEmpty(value);
-          }
+          value: ''
         },
         userId: {
-          value: '',
-          validate: function(value) {
-            return $.RedBot.validate.notEmpty(this.chatId) || $.RedBot.validate.notEmpty(value);
-          }
+          value: ''
         },
         transport: {
           value: '',
