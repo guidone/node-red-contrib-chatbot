@@ -4,24 +4,30 @@ var lcd = require('../lib/helpers/lcd');
 var dialogflow = require('dialogflow');
 var when = utils.when;
 
+function parseValue(value) {
+  if (value.kind === 'stringValue') {
+    if (!_.isEmpty(value.stringValue)) {
+      return value.stringValue;
+    }
+  } else if (value.kind === 'numberValue') {
+    return value.numberValue;
+  } else if (value.kind === 'structValue' ) {
+    return parseFields(value.structValue.fields);
+  } else if (value.kind === 'listValue') {
+    return value.listValue.values.map(parseValue);
+  } else {
+    // eslint-disable-next-line no-console
+    console.log('Warning: incorrectly handled dialogflow.com response type:');
+    // eslint-disable-next-line no-console
+    console.log(value);
+  }
+}
+
 function parseFields(fields) {
   var variables = {};
 
   _(fields).each(function(value, key) {
-    if (value.kind === 'stringValue') {
-      if (!_.isEmpty(value.stringValue)) {
-        variables[key] = value.stringValue;
-      }
-    } else if (value.kind === 'numberValue') {
-      variables[key] = value.numberValue;
-    } else if (value.kind === 'structValue' ) {
-      variables[key] = parseFields(value.structValue.fields);
-    } else {
-      // eslint-disable-next-line no-console
-      console.log('Warning: incorrectly handled dialogflow.com response type:');
-      // eslint-disable-next-line no-console
-      console.log(value);
-    }
+    variables[key] = parseValue(value);
   });
 
   return variables;
