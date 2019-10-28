@@ -46,17 +46,26 @@
 <div class="redbot-form-legend"></div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-video"><p>The <code>Video node</code> can send a file from the local filesystem, from a Buffer payload from the upstream node or
-from a <code>File node</code>.</p>
+<script type="text/x-red" data-help-name="chatbot-video"><p>The <code>Video node</code> sends a video to the chatbot from a local file or from a URL or from a Buffer passed by an upstream node (the simplest way to use it to chain with to <code>File node</code> or a <code>Http node</code>).</p>
 <p>Some file types are not supported by a specific platform, for example <em>Telegram</em> and <em>Facebook Messenger</em> only supports <em>.mp4</em>. Different video format che be sent with the <code>Document node</code>.</p>
 <p>To programmatically send a video, in the upstream <code>Function node</code></p>
-<pre><code>msg.payload.file = new Buffer(&lt;my-buffer&gt;);
-msg.payload.filename = &#39;my-video.mp4&#39;;
+<pre><code class="lang-javascript">msg.video = &#39;/my/local/my-video.mp4&#39;;
 return msg;
-</code></pre><p><code>.file</code> is a <code>Buffer</code> type. To pass the path of a local file from the upstream node</p>
-<pre><code>msg.filename = &#39;/my/local/my-video.mp4&#39;;
+</code></pre>
+<p>Or using a <code>Buffer</code>:</p>
+<pre><code class="lang-javascript">msg.payload.document = new Buffer(&lt;my-video-buffer&gt;);
+msg.payload.filename = &#39;my-video.mp3&#39;;
 return msg;
-</code></pre><p><img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook">
+</code></pre>
+<p>In case the upstream node pass through a <code>Buffer</code>, the node tries to extract a proper file name (visible to user in the chat client) using the payload of the upstream <code>File node</code> or the name of the node itself. </p>
+<dl class="message-properties">
+
+
+<dt>video<span class="property-type">string or buffer</span><dd>The video string could be a path for a local file or a URL (context variables can be used)</dd>
+<dt>caption<span class="property-type">string</span><dd>Caption of the video. Only for Telegram, Slack and Viber</dd>
+
+</dl>
+<p><img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook">
 <img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram">
 <img src="https://img.shields.io/badge/platform-Slack-green.svg" alt="Slack"></p>
 </script>
