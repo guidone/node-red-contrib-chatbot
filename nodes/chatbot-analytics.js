@@ -1,8 +1,10 @@
-var analytics = {
+const RegisterType = require('../lib/node-installer');
+const analytics = {
   dashbot: require('../lib/analytics/dashbot')
 };
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   function ChatBotAnalytics(config) {
     RED.nodes.createNode(this, config);
@@ -43,6 +45,5 @@ module.exports = function(RED) {
 
     });
   }
-  RED.nodes.registerType('chatbot-analytics', ChatBotAnalytics);
-
+  registerType('chatbot-analytics', ChatBotAnalytics);
 };

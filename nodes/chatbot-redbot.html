@@ -1,1 +1,12 @@
-
+<script type="text/javascript">
+  $.RedBot = {
+    registerType: function(type, params) {
+      var hiddenNodes = $.RedBot.config.hideNodes || [];
+      if (hiddenNodes.indexOf(type) !== -1) {
+        console.log('Skipped node "' + type + '" due to configuration in redbot.config.html');
+      } else {
+        RED.nodes.registerType(type, params);
+      }
+    }
+  };
+</script>

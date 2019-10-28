@@ -1,11 +1,14 @@
-var _ = require('underscore');
-var utils = require('../lib/helpers/utils');
-var MessageTemplate = require('../lib/message-template-async');
-var emoji = require('node-emoji');
-var ChatExpress = require('../lib/chat-platform/chat-platform');
-var append = utils.append;
+const _ = require('underscore');
+const utils = require('../lib/helpers/utils');
+const MessageTemplate = require('../lib/message-template-async');
+const emoji = require('node-emoji');
+const { ChatExpress } = require('chat-platform');
+const RegisterType = require('../lib/node-installer');
+
+const append = utils.append;
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   function ChatBotMessage(config) {
     RED.nodes.createNode(this, config);
@@ -75,5 +78,5 @@ module.exports = function(RED) {
     });
   }
 
-  RED.nodes.registerType('chatbot-message', ChatBotMessage);
+  registerType('chatbot-message', ChatBotMessage);
 };

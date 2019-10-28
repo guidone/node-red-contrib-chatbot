@@ -1,8 +1,10 @@
-var MessageTemplate = require('../lib/message-template-async');
-var emoji = require('node-emoji');
-var utils = require('../lib/helpers/utils');
+const MessageTemplate = require('../lib/message-template-async');
+const emoji = require('node-emoji');
+const utils = require('../lib/helpers/utils');
+const RegisterType = require('../lib/node-installer');
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   function ChatBotRequest(config) {
     RED.nodes.createNode(this, config);
@@ -42,5 +44,5 @@ module.exports = function(RED) {
     });
   }
 
-  RED.nodes.registerType('chatbot-request', ChatBotRequest);
+  registerType('chatbot-request', ChatBotRequest);
 };

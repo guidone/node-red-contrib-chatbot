@@ -1,6 +1,5 @@
 <script type="text/javascript">
 
-  $.RedBot = {};
   $.RedBot.buttonTypes = [
     {
       type: 'url',
@@ -229,6 +228,8 @@
         return $.RedBot.validate.notEmpty(rule.command);
       case 'messageType':
         return $.RedBot.validate.notEmpty(rule.messageType);
+      case 'isTransportPreferred':
+      case 'isTransportAvailable':
       case 'transport':
         return $.RedBot.validate.notEmpty(rule.transport);
       case 'messageEvent':
@@ -963,8 +964,8 @@
 
   };
 
-  RED.nodes.registerType('chatbot-inline-buttons', {
-    category: 'RedBot',
+  $.RedBot.registerType('chatbot-inline-buttons', {
+    category: $.RedBot.config.name,
     color: '#FFCC66',
     defaults: {
       name: {
@@ -1444,6 +1445,7 @@ return msg;
   }
 
   .redbot-form-hint {
+    display: block;
     max-width: 560px;
     font-size: 12px;
     color: #999999;

@@ -1,11 +1,45 @@
-var utils = require('../lib/helpers/utils');
-var helpers = require('../lib/helpers/regexps');
-var _ = require('underscore');
-var when = utils.when;
+const utils = require('../lib/helpers/utils');
+const helpers = require('../lib/helpers/regexps');
+const _ = require('underscore');
+const RegisterType = require('../lib/node-installer');
 
-var Types = {
+const when = utils.when;
 
-  isSlotConfirmationStatus: function(rule, message) {
+const Types = {
+
+  isTransportPreferred(rule, message) {
+    return new Promise((resolve, reject) => {
+      message.isTransportPreferred(rule.transport, message)
+        .then(
+          isAvailable => {
+            if (isAvailable) {
+              resolve(rule)
+            } else {
+              reject();
+            }
+          },
+          () => reject()
+        );
+    });
+  },
+
+  isTransportAvailable(rule, message) {
+    return new Promise((resolve, reject) => {
+      message.isTransportAvailable(rule.transport, message)
+        .then(
+          isAvailable => {
+            if (isAvailable) {
+              resolve(rule)
+            } else {
+              reject();
+            }
+          },
+          () => reject()
+        );
+    });
+  },
+
+  isSlotConfirmationStatus(rule, message) {
     return new Promise(function(resolve, reject) {
       if (message.payload != null && message.payload.type === 'intent' && message.payload.slotConfirmationStatus != null
         && message.payload.slotConfirmationStatus[rule.slot] === rule.confirmationStatus) {
@@ -16,7 +50,7 @@ var Types = {
     });
   },
 
-  isIntentConfirmationStatus: function(rule, message) {
+  isIntentConfirmationStatus(rule, message) {
     return new Promise(function(resolve, reject) {
       if (message.payload != null && message.payload.type === 'intent'
         && message.payload.confirmationStatus === rule.confirmationStatus) {
@@ -27,7 +61,7 @@ var Types = {
     });
   },
 
-  isIntentName: function(rule, message) {
+  isIntentName(rule, message) {
     return new Promise(function(resolve, reject) {
       if (message.payload != null && message.payload.type === 'intent' && message.payload.intent === rule.intent) {
         resolve(rule);
@@ -37,7 +71,7 @@ var Types = {
     });
   },
 
-  isIntent: function(rule, message) {
+  isIntent(rule, message) {
     return new Promise(function(resolve, reject) {
       if (message.payload != null && message.payload.type === 'intent') {
         resolve(rule);
@@ -47,7 +81,7 @@ var Types = {
     });
   },
 
-  dialogState: function(rule, message) {
+  dialogState(rule, message) {
     return new Promise(function(resolve, reject) {
       if (message.payload != null && message.payload.type === 'intent' && message.payload.dialogState === rule.state) {
         resolve(rule);
@@ -57,7 +91,7 @@ var Types = {
     });
   },
 
-  pending: function(rule, message) {
+  pending(rule, message) {
     return new Promise(function(resolve, reject) {
       var chatContext = message.chat();
       when(chatContext.get('pending'))
@@ -71,7 +105,7 @@ var Types = {
     });
   },
 
-  notPending: function(rule, message) {
+  notPending(rule, message) {
     return new Promise(function(resolve, reject) {
       var chatContext = message.chat();
       when(chatContext.get('pending'))
@@ -85,7 +119,7 @@ var Types = {
     });
   },
 
-  isVariable: function(rule, message) {
+  isVariable(rule, message) {
     return new Promise(function(resolve, reject) {
       var chatContext = message.chat();
       when(chatContext.get(rule.variable))
@@ -103,7 +137,7 @@ var Types = {
     });
   },
 
-  transport: function(rule, message) {
+  transport(rule, message) {
     return new Promise(function(resolve, reject) {
       if (message != null && message.payload != null) {
         if (message.originalMessage.transport === rule.transport) {
@@ -115,7 +149,7 @@ var Types = {
     });
   },
 
-  messageType: function(rule, message) {
+  messageType(rule, message) {
     return new Promise(function(resolve, reject) {
       if (message != null && message.payload != null) {
         if ((helpers.isCommand(message.payload.content) && rule.messageType === 'command') ||
@@ -128,7 +162,7 @@ var Types = {
     });
   },
 
-  messageEvent: function(rule, message) {
+  messageEvent(rule, message) {
     return new Promise(function(resolve, reject) {
       if (message != null && message.payload != null) {
         if (message.payload.type === 'event' && message.payload.eventType === rule.event) {
@@ -140,7 +174,7 @@ var Types = {
     });
   },
 
-  notMessageType: function(rule, message) {
+  notMessageType(rule, message) {
     return new Promise(function(resolve, reject) {
       if (message != null && message.payload != null) {
         if ((helpers.isCommand(message.payload.content) && rule.messageType === 'command') ||
@@ -153,7 +187,7 @@ var Types = {
     });
   },
 
-  environment: function(rule, message, global) {
+  environment(rule, message, global) {
     var environment = global != null && global.environment === 'production' ? 'production' : 'development';
     return new Promise(function(resolve, reject) {
       if (environment === rule.environment) {
@@ -164,7 +198,7 @@ var Types = {
     });
   },
 
-  inbound: function(rule, message) {
+  inbound(rule, message) {
     return new Promise(function(resolve, reject) {
       if (message.payload != null && message.payload.inbound === true) {
         resolve(rule);
@@ -174,7 +208,7 @@ var Types = {
     });
   },
 
-  anyCommand: function(rule, message) {
+  anyCommand(rule, message) {
     return new Promise(function(resolve, reject) {
       if (message.payload != null && _.isString(message.payload.content) && helpers.isCommand(message.payload.content)) {
         resolve(rule);
@@ -184,7 +218,7 @@ var Types = {
     });
   },
 
-  command: function(rule, message) {
+  command(rule, message) {
     return new Promise(function(resolve, reject) {
       if (message.payload != null && helpers.isCommand(message.payload.content, rule.command)) {
         resolve(rule);
@@ -194,7 +228,7 @@ var Types = {
     });
   },
 
-  outbound: function(rule, message) {
+  outbound(rule, message) {
     return new Promise(function(resolve, reject) {
       if (message.payload != null && message.payload.inbound === false) {
         resolve(rule);
@@ -204,7 +238,7 @@ var Types = {
     });
   },
 
-  isTopicEmpty: function(rule, message) {
+  isTopicEmpty(rule, message) {
     return new Promise(function(resolve, reject) {
       var chatContext = message.chat();
       when(chatContext.get('topic'))
@@ -223,13 +257,13 @@ var Types = {
 
   },
 
-  catchAll: function(rule) {
+  catchAll(rule) {
     return new Promise(function (resolve) {
       resolve(rule);
     });
   },
 
-  isNotTopic: function(rule, message) {
+  isNotTopic(rule, message) {
     return new Promise(function (resolve, reject) {
       var chatContext = message.chat();
       when(chatContext.get('topic'))
@@ -247,7 +281,7 @@ var Types = {
     });
   },
 
-  isTopic: function(rule, message) {
+  isTopic(rule, message) {
     return new Promise(function (resolve, reject) {
       var chatContext = message.chat();
       when(chatContext.get('topic'))
@@ -265,7 +299,7 @@ var Types = {
     });
   },
 
-  hasNotVariable: function(rule, message) {
+  hasNotVariable(rule, message) {
     return new Promise(function (resolve, reject) {
       var chatContext = message.chat();
       when(chatContext.get(rule.variable))
@@ -283,7 +317,7 @@ var Types = {
     });
   },
 
-  hasVariable: function(rule, message) {
+  hasVariable(rule, message) {
     return new Promise(function (resolve, reject) {
       var chatContext = message.chat();
       when(chatContext.get(rule.variable))
@@ -301,7 +335,7 @@ var Types = {
     });
   },
 
-  topicIncludes: function(rule, message) {
+  topicIncludes(rule, message) {
     return new Promise(function (resolve, reject) {
       var chatContext = message.chat();
       when(chatContext.get('topic'))
@@ -377,6 +411,7 @@ function executeRules(rules, message, global, current) {
 }
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   function ChatBotRules(config) {
     RED.nodes.createNode(this, config);
@@ -402,5 +437,5 @@ module.exports = function(RED) {
     });
   }
 
-  RED.nodes.registerType('chatbot-rules', ChatBotRules);
+  registerType('chatbot-rules', ChatBotRules);
 };

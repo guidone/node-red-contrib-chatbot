@@ -1,6 +1,8 @@
 {
     "globals": {
-        "Promise": true
+        "Promise": true,
+        "it": true,
+        "describe": true
     },
     "env": {
         "node": true,

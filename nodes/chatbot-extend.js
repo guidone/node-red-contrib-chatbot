@@ -1,7 +1,11 @@
+const RegisterType = require('../lib/node-installer');
+
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
+
   function ChatBotExtend(config) {
     RED.nodes.createNode(this, config);
     this.codeJs = config.codeJs;
   }
-  RED.nodes.registerType('chatbot-extend', ChatBotExtend);
+  registerType('chatbot-extend', ChatBotExtend);
 };

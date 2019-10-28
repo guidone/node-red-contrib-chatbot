@@ -1,6 +1,6 @@
-var lcd = require('../lib/helpers/lcd');
-var fs = require('fs');
-var moment = require('moment');
+const lcd = require('../lib/helpers/lcd');
+const fs = require('fs');
+const moment = require('moment');
 
 require('../lib/platforms/telegram');
 require('../lib/platforms/slack');
@@ -8,9 +8,9 @@ require('../lib/platforms/twilio/twilio');
 require('../lib/platforms/viber');
 require('../lib/platforms/facebook/facebook');
 
-var jsonPackage = fs.readFileSync(__dirname + '/../package.json');
+const jsonPackage = fs.readFileSync(__dirname + '/../package.json');
 try {
-  var package = JSON.parse(jsonPackage);
+  const package = JSON.parse(jsonPackage);
   // eslint-disable-next-line no-console
   console.log(lcd.white(moment().format('DD MMM HH:mm:ss')
     + ' - [info] RedBot version:')

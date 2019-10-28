@@ -1,129 +1,52 @@
-var _ = require('underscore');
-var ChatContextStore = require('../lib/chat-context-store');
-var utils = require('../lib/helpers/utils');
+const utils = require('../lib/helpers/utils');
+const RegisterType = require('../lib/node-installer');
+const { UniversalPlatform, ContextProviders } = require('chat-platform');
 
 module.exports = function(RED) {
-
+  const registerType = RegisterType(RED);
 
   function ChatBotConversation(config) {
     RED.nodes.createNode(this, config);
-    var node = this;
-    var global = this.context().global;
+    const node = this;
+    const global = this.context().global;
 
     this.chatId = config.chatId;
+    this.userId = config.userId;
     this.transport = config.transport;
-    this.contextMessageId = config.contextMessageId;
-    this.messageId = config.messageId;
     this.store = config.store;
-    this.botTelegram = config.botTelegram;
-    this.botTelegramProduction = config.botTelegramProduction;
-    this.botSlack = config.botSlack;
-    this.botSlackProduction = config.botSlackProduction;
-    this.botFacebook = config.botFacebook;
-    this.botFacebookProduction = config.botFacebookProduction;
-    this.botViber = config.botViber;
-    this.botViberProduction = config.botViberProduction;
-    this.botUniversal = config.botUniversal;
-    this.botUniversalProduction = config.botUniversalProduction;
-    this.botTwilio = config.botTwilio;
-    this.botTwilioProduction = config.botTwilioProduction;
-    this.botDiscord = config.botDiscord;
-    this.botDiscordProduction = config.botDiscordProduction;
+    this.botProduction = config.botProduction;
+    this.botDevelopment = config.botDevelopment;
 
-    this.on('input', function(msg) {
+    this.on('input', msg => {
+      const chatId = utils.extractValue('string', 'chatId', node, msg, false)
+      const userId = utils.extractValue('string', 'userId', node, msg, false)
+        || utils.extractValue('number', 'userId', node, msg, false);
 
-      var chatId = utils.extractValue('string', 'chatId', node, msg, false)
-        || utils.extractValue('number', 'chatId', node, msg, false);
-      var transport = utils.extractValue('string', 'transport', node, msg, false);
-      var messageId = utils.extractValue('string', 'messageId', node, msg, false)
-        || utils.extractValue('number', 'messageId', node, msg, false);
-      var contextMessageId = utils.extractValue('boolean', 'contextMessageId', node, msg, false);
-      var botTelegram = global.environment === 'production' ? node.botTelegramProduction : node.botTelegram;
-      var botSlack = global.environment === 'production' ? node.botSlackProduction : node.botSlack;
-      var botFacebook = global.environment === 'production' ? node.botFacebookProduction : node.botFacebook;
-      var botViber = global.environment === 'production' ? node.botViberProduction : node.botViber;
-      var botUniversal = global.environment === 'production' ? node.botUniversalProduction : node.botUniversal;
-      var botTwilio = global.environment === 'production' ? node.botTwilioProduction : node.botTwilio;
-      var botDiscord = global.environment === 'production' ? node.botDiscordProduction : node.botDiscord;
+      const botNode = global.environment === 'production' ? node.botProduction : node.botDevelopment;
 
-      if (transport !== 'smooch') {
-        var platformNode = null;
-        if (transport === 'slack' && RED.nodes.getNode(botSlack) != null) {
-          platformNode = RED.nodes.getNode(botSlack).chat;
-        } else if (transport === 'telegram' && RED.nodes.getNode(botTelegram) != null) {
-          platformNode = RED.nodes.getNode(botTelegram).chat;
-        } else if (transport === 'facebook' && RED.nodes.getNode(botFacebook) != null) {
-          platformNode = RED.nodes.getNode(botFacebook).chat;
-        } else if (transport === 'viber' && RED.nodes.getNode(botViber) != null) {
-          platformNode = RED.nodes.getNode(botViber).chat;
-        } else if (transport === 'universal' && RED.nodes.getNode(botUniversal) != null) {
-          platformNode = RED.nodes.getNode(botUniversal).chat;
-        } else if (transport === 'twilio' && RED.nodes.getNode(botTwilio) != null) {
-          platformNode = RED.nodes.getNode(botTwilio).chat;
-        } else if (transport === 'discord' && RED.nodes.getNode(botDiscord) != null) {
-          platformNode = RED.nodes.getNode(botDiscord).chat;
-        } else {
-          node.error('Chatbot not found or not configured properly');
-          return;
-        }
-        // check if chat is null, perhaps the node exists but it's not used by any receiver
-        if (platformNode == null) {
-          node.error('No active chatbot for this configuration. Means that the configuration was found but no receiver node is using it');
-          return;
-        }
-        var message = null;
-        platformNode.createMessage(chatId, null, messageId, msg)
-          .then(function(createdMessage) {
-            message = createdMessage;
-            if (contextMessageId === true) {
-              return message.chat().get('messageId');
-            } else if (messageId != null) {
-              return messageId
-            }
-            return null;
-          })
-          .then(function(fetchedMessageId) {
-            if (fetchedMessageId != null) {
-              message.originalMessage.modifyMessageId = fetchedMessageId;
-            }
-            node.send(message);
-          });
+      let platformNode;
+      if (RED.nodes.getNode(botNode) != null) {
+        platformNode = RED.nodes.getNode(botNode).chat;
       } else {
-
-        var task = new Promise(function(resolve) {
-          resolve();
-        });
-
-        task = task.then(function() {
-          return ChatContextStore.getOrCreateChatContext(node, chatId, {
-            chatId: chatId,
-            transport: transport,
-            authorized: false
-          });
-        });
-
-        task.then(function(chatContext) {
-          // ensure the original message is injected
-          msg.originalMessage = {
-            chat: {
-              id: chatId
-            },
-            message_id: null,
-            modifyMessageId: messageId,
-            transport: transport
-          };
-          msg.chat = function() {
-            return chatContext;
-          };
-          // fix chat id in payload if any
-          if (_.isObject(msg.payload) && msg.payload.chatId != null) {
-            msg.payload.chatId = chatId;
-          }
-          node.send(msg);
-        });
+        const contextProvider = ContextProviders.getProviderById(this.store);
+        if (contextProvider == null) {
+          node.error('Unable to find a valid chat context instance for the selected context provider');
+          return;
+        }
+        platformNode = UniversalPlatform.createServer({ contextProvider });
       }
+
+      // check if chat is null, perhaps the node exists but it's not used by any receiver
+      if (platformNode == null) {
+        node.error('No active chatbot for this configuration. Means that the configuration was found but no receiver node is using it');
+        return;
+      }
+      // finally send
+      platformNode.createMessage(chatId, userId, null, msg)
+        .then(message => node.send(message));
+
     });
   }
 
-  RED.nodes.registerType('chatbot-conversation', ChatBotConversation);
+  registerType('chatbot-conversation', ChatBotConversation);
 };

@@ -1,8 +1,10 @@
-var utils = require('../lib/helpers/utils');
-var validators = require('../lib/helpers/validators');
-var fetchers = require('../lib/helpers/fetchers');
+const utils = require('../lib/helpers/utils');
+const validators = require('../lib/helpers/validators');
+const fetchers = require('../lib/helpers/fetchers');
+const RegisterType = require('../lib/node-installer');
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   function ChatBotSticker(config) {
     RED.nodes.createNode(this, config);
@@ -54,5 +56,5 @@ module.exports = function(RED) {
 
   }
 
-  RED.nodes.registerType('chatbot-sticker', ChatBotSticker);
+  registerType('chatbot-sticker', ChatBotSticker);
 };

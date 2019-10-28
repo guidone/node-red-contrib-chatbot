@@ -1,12 +1,15 @@
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-document', {
-    category: 'RedBot',
+  $.RedBot.registerType('chatbot-document', {
+    category: $.RedBot.config.name,
     color: '#FFCC66',
     defaults: {
       name: {
         value: ''
       },
       filename: {
+        value: ''
+      },
+      document: {
         value: ''
       },
       caption: {
@@ -33,8 +36,8 @@
   <input type="text" id="node-input-name" placeholder="Name">
 </div>
 <div class="form-row">
-  <label for="node-input-filename">Filename</label>
-  <input type="text" id="node-input-filename" placeholder="Filename">
+  <label for="node-input-document">Document</label>
+  <input type="text" id="node-input-document" placeholder="Document filename or URL">
 </div>
 <div class="form-row">
   <label for="node-input-caption">Caption</label>

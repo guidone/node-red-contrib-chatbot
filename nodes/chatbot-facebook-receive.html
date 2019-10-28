@@ -1,5 +1,5 @@
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-facebook-node', {
+  $.RedBot.registerType('chatbot-facebook-node', {
     category: 'config',
     defaults: {
       botname: {
@@ -19,6 +19,9 @@
         value: null
       },
       debug: {
+        value: false
+      },
+      multiWebHook: {
         value: false
       },
       profileFields: {
@@ -121,9 +124,16 @@
     </div>
     <div class="form-row">
       <label for="node-config-input-debug">Debug</label>
-      <input type="checkbox" value="true" id="node-config-input-debug">
+      <input type="checkbox" value="true" id="node-config-input-debug" style="margin-top:0px;">
       <span class="redbot-form-hint">
         Show debug information on send/receive
+      </span>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-multiWebHook" style="width:auto;">Support multiple chatbots</label>
+      <input type="checkbox" value="true" id="node-config-input-multiWebHook" style="margin-top:0px;">
+      <span class="redbot-form-hint">
+        Supports multiple Facebook Messenger chatbots using different callbacks (<em>http://my.host.com/redbot/facebook/1234abcd</em>)
       </span>
     </div>
   </div>
@@ -163,8 +173,8 @@ In order test if it works: connect a <code>Debug Node</code> to the <code>Facebo
 
 
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-facebook-receive', {
-    category: 'RedBot Platforms',
+  $.RedBot.registerType('chatbot-facebook-receive', {
+    category: $.RedBot.config.name + ' Platforms',
     color: '#FFCC66',
     defaults: {
       bot: {
@@ -207,8 +217,8 @@ In order test if it works: connect a <code>Debug Node</code> to the <code>Facebo
 </script>
 
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-facebook-send', {
-    category: 'RedBot Platforms',
+  $.RedBot.registerType('chatbot-facebook-send', {
+    category: $.RedBot.config.name + ' Platforms',
     color: '#FFCC66',
     defaults: {
       bot: {

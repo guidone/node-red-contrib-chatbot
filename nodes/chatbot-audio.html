@@ -1,12 +1,15 @@
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-audio', {
-    category: 'RedBot',
+  $.RedBot.registerType('chatbot-audio', {
+    category: $.RedBot.config.name,
     color: '#FFCC66',
     defaults: {
       name: {
         value: ''
       },
-      filename: {
+      audio: {
+        value: ''
+      },
+      duration: {
         value: ''
       },
       track: {
@@ -29,8 +32,12 @@
   <input type="text" id="node-input-name" placeholder="Name">
 </div>
 <div class="form-row">
-  <label for="node-input-filename">Filename</label>
-  <input type="text" id="node-input-filename" placeholder="Filename">
+  <label for="node-input-audio">Audio</label>
+  <input type="text" id="node-input-audio" placeholder="Audio file or URL">
+</div>
+<div class="form-row">
+  <label for="node-input-duration">Duration</label>
+  <input type="text" id="node-input-duration" placeholder="Duration in seconds">
 </div>
 </script>
 

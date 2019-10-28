@@ -1,18 +1,20 @@
-var _ = require('underscore');
-var moment = require('moment');
-var AlexaServer = require('../lib/platforms/alexa');
-var ContextProviders = require('../lib/chat-platform/chat-context-factory');
-var utils = require('../lib/helpers/utils');
-var clc = require('cli-color');
-var lcd = require('../lib/helpers/lcd');
-var prettyjson = require('prettyjson');
-var validators = require('../lib/helpers/validators');
+const _ = require('underscore');
+const moment = require('moment');
+const AlexaServer = require('../lib/platforms/alexa');
+const { ContextProviders, ChatExpress } = require('chat-platform');
+const utils = require('../lib/helpers/utils');
+const clc = require('cli-color');
+const lcd = require('../lib/helpers/lcd');
+const prettyjson = require('prettyjson');
+const validators = require('../lib/helpers/validators');
+const RegisterType = require('../lib/node-installer');
 
-var when = utils.when;
-var warn = clc.yellow;
-var green = clc.green;
+const when = utils.when;
+const warn = clc.yellow;
+const green = clc.green;
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   // register Alexa server
   if (RED.redbot == null) {
@@ -97,7 +99,10 @@ module.exports = function(RED) {
         return;
       }
       // create a factory for the context provider
-      node.contextProvider = contextProviders.getProvider(botConfiguration.contextProvider, botConfiguration.contextParams);
+      node.contextProvider = contextProviders.getProvider(
+        botConfiguration.contextProvider,
+        { ...botConfiguration.contextParams, id: this.store }
+      );
       // try to start the servers
       try {
         node.contextProvider.start();
@@ -146,11 +151,13 @@ module.exports = function(RED) {
         .then(function() {
           node.chat = null;
           node.contextProvider = null;
+          ChatExpress.reset();
+          ContextProviders.reset();
           done();
         });
     });
   }
-  RED.nodes.registerType('chatbot-alexa-node', AlexaBotNode, {
+  registerType('chatbot-alexa-node', AlexaBotNode, {
     credentials: {}
   });
 
@@ -212,7 +219,7 @@ module.exports = function(RED) {
       done();
     });
   }
-  RED.nodes.registerType('chatbot-alexa-receive', AlexaInNode);
+  registerType('chatbot-alexa-receive', AlexaInNode);
 
   function AlexaOutNode(config) {
     RED.nodes.createNode(this, config);
@@ -273,6 +280,6 @@ module.exports = function(RED) {
       });
     });
   }
-  RED.nodes.registerType('chatbot-alexa-send', AlexaOutNode);
+  registerType('chatbot-alexa-send', AlexaOutNode);
 
 };

@@ -1,94 +1,87 @@
-var _ = require('underscore');
-var assert = require('chai').assert;
-var helpers = require('../lib/helpers/regexps');
-var MessageTemplate = require('../lib/message-template-async');
-var RED = require('../lib/red-stub')();
-var MessageBlock = require('../nodes/chatbot-message');
+const _ = require('underscore');
+const assert = require('chai').assert;
+const helpers = require('../lib/helpers/regexps');
+const MessageTemplate = require('../lib/message-template-async');
+const RED = require('../lib/red-stub')();
+const MessageBlock = require('../nodes/chatbot-message');
 
-describe('Message template', function() {
+describe('Message template', () => {
 
-  it('Leave a string without token intact', function() {
-
-    var msg = RED.createMessage();
-    //MessageBlock(RED);
-
-    var node = {};
+  it('Leave a string without token intact', () => {
+    const msg = RED.createMessage();
+    const node = {};
     RED.nodes.createNode(node, {});
-    var template = MessageTemplate(msg, node);
+    const template = MessageTemplate(msg, node);
 
     return template('I am a template')
-      .then(function(result) {
+      .then(result => {
         assert.equal(result, 'I am a template');
       });
   });
 
-  it('Leave a number without token intact', function() {
-
-    var msg = RED.createMessage();
-    //MessageBlock(RED);
-
-    var node = {};
+  it('Leave a number without token intact', () => {
+    const msg = RED.createMessage();
+    const node = {};
     RED.nodes.createNode(node, {});
-    var template = MessageTemplate(msg, node);
-
+    const template = MessageTemplate(msg, node);
     return template(1527491606935)
-      .then(function(result) {
+      .then(result => {
         assert.equal(result, '1527491606935');
       });
   });
 
-  it('Simple replacement of a token', function() {
-    var msg = RED.createMessage();
-    var node = {};
+  it('Simple replacement of a token', () => {
+    const msg = RED.createMessage();
+    const node = {};
     RED.nodes.createNode(node, {});
     msg.chat().set({name: 'guido'});
-    var template = MessageTemplate(msg, node);
+    const template = MessageTemplate(msg, node);
     return template('I am a template for {{name}} user')
-      .then(function(result) {
+      .then(result => {
         assert.equal(result, 'I am a template for guido user');
       });
   });
 
-  it('Simple replacement of a token with strange chars', function() {
-    var msg = RED.createMessage();
-    var node = {};
+  it('Simple replacement of a token with strange chars', () => {
+    const msg = RED.createMessage();
+    const node = {};
     RED.nodes.createNode(node, {});
     msg.chat().set({user_name: 'guido'});
-    var template = MessageTemplate(msg, node);
+    const template = MessageTemplate(msg, node);
     return template('I am a template for {{user_name}} user')
-      .then(function(result) {
+      .then(result => {
         assert.equal(result, 'I am a template for guido user');
       });
   });
 
-  it('Simple replacement of a couple of tokens', function() {
-    var msg = RED.createMessage();
-    var node = {};
+  it('Simple replacement of a couple of tokens', () => {
+    const msg = RED.createMessage();
+    const node = {};
     RED.nodes.createNode(node, {});
     msg.chat().set({name: 'guido', email: 'test@gmail.com'});
-    var template = MessageTemplate(msg, node);
+    const template = MessageTemplate(msg, node);
     return template('I am a template for {{name}} user {{email}}')
-      .then(function(result) {
+      .then(result => {
         assert.equal(result, 'I am a template for guido user test@gmail.com');
       });
   });
 
-  it('A double replacement of a couple of tokens', function() {
-    var msg = RED.createMessage();
-    var node = {};
+  it('A double replacement of a couple of tokens', () => {
+    const msg = RED.createMessage();
+    const node = {};
     RED.nodes.createNode(node, {});
     msg.chat().set({name: 'guido', email: 'test@gmail.com'});
-    var template = MessageTemplate(msg, node);
+    const template = MessageTemplate(msg, node);
     return template('My name is {{name}}', 'This is the email {{email}}')
-      .then(function(sentences) {
+      .then(sentences => {
         assert.equal(sentences[0], 'My name is guido');
         assert.equal(sentences[1], 'This is the email test@gmail.com');
       });
   });
 
-  it('A replacement with sub tokens', function() {
-    var msg = RED.createMessage();
-    var node = {};
+  it('A replacement with sub tokens', () => {
+    const msg = RED.createMessage();
+    const node = {};
     RED.nodes.createNode(node, {});
     msg.chat().set({
       name: 'guido',
@@ -98,16 +91,16 @@ describe('Message template', function() {
           key3: 'value3'
         }
       }});
-    var template = MessageTemplate(msg, node);
+    const template = MessageTemplate(msg, node);
     return template('My name is {{complex.key1}} and {{complex.key2.key3}}')
-      .then(function(sentences) {
+      .then(sentences => {
         assert.equal(sentences, 'My name is value1 and value3');
       });
   });
 
-  it('A replacement in an object', function() {
-    var msg = RED.createMessage();
-    var node = {};
+  it('A replacement in an object', () => {
+    const msg = RED.createMessage();
+    const node = {};
     RED.nodes.createNode(node, {});
     msg.chat().set({
       name: 'guido',
@@ -117,18 +110,18 @@ describe('Message template', function() {
           key3: 'value3'
         }
       }});
-    var template = MessageTemplate(msg, node);
+    const template = MessageTemplate(msg, node);
     return template({ key1: 'A simple string for {{name}}', key2: 'I am {{complex.key2.key3}}'})
-      .then(function(result) {
+      .then(result => {
         assert.equal(result.key1, 'A simple string for guido');
         assert.equal(result.key2, 'I am value3');
       });
 
   });
 
-  it('A replacement in array', function() {
-    var msg = RED.createMessage();
-    var node = {};
+  it('A replacement in array', () => {
+    const msg = RED.createMessage();
+    const node = {};
     RED.nodes.createNode(node, {});
     msg.chat().set({
       name: 'guido',
@@ -138,17 +131,17 @@ describe('Message template', function() {
           key3: 'value3'
         }
       }});
-    var template = MessageTemplate(msg, node);
+    const template = MessageTemplate(msg, node);
     return template(['A simple string for {{name}}','I am {{complex.key2.key3}}'])
-      .then(function(result) {
+      .then(result => {
         assert.equal(result[0], 'A simple string for guido');
         assert.equal(result[1], 'I am value3');
       });
   });
 
-  it('A replacement in array of objects', function() {
-    var msg = RED.createMessage();
-    var node = {};
+  it('Replaces in array of objects', () => {
+    const msg = RED.createMessage();
+    const node = {};
     RED.nodes.createNode(node, {});
     msg.chat().set({
       name: 'guido',
@@ -156,8 +149,8 @@ describe('Message template', function() {
         postcard: 1.23,
         maxiPostcard: 3.14
       }});
-    var template = MessageTemplate(msg, node);
-    var prices = [
+    const template = MessageTemplate(msg, node);
+    const prices = [
       { label: 'Postcard for {{name}}', amount: '{{prices.postcard}}'},
       { label: 'Postcard large for {{name}}', amount: '{{prices.maxiPostcard}}'}
     ];
@@ -172,9 +165,9 @@ describe('Message template', function() {
       });
   });
 
-  it('A replacement in object with array of objects', function() {
-    var msg = RED.createMessage();
-    var node = {};
+  it('Replaces object with array of objects', () => {
+    const msg = RED.createMessage();
+    const node = {};
     RED.nodes.createNode(node, {});
     msg.chat().set({
       name: 'guido',
@@ -182,8 +175,8 @@ describe('Message template', function() {
         postcard: 1.23,
         maxiPostcard: 3.14
       }});
-    var template = MessageTemplate(msg, node);
-    var payload = {
+    const template = MessageTemplate(msg, node);
+    const payload = {
       description: 'This is an invoice {{name}}',
       prices: [
         { label: 'Postcard for {{name}}', amount: '{{prices.postcard}}'},
@@ -191,7 +184,7 @@ describe('Message template', function() {
       ]
     };
     return template(payload)
-      .then(function(result) {
+      .then(result => {
         assert.isObject(result);
         assert.equal(result.description, 'This is an invoice guido');
         assert.isObject(result.prices[0]);
@@ -203,6 +196,28 @@ describe('Message template', function() {
       });
   });
 
+  it('Replaces in an object leaveing buffer untouched', () => {
+    const msg = RED.createMessage();
+    const node = {};
+    RED.nodes.createNode(node, {});
+    msg.chat().set({
+      name: 'guido',
+      complex: {
+        key1: 'value1',
+        key2: {
+          key3: 'value3'
+        }
+      }});
+    const template = MessageTemplate(msg, node);
+    return template({ key1: new Buffer('I am a buffer'), key2: 'I am {{complex.key2.key3}}'})
+      .then(result => {
+        assert.instanceOf(result.key1, Buffer);
+        assert.equal(result.key1.toString(), 'I am a buffer');
+        assert.equal(result.key2, 'I am value3');
+      });
 
+  });
+
+  
 
 });

@@ -1,7 +1,9 @@
-var _ = require('underscore');
-var utils = require('../lib/helpers/utils');
+const _ = require('underscore');
+const utils = require('../lib/helpers/utils');
+const RegisterType = require('../lib/node-installer');
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   function ChatBotBroadcast(config) {
     RED.nodes.createNode(this, config);
@@ -134,5 +136,5 @@ module.exports = function(RED) {
     });
   }
 
-  RED.nodes.registerType('chatbot-broadcast', ChatBotBroadcast);
+  registerType('chatbot-broadcast', ChatBotBroadcast);
 };

@@ -1,18 +1,20 @@
-var _ = require('underscore');
-var moment = require('moment');
-var DiscordServer = require('../lib/platforms/discord');
-var ContextProviders = require('../lib/chat-platform/chat-context-factory');
-var utils = require('../lib/helpers/utils');
-var clc = require('cli-color');
-var lcd = require('../lib/helpers/lcd');
-var prettyjson = require('prettyjson');
-var validators = require('../lib/helpers/validators');
+const _ = require('underscore');
+const moment = require('moment');
+const DiscordServer = require('../lib/platforms/discord');
+const { ContextProviders } = require('chat-platform');
+const utils = require('../lib/helpers/utils');
+const clc = require('cli-color');
+const lcd = require('../lib/helpers/lcd');
+const prettyjson = require('prettyjson');
+const validators = require('../lib/helpers/validators');
+const RegisterType = require('../lib/node-installer');
 
 var when = utils.when;
 var warn = clc.yellow;
 var green = clc.green;
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   // register Discord server
   if (RED.redbot == null) {
@@ -158,7 +160,7 @@ module.exports = function(RED) {
         });
     });
   }
-  RED.nodes.registerType('chatbot-discord-node', DiscordBotNode, {
+  registerType('chatbot-discord-node', DiscordBotNode, {
     credentials: {
       token: {
         type: 'text'
@@ -224,7 +226,7 @@ module.exports = function(RED) {
       done();
     });
   }
-  RED.nodes.registerType('chatbot-discord-receive', DiscordInNode);
+  registerType('chatbot-discord-receive', DiscordInNode);
 
   function DiscordOutNode(config) {
     RED.nodes.createNode(this, config);
@@ -285,6 +287,5 @@ module.exports = function(RED) {
       });
     });
   }
-  RED.nodes.registerType('chatbot-discord-send', DiscordOutNode);
-
+  registerType('chatbot-discord-send', DiscordOutNode);
 };

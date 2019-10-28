@@ -1,20 +1,22 @@
-var _ = require('underscore');
-var assert = require('chai').assert;
-var RED = require('../lib/red-stub')();
-var ImageBlock = require('../nodes/chatbot-image');
-var fs = require('fs');
+const assert = require('chai').assert;
+const RED = require('../lib/red-stub')();
+const ImageBlock = require('../nodes/chatbot-image');
+const fs = require('fs');
 
-describe('Chat image node', function() {
+require('../lib/platforms/telegram');
+require('../lib/platforms/facebook/facebook');
 
-  it('should send a image message with buffer from payload', function () {
-    var msg = RED.createMessage(new Buffer('image'), 'telegram');
+describe('Chat image node', () => {
+
+  it('should send a image message with buffer from payload', () => {
+    const msg = RED.createMessage(new Buffer('image'), 'telegram');
     RED.node.config({
       name: 'my file name: test'
     });
     ImageBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'photo');
         assert.equal(RED.node.message().payload.inbound, false);
         assert.instanceOf(RED.node.message().payload.content, Buffer);
@@ -23,8 +25,8 @@ describe('Chat image node', function() {
       });
   });
 
-  it('should send a image message with buffer from payload and new chatId', function () {
-    var msg = RED.createMessage(new Buffer('image'), 'telegram');
+  it('should send a image message with buffer from payload and new chatId', () => {
+    const msg = RED.createMessage(new Buffer('image'), 'telegram');
     RED.node.config({
       name: 'my file name: test'
     });
@@ -33,7 +35,7 @@ describe('Chat image node', function() {
     ImageBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'photo');
         assert.equal(RED.node.message().payload.inbound, false);
         assert.instanceOf(RED.node.message().payload.content, Buffer);
@@ -42,27 +44,45 @@ describe('Chat image node', function() {
       });
   });
 
-
-  it('should send a image message with filename from payload', function () {
-    var msg = RED.createMessage(__dirname + '/dummy/file.mp4', 'telegram');
+  it('should send a image message with filename from payload', () => {
+    const msg = RED.createMessage(__dirname + '/dummy/file.mp4', 'telegram');
     RED.node.config({
       name: 'my file name: test'
     });
     ImageBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(
+        () => {},
+        () => {
+          assert.equal(RED.node.error(), 'Unsupported file format for image node "file.mp4", allowed formats: .jpg, .jpeg, .png, .gif');
+        }
+      );
+  });
+
+  it('should throw error for not supported file format', () => {
+    const msg = RED.createMessage(__dirname + '/dummy/image.png', 'telegram');
+    RED.node.config({
+      name: 'my file name: test'
+    });
+    ImageBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(
+        () => {},
+        () => {
         assert.equal(RED.node.message().payload.type, 'photo');
         assert.equal(RED.node.message().payload.inbound, false);
         assert.instanceOf(RED.node.message().payload.content, Buffer);
-        assert.equal(RED.node.message().payload.filename, 'file.mp4');
         assert.equal(RED.node.message().originalMessage.chat.id, 42);
-      });
+        assert.equal(RED.node.message().payload.filename, 'file.mp4');
+        }
+      );
   });
 
-  it('should send a image message with filename from payload (named parameter)', function () {
-    var msg = RED.createMessage({
-      image: __dirname + '/dummy/file.mp4',
+  it('should send a image message with filename from payload (named parameter)', () => {
+    const msg = RED.createMessage({
+      image: __dirname + '/dummy/image.png',
       caption: 'just a caption'
     }, 'telegram');
     RED.node.config({
@@ -71,18 +91,18 @@ describe('Chat image node', function() {
     ImageBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'photo');
         assert.equal(RED.node.message().payload.inbound, false);
         assert.instanceOf(RED.node.message().payload.content, Buffer);
-        assert.equal(RED.node.message().payload.filename, 'file.mp4');
+        assert.equal(RED.node.message().payload.filename, 'image.png');
         assert.equal(RED.node.message().payload.caption, 'just a caption');
         assert.equal(RED.node.message().originalMessage.chat.id, 42);
       });
   });
 
-  it('should send a image message with buffer from payload (named parameter)', function () {
-    var msg = RED.createMessage({
+  it('should send a image message with buffer from payload (named parameter)', () => {
+    const msg = RED.createMessage({
       image: fs.readFileSync(__dirname + '/dummy/image.png'),
       caption: 'just a caption'
     }, 'telegram');
@@ -92,7 +112,7 @@ describe('Chat image node', function() {
     ImageBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'photo');
         assert.equal(RED.node.message().payload.inbound, false);
         assert.instanceOf(RED.node.message().payload.content, Buffer);
@@ -102,10 +122,10 @@ describe('Chat image node', function() {
       });
   });
 
-  it('should send a image message with filename from config', function () {
-    var msg = RED.createMessage({}, 'telegram');
+  it('should send a image message with filename from config', () => {
+    const msg = RED.createMessage({}, 'telegram');
     RED.node.config({
-      image: __dirname + '/dummy/file.mp4',
+      image: __dirname + '/dummy/image.png',
       caption: 'just a caption'
     });
     ImageBlock(RED);
@@ -115,40 +135,40 @@ describe('Chat image node', function() {
         assert.equal(RED.node.message().payload.type, 'photo');
         assert.equal(RED.node.message().payload.inbound, false);
         assert.instanceOf(RED.node.message().payload.content, Buffer);
-        assert.equal(RED.node.message().payload.filename, 'file.mp4');
+        assert.equal(RED.node.message().payload.filename, 'image.png');
         assert.equal(RED.node.message().payload.caption, 'just a caption');
         assert.equal(RED.node.message().originalMessage.chat.id, 42);
       });
   });
 
-  it('should send a image message with filename from config (old parameter)', function () {
-    var msg = RED.createMessage({}, 'telegram');
+  it('should send a image message with filename from config (old parameter)', () => {
+    const msg = RED.createMessage({}, 'telegram');
     RED.node.config({
-      filename: __dirname + '/dummy/file.mp4',
       caption: 'just a caption'
     });
+    msg.filename = __dirname + '/dummy/image.png';
     ImageBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'photo');
         assert.equal(RED.node.message().payload.inbound, false);
         assert.instanceOf(RED.node.message().payload.content, Buffer);
-        assert.equal(RED.node.message().payload.filename, 'file.mp4');
+        assert.equal(RED.node.message().payload.filename, 'image.png');
         assert.equal(RED.node.message().payload.caption, 'just a caption');
         assert.equal(RED.node.message().originalMessage.chat.id, 42);
       });
   });
 
-  it('should send a image message with buffer from payload (input from http node)', function () {
-    var msg = RED.createMessage(fs.readFileSync(__dirname + '/dummy/image.png'), 'telegram');
+  it('should send a image message with buffer from payload (input from http node)', () => {
+    const msg = RED.createMessage(fs.readFileSync(__dirname + '/dummy/image.png'), 'telegram');
     RED.node.config({
       name: 'my file name: test'
     });
     ImageBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'photo');
         assert.equal(RED.node.message().payload.inbound, false);
         assert.instanceOf(RED.node.message().payload.content, Buffer);
@@ -157,8 +177,8 @@ describe('Chat image node', function() {
       });
   });
 
-  it('should warn if the user trying to send very large string (a http payload as string instead of buffer)', function () {
-    var msg = RED.createMessage(fs.readFileSync(__dirname + '/dummy/image.png').toString(), 'telegram');
+  it('should warn if the user trying to send very large string (a http payload as string instead of buffer)', () => {
+    const msg = RED.createMessage(fs.readFileSync(__dirname + '/dummy/image.png').toString(), 'telegram');
     RED.node.config({
       name: 'my file name: test'
     });
@@ -166,10 +186,34 @@ describe('Chat image node', function() {
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
       .then(
-        function() {},
-        function(error) {
+        () => {},
+        error => {
           assert.include(error, 'Looks like you are passing a very long string');
         });
+  });
+
+  it('should send a local image file using chat context variables', () => {
+    var msg = RED.createMessage(null, 'telegram');
+    RED.node.config({
+      name: 'my file',
+      image: '{{myfile}}',
+      caption: '{{mycaption}} for {{myfile}}'
+    });
+    msg.chat().set({
+      myfile: __dirname + '/dummy/image.png',
+      mycaption: 'I am a caption'
+    });
+    ImageBlock(RED);
+    RED.node.get().emit('input', msg);
+
+    return RED.node.get().await()
+      .then(() => {
+        assert.equal(RED.node.message().payload.type, 'photo');
+        assert.equal(RED.node.message().payload.inbound, false);
+        assert.instanceOf(RED.node.message().payload.content, Buffer);
+        assert.equal(RED.node.message().payload.filename, 'image.png');
+        assert.equal(RED.node.message().originalMessage.chat.id, 42);
+      });
   });
 
 });

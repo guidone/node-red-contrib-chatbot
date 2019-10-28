@@ -1,8 +1,11 @@
-var ChatLog = require('../lib/chat-log.js');
-var utils = require('../lib/helpers/utils');
-var when = utils.when;
+const ChatLog = require('../lib/chat-log.js');
+const utils = require('../lib/helpers/utils');
+const RegisterType = require('../lib/node-installer');
+
+const when = utils.when;
 
 module.exports = function(RED) {
+  const registerType = RegisterType(RED);
 
   function ChatBotLog(config) {
     RED.nodes.createNode(this, config);
@@ -27,6 +30,6 @@ module.exports = function(RED) {
         });
     });
   }
-  RED.nodes.registerType('chatbot-log', ChatBotLog);
+  registerType('chatbot-log', ChatBotLog);
 
 };

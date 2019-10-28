@@ -1,6 +1,6 @@
 <script type="text/javascript">
-  RED.nodes.registerType('chatbot-messenger-menu', {
-    category: 'RedBot',
+  $.RedBot.registerType('chatbot-messenger-menu', {
+    category: $.RedBot.config.name,
     color: '#FFCC66',
     defaults: {
       composerInputDisabled: {
@@ -157,15 +157,15 @@ return msg;
 <pre><code class="lang-javascript">msg.payload = {
   composerInputDisabled: true,
   command: &#39;set&#39;,
-  items: [ 
+  items: [
     {
       type: &#39;url&#39;,
       label: &#39;JavaScript Jedi&#39;,
       url: &#39;http://javascript-jedi.com&#39;,
       webview_height_ratio: &#39;full&#39; // tall|full|compact
     },
-    { 
-      label: &#39;Sub Menu&#39;, 
+    {
+      label: &#39;Sub Menu&#39;,
       items: [
         {
           type: &#39;postback&#39;,
