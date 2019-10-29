@@ -70,8 +70,8 @@
         .done(function(response) {
           if (response != null && response.telegram != null && response.telegram[node.botname] != null) {
             $('#node-config-input-botname').prop('readonly', true);
-            $('.form-editable').addClass('hidden');
-            $('.form-warning').removeClass('hidden');
+            $('.form-editable').hide();
+            $('.form-warning').show();
             $('.form-warning .bot-name').html('"' + node.botname + '"');
           }
         });
@@ -164,7 +164,7 @@
       </span>
     </div>
   </div>
-  <div class="form-warning hidden">
+  <div class="form-warning" style="display:none;">
     This bot configuration is stored in <b>Node-RED</b> <em>settings.js</em> and cannot be modified from the UI, check
     the section <code>functionGlobalContext</code> near the key <em class="bot-name">""</em>
   </div>
