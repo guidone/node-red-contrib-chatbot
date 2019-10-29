@@ -36,21 +36,14 @@ module.exports = function(RED) {
 
   // add an endpoint to get a list of context providers
   RED.httpNode.get('/redbot/globals', function(req, res) {
-    var keys = RED.settings.functionGlobalContext.keys();
-    var result = {};
-    keys.forEach(function(key) {
-      result[key] = RED.settings.functionGlobalContext.get(key);
-    });
+    const keys = RED.settings.functionGlobalContext.keys();
+    const result = {};
+    ChatPlatform.getPlatforms().forEach(platform => result[platform.id] = RED.settings.functionGlobalContext.get(platform.id)); 
+    keys.forEach(key => result[key] = RED.settings.functionGlobalContext.get(key));
     // collect message types
-    result.messageTypes = _(ChatPlatform.getMessageTypes())
-      .sortBy(function(type) {
-        return type.label;
-      });
+    result.messageTypes = _(ChatPlatform.getMessageTypes()).sortBy(type => type.label);
     // collect message types
-    result.eventTypes = _(ChatPlatform.getEvents())
-      .sortBy(function(event) {
-        return event.name;
-      });
+    result.eventTypes = _(ChatPlatform.getEvents()).sortBy(event => event.name);
     res.send(result);
   });
 
