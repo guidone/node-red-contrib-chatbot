@@ -1,0 +1,99 @@
+<script type="text/javascript">
+  $.RedBot.registerType('chatbot-slack-blocks', {
+    category: $.RedBot.config.name,
+    color: '#FFCC66',
+    defaults: {
+      blocks: {
+        value: `{
+  "blocks": [
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "This is a *block*"
+      }
+    },
+    {
+      "type": "divider"
+    }
+  ]
+}`
+      },
+      noerr: {
+        value: 0,
+        required: true,
+        validate: function(v) {
+          return ((!v) || (v === 0)) ? true : false;
+        }}
+    },
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'Slack Blocks',
+    icon: 'chatbot-extend.png',
+    label: function() {
+      return 'Slack Blocks';
+    },
+    oneditprepare: function() {
+      var _this = this;
+      this.editor = RED.editor.createEditor({
+        id: 'node-input-func-editor',
+        mode: 'ace/mode/javascript',
+        value: $('#node-input-blocks').val(),
+        globals: {
+          node: true,
+          msg:true,
+          context:true,
+          RED: true,
+          util: true,
+          flow: true,
+          global: true,
+          console: true,
+          Buffer: true,
+          setTimeout: true,
+          clearTimeout: true,
+          setInterval: true,
+          clearInterval: true
+        }
+      });
+      
+    },
+    oneditresize: function(size) {
+      var dialogForm = $('#dialog-form');
+      var formRowSelect = $('.redbot-form-hint', dialogForm);
+      var height = dialogForm.height() - formRowSelect.height() - 30;
+      $('.node-text-editor').css('height', height + 'px');
+      this.editor.resize();
+    },
+    oneditsave: function() {
+      var annot = this.editor.getSession().getAnnotations();
+      this.noerr = 0;
+      $('#node-input-noerr').val(0);
+      for (var k=0; k < annot.length; k++) {
+        if (annot[k].type === 'error') {
+          $('#node-input-noerr').val(annot.length);
+          this.noerr = annot.length;
+        }
+      }
+      $('#node-input-blocks').val(this.editor.getValue());
+      this.editor.destroy();
+      delete this.editor;
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-slack-blocks">
+  <div class="form-row">
+    <input type="hidden" id="node-input-blocks" autofocus="autofocus">
+    <div style="height: 250px; min-height:150px;margin-top: 25px;" class="node-text-editor" id="node-input-func-editor" ></div>
+  </div>
+  <div class="redbot-form-hint">
+      Use the <a href="https://api.slack.com/tools/block-kit-builder" target="_blank">Block Kit Builder</a> to design the blocks and copy and paste below.
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-slack-blocks">
+slack blocks
+
+</script>
+
+
