@@ -22,6 +22,7 @@
       $('#node-input-chatId').attr('disabled', false);
       $('.form-row-chatId').removeClass('hidden');
       $('.form-row-userId').addClass('hidden');
+      $('#node-input-transport').attr('disabled', false);
     }
 
     function enableUserId() {
@@ -34,6 +35,7 @@
       $('#node-input-botProduction').val(null).attr('disabled', true);
       $('.form-row-chatId').addClass('hidden');
       $('.form-row-userId').removeClass('hidden');
+      $('#node-input-transport').attr('disabled', true);
     }
 
     function buildConfigSelector() {
@@ -156,7 +158,7 @@
   <input type="text" id="node-input-name" placeholder="Name">
 </div>
 <div class="form-row">
-  <input type="radio" value="chatId" style="margin-top:-4px;margin-right:6px;width:inherit;">
+  <input type="radio" name="conversation-type" value="chatId" style="margin-top:-4px;margin-right:6px;width:inherit;">
   <span class="label-radio">ChatId</span>
   <input type="text" id="node-input-chatId" placeholder="Chat id" style="width:150px;">
 </div>
@@ -172,13 +174,13 @@
     <option value="">Select transport</option>
   </select>
 </div>
-<div class="form-row form-row-chatId" style="padding-left:20px">
+<div class="form-row form-row-chatId" style="padding-left:124px;">
   <div>Bot Configuration for <span class="redbot-environment">development</span></div>
   <select id="node-input-botDevelopment">
     <option value="">Select configuration</option>
   </select>
 </div>
-<div class="form-row form-row-chatId" style="padding-left:20px">
+<div class="form-row form-row-chatId" style="padding-left:124px">
   <div>Bot Configuration for <span class="redbot-environment">production</span></div>
   <select id="node-input-botProduction">
     <option value="">Select configuration</option>
@@ -188,7 +190,7 @@
   &nbsp;
 </div>
 <div class="form-row">
-  <input type="radio" value="userId" style="margin-top:-4px;margin-right:6px;width:inherit;">
+  <input type="radio" name="conversation-type" value="userId" style="margin-top:-4px;margin-right:6px;width:inherit;">
   <span class="label-radio">UserId</span>
   <input type="text" id="node-input-userId" placeholder="User id" style="width:150px;">
 </div>
