@@ -1,53 +1,51 @@
 const lcd = require('../lib/helpers/lcd');
 const utils = require('../lib/helpers/utils');
+const _ = require('underscore');
 const when = utils.when;
 const RegisterType = require('../lib/node-installer');
+const { isValidMessage } = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
 
   function ChatBotContext(config) {
     RED.nodes.createNode(this, config);
-    var node = this;
+    const node = this;
     this.command = config.command;
     this.fieldValue = config.fieldValue;
     this.fieldType = config.fieldType;
     this.fieldName = config.fieldName;
 
-    this.on('input', function(msg) {
-
-      msg = RED.util.cloneMessage(msg);
-
-      var fieldValue = node.fieldValue;
-      var command = utils.extractValue('string', 'command', node, msg, false);
-      var fieldType = utils.extractValue('string', 'fieldType', node, msg, false);
-      var fieldName = utils.extractValue('string', 'fieldName', node, msg, false);
-
-      var chatContext = msg.chat();
-      if (chatContext == null) {
-        lcd.title('Error: invalid chat context  (id:' + node.id + ')');
-        // eslint-disable-next-line no-console
-        console.log(lcd.warn(
-          'A chat context was not found fot this message, perhaps the flow needs a \'Conversation node\''
-        ));
-        node.error('invalid chat context: A chat context was not found fot this message, perhaps the flow needs a \'Conversation node\'');
+    this.on('input', function(msg, send, done) {
+      // send/done compatibility for node-red < 1.0
+      send = send || function() { node.send.apply(node, arguments) };
+      done = done || function(error) { node.error.apply(node, error, msg) };  
+      // check if valid message
+      if (!isValidMessage(msg, node)) {
         return;
       }
-      /*if (_.isEmpty(fieldName)) {
-        node.error('Invalid variable name');
-        return;
-      }*/
-
-      var task = when(true);
+      // get vars
+      const fieldValue = node.fieldValue;
+      const command = utils.extractValue('string', 'command', node, msg, false);
+      const fieldType = utils.extractValue('string', 'fieldType', node, msg, false);
+      const fieldName = utils.extractValue('string', 'fieldName', node, msg, false);
+      const chatContext = msg.chat();
+ 
+      let task = when(true);
       if (command === 'intent') {
-        task = task.then(function() {
-          return chatContext.set(msg.payload.variables);
-        });
+        let variables;
+        if (msg.payload != null && _.isObject(msg.payload.variables)) {
+          variables = msg.payload.variables;
+        } else if (msg.payload != null && _.isObject(msg.payload.content)) {
+          variables = msg.payload.content;
+        }
+        task = task.then(() => chatContext.set(variables));
       } if (command === 'get') {
         when(chatContext.get(fieldName))
-          .then(function(value) {
+          .then(value => {
             msg.payload = value;
-            node.send(msg);
+            send(msg);
+            done();
           });
         return;
       } else if (command === 'delete') {
@@ -67,16 +65,17 @@ module.exports = function(RED) {
             try {
               task = when(chatContext.set(fieldName, JSON.parse(fieldValue)));
             } catch(e) {
-              node.error('Unable to parse json in context node');
+              done('Unable to parse json in context node');
+              return;
             }
             break;
         }
       }
       // finally
-      task
-        .then(function() {
-          node.send(msg);
-        });
+      task.then(() => {
+        send(msg);
+        done();
+      });
     });
   }
   registerType('chatbot-context', ChatBotContext);

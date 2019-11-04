@@ -1,6 +1,14 @@
 const RegisterType = require('../lib/node-installer');
 const _ = require('underscore');
 const utils = require('../lib/helpers/utils');
+const { ChatExpress } = require('chat-platform');
+const { 
+  isValidMessage, 
+  getChatId, 
+  getMessageId, 
+  getTransport, 
+  extractValue 
+} = require('../lib/helpers/utils');
 const MessageTemplate = require('../lib/message-template-async');
 
 module.exports = function(RED) {
@@ -15,21 +23,31 @@ module.exports = function(RED) {
       // send/done compatibility for node-red < 1.0
       send = send || function() { node.send.apply(node, arguments) };
       done = done || function(error) { node.error.apply(node, error, msg) };
-      
-      const chatId = utils.getChatId(msg);
-      const messageId = utils.getMessageId(msg);
+      // check if valid message
+      if (!isValidMessage(msg, node)) {
+        return;
+      }
+      const chatId = getChatId(msg);
+      const messageId = getMessageId(msg);
       const template = MessageTemplate(msg, node);
-      
+      const transport = getTransport(msg);   
+      // check transport compatibility
+      if (!ChatExpress.isSupported(transport, 'blocks')) {
+        done(`Node "blocks" is not supported by ${transport} transport`);
+        return;
+      }
+      // extract vars
+      let blocks = extractValue('string', 'blocks', node, msg);
       // parse blocks
-      let blocks;
+      let rawBlocks;
       try {
-        blocks = JSON.parse(node.blocks);
+        rawBlocks = JSON.parse(blocks);
       } catch(e) {
         done(e);
         return;
       }
 
-      template(blocks)
+      template(rawBlocks)
         .then(renderedBlocks => {
           send({ 
             ...msg, 
