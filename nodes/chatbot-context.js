@@ -19,7 +19,7 @@ module.exports = function(RED) {
     this.on('input', function(msg, send, done) {
       // send/done compatibility for node-red < 1.0
       send = send || function() { node.send.apply(node, arguments) };
-      done = done || function(error) { node.error.apply(node, error, msg) };  
+      done = done || function(error) { node.error.call(node, error, msg) };  
       // check if valid message
       if (!isValidMessage(msg, node)) {
         return;

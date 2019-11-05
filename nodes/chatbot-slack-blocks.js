@@ -1,6 +1,5 @@
 const RegisterType = require('../lib/node-installer');
 const _ = require('underscore');
-const utils = require('../lib/helpers/utils');
 const { ChatExpress } = require('chat-platform');
 const { 
   isValidMessage, 
@@ -10,6 +9,9 @@ const {
   extractValue 
 } = require('../lib/helpers/utils');
 const MessageTemplate = require('../lib/message-template-async');
+
+require('../lib/platforms/telegram');
+require('../lib/platforms/slack');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
@@ -22,7 +24,7 @@ module.exports = function(RED) {
     this.on('input', function(msg, send, done) {
       // send/done compatibility for node-red < 1.0
       send = send || function() { node.send.apply(node, arguments) };
-      done = done || function(error) { node.error.apply(node, error, msg) };
+      done = done || function(error) { node.error.call(node, error, msg) };
       // check if valid message
       if (!isValidMessage(msg, node)) {
         return;
