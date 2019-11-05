@@ -1,3 +1,18 @@
+* **0.17.2** - Fix conversation node chatId/userId switch 
+* **0.17.1** - Fix global configuration 
+* **0.17.0** - Multi transport support **[[(breaking changes)|Breaking-Changes-0.16.0]]** 
+* **0.16.12** - Improved behaviour of output pin of Universal Connector 
+* **0.16.11** - Upgraded to Rivescript 2.0, script can be an external file 
+* **0.16.10** - Improved parsing of plain file context store 
+* **0.16.9** - Improved console log with validation of Telegram invoice and error in file chat context 
+* **0.16.8** - Addedd web hook support for **Telegram**
+* **0.16.6** - Added OAuth token to Slack config (dowload private files) 
+* **0.16.5** - Fix on **Twilio** connector to support **Whatsapp**
+* **0.16.4** - Support for **Discord**
+* **0.16.3** - Fixed un-needed token in Alexa 
+* **0.16.2** - Added Slack extensions (username, icon_emoji) 
+* **0.16.1** - Fixed "+" for Twilio numbers
+* **0.16.0** - Alexa support, refactored [[intent message|Intent-message]], changed format of event message, message chaining. See [[all changes in 0.16.0|all-changes-in-0.16.0]]
 * **0.15.13** - Support for Slack commands 
 * **0.15.12** - Broadcast API support for Facebook Messenger 
 * **0.15.11** - Upgrade Facebook API to 3.*, enable long messages (> 4096) for Telegram

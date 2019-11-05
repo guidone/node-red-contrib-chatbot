@@ -64,10 +64,11 @@ var mappings = {
   'Extend-node.md': 'chatbot-extend.html',
   'Broadcast-node.md': 'chatbot-broadcast.html',
   'Support-table.md': 'chatbot-support-table.html',
-  'Card-alexa-node.md': 'chatbot-alexa-card.html',
+  'Alexa-Card-node.md': 'chatbot-alexa-card.html',
   'Alexa-Speech-node.md': 'chatbot-alexa-speech.html',
   'Alexa-Directive-node.md': 'chatbot-alexa-directive.html',
-  'Universal-Connector-node.md': 'chatbot-universal-receive.html|chatbot-universal-receive'
+  'Universal-Connector-node.md': 'chatbot-universal-receive.html|chatbot-universal-receive',
+  'Slack-blocks-node.md': 'chatbot-slack-blocks.html'
 };
 
 function collectImages(html) {

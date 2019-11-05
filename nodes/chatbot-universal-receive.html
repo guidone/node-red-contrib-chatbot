@@ -188,18 +188,20 @@ it also should (but is not mandatory)</li>
 </code></pre>
 <p>The <em>from</em> key is a good candidate for the <em>chatId</em> while the content of the message is in the <em>text</em> key.
 the code in the <code>Extend node</code> to handle this</p>
-<pre><code class="lang-javascript">node.chat.onChatId(payload =&gt; payload.sms.from);
-node.chat.onMessageId(payload =&gt; payload.sms.id);
+<pre><code class="lang-javascript">// initial stage of the process, here the message is still not enriched with all the helpers and
+// variables of a RedBot message like .api(), .chat(), chatId, etc
+node.chat.onChatId(message =&gt; message.sms.from);
+node.chat.onMessageId(message =&gt; message.sms.id);
 node.chat.in(message =&gt; {
   return new Promise((resolve, reject) =&gt; {
     // check that the incoming payload is an actual &quot;text&quot; message
     if (message.originalMessage.sms != null &amp;&amp; message.originalMessage.sms.text != &#39;&#39;) {
-      message.payload.type = &#39;message&#39;;
+      message.payload.type = &#39;message&#39;;  
       message.payload.content = message.originalMessage.sms.text;
     }
     resolve(message);
   });
-});
+}); 
 </code></pre>
 <p>When a new payload arrives to the input pin the <em>chatId</em> value is extracted from the callback <code>.onChatId()</code> (there are callbacks for other information like <em>messageId</em>, <em>timestamp</em>, <em>language</em>, etc) and a <em>neutral</em> version of the <strong>RedBot</strong> message is passed to the middlewares.
 A <em>neutral message</em> is a regular <strong>RedBot</strong> message (the messages that flow out of a receiver node) except the type and content key are left blank: is up to the developer to fill in this keys using the information contained in <em>originalMessage</em>, all values needed to build a <em>neutral message</em> (<em>chatId</em>, <em>messageId</em>, <em>timestamp</em>, <em>language</em>) are extracted using callbacks.
@@ -219,12 +221,34 @@ node.chat.in(message =&gt; {
     .then(() =&gt; {
       message.payload.type = &#39;message&#39;;
       message.payload.content = message.originalMessage.sms.text;
-      return message;
+      return message; 
     });
-});
+}); 
 </code></pre>
 <p>Note that a middleware should always return a <em>Promise</em> that returns the received message (passed as parameter of the middleware) and that will be injected in the flow (a warning on the console will log any middleware not returning a Promise).</p>
-<p>If none of the middlewares in the inbound chain is able to infer a message type and fill in the type and content of the neutral message, then the message is discarded (enable the <em>debug</em> option in the receiver configuration to log the discarded messages in the system console).</p>
+<p>If none of the middlewares in the inbound chain is able to infer a message type and fill in the <em>type</em> and <em>content</em> of the neutral message, then the message is discarded (enable the <em>debug</em> option in the receiver configuration to log the discarded messages in the system console).</p>
+<p>The <code>Universal sender node</code> has always an output pin used for following up the conversation or to chain multiple messages to be sent in a specific order.
+In the example above the code to send a SMS message to a custom API</p>
+<pre><code class="lang-javascript">// this middleware handles the message of type &#39;message&#39;
+node.chat.out(&#39;message&#39;, message =&gt; {
+  return request(&#39;https://my.api/send&#39;, data: { 
+    text: message.payload.content,
+    to: message.payload.chatId
+  }).then(response =&gt; {
+    message.status = response.statusCode;
+    // this make the chain of promises returns the message object enriched with the status code
+    // returned by API to be used by a downstream node
+    return message;
+  });
+});
+</code></pre>
+<p>Like all other sender nodes there are two options:</p>
+<ul>
+<li><strong>Track</strong> option: allows to track a conversation from the user: the answer of the user to a message sent with a sender with the track option will appear in the output pin in order to follow up the conversation (basically the message is teleported here).
+<em>Pay attention to this option while debugging the Universal connector and the Extend node, it will result in a alternate and strange results on the output pin</em></li>
+<li><strong>Pass through</strong> option: it will forward the <strong>RedBot message</strong> to the output pin. The Red message is the object that passes through the RedBot&#39;s nodes, it contains helpers and data like <em>originalMessage</em>, <em>.api()</em>, <em>.chat()</em>. The main purpose of this is to send multiple messages to the user in a specific order.
+If the <strong>Pass through</strong> option is not checked the output pin is still present and it&#39;s used to forward the final result of the chain of promises of an output middleware (stripped out of all helpers and data like <em>originalMessage</em>, <em>.api()</em>, <em>.chat()</em>). In the example above it&#39;s used to forward to a downstream node the result of the call to an external custom API.</li>
+</ul>
 <p>For a list of all methods available in the <em>msg.chat</em> object see the [[Extend node|Extend-node]].</p>
 </script>
 

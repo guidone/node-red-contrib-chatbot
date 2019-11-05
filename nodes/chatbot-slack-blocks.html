@@ -91,9 +91,60 @@
   </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-slack-blocks">
-slack blocks
+<script type="text/x-red" data-help-name="chatbot-slack-blocks"><p><a href="https://api.slack.com/block-kit">Block Kit</a> is a Slack framework to create complex interactions with the chatbot (panels, buttons, UI elements), the &quot;Block&quot; can be visually composed using the <a href="https://api.slack.com/tools/block-kit-builder">Block Kit Builder</a>.</p>
+<p>When the Block is ready, just copy and paste the JSON in the <code>Slack Blocks node</code>, for example:</p>
+<pre><code class="lang-javascript">{
+  &quot;blocks&quot;: [
+    {
+      &quot;type&quot;: &quot;section&quot;,
+      &quot;text&quot;: {
+        &quot;type&quot;: &quot;mrkdwn&quot;,
+        &quot;text&quot;: &quot;Hello *{{firstName}}*&quot;
+      }
+    },
+    {
+      &quot;type&quot;: &quot;actions&quot;,
+      &quot;block_id&quot;: &quot;my_block_id&quot;,
+      &quot;elements&quot;: [
+        {
+          &quot;type&quot;: &quot;button&quot;,
+          &quot;text&quot;: {
+            &quot;type&quot;: &quot;plain_text&quot;,
+            &quot;text&quot;: &quot;Say Hello&quot;,
+            &quot;emoji&quot;: true
+          },
+          &quot;value&quot;: &quot;the_value&quot;
+        }
+      ]
+    }
+  ]
+}
+</code></pre>
+<p>In any part of the JSON is also possible to use the chat context variables.</p>
+<p>For interactive <em>Blocks</em> the result of the user interactions is sent to the chatbot as a <code>response</code> type message (like 
+[[Dialog node||Dialog-node]]), the payload is an hash object that contains the _block_id_ of the UI element (a button, a dropdown, etc) and related <em>value</em>. If the _block_id_ is not specified in the JSON, it will be auto-generated one.</p>
+<p>For example clicking the button in the example above will send the following message to the chatbot</p>
+<pre><code class="lang-javascript">{
+  type: &#39;response&#39;,
+  content: {
+    my_block_id: &#39;the_value&#39;
+  }
+}
+</code></pre>
+<p>A <code>response</code> type message can be chained directly to a [[Context node|Context-node]] to store the results directly in the current user chat context.</p>
+<p>The JSON can be passed through the payload by the upstream node:</p>
+<pre><code class="lang-javascript">msg.payload = {
+  blocks: &#39;[{ ... }]&#39;
+};
+</code></pre>
+<p>Available parameters for the <code>msg.payload</code></p>
+<dl class="message-properties">
 
+
+<dt>blocks<span class="property-type">string</span><dd>The JSON string of the Slack Block</dd>
+
+</dl>
+<p><img src="https://img.shields.io/badge/platform-Slack-green.svg" alt="Slack"></p>
 </script>
 
 
