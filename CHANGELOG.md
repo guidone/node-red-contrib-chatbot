@@ -1,3 +1,4 @@
+* **0.17.3** - Added Slack Block Kit
 * **0.17.2** - Fix conversation node chatId/userId switch 
 * **0.17.1** - Fix global configuration 
 * **0.17.0** - Multi transport support **[[(breaking changes)|Breaking-Changes-0.16.0]]** 
