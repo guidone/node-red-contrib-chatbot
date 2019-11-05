@@ -1,4 +1,3 @@
-const lcd = require('../lib/helpers/lcd');
 const utils = require('../lib/helpers/utils');
 const _ = require('underscore');
 const when = utils.when;
