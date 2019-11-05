@@ -3,6 +3,9 @@
     category: $.RedBot.config.name,
     color: '#FFCC66',
     defaults: {
+      name: {
+        value: ''
+      },
       blocks: {
         value: `{
   "blocks": [
@@ -31,7 +34,7 @@
     paletteLabel: 'Slack Blocks',
     icon: 'chatbot-block.png',
     label: function() {
-      return 'Slack Blocks';
+      return this.name || 'Slack Blocks';
     },
     oneditprepare: function() {
       var _this = this;
@@ -60,7 +63,8 @@
     oneditresize: function(size) {
       var dialogForm = $('#dialog-form');
       var formRowSelect = $('.redbot-form-hint', dialogForm);
-      var height = dialogForm.height() - formRowSelect.height() - 30;
+      var formRowName = $('.form-row-name', dialogForm);
+      var height = dialogForm.height() - formRowSelect.height() - formRowName.height() - 30;
       $('.node-text-editor').css('height', height + 'px');
       this.editor.resize();
     },
@@ -82,6 +86,10 @@
 </script>
 
 <script type="text/x-red" data-template-name="chatbot-slack-blocks">
+  <div class="form-row form-row-name">
+    <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
   <div class="form-row">
     <input type="hidden" id="node-input-blocks" autofocus="autofocus">
     <div style="height: 250px; min-height:150px;margin-top: 25px;" class="node-text-editor" id="node-input-func-editor" ></div>
