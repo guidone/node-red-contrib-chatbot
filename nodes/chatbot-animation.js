@@ -17,10 +17,10 @@ const {
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
 
-  function ChatBotSticker(config) {
+  function ChatBotAnimation(config) {
     RED.nodes.createNode(this, config);
     const node = this;
-    this.sticker = config.sticker;
+    this.animation = config.animation;
     this.name = config.name;
     this.caption = config.caption;
     this.filename = config.filename; // for retrocompatibility
@@ -36,13 +36,13 @@ module.exports = function(RED) {
         return;
       }
       // check transport compatibility
-      if (!ChatExpress.isSupported(transport, 'sticker')) {
+      if (!ChatExpress.isSupported(transport, 'animation')) {
         return;
       }
 
-      let content = extractValue('string', 'sticker', node, msg)
-        || extractValue('buffer', 'sticker', node, msg)
-        || extractValue('stringWithVariables', 'sticker', node, msg)
+      let content = extractValue('string', 'animation', node, msg)
+        || extractValue('buffer', 'animation', node, msg)
+        || extractValue('stringWithVariables', 'animation', node, msg)
         || extractValue('string', 'filename', node, msg, false, true, false); // for retrocompatibility
       let caption = extractValue('string', 'caption', node, msg, false);
   
@@ -69,7 +69,7 @@ module.exports = function(RED) {
             .then(file => enrichFilePayload(file, msg, node))  
             .then(file => {
               // check if a valid file
-              const error = ChatExpress.isValidFile(transport, 'sticker', file);
+              const error = ChatExpress.isValidFile(transport, 'animation', file);
               if (error != null) { 
                 node.error(error);
                 throw error;
@@ -82,7 +82,7 @@ module.exports = function(RED) {
                 node.send({
                   ...msg,
                   payload: {
-                    type: 'sticker',
+                    type: 'animation',
                     content: file.buffer,
                     filename: file.filename,
                     caption: caption,
@@ -98,5 +98,5 @@ module.exports = function(RED) {
     });
   }
 
-  registerType('chatbot-sticker', ChatBotSticker);
+  registerType('chatbot-animation', ChatBotAnimation);
 };

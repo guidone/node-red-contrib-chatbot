@@ -1,34 +1,34 @@
 <script type="text/javascript">
-  $.RedBot.registerType('chatbot-sticker', {
+  $.RedBot.registerType('chatbot-animation', {
     category: $.RedBot.config.name,
     color: '#FFCC66',
     defaults: {
-      sticker: {
+      animation: {
         value: ''
       }
     },
     inputs: 1,
     outputs: 1,
     icon: 'chatbot-sticker.png',
-    paletteLabel: 'Sticker',
+    paletteLabel: 'Animation',
     label: function() {
-      return this.name || 'Sticker';
+      return this.name || 'Animation';
     }
   });
 </script>
 
-<script type="text/x-red" data-template-name="chatbot-sticker">
+<script type="text/x-red" data-template-name="chatbot-animation">
 <div class="form-row">
   <label for="node-input-name"><i class="icon-tag"></i> Name</label>
   <input type="text" id="node-input-name" placeholder="Name">
 </div>
 <div class="form-row">
-  <label for="node-input-sticker">Sticker</label>
-  <input type="text" id="node-input-sticker" placeholder="Sticker id or URL">
+  <label for="node-input-animation">Animation</label>
+  <input type="text" id="node-input-animation" placeholder="Animation id or URL">
 </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-sticker"><p>The <code>Sticker node</code> allows to send a sticker to a <strong>Telegram</strong> client.</p>
+<script type="text/x-red" data-help-name="chatbot-animation"><p>The <code>Sticker node</code> allows to send a sticker to a <strong>Telegram</strong> client.</p>
 <p>A sticker can be a image file (only <em>*.webp</em> format is allowed) or the id of an already loaded image on <em>Telegram</em>&#39;s server.</p>
 <p>In order to get the id of a sticker, use <a href="https://telegram.me/GetStickerIdBot">GetStickerIdBot</a></p>
 <p>To use this node programmatically, just connect the input to the output of a <code>File node</code> or send the file name or URL from a upstream <code>Function node</code></p>
