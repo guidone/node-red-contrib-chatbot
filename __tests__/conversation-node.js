@@ -6,6 +6,7 @@ const TelegramServer = require('../lib/platforms/telegram');
 const { ContextProviders } = require('chat-platform');
 const contextProviders = ContextProviders(RED);
 
+
 describe('Chat conversation node', () => {
 
   it('should start a conversation', () => {
@@ -62,6 +63,53 @@ describe('Chat conversation node', () => {
         assert.equal(RED.node.message().chat().get('transport'), 'telegram');
         assert.equal(RED.node.message().chat().get('chatId'), '4242');
       });
+  });
+
+
+  it('should raise error if no chatId and userId are specified', () => {
+    const msg = RED.createMessage({});
+    RED.node.config({});
+    const contextProvider = contextProviders.getProvider('memory');
+    RED.nodes.setNode('my-telegram', {
+      chat: TelegramServer.createServer({
+        token: 'fake-token',
+        contextProvider: contextProvider,
+        RED: RED
+      })
+    });
+    ConversationBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(
+        () => {},
+        () => {
+          assert.isNull(RED.node.message());
+          assert.equal(RED.node.error(), 'Both chatId and userId are empty');
+        }  
+      );
+  });
+
+  it('should raise error if no chatId and and no bot is specified', () => {
+    const msg = RED.createMessage({ chatId: 42 });
+    RED.node.config({});
+    const contextProvider = contextProviders.getProvider('memory');
+    RED.nodes.setNode('my-telegram', {
+      chat: TelegramServer.createServer({
+        token: 'fake-token',
+        contextProvider: contextProvider,
+        RED: RED
+      })
+    });
+    ConversationBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(
+        () => {},
+        () => {
+          assert.isNull(RED.node.message());
+          assert.equal(RED.node.error(), 'chatId was correctly specified but without a valid chatbot configuration');
+        }  
+      );
   });
 
 
