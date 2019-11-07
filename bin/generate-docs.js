@@ -40,6 +40,7 @@ var mappings = {
   'Location-node.md': 'chatbot-location.html',
   'Context-node.md': 'chatbot-context.html',
   'Sticker-node.md': 'chatbot-sticker.html',
+  'Animation-node.md': 'chatbot-animation.html',
   'Waiting-node.md': 'chatbot-waiting.html',
   'Listen-Lexicon-node.md': 'chatbot-listen-lexicon.html',
   'Slack-Receiver-node.md': 'chatbot-slack-receive.html|chatbot-slack-node',

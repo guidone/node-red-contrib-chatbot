@@ -28,20 +28,20 @@
 </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-animation"><p>The <code>Sticker node</code> allows to send a sticker to a <strong>Telegram</strong> client.</p>
-<p>A sticker can be a image file (only <em>*.webp</em> format is allowed) or the id of an already loaded image on <em>Telegram</em>&#39;s server.</p>
-<p>In order to get the id of a sticker, use <a href="https://telegram.me/GetStickerIdBot">GetStickerIdBot</a></p>
-<p>To use this node programmatically, just connect the input to the output of a <code>File node</code> or send the file name or URL from a upstream <code>Function node</code></p>
-<pre><code>msg.payload = &#39;/my_dir/my_file.webp&#39;
+<script type="text/x-red" data-help-name="chatbot-animation"><p>The <code>Animation node</code> sends an animated GIF or video to the chatbot from a local file or from a URL or from a Buffer passed by an upstream node (the simplest way to use it to chain with to <code>File node</code> or a <code>Http node</code>).</p>
+<p>To programmatically send an animation with a <code>Function node</code></p>
+<pre><code>msg.payload = &#39;/my_dir/my_image.gif&#39;
 </code></pre><p>or</p>
 <pre><code>msg.payload = {
-  sticker: &#39;http://www.my_host.com/my_dir/my_file.webp&#39;
+  caption: &#39;I am the caption&#39;,
+  image: &#39;http://www.my_host.com/my_dir/my_image.gif&#39;
 }
 </code></pre><p>Available parameters for the <code>msg.payload</code></p>
 <dl class="message-properties">
 
 
-<dt>sticker<span class="property-type">string or buffer</span><dd>The sticker string could be the sticker id, the path for a local file or a URL</dd>
+<dt>animation<span class="property-type">string or buffer</span><dd>The image string could be a path for a local file or a URL (context variables can be used)</dd>
+<dt>caption<span class="property-type">string</span><dd>Caption of the image. Only for Telegram, Slack and Viber</dd>
 
 </dl>
 <p><img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram"></p>
