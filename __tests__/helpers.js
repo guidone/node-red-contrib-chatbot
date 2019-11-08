@@ -1,12 +1,11 @@
-var _ = require('underscore');
-var assert = require('chai').assert;
-var helpers = require('../lib/helpers/regexps');
-var utils = require('../lib/helpers/utils');
-var RED = require('../lib/red-stub')();
+const assert = require('chai').assert;
+const helpers = require('../lib/helpers/regexps');
+const utils = require('../lib/helpers/utils');
+const RED = require('../lib/red-stub')();
 
-describe('Helpers functions', function() {
+describe('Helpers functions', () => {
 
-  it('detect a command like message', function() {
+  it('detect a command like message', () => {
     assert.isTrue(helpers.isCommand('/cmd'));
     assert.isTrue(helpers.isCommand('/Cmd'));
     assert.isTrue(helpers.isCommand('/cmd with params'));
@@ -18,27 +17,26 @@ describe('Helpers functions', function() {
     assert.isFalse(helpers.isCommand('/cmd with params', 'another_cmd'));
   });
 
-  it('detect a url', function() {
+  it('detect a url', () => {
     assert.equal(helpers.url('http://www.google.com'), 'http://www.google.com');
     assert.equal(helpers.url('www.google.com'), 'www.google.com');
     assert.isNull(helpers.url('I am not a url'));
     assert.isNull(helpers.url('a text with a url http://www.google.com'), 'http://www.google.com');
   });
 
-  it('detect a number', function() {
+  it('detect a number', () => {
     assert.equal(helpers.number('123232312'), '123232312');
     assert.isNull(helpers.url('I am not a number'));
   });
 
-  it('should create a padded string and split into partials', function() {
-
-    var message = 'I am a message';
-    var padded = utils.pad(message, 4096);
+  it('should create a padded string and split into partials', () => {
+    const message = 'I am a message';
+    let padded = utils.pad(message, 4096);
     padded += 'the beginning of second partial';
     padded = utils.pad(padded, 4096*2);
     padded += 'this is the last partial';
 
-    var partials = utils.split(padded, 4096);
+    const partials = utils.split(padded, 4096);
 
     assert.lengthOf(utils.pad(message, 200), 200);
     assert.lengthOf(partials, 3);
@@ -52,41 +50,41 @@ describe('Helpers functions', function() {
 
 });
 
-describe('Value extractors', function() {
+describe('Value extractors', () => {
 
-  var extractValue = utils.extractValue;
+  const extractValue = utils.extractValue;
 
-  it('should extract a boolean', function() {
-    var msg1 = RED.createMessage(true);
-    var msg2 = RED.createMessage({ aBoolean: true });
-    var msg3 = RED.createMessage('wrong type');
+  it('should extract a boolean', () => {
+    const msg1 = RED.createMessage(true);
+    const msg2 = RED.createMessage({ aBoolean: true });
+    const msg3 = RED.createMessage('wrong type');
     assert.equal(extractValue('boolean', 'aBoolean', RED.node , msg1), true);
     assert.equal(extractValue('boolean', 'aBoolean', RED.node , msg2), true);
     assert.equal(extractValue('boolean', 'aBoolean', RED.node , msg3), null);
   });
 
-  it('should extract a string', function() {
-    var msg1 = RED.createMessage('I am a string');
-    var msg2 = RED.createMessage({ aString: 'I am a string' });
-    var msg3 = RED.createMessage(42);
+  it('should extract a string', () => {
+    const msg1 = RED.createMessage('I am a string');
+    const msg2 = RED.createMessage({ aString: 'I am a string' });
+    const msg3 = RED.createMessage(42);
     assert.equal(extractValue('string', 'aString', RED.node , msg1), 'I am a string');
     assert.equal(extractValue('string', 'aString', RED.node , msg2), 'I am a string');
     assert.equal(extractValue('string', 'aString', RED.node , msg3), null);
   });
 
-  it('should extract a buffer', function() {
-    var msg1 = RED.createMessage(new Buffer('just a buffer'));
-    var msg2 = RED.createMessage({ aBuffer: new Buffer('just a buffer') });
-    var msg3 = RED.createMessage(42);
+  it('should extract a buffer', () => {
+    const msg1 = RED.createMessage(new Buffer('just a buffer'));
+    const msg2 = RED.createMessage({ aBuffer: new Buffer('just a buffer') });
+    const msg3 = RED.createMessage(42);
     assert.instanceOf(extractValue('buffer', 'aBuffer', RED.node , msg1), Buffer);
     assert.instanceOf(extractValue('buffer', 'aBuffer', RED.node , msg2), Buffer);
     assert.equal(extractValue('buffer', 'aBuffer', RED.node , msg3), null);
   });
 
-  it('should extract an array', function() {
-    var msg1 = RED.createMessage([1, 2, 3]);
-    var msg2 = RED.createMessage({ anArray: [1, 2, 3] });
-    var msg3 = RED.createMessage(42);
+  it('should extract an array', () => {
+    const msg1 = RED.createMessage([1, 2, 3]);
+    const msg2 = RED.createMessage({ anArray: [1, 2, 3] });
+    const msg3 = RED.createMessage(42);
     assert.isArray(extractValue('array', 'anArray', RED.node , msg1));
     assert.equal(extractValue('array', 'anArray', RED.node , msg1)[0], 1);
     assert.equal(extractValue('array', 'anArray', RED.node , msg1)[1], 2);
@@ -98,24 +96,31 @@ describe('Value extractors', function() {
     assert.equal(extractValue('array', 'anArray', RED.node , msg3), null);
   });
 
-  it('should extract an array of object', function() {
-    var msg1 = RED.createMessage([{}, {}, {}]);
-    var msg2 = RED.createMessage({ anArrayOfObject: [{}, {}, {}] });
-    var msg3 = RED.createMessage(42);
+  it('should extract an array of object', () => {
+    const msg1 = RED.createMessage([{}, {}, {}]);
+    const msg2 = RED.createMessage({ anArrayOfObject: [{}, {}, {}] });
+    const msg3 = RED.createMessage(42);
     assert.isArray(extractValue('arrayOfObject', 'anArrayOfObject', RED.node , msg1));
     assert.isArray(extractValue('arrayOfObject', 'anArrayOfObject', RED.node , msg2));
     assert.equal(extractValue('arrayOfObject', 'anArrayOfObject', RED.node , msg3), null);
   });
 
-  it('should extract an hash', function() {
-    var msg1 = RED.createMessage({ randomValue: 42 });
-    var msg2 = RED.createMessage({ anHash: { randomValue: 42} });
-    var msg3 = RED.createMessage({ chatId: 42});
+  it('should extract an hash', () => {
+    const msg1 = RED.createMessage({ randomValue: 42 });
+    const msg2 = RED.createMessage({ anHash: { randomValue: 42} });
+    const msg3 = RED.createMessage({ chatId: 42});
     assert.isObject(extractValue('hash', 'anHash', RED.node , msg1));
     assert.equal(extractValue('hash', 'anHash', RED.node , msg1).randomValue, 42);
     assert.isObject(extractValue('hash', 'anHash', RED.node , msg2));
     assert.equal(extractValue('hash', 'anHash', RED.node , msg2).randomValue, 42);
     assert.equal(extractValue('hash', 'anHash', RED.node , msg3), null);
+  });
+
+  it('should extract string or number (tipically a chatId)', () => {
+    const msg1 = RED.createMessage({ chatId: '42' });
+    const msg2 = RED.createMessage({ chatId: 42});
+    assert.equal(extractValue('stringOrNumber', 'chatId', RED.node , msg1), '42');
+    assert.equal(extractValue('stringOrNumber', 'chatId', RED.node , msg2), 42);
   });
 
   it('should extract filepath', () => {
@@ -126,17 +131,17 @@ describe('Value extractors', function() {
 
   it('should extract a string with variables', () => {
     const msg1 = RED.createMessage({ video: 'A simple string' });
-    const msg2 = RED.createMessage({ video: 'A simple string with var {{myvar}}' });
+    const msg2 = RED.createMessage({ video: 'A simple string with const {{myvar}}' });
     const msg3 = RED.createMessage({ video: 42 });
     const MyNode = { ...RED.node };
     assert.isNull(extractValue('stringWithVariables', 'video', RED.node, msg1));
-    assert.equal(extractValue('stringWithVariables', 'video', RED.node, msg2), 'A simple string with var {{myvar}}');
+    assert.equal(extractValue('stringWithVariables', 'video', RED.node, msg2), 'A simple string with const {{myvar}}');
     assert.isNull(extractValue('stringWithVariables', 'video', RED.node, msg3));
   });
 
-  it('should append messages to payload', function() {
+  it('should append messages to payload', () => {
     // step 1
-    var msg = RED.createMessage({ });
+    const msg = RED.createMessage({ });
     assert.isEmpty(msg.payload);
     // step 2
     utils.append(msg, { type: 'message', content: 'the message', inbound: false });
@@ -153,9 +158,9 @@ describe('Value extractors', function() {
     assert.equal(msg.payload[1].content, 'monkey island');
   });
 
-  it('should not append messages to payload if a message is inbound', function() {
+  it('should not append messages to payload if a message is inbound', () => {
     // step 1
-    var msg = RED.createMessage({
+    const msg = RED.createMessage({
       type: 'message',
       content: 'I am a message'
     });
@@ -167,15 +172,15 @@ describe('Value extractors', function() {
     assert.equal(msg.payload.content, 'the message');
   });
 
-  it('should pad a string', function() {
-    var padded = utils.pad('hello', 10);
+  it('should pad a string', () => {
+    const padded = utils.pad('hello', 10);
     assert.lengthOf(padded, 10);
     assert.include(padded, 'hello');
   });
 
-  it('should correctly split a string', function() {
-    var str = utils.pad('hello', 10) + utils.pad('what?', 10) + 'done.';
-    var splitted = utils.split(str, 10);
+  it('should correctly split a string', () => {
+    const str = utils.pad('hello', 10) + utils.pad('what?', 10) + 'done.';
+    const splitted = utils.split(str, 10);
 
     assert.lengthOf(splitted, 3);
     assert.lengthOf(splitted[0], 10);

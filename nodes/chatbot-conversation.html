@@ -94,10 +94,7 @@
           value: ''
         },
         botDevelopment: {
-          value: '',
-          validate: function() {
-            return $.RedBot.validate.isEmpty(this.chatId) || $.RedBot.validate.notEmpty(this.botDevelopment);
-          }
+          value: ''
         },
         botProduction: {
           value: '',
@@ -110,17 +107,11 @@
           value: ''
         },
         transport: {
-          value: '',
-          validate: function() {
-            return $.RedBot.validate.isEmpty(this.chatId) || $.RedBot.validate.notEmpty(this.transport);
-          }
+          value: ''
         },
         store: {
           value: '',
-          type: 'chatbot-context-store',
-          validate: function() {
-            return $.RedBot.validate.isEmpty(this.userId) || $.RedBot.validate.notEmpty(this.store);
-          }
+          type: 'chatbot-context-store'
         }
       },
       inputs: 1,
