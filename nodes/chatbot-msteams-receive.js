@@ -181,9 +181,10 @@ module.exports = function(RED) {
 
     this.bot = config.bot;
     this.botProduction = config.botProduction;
-    console.log('---', this.botProduction , this.bot)
+    //console.log('--- prod', this.botProduction , )
+    //console.log('--- bot', this.bot)
     this.config = RED.nodes.getNode(environment === 'production' ? this.botProduction : this.bot);
-    console.log('this.config',this.config)
+    //console.log('--- config', this.config)
     if (this.config) {
       this.status({fill: 'red', shape: 'ring', text: 'disconnected'});
       node.chat = this.config.chat;
