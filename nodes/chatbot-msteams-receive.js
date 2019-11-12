@@ -62,7 +62,7 @@ module.exports = function(RED) {
     var botConfiguration = {
       authorizedUsernames: node.usernames,
       appId: node.credentials != null && node.credentials.appId != null ? node.credentials.appId.trim() : null,
-      appSecret: node.appSecret,
+      appPassword: node.credentials != null && node.credentials.appPassword != null ? node.credentials.appPassword.trim() : null,
       logfile: node.log,
       contextProvider: contextStorageNode != null ? contextStorageNode.contextStorage : null,
       contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null,
@@ -166,6 +166,9 @@ module.exports = function(RED) {
   registerType('chatbot-msteams-node', MicrosoftTeamsBotNode, {
     credentials: {
       appId: {
+        type: 'text'
+      },
+      appPassword: {
         type: 'text'
       }
     }
