@@ -46,6 +46,31 @@
             $('.form-warning .bot-name').html('"' + node.botname + '"');
           }
         });
+
+      $('#node-config-input-appId,#node-config-input-appSecret')
+        .keyup(function() {
+          var appId = $('#node-config-input-appId').val();
+          var appSecret = $('#node-config-input-appSecret').val();
+          var canGetToken = appId != null && appId !== '' && appSecret != null && appSecret !== '';
+          $('#routeeAuthorize').attr('disabled', !canGetToken);
+          $('#routeeAuthorizeContainer').attr('style', !canGetToken ? 'opacity:0.5' : '');
+        });  
+
+      $('#routeeAuthorize')
+        .click(function (e) {
+          e.preventDefault();
+          var appId = $('#node-config-input-appId').val();
+          var appSecret = $('#node-config-input-appSecret').val();
+          $.get(`${nodeRedUrl}redbot/routee/token?appId=${appId}&appSecret=${appSecret}`)
+            .done(function(accessToken) {
+              if (accessToken != null) {
+                $('#node-config-input-accessToken').val(accessToken);
+                RED.notifications.notify('AccessToken generated successfully');
+              } else {
+                RED.notifications.notify('Error on trying to get the access token');
+              }
+            });
+        });  
     },
     paletteName: 'Routee Bot',
     credentials: {
@@ -73,12 +98,21 @@
       <input type="text" id="node-config-input-appId">
     </div>
     <div class="form-row">
-      <label for="node-config-input-accessToken">Access Token</label>
-      <input type="text" id="node-config-input-accessToken">
-    </div>
-    <div class="form-row">
       <label for="node-config-input-appSecret">Application Secret</label>
       <input type="text" id="node-config-input-appSecret">
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-accessToken">Access Token</label>
+      <input type="text" id="node-config-input-accessToken">
+      <div id="routeeAuthorizeContainer">
+        <button
+          type="button"
+          id="routeeAuthorize"
+          style="padding: 6px 14px;  margin-top: 6px;margin-left: 104px;"
+          class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+          Get Access Token
+        </button>
+      </div>
     </div>
     <div class="form-row">
       <label for="node-config-input-fromNumber">Sender Number</label>

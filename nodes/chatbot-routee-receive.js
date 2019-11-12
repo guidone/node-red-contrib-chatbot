@@ -8,8 +8,9 @@ const lcd = require('../lib/helpers/lcd');
 const prettyjson = require('prettyjson');
 const validators = require('../lib/helpers/validators');
 const RegisterType = require('../lib/node-installer');
+const { when, request } = require('../lib/helpers/utils');
 
-const when = utils.when;
+
 const warn = clc.yellow;
 const green = clc.green;
 
@@ -27,6 +28,35 @@ module.exports = function(RED) {
   RED.redbot.platforms.routee = RouteeServer;
 
   var contextProviders = ContextProviders(RED);
+
+  RED.httpNode.get('/redbot/routee/token', function(req, res) {
+    const appId = req.query.appId;
+    const appSecret = req.query.appSecret;
+    const secret = `${appId}:${appSecret}`;
+    const basicToken = Buffer.alloc(secret.length, secret);
+
+    request({
+      url: 'https://auth.routee.net/oauth/token',
+      method: 'POST',
+      headers: {
+        authorization: `Basic ${basicToken.toString('base64')}`,
+        'content-type': 'application/x-www-form-urlencoded'
+      },
+      form: {
+        grant_type: 'client_credentials'
+      }
+    }).then(result => {
+      let body;
+      try {
+        body = JSON.parse(result);
+      } catch(e) {
+        // do nothing
+      }
+      res.send(body.access_token);;
+    });
+  });
+
+
 
   function RouteeBotNode(n) {
     RED.nodes.createNode(this, n);
