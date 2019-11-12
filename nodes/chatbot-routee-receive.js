@@ -61,6 +61,7 @@ module.exports = function(RED) {
     // build the configuration object
     var botConfiguration = {
       authorizedUsernames: node.usernames,
+      accessToken: node.credentials != null && node.credentials.accessToken != null ? node.credentials.accessToken.trim() : null,
       appSecret: node.credentials != null && node.credentials.appSecret != null ? node.credentials.appSecret.trim() : null,
       appId: node.appId,
       fromNumber: node.fromNumber,
@@ -114,6 +115,7 @@ module.exports = function(RED) {
         node.contextProvider.start();
         node.chat = RouteeServer.createServer({
           authorizedUsernames: botConfiguration.authorizedUsernames,
+          accessToken: botConfiguration.accessToken,
           appSecret: botConfiguration.appSecret,
           appId: botConfiguration.appId,
           fromNumber: botConfiguration.fromNumber,
@@ -168,6 +170,9 @@ module.exports = function(RED) {
   registerType('chatbot-routee-node', RouteeBotNode, {
     credentials: {
       appSecret: {
+        type: 'text'
+      },
+      accessToken: {
         type: 'text'
       }
     }

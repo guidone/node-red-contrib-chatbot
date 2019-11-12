@@ -51,7 +51,10 @@
     credentials: {
       appSecret: {
         type: 'text'
-      }
+      },
+      accessToken: {
+        type: 'text'
+      },
     },
     label: function () {
       return this.botname;
@@ -68,6 +71,10 @@
     <div class="form-row">
       <label for="node-config-input-appId">Application Id</label>
       <input type="text" id="node-config-input-appId">
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-accessToken">Access Token</label>
+      <input type="text" id="node-config-input-accessToken">
     </div>
     <div class="form-row">
       <label for="node-config-input-appSecret">Application Secret</label>
