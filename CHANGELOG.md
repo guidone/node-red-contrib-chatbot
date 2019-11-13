@@ -1,3 +1,4 @@
+* **0.17.6** - Improved Dialogflow, removed static configuration from Conversation node
 * **0.17.5** - Added animation node, improved runtime validation of `Conversation node`
 * **0.17.4** - Fix Voice node
 * **0.17.3** - Added Slack Block Kit
