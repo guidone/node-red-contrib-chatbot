@@ -1,0 +1,191 @@
+<script type="text/javascript">
+
+  var buildParam = function(row, platform) {
+
+    row.empty()
+      .append(platform)
+  }
+
+  var buildParams = function() {
+    var node = this;
+
+    $("#node-input-rule-container").css('min-height','250px').css('min-width','450px').editableList({
+      addButton: 'Add rule',
+      addItem: function (container, i, opt) {
+        // build rule row
+        var rule = opt;
+        var row = $('<div/>').appendTo(container);
+       
+        // build transport options
+        var transportOptions = '';
+        for(idx = 0; idx < node.platforms.length; idx++) {
+          transportOptions += '<option value="' + node.platforms[idx].id + '">'
+            + (node.platforms[idx].name != null ? node.platforms[idx].name : node.platforms[idx].id)
+            + '</option>';
+        }
+
+        row
+          .append('<select class="transport isTransportAvailable isTransportPreferred" name="transport" style="width:40%;margin-left:10px;">'
+            + '<option value="">Select transport</option>'
+            + transportOptions
+            + '</select>')
+        $('select.transport', row)    
+          .change(function() {
+            console.log('selected transport', $(this).val())
+            buildParam(row, $(this).val());
+          });
+
+
+      },
+      removeItem: function(opt) {
+        var rules = $('#node-input-rule-container').editableList('items');
+        rules.each(function(i) {
+          $(this).find('.node-input-rule-index').html(i + 1);
+        });
+      },
+      sortItems: function() {
+        var rules = $('#node-input-rule-container').editableList('items');
+        rules.each(function(i) {
+          $(this).find('.node-input-rule-index').html(i + 1);
+        });
+      },
+      sortable: true,
+      removable: true
+    });
+
+    for (var i=0; i < node.rules.length; i++) {
+      var rule = this.rules[i];
+      $('#node-input-rule-container').editableList('addItem', rule);
+    }
+  };
+
+  $.RedBot.registerType('chatbot-params', {
+    category: $.RedBot.config.name + ' Flow',
+    color: '#FFCC66',
+    defaults: {
+      name: {
+        value: ''
+      },
+      rules: {
+        value: [],
+        validate: function(rules) {
+          return $.RedBot.validate.rules(rules);
+        }
+      },
+      outputs: {
+        value: 1
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'Params',
+    icon: 'chatbot-rules.png',
+    label: function() {
+      return this.name || 'Params' ;
+    },
+    oneditsave: function() {
+      /*var rules = $('#node-input-rule-container').editableList('items');
+      var node = this;
+      node.rules = [];
+      rules.each(function(i) {
+        var rule = $(this);
+        var type = rule.find('select[name=type]').val();
+        if (type != null && type !== '') {
+          var obj = {
+            type: type
+          };
+          if (type === 'hasNotVariable' || type === 'hasVariable') {
+            obj.variable = rule.find('input[name=variable]').val();
+          }
+          if (type === 'isVariable') {
+            obj.variable = rule.find('input[name=variableName]').val();
+            obj.value = rule.find('input[name=variableValue]').val();
+          }
+          if (type === 'isNotTopic' || type === 'isTopic' || type === 'topicIncludes') {
+            obj.topic = rule.find('input[name=topic]').val();
+          }
+          if (type === 'command') {
+            obj.command = rule.find('input[name=command]').val();
+          }
+          if (type === 'environment') {
+            obj.environment = rule.find('select[name=environment]').val();
+          }
+          if (type === 'messageType' || type === 'notMessageType') {
+            obj.messageType = rule.find('select[name=messageType]').val();
+          }
+          if (type === 'transport' || type === 'isTransportAvailable' || type === 'isTransportPreferred') {
+            obj.transport = rule.find('select[name=transport]').val();
+          }
+          if (type === 'messageEvent') {
+            obj.event = rule.find('select[name=event]').val();
+          }
+          if (type === 'dialogState') {
+            obj.state = rule.find('select[name=state]').val();
+          }
+          if (type === 'isIntentName') {
+            obj.intent = rule.find('input[name=intent]').val();
+          }
+          if (type === 'isIntentConfirmationStatus') {
+            obj.confirmationStatus = rule.find('select[name=confirmationStatus]').val();
+          }
+          if (type === 'isSlotConfirmationStatus') {
+            obj.confirmationStatus = rule.find('select[name=confirmationStatus]').val();
+            obj.slot = rule.find('input[name=slot]').val();
+          }
+          node.rules.push(obj);
+        }
+      });
+      this.outputs = node.rules.length;
+      */
+    },
+
+    oneditprepare: function() {
+      var node = this;
+
+      var nodeRedUrl = '';
+      if (RED.settings.httpNodeRoot) {
+        nodeRedUrl = RED.settings.httpNodeRoot;
+      }
+
+      $.get(nodeRedUrl + 'redbot/globals')
+        .done(function(response) {
+          console.log('GLOBALS', response)
+          node.messageTypes = response.messageTypes;
+          node.eventTypes = response.eventTypes;
+          node.params = response.params;
+          $.get(nodeRedUrl + 'redbot/platforms')
+            .done(function(response) {
+              console.log('GLOBALS:', response)
+              node.platforms = response.platforms;
+              buildParams.call(node);
+            });
+        });
+    },
+    oneditresize: function() {
+      var dialogForm = $('#dialog-form');
+      var rowName = $('.form-row-name', dialogForm);
+      var rowLabel = $('.form-row-label', dialogForm);
+      var rowHint = $('.redbot-form-hint', dialogForm);
+      var height = dialogForm.height() - rowName.height() - rowLabel.height() - rowHint.height() - 30;
+      $('#node-input-buttons-container').editableList('height', height);
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-params">
+  <div class="form-row form-row-name">
+    <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row form-row-label">
+    <label for="node-input-name" style="width:100%;">Forward message based on rules:</label>
+  </div>
+  <div class="form-row node-input-rule-container-row">
+      <ol id="node-input-rule-container"></ol>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-params">
+</script>
+
+
