@@ -268,6 +268,31 @@ describe('Validators', function() {
     assert.isNotNull(validators.platform.twilio(_.extend({}, base, { logfile: 42})));
   });
 
+  it('validates a Routee configuration', function() {
+    var base = {
+      authorizedUsernames: null,
+      fromNumber: '+39123456',
+      appSecret: '236472347623462376',
+      appId: '236472347623462376',
+      accessToken: 'aiqwgdkansljdeife',
+      contextProvider: 'memory',
+      logfile: null
+    };
+
+    assert.isNull(validators.platform.routee(base));
+    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { fromNumber: null})));
+    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { fromNumber: ''})));
+    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { accessToken: null})));
+    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { accessToken: ''})));
+    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { appId: null})));
+    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { appId: ''})));
+    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { appSecret: null})));
+    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { appSecret: ''})));
+    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { contextProvider: 'wrong_context'})));
+    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { authorizedUsernames: 42})));
+    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { logfile: 42})));
+  });
+
   it('validates a Alexa configuration', function() {
     var base = {
       authorizedUsernames: null,
