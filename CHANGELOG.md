@@ -1,3 +1,4 @@
+* **0.17.8** - Routee support, fixed reply to message in Telegram
 * **0.17.6** - Improved Dialogflow, removed static configuration from Conversation node
 * **0.17.5** - Added animation node, improved runtime validation of `Conversation node`
 * **0.17.4** - Fix Voice node
