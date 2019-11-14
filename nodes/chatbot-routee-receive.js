@@ -52,7 +52,7 @@ module.exports = function(RED) {
       } catch(e) {
         // do nothing
       }
-      res.send(body.access_token);;
+      res.send(body.access_token);
     });
   });
 
