@@ -1,9 +1,108 @@
 <script type="text/javascript">
 
-  var buildParam = function(row, platform) {
+  var mountControl = function(container, param, defaultParam, callback) {
+    container.empty();
+    console.log('mounting', defaultParam, param)
+    switch(param.type) {
+      case 'string':
+        container.append(
+          '<div class="form-row" style="display:inline-block;margin-left:10px;">'
+          + '<input type="text" value="' + (defaultParam != null ? defaultParam : '') 
+          + '" autocomplete="disable" style="width:100%;" placeholder="' + (!_.isEmpty(param.placeholder) ? param.placeholder : '') + '">'
+          + '</div>');
+        $('input', container)
+          .keyup(function() {
+            callback($(this).val());
+          });
+        break;
+      case 'boolean':        
+        container.append(
+          '<div class="form-row" style="display:inline-block;margin-left:10px;">'
+          + '<input type="radio" name="bool_value" value="true" style="width:20px;margin-top:-2px;"> Yes'
+          + '<input type="radio" name="bool_value" value="false" style="width:20px;margin-top:-2px;margin-left:5px;"> No'    
+          + '</div>'
+        );
+        $('input', container)
+          .click(function() {
+            callback($(this).attr('value') === 'true');
+          });
+        if (defaultParam === true || defaultParam === 'true') {
+          $('input[type=radio][value=true]', container).attr('checked', true);
+        } else if (defaultParam === false || defaultParam === 'false') {
+          $('input[type=radio][value=false]', container).attr('checked', true);
+        }  
+        break;
+    }
+  }
+
+  var buildParam = function(row, platform, current) {
+    var node = this;
+    var params = node.availableParams[platform];
+    var idx = 0;
+
+    var platformDefinition = null;
+    for(idx = 0; idx < node.platforms.length; idx++) {
+      if (node.platforms[idx].id === platform) {
+        platformDefinition = node.platforms[idx];
+      }
+    }
+
+    var paramsOptions = '';
+    for(idx = 0; idx < params.length; idx++) {
+      paramsOptions += '<option value="' + params[idx].name + '">' + params[idx].label + '</option>';
+    }
 
     row.empty()
-      .append(platform)
+      .append('<span class="platform" '
+        + 'style="font-size:10px;background-color:' 
+        + (platformDefinition != null && platformDefinition.color != null ? platformDefinition.color : '#bbbbbb') 
+        + ';padding: 2px 3px 2px 3px;border-radius:2px;text-transform:uppercase;color:#ffffff;margin-left:5px;"'
+        + '>' 
+        + platform + '</span>')
+      .append('<select class="param-name" name="transport" style="width:40%;margin-left:10px;">'
+            + '<option value="">Select parameter</option>'
+            + paramsOptions
+            + '</select>')
+      .append('<input class="value" type="hidden" name="" value="">')
+      .append('<input class="type" type="hidden" name="type" value="">')
+      .append('<div class="control" style="display:inline-block;height:34px;">&nbsp;</div>');
+
+    $('select.param-name', row)
+      .change(function() {
+        var param = $(this).val();
+        var paramObj = null;
+
+        for(idx = 0; idx < params.length; idx++) {
+          if (params[idx].name === param) {
+            paramObj = params[idx];
+          }
+        }
+        if (paramObj != null) {
+          $('input[type=hidden].value', row).attr('name', param);
+          $('input[type=hidden].type', row).attr('value', paramObj.type);
+          mountControl($('.control', row), paramObj, paramObj.default != null ? paramObj.default : null, function(value) {
+            $('input[type=hidden].value', row).attr('value', value);
+          });
+        }
+
+      });
+
+    if (current != null) {
+      var paramObj = null;
+      for(idx = 0; idx < params.length; idx++) {
+        if (params[idx].name === current.name) {
+          paramObj = params[idx];
+        }
+      }
+      $('input[type=hidden].type', row).attr('value', paramObj.type);
+      $('input[type=hidden].value', row).attr('name', current.name);
+      $('input[type=hidden].value', row).attr('value', current.value);
+      $('select.param-name', row).val(current.name);
+      mountControl($('.control', row), paramObj, current.value, function(value) {
+        console.log('che ti metto', value)
+        $('input[type=hidden].value', row).attr('value', value);
+      });
+    }
   }
 
   var buildParams = function() {
@@ -13,28 +112,34 @@
       addButton: 'Add rule',
       addItem: function (container, i, opt) {
         // build rule row
-        var rule = opt;
+        var param = opt;
+        var isEmpty = param.platform == null;
+        // empty row
         var row = $('<div/>').appendTo(container);
-       
-        // build transport options
-        var transportOptions = '';
-        for(idx = 0; idx < node.platforms.length; idx++) {
-          transportOptions += '<option value="' + node.platforms[idx].id + '">'
-            + (node.platforms[idx].name != null ? node.platforms[idx].name : node.platforms[idx].id)
-            + '</option>';
+
+        if (!isEmpty) {
+          buildParam.call(node, row, param.platform, param);
+          return;
+        } else {
+          
+          // build transport options
+          var transportOptions = '';
+          for(idx = 0; idx < node.platforms.length; idx++) {
+            transportOptions += '<option value="' + node.platforms[idx].id + '">'
+              + (node.platforms[idx].name != null ? node.platforms[idx].name : node.platforms[idx].id)
+              + '</option>';
+          }
+
+          row
+            .append('<select class="transport" name="transport" style="width:40%;margin-left:10px;">'
+              + '<option value="">Select transport</option>'
+              + transportOptions
+              + '</select>')
+          $('select.transport', row)    
+            .change(function() {
+              buildParam.call(node, row, $(this).val());
+            });
         }
-
-        row
-          .append('<select class="transport isTransportAvailable isTransportPreferred" name="transport" style="width:40%;margin-left:10px;">'
-            + '<option value="">Select transport</option>'
-            + transportOptions
-            + '</select>')
-        $('select.transport', row)    
-          .change(function() {
-            console.log('selected transport', $(this).val())
-            buildParam(row, $(this).val());
-          });
-
 
       },
       removeItem: function(opt) {
@@ -49,13 +154,13 @@
           $(this).find('.node-input-rule-index').html(i + 1);
         });
       },
-      sortable: true,
+      sortable: false,
       removable: true
     });
 
-    for (var i=0; i < node.rules.length; i++) {
-      var rule = this.rules[i];
-      $('#node-input-rule-container').editableList('addItem', rule);
+    for (var i=0; i < node.params.length; i++) {
+      var param = this.params[i];
+      $('#node-input-rule-container').editableList('addItem', param);
     }
   };
 
@@ -66,10 +171,10 @@
       name: {
         value: ''
       },
-      rules: {
+      params: {
         value: [],
         validate: function(rules) {
-          return $.RedBot.validate.rules(rules);
+          //return $.RedBot.validate.rules(rules);
         }
       },
       outputs: {
@@ -84,59 +189,33 @@
       return this.name || 'Params' ;
     },
     oneditsave: function() {
-      /*var rules = $('#node-input-rule-container').editableList('items');
+      var params = $('#node-input-rule-container').editableList('items');
       var node = this;
-      node.rules = [];
-      rules.each(function(i) {
-        var rule = $(this);
-        var type = rule.find('select[name=type]').val();
-        if (type != null && type !== '') {
-          var obj = {
-            type: type
-          };
-          if (type === 'hasNotVariable' || type === 'hasVariable') {
-            obj.variable = rule.find('input[name=variable]').val();
-          }
-          if (type === 'isVariable') {
-            obj.variable = rule.find('input[name=variableName]').val();
-            obj.value = rule.find('input[name=variableValue]').val();
-          }
-          if (type === 'isNotTopic' || type === 'isTopic' || type === 'topicIncludes') {
-            obj.topic = rule.find('input[name=topic]').val();
-          }
-          if (type === 'command') {
-            obj.command = rule.find('input[name=command]').val();
-          }
-          if (type === 'environment') {
-            obj.environment = rule.find('select[name=environment]').val();
-          }
-          if (type === 'messageType' || type === 'notMessageType') {
-            obj.messageType = rule.find('select[name=messageType]').val();
-          }
-          if (type === 'transport' || type === 'isTransportAvailable' || type === 'isTransportPreferred') {
-            obj.transport = rule.find('select[name=transport]').val();
-          }
-          if (type === 'messageEvent') {
-            obj.event = rule.find('select[name=event]').val();
-          }
-          if (type === 'dialogState') {
-            obj.state = rule.find('select[name=state]').val();
-          }
-          if (type === 'isIntentName') {
-            obj.intent = rule.find('input[name=intent]').val();
-          }
-          if (type === 'isIntentConfirmationStatus') {
-            obj.confirmationStatus = rule.find('select[name=confirmationStatus]').val();
-          }
-          if (type === 'isSlotConfirmationStatus') {
-            obj.confirmationStatus = rule.find('select[name=confirmationStatus]').val();
-            obj.slot = rule.find('input[name=slot]').val();
-          }
-          node.rules.push(obj);
+      node.params = [];
+      params.each(function(i) {
+        var paramRow = $(this);
+        var platform = paramRow.find('.platform').text();
+        var name = paramRow.find('input[type=hidden].value').attr('name');
+        var value = paramRow.find('input[type=hidden].value').attr('value');
+        var type = paramRow.find('input[type=hidden].type').attr('value');
+        console.log('ma prima', value)
+        // do some conversion
+        if (type === 'boolean') {
+          value = value === 'true' || value === true;
         }
+        console.log('cosa?', {
+          platform: platform,
+          name: name,
+          value: value
+        })
+
+        node.params.push({
+          platform: platform,
+          name: name,
+          value: value
+        });
+      
       });
-      this.outputs = node.rules.length;
-      */
     },
 
     oneditprepare: function() {
@@ -149,13 +228,11 @@
 
       $.get(nodeRedUrl + 'redbot/globals')
         .done(function(response) {
-          console.log('GLOBALS', response)
           node.messageTypes = response.messageTypes;
           node.eventTypes = response.eventTypes;
-          node.params = response.params;
+          node.availableParams = response.params;
           $.get(nodeRedUrl + 'redbot/platforms')
             .done(function(response) {
-              console.log('GLOBALS:', response)
               node.platforms = response.platforms;
               buildParams.call(node);
             });
@@ -178,7 +255,7 @@
     <input type="text" id="node-input-name" placeholder="Name">
   </div>
   <div class="form-row form-row-label">
-    <label for="node-input-name" style="width:100%;">Forward message based on rules:</label>
+    <label for="node-input-name" style="width:100%;">Add parameter to the chat flow:</label>
   </div>
   <div class="form-row node-input-rule-container-row">
       <ol id="node-input-rule-container"></ol>
