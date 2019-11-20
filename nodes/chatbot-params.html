@@ -39,6 +39,7 @@
     var node = this;
     var params = node.availableParams[platform];
     var idx = 0;
+    var tooltip = null;
 
     var platformDefinition = null;
     for(idx = 0; idx < node.platforms.length; idx++) {
@@ -65,7 +66,9 @@
             + '</select>')
       .append('<input class="value" type="hidden" name="" value="">')
       .append('<input class="type" type="hidden" name="type" value="">')
+      .append('<span class="hint" style="margin-left:5px;display:inline-block;"><i class="fa fa-question-circle" style="color:#999999;"/></div>')
       .append('<div class="control" style="display:inline-block;height:34px;">&nbsp;</div>');
+      $('.hint', row).hide();
 
     $('select.param-name', row)
       .change(function() {
@@ -83,6 +86,24 @@
           mountControl($('.control', row), paramObj, paramObj.default != null ? paramObj.default : null, function(value) {
             $('input[type=hidden].value', row).attr('value', value);
           });
+          if (paramObj.description != null) {
+            if (tooltip != null) {
+              tooltip.dispose();
+              tooltip = null;
+            }
+            tooltip = new Tooltip($('.hint', row).get(0), {
+              placement: 'right-start', 
+              title: paramObj.description,
+              trigger: 'hover'
+            });
+            $('.hint', row).show();
+          } else {
+            $('.hint', row).hide();
+            if (tooltip != null) {
+              tooltip.dispose();
+              tooltip = null;
+            }
+          }
         }
 
       });
@@ -99,9 +120,20 @@
       $('input[type=hidden].value', row).attr('value', current.value);
       $('select.param-name', row).val(current.name);
       mountControl($('.control', row), paramObj, current.value, function(value) {
-        console.log('che ti metto', value)
         $('input[type=hidden].value', row).attr('value', value);
       });
+      if (paramObj.description != null) {
+        if (tooltip != null) {
+          tooltip.dispose();
+          tooltip = null;
+        }
+        tooltip = new Tooltip($('.hint', row).get(0), {
+          placement: 'right-start',
+          title: paramObj.description,
+          trigger: 'hover'
+        });
+        $('.hint', row).show();
+      }
     }
   }
 
@@ -198,23 +230,18 @@
         var name = paramRow.find('input[type=hidden].value').attr('name');
         var value = paramRow.find('input[type=hidden].value').attr('value');
         var type = paramRow.find('input[type=hidden].type').attr('value');
-        console.log('ma prima', value)
+        
         // do some conversion
         if (type === 'boolean') {
           value = value === 'true' || value === true;
         }
-        console.log('cosa?', {
-          platform: platform,
-          name: name,
-          value: value
-        })
+
 
         node.params.push({
           platform: platform,
           name: name,
           value: value
-        });
-      
+        });      
       });
     },
 
