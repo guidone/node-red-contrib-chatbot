@@ -1,25 +1,54 @@
-const utils = require('../lib/helpers/utils');
-const helpers = require('../lib/helpers/regexps');
 const _ = require('underscore');
 const RegisterType = require('../lib/node-installer');
-
-const when = utils.when;
-
+const { ChatExpress } = require('chat-platform');
+const { 
+  enrichFilePayload, 
+  isValidMessage, 
+  getChatId, 
+  getMessageId, 
+  getTransport, 
+  extractValue 
+} = require('../lib/helpers/utils');
+const MessageTemplate = require('../lib/message-template-async');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
 
-  function ChatBotParams(config) {
+  function ChatBotParams(config) {    
     RED.nodes.createNode(this, config);
-    var node = this;
-    var global = this.context().global;
-    node.rules = config.rules;
+    const node = this;
+    this.params = config.params;
 
-    this.on('input', function(msg) {
-      var rules = utils.extractValue('arrayOfObject', 'rules', node, msg, true);
+    this.on('input', function(msg, send, done) {
+      // send/done compatibility for node-red < 1.0
+      send = send || function() { node.send.apply(node, arguments) };
+      done = done || function(error) { node.error.call(node, error, msg) };
+      // check if valid message
+      if (!isValidMessage(msg, node)) {
+        done('Invalid input message');
+        return;
+      }      
+      // get RedBot values
+      const chatId = getChatId(msg);
+      const messageId = getMessageId(msg);
+      const template = MessageTemplate(msg, node);
+      const transport = getTransport(msg);      
+      // get vars
+      let params = extractValue('params', 'params', node, msg)
       
+      template(params.filter(param => param.platform === transport))
+        .then(params => {        
+          send({ 
+            ...msg,
+            payload: {
+              ...msg.payload,
+              params: params.reduce((accumulator, param) => ({ ...accumulator, [param.name]: param.value }), {})
+            }            
+          });
+          done();
+        });
     });
   }
-
+  
   registerType('chatbot-params', ChatBotParams);
 };
