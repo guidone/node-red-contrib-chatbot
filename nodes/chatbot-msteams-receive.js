@@ -16,16 +16,7 @@ const green = clc.green;
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
-
-  // register Slack server
-  /*if (RED.redbot == null) {
-    RED.redbot = {};
-  }
-  if (RED.redbot.platforms == null) {
-    RED.redbot.platforms = {};
-  }
-  RED.redbot.platforms.twilio = TwilioServer;*/
-
+  
   var contextProviders = ContextProviders(RED);
 
   function MicrosoftTeamsBotNode(n) {
