@@ -131,7 +131,7 @@
   "devDependencies": {
     "chai": "^4.1.1",
     "chai-spies": "^1.0.0",
-    "eslint": "^4.12.1",
+    "eslint": "^6.7.0",
     "jest": "^22.0.6"
   }
 }
