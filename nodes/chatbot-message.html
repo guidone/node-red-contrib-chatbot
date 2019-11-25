@@ -69,6 +69,11 @@
       for (idx = 0; idx < message.length; idx++) {
         $("#node-input-message-container").editableList('addItem', message[idx]);
       }
+
+      $.RedBot.fetchPlatforms()
+        .done(function(platforms) {
+          $.RedBot.supportedBy($('.compatibility'), ['telegram', 'slack', 'facebook']);
+        });
     }
   });
 </script>
@@ -94,6 +99,9 @@
       </td>
       <td width="50%" valign="top" style="font-size: 13px;">
         <input type="checkbox" value="true" id="node-input-silent" style="width:auto;margin-top:0px;">
+        
+        <span class="compatibility"></span>
+        
         <span>
           Silent message (no notification)
         </span>&nbsp;<span class="icon-platform-telegram"/>

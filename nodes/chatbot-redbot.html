@@ -7,6 +7,58 @@
       } else {
         RED.nodes.registerType(type, params);
       }
+    },
+    _cache: {},
+    fetchPlatforms: function() {
+      var nodeRedUrl = '';
+      var deferred = jQuery.Deferred();
+      if ($.RedBot._cache.platforms != null) {
+        deferred.resolve($.RedBot._cache.platforms);
+        return deferred.promise();;
+      }
+      if (RED.settings.httpNodeRoot) {
+        nodeRedUrl = RED.settings.httpNodeRoot;
+      }
+      $.get(nodeRedUrl + 'redbot/platforms')
+        .done(function(response) {
+          $.RedBot._cache.platforms = response.platforms;
+          deferred.resolve(response.platforms);
+        });
+      return deferred.promise();
+    },
+    supportedBy: function(node, platforms) {
+
+      var availablePlatforms = {};
+      var idx = 0;
+      for (idx = 0; idx < $.RedBot._cache.platforms.length; idx++) {
+        availablePlatforms[$.RedBot._cache.platforms[idx].id] = $.RedBot._cache.platforms[idx];
+      };
+
+      var markup = '';
+      var markupPopup = '';
+      for(idx = 0; idx < platforms.length; idx++) {
+        var color = availablePlatforms[platforms[idx]].color;
+        markup += '<div style="display:inline-block;flex: 0 0 6px;width:6px;height:6px;margin-right:3px;margin-top:3px;background-color:'+color+'"></div>';
+        markupPopup += '<span class="platform" style="font-size:10px;background-color:' 
+          + color  
+          + ';padding: 2px 3px 2px 3px;border-radius:2px;text-transform:uppercase;color:#ffffff;margin-left:5px;">'
+          + availablePlatforms[platforms[idx]].name.replace(/ /g,'&nbsp;')
+          + '</span> ';
+      }
+
+      $(node)
+        .attr('style', 'display:inline-flex;width:18px;line-height:0px;min-height:24px;flex-wrap: wrap;justify-content: flex-start;align-content: center;align-items: flex-end;')
+        .empty()
+        .append(markup);
+
+
+      var tooltip = new Tooltip($(node).get(0), {
+        //placement: 'right-start', 
+        placement: 'top',
+        title: markupPopup,
+        html: true,
+        trigger: 'hover'
+      });  
     }
   };
   $.RedBot.buttonTypes = [

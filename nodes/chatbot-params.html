@@ -141,19 +141,17 @@
     var node = this;
 
     $("#node-input-rule-container").css('min-height','250px').css('min-width','450px').editableList({
-      addButton: 'Add rule',
+      addButton: 'Add param',
       addItem: function (container, i, opt) {
         // build rule row
         var param = opt;
         var isEmpty = param.platform == null;
         // empty row
         var row = $('<div/>').appendTo(container);
-
         if (!isEmpty) {
           buildParam.call(node, row, param.platform, param);
           return;
         } else {
-          
           // build transport options
           var transportOptions = '';
           for(idx = 0; idx < node.platforms.length; idx++) {
@@ -235,8 +233,6 @@
         if (type === 'boolean') {
           value = value === 'true' || value === true;
         }
-
-
         node.params.push({
           platform: platform,
           name: name,
@@ -258,9 +254,9 @@
           node.messageTypes = response.messageTypes;
           node.eventTypes = response.eventTypes;
           node.availableParams = response.params;
-          $.get(nodeRedUrl + 'redbot/platforms')
-            .done(function(response) {
-              node.platforms = response.platforms;
+          $.RedBot.fetchPlatforms()
+            .done(function(platforms) {
+              node.platforms = platforms;
               buildParams.call(node);
             });
         });

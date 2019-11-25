@@ -347,7 +347,7 @@
     var main = $('<div/>').appendTo(container);
     var cx = options.badges ? $.RedBot.platformClass : function() { return ''; };
 
-    var selectButtonType = $('<select name="type"/>', {style:"width:200px; margin-left: 5px; text-align: center;"})
+    var selectButtonType = $('<select name="type"/>', { style:"width:200px; margin-left: 5px; text-align: center;" })
       .attr('placeholder', 'Select button type')
       .change(function() {
         var type = $(this).val();
@@ -357,12 +357,15 @@
         var button = $.RedBot.buttonTypes.findButton(type);
         // store class only if badges should be shown
         if (button != null && options.badges) {
-          $(this).attr('class', cx('select', $.RedBot.intersect(options.platforms, button.platforms)));
+          //$(this).attr('class', cx('select', $.RedBot.intersect(options.platforms, button.platforms)));
+          $.RedBot.supportedBy($('.type-badges', main), $.RedBot.intersect(options.platforms, button.platforms));
         } else {
-          $(this).attr('class', '');
+          //$(this).attr('class', '');
+          $('.type-badges', main);
         }
       })
       .appendTo(main);
+    $('<div class="type-badges"></div>').appendTo(main);
 
     selectButtonType.append($('<option value="">Select button type</option>'));
     $.RedBot.buttonTypes.forEach(function(button) {
@@ -648,6 +651,7 @@
       }
     },
     oneditprepare: function() {
+      var node = this;
       $.RB_Legend();
       $('#node-input-buttons-container')
         .css('min-height','300px')
@@ -665,11 +669,14 @@
           sortable: true
         });
 
-      var buttons = this.buttons;
-      var idx;
-      for (idx = 0; idx < buttons.length; idx++) {
-        $('#node-input-buttons-container').editableList('addItem', buttons[idx]);
-      }
+      $.RedBot.fetchPlatforms()
+        .done(function() {
+          var buttons = node.buttons;
+          var idx;
+          for (idx = 0; idx < buttons.length; idx++) {
+            $('#node-input-buttons-container').editableList('addItem', buttons[idx]);
+          }
+        });
     },
     oneditresize: function() {
       var dialogForm = $('#dialog-form');
