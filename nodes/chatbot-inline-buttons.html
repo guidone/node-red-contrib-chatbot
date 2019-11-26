@@ -153,9 +153,11 @@
     var button = $.RedBot.buttonTypes.findButton(obj.type);
     // update badges of select with intersection of available platforms and button compatibility
     if (button != null && options.badges) {
-      select.attr('class', $.RedBot.platformClass('select', $.RedBot.intersect(availablePlatforms, button.platforms)));
+      $.RedBot.supportedBy($('.type-badges', container), $.RedBot.intersect(availablePlatforms, button.platforms));
+      //select.attr('class', $.RedBot.platformClass('select', $.RedBot.intersect(availablePlatforms, button.platforms)));
     } else {
-      select.attr('class', '');
+      //select.attr('class', '');
+      $('.type-badges', container).empty();
     }
 
     $('input[name=label]', panel).val(obj.label);
@@ -361,11 +363,11 @@
           $.RedBot.supportedBy($('.type-badges', main), $.RedBot.intersect(options.platforms, button.platforms));
         } else {
           //$(this).attr('class', '');
-          $('.type-badges', main);
+          $('.type-badges', main).empty();
         }
       })
       .appendTo(main);
-    $('<div class="type-badges"></div>').appendTo(main);
+    $('<div class="type-badges" style="margin-left:5px;display:inline-block;"></div>').appendTo(main);
 
     selectButtonType.append($('<option value="">Select button type</option>'));
     $.RedBot.buttonTypes.forEach(function(button) {
@@ -383,19 +385,22 @@
       .appendTo(panelUrl);
     $('<div/>').css('marginTop','5px')
       .RB_hasPlatform('telegram', options.platforms)
-      .append('<input class="node-input-rule-type ' + cx('text', ['telegram']) + '" type="text" name="answer" placeholder="Button feedback"/>')
-      .append('<input type="checkbox" name="alert" value="on" style="width: auto;margin:0px 10px 5px 10px;"/>')
-      .append('<span>With popup</span><span class="' + cx('icon', ['telegram']) + '"></span>')
+      .append('<input class="node-input-rule-type" type="text" name="answer" style="width:60%" placeholder="Button feedback"/>')
+      .append('<div class="redbot-platforms telegram"/>')
+      .append('<input type="checkbox" name="alert" value="on" style="width:auto;margin:0px 10px 5px 10px;"/>')
+      .append('<span>With popup</span>')
+      .append('<div class="redbot-platforms telegram"/>')
       .appendTo(panelUrl);
     $('<div/>').css('marginTop','5px')
       .RB_hasPlatform('facebook', options.platforms)
-      .append('<select name="webview_height_ratio" class="' + cx('select', ['facebook']) + '" style="width:70%">'
+      .append('<select name="webview_height_ratio" style="width:60%">'
         + '<option value="tall">Tall</option>'
         + '<option value="compact">Compact</option>'
         + '<option value="full">Full</option>'
         + '</select>')
+      .append('<div class="redbot-platforms facebook"/>')
       .append('<input type="checkbox" name="messenger_extensions" value="on" style="width: auto;margin:0px 10px 5px 10px;"/>')
-      .append('<span>Extensions</span><span class="' + cx('icon', ['facebook']) + '"></span>')
+      .append('<span>Extensions</span><div class="redbot-platforms facebook"/>')
       .appendTo(panelUrl);
 
     var panelPostback = $('<div class="panel panel-postback" style="display:none;"/>').appendTo(container);
@@ -407,22 +412,24 @@
       .appendTo(panelPostback);
     var feedbackRow = $('<div/>').css('marginTop','5px')
       .RB_hasPlatform(['telegram', 'slack'], options.platforms)
-      .append('<input class="node-input-rule-type ' + cx('text', ['telegram', 'slack']) + '" type="text" name="answer" placeholder="Button feedback (optional)"/>');
+      .append('<input class="node-input-rule-type" type="text" name="answer" style="width:60%;"placeholder="Button feedback (optional)"/>')
+      .append('<div class="redbot-platforms telegram slack"/>');
     $('<input type="checkbox" name="alert" value="on" style="width: auto;margin:0px 10px 5px 10px;"/>')
       .RB_hasPlatform(['telegram'], options.platforms)
       .appendTo(feedbackRow);
-    $('<span>With popup</span><span class="' + cx('icon', ['telegram']) + '"></span>')
+    $('<span>With popup</span><div class="redbot-platforms telegram"/>')
       .RB_hasPlatform(['telegram'], options.platforms)
       .appendTo(feedbackRow);
     feedbackRow.appendTo(panelPostback);
     $('<div/>').css('marginTop','5px')
       .RB_hasPlatform('slack', options.platforms)
-      .append('<select name="style" class="' + cx('select', ['slack']) + '" style="width:70%">'
+      .append('<select name="style" style="width:70%">'
         + '<option value="">Select button style</option>'
         + '<option value="default">Default</option>'
         + '<option value="primary">Primary</option>'
         + '<option value="danger">Danger</option>'
         + '</select>')
+      .append('<div class="redbot-platforms slack"/>')
       .appendTo(panelPostback);
 
     var panelDialog = $('<div class="panel panel-dialog" style="display:none;"/>').appendTo(container);
@@ -434,10 +441,10 @@
       .appendTo(panelDialog);
     $('<div/>').css('marginTop','5px')
       .RB_hasPlatform(['telegram', 'slack'], options.platforms)
-      .append('<input class="node-input-rule-type ' + cx('text', ['slack']) + '" type="text" name="answer" placeholder="Button feedback (optional)"/>')
+      .append('<input class="node-input-rule-type" type="text" name="answer" placeholder="Button feedback (optional)"/>')
       .appendTo(panelDialog);
     $('<div/>').css('marginTop','5px')
-      .append('<select name="style" class="' + cx('select', ['slack']) + '" style="width:70%">'
+      .append('<select name="style" style="width:70%">'
         + '<option value="">Select button style</option>'
         + '<option value="default">Default</option>'
         + '<option value="primary">Primary</option>'
@@ -485,6 +492,8 @@
     $('<div/>').css('marginTop','5px')
       .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="url" placeholder="Authentication URL callback"/>'))
       .appendTo(panelLogin);
+
+    container.RB_Platforms();      
 
     return container;
   };
@@ -652,7 +661,6 @@
     },
     oneditprepare: function() {
       var node = this;
-      $.RB_Legend();
       $('#node-input-buttons-container')
         .css('min-height','300px')
         .css('min-width','450px')
@@ -661,7 +669,7 @@
           addItem: function(container, i, item) {
             $(container).RB_mountButtonDialog({
               types: ['url', 'postback', 'call', 'login', 'newline', 'logout', 'dialog'],
-              platforms: ['facebook', 'telegram', 'slack']
+              platforms: ['facebook', 'telegram', 'slack', 'msteams']
             });
             $(container).RB_setButtonData(item);
           },
@@ -708,7 +716,6 @@
 <div class="form-row node-input-rule-container-row">
   <ol id="node-input-buttons-container"></ol>
 </div>
-<div class="redbot-form-legend"></div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-inline-buttons"><p>Available buttons:</p>

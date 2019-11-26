@@ -28,6 +28,10 @@
     },
     supportedBy: function(node, platforms) {
 
+      /*if ($(node).data('tooltip') != null) {
+        $(node).data('tooltip').dispose();
+      }*/
+
       var availablePlatforms = {};
       var idx = 0;
       for (idx = 0; idx < $.RedBot._cache.platforms.length; idx++) {
@@ -46,19 +50,25 @@
           + '</span> ';
       }
 
+
       $(node)
-        .attr('style', 'display:inline-flex;width:18px;line-height:0px;min-height:24px;flex-wrap: wrap;justify-content: flex-start;align-content: center;align-items: flex-end;')
         .empty()
-        .append(markup);
+        .append(
+          '<div class="inner" '
+          + 'style="display:inline-flex;max-width:18px;line-height:0px;max-height:34px;flex-wrap: wrap;justify-content: flex-start;'
+          + 'align-content: center;align-items: flex-end;">' +markup + '</div>'
+        );
 
 
-      var tooltip = new Tooltip($(node).get(0), {
+      var tooltip = new Tooltip($('.inner', node).get(0), {
         //placement: 'right-start', 
         placement: 'top',
         title: markupPopup,
         html: true,
-        trigger: 'hover'
+        trigger: 'hover',
+        template: '<div class="tooltip tooltip-platform" role="tooltip"><div class="tooltip-arrow tooltip-platform-arrow"></div><div class="tooltip-inner"></div></div>'
       });  
+      //$(node).data('tooltip', tooltip);
     }
   };
   $.RedBot.buttonTypes = [
@@ -437,6 +447,24 @@
     });
   };
 
+  $.fn.extend({
+    RB_Platforms: function() {
+
+      $('.redbot-platforms', this).each(function() {
+        
+        var platforms = $(this).attr('class')
+          .split(' ')
+          .filter(function(platform) {
+            return platform !== 'redbot-platforms';
+          });
+
+          $(this).attr('style', $(this).attr('style') + ';display:inline-block;margin-left:5px;');
+          $.RedBot.supportedBy($(this), platforms);
+      })
+
+    }
+  });
+
 /*
  Copyright (C) Federico Zivolo 2019
  Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).
@@ -472,6 +500,12 @@
     padding: 7px;
     text-align: left;
 }
+.tooltip-platform {
+  background-color: #dddddd;
+}
+.tooltip-platform .tooltip-arrow {
+  border-color: #dddddd;
+}
 .style5 .tooltip {
     background: #1E252B;
     color: #FFFFFF;
@@ -495,6 +529,9 @@
 }
 .style5 .tooltip .tooltip-arrow {
     border-color: #1E252B;
+}
+.tooltip .tooltip-platform-arrow {
+  border-color: #dddddd;
 }
 .popper[x-placement^="top"],
 .tooltip[x-placement^="top"] {

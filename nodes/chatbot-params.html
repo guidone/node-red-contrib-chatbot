@@ -18,8 +18,8 @@
       case 'boolean':        
         container.append(
           '<div class="form-row" style="display:inline-block;margin-left:10px;">'
-          + '<input type="radio" name="bool_value" value="true" style="width:20px;margin-top:-2px;"> Yes'
-          + '<input type="radio" name="bool_value" value="false" style="width:20px;margin-top:-2px;margin-left:5px;"> No'    
+          + '<input type="radio" name="radio_' + param.name + '" value="true" style="width:20px;margin-top:-2px;"> Yes'
+          + '<input type="radio" name="radio_' + param.name + '" value="false" style="width:20px;margin-top:-2px;margin-left:5px;"> No'    
           + '</div>'
         );
         $('input', container)
@@ -67,7 +67,7 @@
       .append('<input class="value" type="hidden" name="" value="">')
       .append('<input class="type" type="hidden" name="type" value="">')
       .append('<span class="hint" style="margin-left:8px;display:inline-block;"><i class="fa fa-question-circle" style="color:#999999;"/></div>')
-      .append('<div class="control" style="display:inline-block;height:34px;">&nbsp;</div>');
+      .append('<div class="control" style="display:inline-block;height:34px;width:35%;">&nbsp;</div>');
       $('.hint', row).hide();
 
     $('select.param-name', row)
