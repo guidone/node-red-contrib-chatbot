@@ -297,6 +297,7 @@
         return $.RedBot.validate.notEmpty(rule.variable);
       case 'command':
         return $.RedBot.validate.notEmpty(rule.command);
+      case 'notMessageType':
       case 'messageType':
         return $.RedBot.validate.notEmpty(rule.messageType);
       case 'isTransportPreferred':

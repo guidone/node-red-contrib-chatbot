@@ -1,8 +1,6 @@
 const _ = require('underscore');
 const RegisterType = require('../lib/node-installer');
-const { ChatExpress } = require('chat-platform');
 const { 
-  enrichFilePayload, 
   isValidMessage, 
   getChatId, 
   getMessageId, 
@@ -29,13 +27,10 @@ module.exports = function(RED) {
         return;
       }      
       // get RedBot values
-      const chatId = getChatId(msg);
-      const messageId = getMessageId(msg);
-      const template = MessageTemplate(msg, node);
+      const template = MessageTemplate(msg, node, { preserveNumbers: true });
       const transport = getTransport(msg);      
       // get vars
       let params = extractValue('params', 'params', node, msg)
-      
       template(params.filter(param => param.platform === transport))
         .then(params => {        
           send({ 
