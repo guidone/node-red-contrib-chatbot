@@ -138,8 +138,8 @@
   var buildParams = function() {
     var node = this;
 
-    $("#node-input-rule-container").css('min-height','250px').css('min-width','450px').editableList({
-      addButton: 'Add param',
+    $("#node-input-params-container").css('min-height','250px').css('min-width','450px').editableList({
+      addButton: 'Add parameter',
       addItem: function (container, i, opt) {
         // build rule row
         var param = opt;
@@ -153,11 +153,13 @@
           // build transport options
           var transportOptions = '';
           for(idx = 0; idx < node.platforms.length; idx++) {
-            transportOptions += '<option value="' + node.platforms[idx].id + '">'
-              + (node.platforms[idx].name != null ? node.platforms[idx].name : node.platforms[idx].id)
-              + '</option>';
+            // only if some parameters
+            if (node.availableParams[node.platforms[idx].id] != null) {
+              transportOptions += '<option value="' + node.platforms[idx].id + '">'
+                + (node.platforms[idx].name != null ? node.platforms[idx].name : node.platforms[idx].id)
+                + '</option>';
+            }
           }
-
           row
             .append('<select class="transport" name="transport" style="width:40%;margin-left:10px;">'
               + '<option value="">Select transport</option>'
@@ -171,13 +173,13 @@
 
       },
       removeItem: function(opt) {
-        var rules = $('#node-input-rule-container').editableList('items');
+        var rules = $('#node-input-params-container').editableList('items');
         rules.each(function(i) {
           $(this).find('.node-input-rule-index').html(i + 1);
         });
       },
       sortItems: function() {
-        var rules = $('#node-input-rule-container').editableList('items');
+        var rules = $('#node-input-params-container').editableList('items');
         rules.each(function(i) {
           $(this).find('.node-input-rule-index').html(i + 1);
         });
@@ -188,7 +190,7 @@
 
     for (var i=0; i < node.params.length; i++) {
       var param = this.params[i];
-      $('#node-input-rule-container').editableList('addItem', param);
+      $('#node-input-params-container').editableList('addItem', param);
     }
   };
 
@@ -217,7 +219,7 @@
       return this.name || 'Params' ;
     },
     oneditsave: function() {
-      var params = $('#node-input-rule-container').editableList('items');
+      var params = $('#node-input-params-container').editableList('items');
       var node = this;
       node.params = [];
       params.each(function(i) {
@@ -278,8 +280,8 @@
   <div class="form-row form-row-label">
     <label for="node-input-name" style="width:100%;">Add parameter to the chat flow:</label>
   </div>
-  <div class="form-row node-input-rule-container-row">
-      <ol id="node-input-rule-container"></ol>
+  <div class="form-row node-input-params-container-row">
+      <ol id="node-input-params-container"></ol>
   </div>
 </script>
 

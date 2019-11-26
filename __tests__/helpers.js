@@ -54,6 +54,30 @@ describe('Value extractors', () => {
 
   const extractValue = utils.extractValue;
 
+  it('shoulds extract a params', () => {
+    const msg1 = RED.createMessage({ my_params: [
+      { platform: 'telegram', name: 'my-value1', value: 42 },
+      { platform: 'telegram', name: 'my-value2', value: true },
+      { platform: 'telegram', name: 'my-value3', value: 'just a string' },
+      { platform: 'slack', name: 'my-chatId', value: '{{chatId}}' }
+    ]});
+    const msg2 = RED.createMessage([
+      { platform: 'telegram', name: 'my-value1', value: 42 },
+      { platform: 'telegram', name: 'my-value2', value: true },
+      { platform: 'telegram', name: 'my-value3', value: 'just a string' },
+      { platform: 'slack', name: 'my-chatId', value: '{{chatId}}' }
+    ]);
+    const msg3 = RED.createMessage([
+      { platform2: 'telegram', name: 'my-value1', value: 42 },
+      { platform2: 'telegram', name: 'my-value2', value: true },
+      { platform2: 'telegram', name: 'my-value3', value: 'just a string' },
+      { platform2: 'slack', name: 'my-chatId', value: '{{chatId}}' }
+    ]);
+    assert.isArray(extractValue('params', 'my_params', RED.node , msg1), true);
+    assert.isArray(extractValue('params', 'my_params', RED.node , msg2), true);
+    assert.isNull(extractValue('params', 'my_params', RED.node , msg3));
+  });
+
   it('should extract a boolean', () => {
     const msg1 = RED.createMessage(true);
     const msg2 = RED.createMessage({ aBoolean: true });
