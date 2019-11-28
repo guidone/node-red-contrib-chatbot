@@ -1,3 +1,4 @@
+* **0.17.10** - Added support for Microsoft Teams
 * **0.17.9** - Move Discord platform to a separate package [node-red-contrib-chatbot-discord](https://github.com/guidone/node-red-contrib-chatbot-discord)
 * **0.17.8** - Routee support, fixed reply to message in Telegram
 * **0.17.6** - Improved Dialogflow, removed static configuration from Conversation node
