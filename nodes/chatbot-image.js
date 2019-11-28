@@ -25,18 +25,22 @@ module.exports = function(RED) {
     this.caption = config.caption;
     this.filename = config.filename; // for retrocompatibility
     
-    this.on('input', function(msg) {
-      const chatId = getChatId(msg);
-      const messageId = getMessageId(msg);
-      const transport = getTransport(msg);
-      const template = MessageTemplate(msg, node);
-
+    this.on('input', function(msg, send, done) {
+      // send/done compatibility for node-red < 1.0
+      send = send || function() { node.send.apply(node, arguments) };
+      done = done || function(error) { node.error.call(node, error, msg) };
       // check if valid message
       if (!isValidMessage(msg, node)) {
         return;
       }
+      // get config
+      const chatId = getChatId(msg);
+      const messageId = getMessageId(msg);
+      const transport = getTransport(msg);
+      const template = MessageTemplate(msg, node);
       // check transport compatibility
       if (!ChatExpress.isSupported(transport, 'photo')) {
+        done(`Node "photo" is not supported by ${transport} transport`);
         return;
       }
 
@@ -85,6 +89,7 @@ module.exports = function(RED) {
                     type: 'photo',
                     content: file.buffer,
                     filename: file.filename,
+                    mimeType: file.mimeType,
                     caption: caption,
                     chatId: chatId,
                     messageId: messageId,
