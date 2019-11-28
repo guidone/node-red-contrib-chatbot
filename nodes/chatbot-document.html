@@ -25,7 +25,10 @@
       return this.name || 'Document';
     },
     oneditprepare: function() {
-      $.RB_Legend();
+      $.RedBot.fetchPlatforms()
+        .done(function(platforms) {
+          $('#dialog-form').RB_Platforms();
+        });
     }
   });
 </script>
@@ -42,8 +45,8 @@
 <div class="form-row">
   <label for="node-input-caption">Caption</label>
   <input type="text" id="node-input-caption" class="platform-telegram-slack" placeholder="Caption">
+  <div class="redbot-platforms telegram slack"/>
 </div>
-<div class="redbot-form-legend"></div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-document"><p>The <code>Document node</code> sends a document to the chatbot from a local file or from a URL or from a Buffer passed by an upstream node (the simplest way to use it to chain with to <code>File node</code> or a <code>Http node</code>).</p>

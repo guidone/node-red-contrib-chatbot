@@ -333,8 +333,6 @@
           node.eventTypes = response.eventTypes;
           $.RedBot.fetchPlatforms()
             .done(function(platforms) {
-              console.log('eventTypes', node.eventTypes);
-              console.log('messageTypes', node.messageTypes);
               node.platforms = platforms;
               buildRules.call(node);
             });

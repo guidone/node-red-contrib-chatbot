@@ -432,37 +432,19 @@
     }
     return platformClasses.length !== 0 ? base + '-' + platformClasses.join('-') : '';
   };
-  $.RB_Legend = function() {
-    $('.redbot-form-legend').each(function() {
-      var dom = $(this);
-      dom.html('Some attributes apply for specific platform:<br>\n' +
-        '  <span class="icon-platform-alexa"></span> = <span style="font-size:10px">Alexa</span>\n' +
-        '  <span class="icon-platform-discord"></span> = <span style="font-size:10px">Discord</span>\n' +
-        '  <span class="icon-platform-facebook"></span> = <span style="font-size:10px">Facebook</span>\n' +
-        '  <span class="icon-platform-smooch"></span> = <span style="font-size:10px">Smooch</span>\n' +
-        '  <span class="icon-platform-slack"></span> = <span style="font-size:10px">Slack</span>\n' +
-        '  <span class="icon-platform-twilio"></span> = <span style="font-size:10px">Twilio</span>\n' +
-        '  <span class="icon-platform-telegram"></span> = <span style="font-size:10px">Telegram</span>\n' +
-        '  <span class="icon-platform-universal"></span> = <span style="font-size:10px">Universal</span>\n' +
-        '  <span class="icon-platform-viber"></span> = <span style="font-size:10px">Viber</span>')
-    });
-  };
 
   $.fn.extend({
     RB_Platforms: function() {
-
-      $('.redbot-platforms', this).each(function() {
-        
+      $('.redbot-platforms', this).each(function() {        
         var platforms = $(this).attr('class')
           .split(' ')
           .filter(function(platform) {
             return platform !== 'redbot-platforms';
           });
-
-          $(this).attr('style', $(this).attr('style') + ';display:inline-block;margin-left:5px;');
+          var currentStyle = $(this).attr('style') != null ? $(this).attr('style') : '';
+          $(this).attr('style', currentStyle + ';display:inline-block;margin-left:5px;');
           $.RedBot.supportedBy($(this), platforms);
-      })
-
+      });
     }
   });
 
@@ -503,10 +485,11 @@
     z-index: 10000;
 }
 .tooltip-platform {
-  background-color: #dddddd;
+  background-color: #eeeeee;
+  box-shadow: 0 0 2px rgba(0,0,0,0.3);
 }
 .tooltip-platform .tooltip-arrow {
-  border-color: #dddddd;
+  border-color: #eeeeee;
 }
 .style5 .tooltip {
     background: #1E252B;
@@ -533,7 +516,7 @@
     border-color: #1E252B;
 }
 .tooltip .tooltip-platform-arrow {
-  border-color: #dddddd;
+  border-color: #eeeeee;
 }
 .popper[x-placement^="top"],
 .tooltip[x-placement^="top"] {
