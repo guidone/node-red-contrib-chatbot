@@ -26,26 +26,6 @@ describe('Chat message node', () => {
 
   });
 
-  it('should send the message in the config silently (telegram)', () => {
-    const msg = RED.createMessage();
-    RED.node.config({
-      message: 'i am the message',
-      track: false,
-      answer: false,
-      silent: true
-    });
-    MessageBlock(RED);
-    RED.node.get().emit('input', msg);
-    return RED.node.get().await()
-      .then(() => {
-        assert.equal(RED.node.message().payload.content, 'i am the message');
-        assert.equal(RED.node.message().payload.chatId, 42);
-        assert.equal(RED.node.message().payload.inbound, false);
-        assert.equal(RED.node.message().payload.silent, true);
-      });
-
-  });
-
   it('should send the message in the config (slack)', () => {
     const msg = RED.createMessage(null, 'slack');
     RED.node.config({
@@ -97,23 +77,6 @@ describe('Chat message node', () => {
         assert.equal(RED.node.message().payload.content, 'I am the original message');
         assert.equal(RED.node.message().payload.chatId, 42);
         assert.equal(RED.node.message().payload.inbound, false);
-      });
-  });
-
-  it('should answer to previous message', () => {
-    const msg = RED.createMessage();
-    RED.node.config({
-      message: null,
-      track: false,
-      answer: true
-    });
-    MessageBlock(RED);
-    RED.node.get().emit('input', msg);
-    return RED.node.get().await()
-      .then(() => {
-        assert.equal(RED.node.message().payload.content, 'I am the original message');
-        assert.equal(RED.node.message().payload.chatId, 42);
-        assert.equal(RED.node.message().payload.options.reply_to_message_id, 72);
       });
   });
 
