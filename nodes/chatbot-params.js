@@ -1,9 +1,6 @@
-const _ = require('underscore');
 const RegisterType = require('../lib/node-installer');
 const { 
-  isValidMessage, 
-  getChatId, 
-  getMessageId, 
+  isValidMessage,  
   getTransport, 
   extractValue 
 } = require('../lib/helpers/utils');
