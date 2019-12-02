@@ -24,10 +24,7 @@
     },
     oneditprepare: function() {
       var node = this;
-      var nodeRedUrl = '';
-      if (RED.settings.httpNodeRoot) {
-        nodeRedUrl = RED.settings.httpNodeRoot;
-      }
+      var nodeRedUrl = $.RedBot.getNodeRedUrl();
       // fetch available context providers
       $.get(nodeRedUrl + 'redbot/globals')
         .done(function(response) {
