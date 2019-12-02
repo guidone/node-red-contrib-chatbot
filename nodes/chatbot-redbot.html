@@ -1,5 +1,12 @@
 <script type="text/javascript">
   $.RedBot = {
+    inIframe: function() {
+      try {
+          return window.self !== window.top;
+      } catch (e) {
+          return true;
+      }
+    },
     registerType: function(type, params) {
       var hiddenNodes = $.RedBot.config.hideNodes || [];
       if (hiddenNodes.indexOf(type) !== -1) {
@@ -9,16 +16,25 @@
       }
     },
     _cache: {},
+    getNodeRedUrl: function() {
+      if ($.RedBot.inIframe()) {
+        // cover the case of hassio ifram redirecting node-red on a random url
+        return window.location.pathname;
+      } else {
+        if (RED.settings.httpNodeRoot) {
+          return RED.settings.httpNodeRoot;
+        } else {
+          return '';
+        }
+      }
+    },
     fetchPlatforms: function() {
-      var nodeRedUrl = '';
       var deferred = jQuery.Deferred();
       if ($.RedBot._cache.platforms != null) {
         deferred.resolve($.RedBot._cache.platforms);
         return deferred.promise();;
       }
-      if (RED.settings.httpNodeRoot) {
-        nodeRedUrl = RED.settings.httpNodeRoot;
-      }
+      var nodeRedUrl = $.RedBot.getNodeRedUrl();
       $.get(nodeRedUrl + 'redbot/platforms')
         .done(function(response) {
           $.RedBot._cache.platforms = response.platforms;
