@@ -1,3 +1,4 @@
+* **0.18.1** Fix hassio empty dropdown in conversation node
 * **0.18.0** - Moved all platform-specific flags to [[Param node|Params-node]], improved compatibility UI. Some [[breaking changes|Breaking-changes-0.18.0]] in **Telegram** flags (silent messages and reply to)
 * **0.17.10** - Added support for Microsoft Teams
 * **0.17.9** - Move Discord platform to a separate package [node-red-contrib-chatbot-discord](https://github.com/guidone/node-red-contrib-chatbot-discord)
