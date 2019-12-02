@@ -69,6 +69,11 @@
       for (idx = 0; idx < message.length; idx++) {
         $("#node-input-message-container").editableList('addItem', message[idx]);
       }
+
+      $.RedBot.fetchPlatforms()
+        .done(function(platforms) {
+          $.RedBot.supportedBy($('.compatibility'), ['telegram', 'slack', 'facebook']);
+        });
     }
   });
 </script>
@@ -84,22 +89,6 @@
     Supports handlebars-like variables for chat context like {{firstName}}, {{lastName}}, etc. and emoticons (:smile:, etc.).
     In case of multiple version of the content, one will be randomly chosen.
   </div>
-</div>
-<div class="form-row">
-  <table>
-    <tr>
-      <td width="50%" valign="top" style="font-size: 13px;">
-        <input type="checkbox" value="true" id="node-input-answer" style="width:auto;margin-top:0px;">
-        <span>Quote the previous message</span>&nbsp;<span class="icon-platform-telegram"/>
-      </td>
-      <td width="50%" valign="top" style="font-size: 13px;">
-        <input type="checkbox" value="true" id="node-input-silent" style="width:auto;margin-top:0px;">
-        <span>
-          Silent message (no notification)
-        </span>&nbsp;<span class="icon-platform-telegram"/>
-      </td>
-    </tr>
-  </table>
 </div>
 </script>
 <script type="text/x-red" data-help-name="chatbot-message"><p>Used to send a plain text message to the chatbot&#39;s user, a handlebars-like syntax can be used to insert values from the chat context, for example:</p>

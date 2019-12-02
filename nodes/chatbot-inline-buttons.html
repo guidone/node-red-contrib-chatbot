@@ -1,364 +1,4 @@
 <script type="text/javascript">
-
-  $.RedBot.buttonTypes = [
-    {
-      type: 'url',
-      label: 'URL',
-      className: 'platform-combo-telegram-facebook-viber',
-      platforms: ['facebook', 'telegram', 'viber']
-    },
-    {
-      type: 'postback',
-      label: 'Postback',
-      className: 'platform-combo-telegram-facebook-slack-viber',
-      platforms: ['facebook', 'telegram', 'slack', 'viber']
-    },
-    {
-      type: 'dialog',
-      label: 'Open Dialog',
-      className: 'platform-combo-slack',
-      platforms: ['slack']
-    },
-    {
-      type: 'quick-reply',
-      label: 'Postback',
-      className: 'platform-combo-facebook',
-      platforms: ['facebook']
-    },
-    {
-      type: 'location',
-      label: 'Location',
-      className: 'platform-combo-facebook',
-      platforms: ['facebook']
-    },
-    {
-      type: 'call',
-      label: 'Phone Call',
-      className: 'platform-combo-facebook',
-      platforms: ['facebook']
-    },
-    {
-      type: 'share',
-      label: 'Share',
-      className: 'platform-combo-facebook',
-      platforms: ['facebook']
-    },
-    {
-      type: 'login',
-      label: 'Log In',
-      className: 'platform-combo-facebook',
-      platforms: ['facebook']
-    },
-    {
-      type: 'logout',
-      label: 'Log Out',
-      className: 'platform-combo-facebook',
-      platforms: ['facebook']
-    },
-    {
-      type: 'newline',
-      label: 'New row of buttons',
-      className: 'platform-combo-telegram-viber',
-      platforms: ['telegram', 'viber']
-    },
-    {
-      type: 'keyboardButton',
-      label: 'Keyboard Button',
-      className: 'platform-combo-telegram',
-      platforms: ['telegram']
-    }
-  ];
-  $.RedBot.elementTypes = [
-    {
-      type: 'text',
-      label: 'Text',
-      className: 'platform-slack',
-      platforms: ['slack']
-    },
-    {
-      type: 'textarea',
-      label: 'Textarea',
-      className: 'platform-slack',
-      platforms: ['slack']
-    },
-    {
-      type: 'select',
-      label: 'Select',
-      className: 'platform-slack',
-      platforms: ['slack']
-    }
-  ];
-  $.RedBot.validate = {};
-  $.RedBot.validate.isVariable = function(value) {
-    return $.RedBot.validate.string(value) && value.match(/^\{\{[A-Za-z0-9_-]*\}\}$/) != null;
-  };
-  $.RedBot.validate.number = function(value) {
-    return typeof value === 'number';
-  };
-  $.RedBot.validate.string = function(value) {
-    return typeof value === 'string';
-  };
-  $.RedBot.validate.email = function(value) {
-    return typeof value === 'string' && value !== '' && value.indexOf('@') !== -1;
-  };
-  $.RedBot.validate.privateKey = function(value) {
-    return $.RedBot.validate.string(value)
-      && value.indexOf('-----BEGIN PRIVATE KEY-----') !== -1
-      && value.indexOf('-----END PRIVATE KEY-----') !== -1;
-  };
-  $.RedBot.validate.numberOrVariable = function(value) {
-    return $.RedBot.validate.number(value)
-      ||
-      ($.RedBot.validate.notEmpty(value) && !isNaN(parseFloat(value)))
-      ||
-      ($.RedBot.validate.notEmpty(value) && $.RedBot.validate.isVariable(value));
-  };
-  $.RedBot.validate.price = function(price) {
-    return price != null
-      && $.RedBot.validate.notEmpty(price.label)
-      && $.RedBot.validate.numberOrVariable(price.amount);
-  };
-  $.RedBot.validate.prices = function(prices) {
-    if (prices == null) {
-      return false;
-    }
-    var valid = true;
-    var idx;
-    for(idx = 0; idx < prices.length; idx++) {
-      if (!$.RedBot.validate.price(prices[idx])) {
-        valid = false;
-      }
-    }
-    return valid;
-  };
-  $.RedBot.validate.notEmpty = function(str) {
-    return str != null && str != '';
-  };
-  $.RedBot.validate.isEmpty = function(str) {
-    return str == null || str.length === 0;
-  };
-  $.RedBot.validate.url = function(url) {
-    return url != null && url.match(/[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi);
-  };
-  $.RedBot.validate.arrayNotEmpty = function(array) {
-    return array != null && array.length !== 0;
-  };
-  $.RedBot.validate.element = function(element) {
-    if (element == null) {
-      return false;
-    }
-    switch(element.type) {
-      case 'text':
-      case 'textarea':
-        return $.RedBot.validate.notEmpty(element.name) && $.RedBot.validate.notEmpty(element.label);
-      case 'select':
-        return $.RedBot.validate.notEmpty(element.name) && $.RedBot.validate.notEmpty(element.label)
-          && $.RedBot.validate.options(element.options);
-      default:
-        return false;
-    }
-  };
-  $.RedBot.validate.options = function(options) {
-    if (options == null || options.length == null || options.length === 0) {
-      return false;
-    }
-    var idx;
-    var result = true;
-    for(idx = 0; idx < options.length; idx++) {
-      if (!($.RedBot.validate.notEmpty(options[idx].value) && $.RedBot.validate.notEmpty(options[idx].label))) {
-        result = false;
-      }
-    }
-    return result;
-  };
-  $.RedBot.validate.button = function(button) {
-    if (button == null) {
-      return false;
-    }
-    switch(button.type) {
-      case 'url':
-        return $.RedBot.validate.notEmpty(button.label) && $.RedBot.validate.url(button.url);
-      case 'postback':
-        return $.RedBot.validate.notEmpty(button.label) && $.RedBot.validate.notEmpty(button.value);
-      case 'dialog':
-        return $.RedBot.validate.notEmpty(button.label) && $.RedBot.validate.notEmpty(button.value);
-      case 'quick-reply':
-        return $.RedBot.validate.notEmpty(button.label) && $.RedBot.validate.notEmpty(button.value);
-      case 'call':
-        return $.RedBot.validate.notEmpty(button.label) && $.RedBot.validate.notEmpty(button.number);
-      case 'keyboardButton':
-        return $.RedBot.validate.notEmpty(button.label);
-      case 'newline':
-      case 'share':
-      case 'logout':
-      case 'location':
-        return true;
-      case 'login':
-        return $.RedBot.validate.url(button.url);
-      default:
-        return false;
-    }
-  };
-  $.RedBot.validate.confirmationStatus = function(status) {
-    return ['none', 'confirmed', 'denied'].indexOf(status) !== -1;
-  };
-  $.RedBot.validate.rule = function(rule) {
-    if (rule == null) {
-      return false;
-    }
-    switch(rule.type) {
-      case 'isSlotConfirmationStatus':
-        return $.RedBot.validate.notEmpty(rule.slot) && $.RedBot.validate.confirmationStatus(rule.confirmationStatus);
-      case 'isIntentConfirmationStatus':
-        return $.RedBot.validate.confirmationStatus(rule.confirmationStatus);
-      case 'dialogState':
-        return $.RedBot.validate.notEmpty(rule.state);
-      case 'environment':
-        return $.RedBot.validate.notEmpty(rule.environment);
-      case 'topicIncludes':
-      case 'isNotTopic':
-      case 'isTopic':
-        return $.RedBot.validate.notEmpty(rule.topic);
-      case 'isVariable':
-        return $.RedBot.validate.notEmpty(rule.value) && $.RedBot.validate.notEmpty(rule.variable);
-      case 'hasNotVariable':
-      case 'hasVariable':
-        return $.RedBot.validate.notEmpty(rule.variable);
-      case 'command':
-        return $.RedBot.validate.notEmpty(rule.command);
-      case 'messageType':
-        return $.RedBot.validate.notEmpty(rule.messageType);
-      case 'isTransportPreferred':
-      case 'isTransportAvailable':
-      case 'transport':
-        return $.RedBot.validate.notEmpty(rule.transport);
-      case 'messageEvent':
-        return $.RedBot.validate.notEmpty(rule.event);
-      case 'isIntentName':
-        return $.RedBot.validate.notEmpty(rule.intent);
-      case 'isIntent':
-      case 'outbound':
-      case 'inbound':
-      case 'isTopicEmpty':
-      case 'catchAll':
-      case 'pending':
-      case 'notPending':
-      case 'anyCommand':
-        return true;
-      default:
-        return false;
-    }
-  };
-  $.RedBot.validate.rules = function(rules) {
-    if (rules == null) {
-      return false;
-    }
-    var valid = true;
-    var idx;
-    for(idx = 0; idx < rules.length; idx++) {
-      if (!$.RedBot.validate.rule(rules[idx])) {
-        valid = false;
-      }
-    }
-    return valid;
-  };
-  $.RedBot.buttonTypes.findButton = function(type) {
-    var button = null;
-    this.forEach(function(current) {
-      if (current.type === type) {
-        button = current;
-      }
-    });
-    return button;
-  };
-  $.RedBot.elementTypes.findElement = function(type) {
-    var element = null;
-    this.forEach(function(current) {
-      if (current.type === type) {
-        element = current;
-      }
-    });
-    return element;
-  };
-  $.RedBot.platforms = function(platforms, availablePlatforms) {
-    var match = false;
-    platforms.forEach(function(platform) {
-      if (availablePlatforms.indexOf(platform) !== -1) {
-        match = true;
-      }
-    });
-    return match;
-  };
-  $.RedBot.intersect = function(array1, array2) {
-    var result = [];
-    var k = 0;
-    // perhaps use ES6 set
-    for(k = 0; k < array1.length; k++) {
-      if (array2.indexOf(array1[k]) !== -1 && result.indexOf(array1[k]) === -1) {
-        result.push(array1[k]);
-      }
-    }
-    for(k = 0; k < array2.length; k++) {
-      if (array1.indexOf(array2[k]) !== -1 && result.indexOf(array2[k]) === -1) {
-        result.push(array2[k]);
-      }
-    }
-    return result;
-  };
-
-  $.RedBot.platformClass = function(control, platforms) {
-
-    var base = null;
-    switch(control) {
-      case 'select': base = 'platform-combo'; break;
-      case 'icon': base = 'icon-platform'; break;
-      case 'text': base = 'platform'; break;
-      default:
-        console.error('Unrecognized platform icon for type "' + control + '"');
-        return '';
-    }
-    var platformClasses = [];
-    if (platforms.indexOf('telegram') !== -1) {
-      platformClasses.push('telegram');
-    }
-    if (platforms.indexOf('facebook') !== -1) {
-      platformClasses.push('facebook');
-    }
-    if (platforms.indexOf('smooch') !== -1) {
-      platformClasses.push('smooch');
-    }
-    if (platforms.indexOf('slack') !== -1) {
-      platformClasses.push('slack');
-    }
-    if (platforms.indexOf('viber') !== -1) {
-      platformClasses.push('viber');
-    }
-    if (platforms.indexOf('alexa') !== -1) {
-      platformClasses.push('alexa');
-    }
-    if (platforms.indexOf('twilio') !== -1) {
-      platformClasses.push('twilio');
-    }
-    if (platforms.indexOf('discord') !== -1) {
-      platformClasses.push('discord');
-    }
-    return platformClasses.length !== 0 ? base + '-' + platformClasses.join('-') : '';
-  };
-  $.RB_Legend = function() {
-    $('.redbot-form-legend').each(function() {
-      var dom = $(this);
-      dom.html('Some attributes apply for specific platform:<br>\n' +
-        '  <span class="icon-platform-alexa"></span> = <span style="font-size:10px">Alexa</span>\n' +
-        '  <span class="icon-platform-discord"></span> = <span style="font-size:10px">Discord</span>\n' +
-        '  <span class="icon-platform-facebook"></span> = <span style="font-size:10px">Facebook</span>\n' +
-        '  <span class="icon-platform-smooch"></span> = <span style="font-size:10px">Smooch</span>\n' +
-        '  <span class="icon-platform-slack"></span> = <span style="font-size:10px">Slack</span>\n' +
-        '  <span class="icon-platform-twilio"></span> = <span style="font-size:10px">Twilio</span>\n' +
-        '  <span class="icon-platform-telegram"></span> = <span style="font-size:10px">Telegram</span>\n' +
-        '  <span class="icon-platform-universal"></span> = <span style="font-size:10px">Universal</span>\n' +
-        '  <span class="icon-platform-viber"></span> = <span style="font-size:10px">Viber</span>')
-    });
-  };
   $.fn.RB_setComboWithPlatformLabels = function(value) {
     var combo = $(this);
     $(this).val(value);
@@ -513,9 +153,11 @@
     var button = $.RedBot.buttonTypes.findButton(obj.type);
     // update badges of select with intersection of available platforms and button compatibility
     if (button != null && options.badges) {
-      select.attr('class', $.RedBot.platformClass('select', $.RedBot.intersect(availablePlatforms, button.platforms)));
+      $.RedBot.supportedBy($('.type-badges', container), $.RedBot.intersect(availablePlatforms, button.platforms));
+      //select.attr('class', $.RedBot.platformClass('select', $.RedBot.intersect(availablePlatforms, button.platforms)));
     } else {
-      select.attr('class', '');
+      //select.attr('class', '');
+      $('.type-badges', container).empty();
     }
 
     $('input[name=label]', panel).val(obj.label);
@@ -707,7 +349,7 @@
     var main = $('<div/>').appendTo(container);
     var cx = options.badges ? $.RedBot.platformClass : function() { return ''; };
 
-    var selectButtonType = $('<select name="type"/>', {style:"width:200px; margin-left: 5px; text-align: center;"})
+    var selectButtonType = $('<select name="type"/>', { style:"width:200px; margin-left: 5px; text-align: center;" })
       .attr('placeholder', 'Select button type')
       .change(function() {
         var type = $(this).val();
@@ -717,12 +359,15 @@
         var button = $.RedBot.buttonTypes.findButton(type);
         // store class only if badges should be shown
         if (button != null && options.badges) {
-          $(this).attr('class', cx('select', $.RedBot.intersect(options.platforms, button.platforms)));
+          //$(this).attr('class', cx('select', $.RedBot.intersect(options.platforms, button.platforms)));
+          $.RedBot.supportedBy($('.type-badges', main), $.RedBot.intersect(options.platforms, button.platforms));
         } else {
-          $(this).attr('class', '');
+          //$(this).attr('class', '');
+          $('.type-badges', main).empty();
         }
       })
       .appendTo(main);
+    $('<div class="type-badges" style="margin-left:5px;display:inline-block;"></div>').appendTo(main);
 
     selectButtonType.append($('<option value="">Select button type</option>'));
     $.RedBot.buttonTypes.forEach(function(button) {
@@ -740,19 +385,22 @@
       .appendTo(panelUrl);
     $('<div/>').css('marginTop','5px')
       .RB_hasPlatform('telegram', options.platforms)
-      .append('<input class="node-input-rule-type ' + cx('text', ['telegram']) + '" type="text" name="answer" placeholder="Button feedback"/>')
-      .append('<input type="checkbox" name="alert" value="on" style="width: auto;margin:0px 10px 5px 10px;"/>')
-      .append('<span>With popup</span><span class="' + cx('icon', ['telegram']) + '"></span>')
+      .append('<input class="node-input-rule-type" type="text" name="answer" style="width:60%" placeholder="Button feedback"/>')
+      .append('<div class="redbot-platforms telegram"/>')
+      .append('<input type="checkbox" name="alert" value="on" style="width:auto;margin:0px 10px 5px 10px;"/>')
+      .append('<span>With popup</span>')
+      .append('<div class="redbot-platforms telegram"/>')
       .appendTo(panelUrl);
     $('<div/>').css('marginTop','5px')
       .RB_hasPlatform('facebook', options.platforms)
-      .append('<select name="webview_height_ratio" class="' + cx('select', ['facebook']) + '" style="width:70%">'
+      .append('<select name="webview_height_ratio" style="width:60%">'
         + '<option value="tall">Tall</option>'
         + '<option value="compact">Compact</option>'
         + '<option value="full">Full</option>'
         + '</select>')
+      .append('<div class="redbot-platforms facebook"/>')
       .append('<input type="checkbox" name="messenger_extensions" value="on" style="width: auto;margin:0px 10px 5px 10px;"/>')
-      .append('<span>Extensions</span><span class="' + cx('icon', ['facebook']) + '"></span>')
+      .append('<span>Extensions</span><div class="redbot-platforms facebook"/>')
       .appendTo(panelUrl);
 
     var panelPostback = $('<div class="panel panel-postback" style="display:none;"/>').appendTo(container);
@@ -764,22 +412,24 @@
       .appendTo(panelPostback);
     var feedbackRow = $('<div/>').css('marginTop','5px')
       .RB_hasPlatform(['telegram', 'slack'], options.platforms)
-      .append('<input class="node-input-rule-type ' + cx('text', ['telegram', 'slack']) + '" type="text" name="answer" placeholder="Button feedback (optional)"/>');
+      .append('<input class="node-input-rule-type" type="text" name="answer" style="width:60%;"placeholder="Button feedback (optional)"/>')
+      .append('<div class="redbot-platforms telegram slack"/>');
     $('<input type="checkbox" name="alert" value="on" style="width: auto;margin:0px 10px 5px 10px;"/>')
       .RB_hasPlatform(['telegram'], options.platforms)
       .appendTo(feedbackRow);
-    $('<span>With popup</span><span class="' + cx('icon', ['telegram']) + '"></span>')
+    $('<span>With popup</span><div class="redbot-platforms telegram"/>')
       .RB_hasPlatform(['telegram'], options.platforms)
       .appendTo(feedbackRow);
     feedbackRow.appendTo(panelPostback);
     $('<div/>').css('marginTop','5px')
       .RB_hasPlatform('slack', options.platforms)
-      .append('<select name="style" class="' + cx('select', ['slack']) + '" style="width:70%">'
+      .append('<select name="style" style="width:70%">'
         + '<option value="">Select button style</option>'
         + '<option value="default">Default</option>'
         + '<option value="primary">Primary</option>'
         + '<option value="danger">Danger</option>'
         + '</select>')
+      .append('<div class="redbot-platforms slack"/>')
       .appendTo(panelPostback);
 
     var panelDialog = $('<div class="panel panel-dialog" style="display:none;"/>').appendTo(container);
@@ -791,10 +441,10 @@
       .appendTo(panelDialog);
     $('<div/>').css('marginTop','5px')
       .RB_hasPlatform(['telegram', 'slack'], options.platforms)
-      .append('<input class="node-input-rule-type ' + cx('text', ['slack']) + '" type="text" name="answer" placeholder="Button feedback (optional)"/>')
+      .append('<input class="node-input-rule-type" type="text" name="answer" placeholder="Button feedback (optional)"/>')
       .appendTo(panelDialog);
     $('<div/>').css('marginTop','5px')
-      .append('<select name="style" class="' + cx('select', ['slack']) + '" style="width:70%">'
+      .append('<select name="style" style="width:70%">'
         + '<option value="">Select button style</option>'
         + '<option value="default">Default</option>'
         + '<option value="primary">Primary</option>'
@@ -842,6 +492,8 @@
     $('<div/>').css('marginTop','5px')
       .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="url" placeholder="Authentication URL callback"/>'))
       .appendTo(panelLogin);
+
+    container.RB_Platforms();      
 
     return container;
   };
@@ -1008,7 +660,7 @@
       }
     },
     oneditprepare: function() {
-      $.RB_Legend();
+      var node = this;
       $('#node-input-buttons-container')
         .css('min-height','300px')
         .css('min-width','450px')
@@ -1017,7 +669,7 @@
           addItem: function(container, i, item) {
             $(container).RB_mountButtonDialog({
               types: ['url', 'postback', 'call', 'login', 'newline', 'logout', 'dialog'],
-              platforms: ['facebook', 'telegram', 'slack']
+              platforms: ['facebook', 'telegram', 'slack', 'msteams']
             });
             $(container).RB_setButtonData(item);
           },
@@ -1025,11 +677,14 @@
           sortable: true
         });
 
-      var buttons = this.buttons;
-      var idx;
-      for (idx = 0; idx < buttons.length; idx++) {
-        $('#node-input-buttons-container').editableList('addItem', buttons[idx]);
-      }
+      $.RedBot.fetchPlatforms()
+        .done(function() {
+          var buttons = node.buttons;
+          var idx;
+          for (idx = 0; idx < buttons.length; idx++) {
+            $('#node-input-buttons-container').editableList('addItem', buttons[idx]);
+          }
+        });
     },
     oneditresize: function() {
       var dialogForm = $('#dialog-form');
@@ -1061,7 +716,6 @@
 <div class="form-row node-input-rule-container-row">
   <ol id="node-input-buttons-container"></ol>
 </div>
-<div class="redbot-form-legend"></div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-inline-buttons"><p>Available buttons:</p>
@@ -1456,21 +1110,6 @@ return msg;
   .redbot-environment {
     font-size: 12px;
     color: #999999;
-  }
-
-  .redbot-form-hint code, .redbot-form-legend code {
-    font-size: 12px !important;
-    padding: 0 3px !important;
-  }
-
-  .redbot-form-legend {
-    max-width: 460px;
-    font-size: 12px;
-    color: #999999;
-    line-height: 14px;
-    clear:both;
-    margin-top:30px;
-    margin-bottom:10px;
   }
 
   .rb-options-editor {

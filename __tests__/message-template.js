@@ -116,7 +116,30 @@ describe('Message template', () => {
         assert.equal(result.key1, 'A simple string for guido');
         assert.equal(result.key2, 'I am value3');
       });
+  });
 
+  it('A replacement in an object with numbers as string', () => {
+    const msg = RED.createMessage();
+    const node = {};
+    RED.nodes.createNode(node, {});
+    msg.chat().set({});
+    const template = MessageTemplate(msg, node);
+    return template({ key1: 42 })
+      .then(result => {
+        assert.strictEqual(result.key1, '42');
+      });
+  });
+
+  it('A replacement in an object with numbers preserving type', () => {
+    const msg = RED.createMessage();
+    const node = {};
+    RED.nodes.createNode(node, {});
+    msg.chat().set({});
+    const template = MessageTemplate(msg, node, { preserveNumbers: true });
+    return template({ key1: 42 })
+      .then(result => {
+        assert.strictEqual(result.key1, 42);
+      });
   });
 
   it('A replacement in array', () => {

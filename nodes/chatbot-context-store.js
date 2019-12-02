@@ -44,6 +44,8 @@ module.exports = function(RED) {
     result.messageTypes = _(ChatPlatform.getMessageTypes()).sortBy(type => type.label);
     // collect message types
     result.eventTypes = _(ChatPlatform.getEvents()).sortBy(event => event.name);
+    // collect params
+    result.params = ChatPlatform.getParams();
     res.send(result);
   });
 

@@ -25,10 +25,13 @@
       return this.name || 'Image';
     },
     oneditprepare: function() {
-      $.RB_Legend();
       if (this.filename != null && this.filename !== '' && (this.image == null || this.image === '')) {
         $('#node-input-image').val(this.filename);
       }
+      $.RedBot.fetchPlatforms()
+        .done(function(platforms) {
+          $('#dialog-form').RB_Platforms();
+        });
     }
   });
 </script>
@@ -44,9 +47,10 @@
 </div>
 <div class="form-row">
   <label for="node-input-caption">Caption</label>
-  <input type="text" id="node-input-caption" placeholder="Caption" class="platform-telegram-slack-viber">
+  <input type="text" id="node-input-caption" placeholder="Caption">
+  <div class="redbot-platforms telegram slack viber"/>
 </div>
-<div class="redbot-form-legend"></div>
+
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-image"><p>The <code>Image node</code> sends an image to the chatbot from a local file or from a URL or from a Buffer passed by an upstream node (the simplest way to use it to chain with to <code>File node</code> or a <code>Http node</code>).</p>

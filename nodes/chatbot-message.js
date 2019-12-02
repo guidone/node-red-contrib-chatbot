@@ -19,9 +19,7 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
     var node = this;
     this.message = config.message;
-    this.answer = config.answer;
     this.parse_mode = config.parse_mode;
-    this.silent = config.silent;
 
     this.pickOne = function(messages) {
       const luck = Math.floor(Math.random() * messages.length);
@@ -36,7 +34,6 @@ module.exports = function(RED) {
       if (!isValidMessage(msg, node)) {
         return;
       }
-      const answer = node.answer;
       const chatId = getChatId(msg);
       const messageId = getMessageId(msg);
       const template = MessageTemplate(msg, node);
@@ -52,9 +49,7 @@ module.exports = function(RED) {
       // also try to get an array of messages from config and pick one randomly
       const messages = extractValue(['string','messages', 'number'], 'message', node, msg)
         || extractValue('string', 'answer', node, msg, false);
-      const silent = extractValue('boolean', 'silent', node, msg, false);
       const fallback = extractValue('string', 'fallback', node, msg, false);
-
       const message = _.isArray(messages) ? node.pickOne(messages) : messages;
 
       template(message)
@@ -66,14 +61,8 @@ module.exports = function(RED) {
             chatId: chatId,
             messageId: messageId,
             inbound: false,
-            silent: silent,
             fallback: fallback
           };
-          // reply flag
-          payload.options = {};
-          if (answer) {
-            payload.options.reply_to_message_id = messageId;
-          }
           // append
           append(msg, payload);
           // send out reply

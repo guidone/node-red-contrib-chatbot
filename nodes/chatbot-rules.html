@@ -3,6 +3,25 @@
   var buildRules = function() {
     var node = this;
 
+    function findMessageType(messageType) {
+      var messageDescription = null;
+      for (var idx = 0; idx < node.messageTypes.length; idx++) {
+        if (node.messageTypes[idx].value === messageType) {
+          messageDescription = node.messageTypes[idx];
+        }
+      }
+      return messageDescription;
+    }
+    function findEventType(eventType) {
+      var eventDescription = null;
+      for (var idx = 0; idx < node.eventTypes.length; idx++) {
+        if (node.eventTypes[idx].value === eventType) {
+          eventDescription = node.eventTypes[idx];
+        }
+      }
+      return eventDescription;
+    }
+
     $("#node-input-rule-container").css('min-height','250px').css('min-width','450px').editableList({
       addButton: 'Add rule',
       addItem: function (container, i, opt) {
@@ -102,7 +121,8 @@
           .append('<select class="messageEvent" name="event" style="display:none;width:40%;margin-left:10px;">'
             + '<option value="">Select type</option>'
             + eventTypes
-            + '</select>')
+            + '</select>'
+            + '<div class="event-types" style="display:inline-block;margin-left:5px;" />')
           .append('<input class="isSlotConfirmationStatus" style="display:none;width:25%;margin-left:10px;" type="text" name="slot" placeholder="Slot"/>')
           .append('<select class="isSlotConfirmationStatus isIntentConfirmationStatus isNotSlotConfirmationStatus" name="confirmationStatus" style="display:none;width:25%;margin-left:10px;">'
             + '<option value="">Select status</option>'
@@ -119,12 +139,27 @@
           .append('<select class="messageType notMessageType" name="messageType" style="display:none;width:40%;margin-left:10px;">'
             + '<option value="">Select type</option>'
             + messageTypes
-            + '</select>');
+            + '</select>'
+            + '<div class="message-types" style="display:inline-block;margin-left:5px;" />');
         var finalspan = $('<span/>',{style:"float: right;margin-top: 6px;"}).appendTo(row);
         finalspan.append('&nbsp;&#8594; <span class="node-input-rule-index">' + (i + 1) + '</span>');
 
-        $('select[name="event"]', container).RB_comboWithPlatformLabels();
-        $('select[name="messageType"]', container).RB_comboWithPlatformLabels();
+        $('select[name="event"]', container)
+          .change(function() {
+            var eventType = $(this).val();
+            var eventDescription = findEventType(eventType);
+            if (eventDescription != null) {
+              $.RedBot.supportedBy($('.event-types', container), eventDescription.platforms);
+            }
+          });
+        $('select[name="messageType"]', container)
+          .change(function() {
+            var messageType = $(this).val();
+            var messageDescription = findMessageType(messageType);
+            if (messageDescription != null) {
+              $.RedBot.supportedBy($('.message-types', container), messageDescription.platforms);
+            }
+          });
 
         // finally set data
         if (rule.type != null) {
@@ -152,13 +187,21 @@
           $('select[name=environment]', container).val(rule.environment);
         }
         if (rule.messageType != null) {
-          $('select[name=messageType]', container).RB_setComboWithPlatformLabels(rule.messageType);
+          var messageDescription = findMessageType(rule.messageType);
+          if (messageDescription != null) {
+            $.RedBot.supportedBy($('.message-types', container), messageDescription.platforms);
+          }
+          $('select[name=messageType]', container).val(rule.messageType);
         }
         if (rule.value != null) {
           $('input[name=variableValue]', container).val(rule.value);
         }
         if (rule.event != null) {
-          $('select[name=event]', container).RB_setComboWithPlatformLabels(rule.event);
+          var eventDescription = findEventType(rule.event);
+          if (eventDescription != null) {
+            $.RedBot.supportedBy($('.event-types', container), eventDescription.platforms);
+          }
+          $('select[name=event]', container).val(rule.event);
         }
         if (rule.state != null) {
           $('select[name=state]', container).val(rule.state);
@@ -283,13 +326,14 @@
         nodeRedUrl = RED.settings.httpNodeRoot;
       }
 
+      
       $.get(nodeRedUrl + 'redbot/globals')
         .done(function(response) {
           node.messageTypes = response.messageTypes;
           node.eventTypes = response.eventTypes;
-          $.get(nodeRedUrl + 'redbot/platforms')
-            .done(function(response) {
-              node.platforms = response.platforms;
+          $.RedBot.fetchPlatforms()
+            .done(function(platforms) {
+              node.platforms = platforms;
               buildRules.call(node);
             });
         });
