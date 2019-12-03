@@ -18,8 +18,14 @@
     _cache: {},
     getNodeRedUrl: function() {
       if ($.RedBot.inIframe()) {
-        // cover the case of hassio ifram redirecting node-red on a random url
-        return window.location.pathname;
+        /* 
+          Cover the case of Node-RED used inside hassio iframe. I really don't see a valid reason to make it work inside a docker 
+          container on a Raspberry Pi, no reason to run inside an iframe, no reason why I should prepare a USB pen to login via ssh
+          in the Rasperry (who owns a USB pen today?), no reason why I should spend hours trying to insall hassio when with a simple
+          npm install I could have Node-RED, no reason why the terminal add renders using canvas elements (nice, but say goodbye to
+          copy and paste), no reason to log into two different shells just to give a look to logs.  
+        */
+        return window.location.pathname.replace(/\/$/, '') + RED.settings.httpNodeRoot;
       } else {
         if (RED.settings.httpNodeRoot) {
           return RED.settings.httpNodeRoot;
