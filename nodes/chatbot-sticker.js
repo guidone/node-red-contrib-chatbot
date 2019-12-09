@@ -60,6 +60,9 @@ module.exports = function(RED) {
             node.error('Looks like you are passing a very long string (> 4064 bytes) in the payload as image url or path\n'
               + 'Perhaps you are using a "Http request" and passing the result as string instead of buffer?');
             return;
+          } else if (_.isString(content) && content.length < 50) {
+            // could be a sticker id, it's ok
+            fetcher = fetchers.identity;
           } else {
             node.error('Don\'t know how to handle: ' + content);
             return;
