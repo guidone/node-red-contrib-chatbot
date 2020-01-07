@@ -7,7 +7,7 @@
         container.append(
           '<div class="form-row" style="display:inline-block;margin-left:10px;">'
           + '<input type="text" value="' + (defaultParam != null ? defaultParam : '') 
-          + '" autocomplete="disable" style="width:100%;" placeholder="' + (!_.isEmpty(param.placeholder) ? param.placeholder : '') + '">'
+          + '" autocomplete="disable" style="width:100%;" placeholder="' + (param.placeholder != null && param.placeholder != '' ? param.placeholder : '') + '">'
           + '</div>');
         $('input', container)
           .keyup(function() {
