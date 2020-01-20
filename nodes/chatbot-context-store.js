@@ -38,8 +38,18 @@ module.exports = function(RED) {
   RED.httpNode.get('/redbot/globals', function(req, res) {
     const keys = RED.settings.functionGlobalContext.keys();
     const result = {};
+    // get all configurations in the global settings
     ChatPlatform.getPlatforms().forEach(platform => result[platform.id] = RED.settings.functionGlobalContext.get(platform.id)); 
-    keys.forEach(key => result[key] = RED.settings.functionGlobalContext.get(key));
+    // list of master nodes in the flow
+    keys.forEach(key => {
+      if (!key.startsWith('chatbot_info_')) {
+        result[key] = RED.settings.functionGlobalContext.get(key);
+      }
+    });
+    // get a list of running chatbots in the flow
+    result.activeChatbots = keys
+      .filter(key => key.startsWith('chatbot_info_'))
+      .map(key => RED.settings.functionGlobalContext.get(key))
     // collect message types
     result.messageTypes = _(ChatPlatform.getMessageTypes()).sortBy(type => type.label);
     // collect message types
