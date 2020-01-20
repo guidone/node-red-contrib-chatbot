@@ -165,6 +165,7 @@ const Types = {
   messageEvent(rule, message) {
     return new Promise(function(resolve, reject) {
       if (message != null && message.payload != null) {
+        console.log('controllo', message.payload.type, message.payload.eventType , rule.event, message.payload.eventType === rule.event)
         if (message.payload.type === 'event' && message.payload.eventType === rule.event) {
           resolve(rule);
         } else {
