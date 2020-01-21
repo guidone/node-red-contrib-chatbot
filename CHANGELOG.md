@@ -1,3 +1,4 @@
+* **0.18.5** Support for Slack events 
 * **0.18.4** Fix postback buttons in Telegram using webhooks, fix validation of quick replies in Messenger, fix params for modify message, fix set value in context node  
 * **0.18.3** Fix sticker node in Telegram, fix Conversation node and chatId in payload
 * **0.18.2** Fix again hassio
