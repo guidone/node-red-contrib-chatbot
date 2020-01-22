@@ -1,23 +1,46 @@
 const MessageTemplate = require('../lib/message-template-async');
-const utils = require('../lib/helpers/utils');
-const append = utils.append;
 const RegisterType = require('../lib/node-installer');
+const { ChatExpress } = require('chat-platform'); 
+const { 
+  isValidMessage, 
+  getChatId, 
+  getTransport, 
+  extractValue,
+  append 
+} = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
 
   function ChatBotAlexaDirective(config) {
     RED.nodes.createNode(this, config);
-    var node = this;
+    const node = this;
     this.directiveType = config.directiveType;
     this.slot = config.slot;
 
-    this.on('input', function(msg) {
+    this.on('input', function(msg, send, done) {
+      // send/done compatibility for node-red < 1.0
+      send = send || function() { node.send.apply(node, arguments) };
+      done = done || function(error) { node.error.call(node, error, msg) };
 
-      var template = MessageTemplate(msg, node);
-      var directiveType = utils.extractValue('string', 'directiveType', node, msg, false);
-      var slot = utils.extractValue('string', 'slot', node, msg, false);
-      var payload = {
+      // check if valid message
+      if (!isValidMessage(msg, node)) {
+        return;
+      }
+      const chatId = getChatId(msg);
+      const template = MessageTemplate(msg, node);
+      const transport = getTransport(msg);
+
+      // check transport compatibility
+      if (!ChatExpress.isSupported(transport, 'directive')) {
+        done(`Node "directive" is not supported by ${transport} transport`);
+        return;
+      }
+
+      const directiveType = extractValue('string', 'directiveType', node, msg, false);
+      const slot = extractValue('string', 'slot', node, msg, false);
+      const payload = {
+        chatId,
         type: 'directive',
         directiveType: directiveType
       };
@@ -31,9 +54,10 @@ module.exports = function(RED) {
       }
 
       template(payload)
-        .then(function(translated) {
+        .then(translated => {
           append(msg, translated);
-          node.send(msg);
+          send(msg);
+          done();
         });
     });
   }

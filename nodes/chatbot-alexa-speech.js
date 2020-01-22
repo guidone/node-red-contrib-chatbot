@@ -2,7 +2,6 @@ const MessageTemplate = require('../lib/message-template-async');
 const utils = require('../lib/helpers/utils');
 const RegisterType = require('../lib/node-installer');
 const { ChatExpress } = require('chat-platform'); 
-
 const { 
   isValidMessage, 
   getChatId, 
@@ -10,8 +9,6 @@ const {
   extractValue,
   append 
 } = require('../lib/helpers/utils');
-
-
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
@@ -28,7 +25,7 @@ module.exports = function(RED) {
 
   function ChatBotAlexaSpeech(config) {
     RED.nodes.createNode(this, config);
-    var node = this;
+    const node = this;
     this.speechType = config.speechType;
     this.text = config.text;
     this.ssml = config.ssml;
