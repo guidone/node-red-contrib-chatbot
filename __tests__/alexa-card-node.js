@@ -1,12 +1,14 @@
-var _ = require('underscore');
-var assert = require('chai').assert;
-var RED = require('../lib/red-stub')();
-var AlexaCardBlock = require('../nodes/chatbot-alexa-card');
+const _ = require('underscore');
+const assert = require('chai').assert;
+const RED = require('../lib/red-stub')();
+const AlexaCardBlock = require('../nodes/chatbot-alexa-card');
 
-describe('Chat alexa card node', function() {
+require('../lib/platforms/alexa');
 
-  it('should send the simple card', function() {
-    var msg = RED.createMessage(null, 'alexa');
+describe('Chat alexa card node', () => {
+
+  it('should send the simple card', () => {
+    const msg = RED.createMessage(null, 'alexa');
     RED.node.config({
       cardType: 'simple',
       title: 'Hi {{name}}!',
@@ -16,7 +18,7 @@ describe('Chat alexa card node', function() {
     AlexaCardBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'card');
         assert.equal(RED.node.message().payload.cardType, 'simple');
         assert.equal(RED.node.message().payload.title, 'Hi Guidone!');
@@ -24,8 +26,8 @@ describe('Chat alexa card node', function() {
       });
   });
 
-  it('should send a standard call', function() {
-    var msg = RED.createMessage(null, 'alexa');
+  it('should send a standard call', () => {
+    const msg = RED.createMessage(null, 'alexa');
     RED.node.config({
       cardType: 'standard',
       title: 'Hi {{name}}!',
@@ -37,7 +39,7 @@ describe('Chat alexa card node', function() {
     AlexaCardBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'card');
         assert.equal(RED.node.message().payload.cardType, 'standard');
         assert.equal(RED.node.message().payload.title, 'Hi Guidone!');
@@ -47,8 +49,8 @@ describe('Chat alexa card node', function() {
       });
   });
 
-  it('should send the simple card using payload', function() {
-    var msg = RED.createMessage({
+  it('should send the simple card using payload', () => {
+    const msg = RED.createMessage({
       cardType: 'simple',
       title: 'Hi {{name}}!',
       text: 'Ciao {{name}}'
@@ -58,7 +60,7 @@ describe('Chat alexa card node', function() {
     AlexaCardBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'card');
         assert.equal(RED.node.message().payload.cardType, 'simple');
         assert.equal(RED.node.message().payload.title, 'Hi Guidone!');
@@ -66,8 +68,8 @@ describe('Chat alexa card node', function() {
       });
   });
 
-  it('should send a standard call using payload', function() {
-    var msg = RED.createMessage({
+  it('should send a standard call using payload', () => {
+    const msg = RED.createMessage({
       cardType: 'standard',
       title: 'Hi {{name}}!',
       text: 'Ciao {{name}}',
@@ -79,7 +81,7 @@ describe('Chat alexa card node', function() {
     AlexaCardBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'card');
         assert.equal(RED.node.message().payload.cardType, 'standard');
         assert.equal(RED.node.message().payload.title, 'Hi Guidone!');
@@ -89,8 +91,8 @@ describe('Chat alexa card node', function() {
       });
   });
 
-  it('should not send for an unknown platform', function() {
-    var msg = RED.createMessage(null, 'unknown');
+  it('should not send for an unknown platform', () => {
+    const msg = RED.createMessage(null, 'unknown');
     RED.node.config({
       speechType: 'plainText',
       text: 'The message',
@@ -101,12 +103,12 @@ describe('Chat alexa card node', function() {
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
       .then(
-        function () {
+        () => {
           // should fail
         },
-        function() {
+        () => {
           assert.isNull(RED.node.message());
-          assert.equal(RED.node.error(), 'This node is not available for transport: unknown');
+          assert.equal(RED.node.error(), 'Node "card" is not supported by unknown transport');
         });
   });
 

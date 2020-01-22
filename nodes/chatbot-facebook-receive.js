@@ -205,6 +205,12 @@ module.exports = function(RED) {
         if (global.get(nodeGlobalKey) == null) {
           isMaster = true;
           global.set(nodeGlobalKey, node.id);
+          // store a list of chatbots and its references
+          global.set('chatbot_info_' + this.config.id.replace('.','_'), { 
+            nodeId: node.id, 
+            transport: 'facebook',
+            name: this.config.botname
+          });
         }
         node.chat.on('message', function (message) {
           var context = message.chat();

@@ -1,16 +1,23 @@
 const MessageTemplate = require('../lib/message-template-async');
 const utils = require('../lib/helpers/utils');
-const append = utils.append;
 const RegisterType = require('../lib/node-installer');
+const { ChatExpress } = require('chat-platform'); 
+const { 
+  isValidMessage, 
+  getChatId, 
+  getTransport, 
+  extractValue,
+  append 
+} = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
 
-  var txType = {
+  const txType = {
     plainText: 'PlainText',
     ssml: 'SSML'
   };
-  var txBehaviour = {
+  const txBehaviour = {
     enqueue: 'ENQUEUE',
     replaceAll: 'REPLACE_ALL',
     replaceEnqueued: 'REPLACE_ENQUEUED'
@@ -18,23 +25,40 @@ module.exports = function(RED) {
 
   function ChatBotAlexaSpeech(config) {
     RED.nodes.createNode(this, config);
-    var node = this;
+    const node = this;
     this.speechType = config.speechType;
     this.text = config.text;
     this.ssml = config.ssml;
     this.playBehavior = config.playBehavior;
     this.reprompt = config.reprompt;
 
-    this.on('input', function(msg) {
+    this.on('input', function(msg, send, done) {
+      // send/done compatibility for node-red < 1.0
+      send = send || function() { node.send.apply(node, arguments) };
+      done = done || function(error) { node.error.call(node, error, msg) };
 
-      var template = MessageTemplate(msg, node);
-      var speechType = utils.extractValue('string', 'speechType', node, msg, false);
-      var text = utils.extractValue('string', 'text', node, msg);
-      var ssml = utils.extractValue('string', 'ssml', node, msg);
-      var playBehavior = utils.extractValue('string', 'playBehavior', node, msg, false);
-      var reprompt = utils.extractValue('boolean', 'smallImage', node, msg, false);
+      // check if valid message
+      if (!isValidMessage(msg, node)) {
+        return;
+      }
+      const chatId = getChatId(msg);
+      const template = MessageTemplate(msg, node);
+      const transport = getTransport(msg);
 
-      var payload = {
+      // check transport compatibility
+      if (!ChatExpress.isSupported(transport, 'speech')) {
+        done(`Node "speech" is not supported by ${transport} transport`);
+        return;
+      }
+
+      const speechType = utils.extractValue('string', 'speechType', node, msg, false);
+      const text = extractValue('string', 'text', node, msg);
+      const ssml = extractValue('string', 'ssml', node, msg);
+      const playBehavior = extractValue('string', 'playBehavior', node, msg, false);
+      const reprompt = extractValue('boolean', 'smallImage', node, msg, false);
+
+      const payload = {
+        chatId,
         type: 'speech',
         speechType: txType[speechType],
         playBehavior: txBehaviour[playBehavior],
@@ -48,8 +72,10 @@ module.exports = function(RED) {
 
       template(payload)
         .then(function(translated) {
-          append(msg, translated);
-          node.send(msg);
+          append(msg, translated);          
+          // send out reply
+          send(msg);
+          done();
         });
     });
   }

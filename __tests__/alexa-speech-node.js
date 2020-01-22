@@ -1,12 +1,14 @@
-var _ = require('underscore');
-var assert = require('chai').assert;
-var RED = require('../lib/red-stub')();
-var AlexaSpeechBlock = require('../nodes/chatbot-alexa-speech');
+const _ = require('underscore');
+const assert = require('chai').assert;
+const RED = require('../lib/red-stub')();
+const AlexaSpeechBlock = require('../nodes/chatbot-alexa-speech');
 
-describe('Chat alexa speech node', function() {
+require('../lib/platforms/alexa');
 
-  it('should send the speech with plain text', function() {
-    var msg = RED.createMessage(null, 'alexa');
+describe('Chat alexa speech node', () => {
+
+  it('should send the speech with plain text', () => {
+    const msg = RED.createMessage(null, 'alexa');
     RED.node.config({
       speechType: 'plainText',
       text: 'Hi {{name}}!',
@@ -17,7 +19,7 @@ describe('Chat alexa speech node', function() {
     AlexaSpeechBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'speech');
         assert.equal(RED.node.message().payload.speechType, 'PlainText');
         assert.equal(RED.node.message().payload.playBehavior, 'ENQUEUE');
@@ -26,8 +28,8 @@ describe('Chat alexa speech node', function() {
       });
   });
 
-  it('should send the speech with ssml', function() {
-    var msg = RED.createMessage(null, 'alexa');
+  it('should send the speech with ssml', () => {
+    const msg = RED.createMessage(null, 'alexa');
     RED.node.config({
       speechType: 'ssml',
       ssml: '<speech>Hi {{name}}!</speech>',
@@ -38,7 +40,7 @@ describe('Chat alexa speech node', function() {
     AlexaSpeechBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'speech');
         assert.equal(RED.node.message().payload.speechType, 'SSML');
         assert.equal(RED.node.message().payload.playBehavior, 'REPLACE_ALL');
@@ -47,8 +49,8 @@ describe('Chat alexa speech node', function() {
       });
   });
 
-  it('should send the speech with ssml using the payload string', function() {
-    var msg = RED.createMessage('<speech>Hi {{name}}!</speech>', 'alexa');
+  it('should send the speech with ssml using the payload string', () => {
+    const msg = RED.createMessage('<speech>Hi {{name}}!</speech>', 'alexa');
     RED.node.config({
       speechType: 'ssml',
       playBehavior: 'replaceAll',
@@ -58,7 +60,7 @@ describe('Chat alexa speech node', function() {
     AlexaSpeechBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'speech');
         assert.equal(RED.node.message().payload.speechType, 'SSML');
         assert.equal(RED.node.message().payload.playBehavior, 'REPLACE_ALL');
@@ -67,8 +69,8 @@ describe('Chat alexa speech node', function() {
       });
   });
 
-  it('should send the speech with ssml using the payload params', function() {
-    var msg = RED.createMessage({
+  it('should send the speech with ssml using the payload params', () => {
+    const msg = RED.createMessage({
       speechType: 'ssml',
       ssml: '<speech>Hi {{name}}!</speech>',
       playBehavior: 'replaceAll',
@@ -79,7 +81,7 @@ describe('Chat alexa speech node', function() {
     AlexaSpeechBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message().payload.type, 'speech');
         assert.equal(RED.node.message().payload.speechType, 'SSML');
         assert.equal(RED.node.message().payload.playBehavior, 'REPLACE_ALL');
@@ -88,8 +90,8 @@ describe('Chat alexa speech node', function() {
       });
   });
 
-  it('should not send for an unknown platform', function() {
-    var msg = RED.createMessage(null, 'unknown');
+  it('should not send for an unknown platform', () => {
+    const msg = RED.createMessage(null, 'unknown');
     RED.node.config({
       speechType: 'plainText',
       text: 'The message',
@@ -100,12 +102,12 @@ describe('Chat alexa speech node', function() {
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
       .then(
-        function () {
+        () => {
           // should fail
         },
-        function() {
+        () => {
           assert.isNull(RED.node.message());
-          assert.equal(RED.node.error(), 'This node is not available for transport: unknown');
+          assert.equal(RED.node.error(), 'Node "speech" is not supported by unknown transport');
         });
   });
 
