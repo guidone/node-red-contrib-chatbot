@@ -1,3 +1,4 @@
+* **0.18.7** Fixed Alexa nodes not properly working with the multi transport framework
 * **0.18.6** Added test endpoint for Telegram webhook 
 * **0.18.5** Support for Slack events 
 * **0.18.4** Fix postback buttons in Telegram using webhooks, fix validation of quick replies in Messenger, fix params for modify message, fix set value in context node  
