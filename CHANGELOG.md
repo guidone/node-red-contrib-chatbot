@@ -1,3 +1,4 @@
+* **0.18.8** Fix refresh of access token in Routee 
 * **0.18.7** Fixed Alexa nodes not properly working with the multi transport framework
 * **0.18.6** Added test endpoint for Telegram webhook 
 * **0.18.5** Support for Slack events 
