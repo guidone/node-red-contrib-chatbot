@@ -8,7 +8,7 @@ const lcd = require('../lib/helpers/lcd');
 const prettyjson = require('prettyjson');
 const validators = require('../lib/helpers/validators');
 const RegisterType = require('../lib/node-installer');
-const { when, request } = require('../lib/helpers/utils');
+const { when } = require('../lib/helpers/utils');
 
 
 const warn = clc.yellow;
@@ -28,34 +28,6 @@ module.exports = function(RED) {
   RED.redbot.platforms.routee = RouteeServer;
 
   var contextProviders = ContextProviders(RED);
-
-  RED.httpNode.get('/redbot/routee/token', function(req, res) {
-    const appId = req.query.appId;
-    const appSecret = req.query.appSecret;
-    const secret = `${appId}:${appSecret}`;
-    const basicToken = Buffer.alloc(secret.length, secret);
-
-    request({
-      url: 'https://auth.routee.net/oauth/token',
-      method: 'POST',
-      headers: {
-        authorization: `Basic ${basicToken.toString('base64')}`,
-        'content-type': 'application/x-www-form-urlencoded'
-      },
-      form: {
-        grant_type: 'client_credentials'
-      }
-    }).then(result => {
-      let body;
-      try {
-        body = JSON.parse(result);
-      } catch(e) {
-        // do nothing
-      }
-      res.send(body.access_token);
-    });
-  });
-
 
 
   function RouteeBotNode(n) {
@@ -90,8 +62,7 @@ module.exports = function(RED) {
     var contextStorageNode = RED.nodes.getNode(this.store);
     // build the configuration object
     var botConfiguration = {
-      authorizedUsernames: node.usernames,
-      accessToken: node.credentials != null && node.credentials.accessToken != null ? node.credentials.accessToken.trim() : null,
+      authorizedUsernames: node.usernames,  
       appSecret: node.credentials != null && node.credentials.appSecret != null ? node.credentials.appSecret.trim() : null,
       appId: node.appId,
       fromNumber: node.fromNumber,
@@ -144,8 +115,7 @@ module.exports = function(RED) {
       try {
         node.contextProvider.start();
         node.chat = RouteeServer.createServer({
-          authorizedUsernames: botConfiguration.authorizedUsernames,
-          accessToken: botConfiguration.accessToken,
+          authorizedUsernames: botConfiguration.authorizedUsernames,          
           appSecret: botConfiguration.appSecret,
           appId: botConfiguration.appId,
           fromNumber: botConfiguration.fromNumber,
@@ -200,9 +170,6 @@ module.exports = function(RED) {
   registerType('chatbot-routee-node', RouteeBotNode, {
     credentials: {
       appSecret: {
-        type: 'text'
-      },
-      accessToken: {
         type: 'text'
       }
     }
