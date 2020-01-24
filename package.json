@@ -78,7 +78,8 @@
       "chatbot-alexa-directive": "./nodes/chatbot-alexa-directive.js",
       "chatbot-broadcast": "./nodes/chatbot-broadcast.js",
       "chatbot-alexa-speech": "./nodes/chatbot-alexa-speech.js",
-      "chatbot-slack-blocks": "./nodes/chatbot-slack-blocks.js"
+      "chatbot-slack-blocks": "./nodes/chatbot-slack-blocks.js",
+      "chatbot-nlp": "./nodes/chatbot-nlp.js"
     }
   },
   "maintainers": [
@@ -113,6 +114,7 @@
     "mime-types": "^2.1.21",
     "moment": "^2.13.0",
     "node-emoji": "^1.3.1",
+    "node-nlp": "^4.0.2",
     "node-telegram-bot-api": "^0.40.0",
     "prettyjson": "^1.2.1",
     "qr-image": "^3.1.0",

@@ -1,0 +1,42 @@
+<script type="text/javascript">
+  $.RedBot.registerType('chatbot-nlpjs', {
+    category: $.RedBot.config.name,
+    color: '#FFCC66',
+    defaults: {
+      name: {
+        value: ''
+      },
+      message: {
+        value: ['']
+      },
+      answer: {
+        value: false
+      },
+      silent: {
+        value: false
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'NLP.js',
+    icon: 'chatbot-message.png',
+    label: function() {
+      return this.name || 'Text';
+    },
+   
+
+   
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-nlpjs">
+<div class="form-row">
+  <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+  <input type="text" id="node-input-name" placeholder="Name">
+</div>
+
+</script>
+<script type="text/x-red" data-help-name="chatbot-nlpjs">
+</script>
+
+

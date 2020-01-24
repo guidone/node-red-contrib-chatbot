@@ -1,0 +1,317 @@
+{
+  "settings": {
+    "languages": [
+      "en"
+    ],
+    "tag": "nlp",
+    "threshold": 0.5,
+    "autoLoad": true,
+    "autoSave": true,
+    "modelFileName": "model.nlp"
+  },
+  "nluManager": {
+    "settings": {
+      "tag": "nlu-manager"
+    },
+    "locales": [
+      "en"
+    ],
+    "languageNames": {},
+    "domainManagers": {
+      "en": {
+        "settings": {
+          "locale": "en",
+          "tag": "domain-manager-en",
+          "nluByDomain": {
+            "default": {
+              "className": "NeuralNlu",
+              "settings": {}
+            }
+          },
+          "trainByDomain": false,
+          "useStemDict": true
+        },
+        "stemDict": {
+          "light,on,switch": {
+            "intent": "switch.on.light",
+            "domain": "default"
+          },
+          "light,on,switch,the": {
+            "intent": "switch.on.light",
+            "domain": "default"
+          },
+          "light,on,the,turn": {
+            "intent": "switch.on.lights",
+            "domain": "default"
+          },
+          "light,on,turn": {
+            "intent": "switch.on.light",
+            "domain": "default"
+          },
+          "%room%,in,light,on,the,turn": {
+            "intent": "switch.on.light",
+            "domain": "default"
+          },
+          "all,light,on,the,turn": {
+            "intent": "switch.on.lights",
+            "domain": "default"
+          }
+        },
+        "intentDict": {
+          "switch.on.light": "default",
+          "switch.on.lights": "default"
+        },
+        "sentences": [
+          {
+            "domain": "default",
+            "utterance": "switch on light",
+            "intent": "switch.on.light"
+          },
+          {
+            "domain": "default",
+            "utterance": "switch on the light",
+            "intent": "switch.on.light"
+          },
+          {
+            "domain": "default",
+            "utterance": "turn on the light",
+            "intent": "switch.on.light"
+          },
+          {
+            "domain": "default",
+            "utterance": "turn on light",
+            "intent": "switch.on.light"
+          },
+          {
+            "domain": "default",
+            "utterance": "turn on light in the %room%",
+            "intent": "switch.on.light"
+          },
+          {
+            "domain": "default",
+            "utterance": "turn on the light in %room%",
+            "intent": "switch.on.light"
+          },
+          {
+            "domain": "default",
+            "utterance": "turn on all the lights",
+            "intent": "switch.on.lights"
+          },
+          {
+            "domain": "default",
+            "utterance": "turn on the lights",
+            "intent": "switch.on.lights"
+          }
+        ],
+        "domains": {
+          "master_domain": {
+            "settings": {
+              "locale": "en",
+              "tag": "nlu-en",
+              "keepStopwords": true,
+              "nonefeatureValue": 1,
+              "nonedeltaMultiplier": 1.2,
+              "spellCheck": false,
+              "spellCheckDistance": 1,
+              "filterZeros": true,
+              "log": true
+            },
+            "features": {
+              "switch": 1,
+              "on": 1,
+              "light": 1,
+              "the": 1,
+              "turn": 1,
+              "in": 1,
+              "%room%": 1,
+              "all": 1
+            },
+            "intents": {
+              "switch.on.light": 1,
+              "switch.on.lights": 1
+            },
+            "intentFeatures": {
+              "switch.on.light": [
+                "switch",
+                "on",
+                "light",
+                "the",
+                "turn",
+                "in",
+                "%room%"
+              ],
+              "switch.on.lights": [
+                "turn",
+                "on",
+                "all",
+                "the",
+                "light"
+              ]
+            },
+            "neuralNetwork": {
+              "features": [
+                "switch",
+                "on",
+                "light",
+                "the",
+                "turn",
+                "in",
+                "%room%",
+                "all",
+                "nonefeature"
+              ],
+              "intents": [
+                "switch.on.light",
+                "switch.on.lights",
+                "None"
+              ],
+              "perceptrons": [
+                [
+                  4.193695545196533,
+                  4.3780670166015625,
+                  4.3780670166015625,
+                  -3.5430874824523926,
+                  0.18438905477523804,
+                  2.4534671306610107,
+                  2.4534671306610107,
+                  -9.27392864227295,
+                  -1.4378904104232788,
+                  1.4381995802532956
+                ],
+                [
+                  -4.107018947601318,
+                  -1.025106430053711,
+                  -1.025106430053711,
+                  6.241482734680176,
+                  3.0819132328033447,
+                  -2.983595132827759,
+                  -2.983595132827759,
+                  6.553151607513428,
+                  -0.27316951751708984,
+                  -0.6208728396719602
+                ],
+                [
+                  -0.737144410610199,
+                  -1.4711436033248901,
+                  -1.4711436033248901,
+                  -0.32429996132850647,
+                  -0.7340014576911926,
+                  -0.011735429055988789,
+                  -0.011735429055988789,
+                  -0.0012868322664871812,
+                  8.823710441589355,
+                  3.676289115429653
+                ]
+              ],
+              "perceptronSettings": {
+                "locale": "en",
+                "tag": "nlu-en",
+                "keepStopwords": true,
+                "nonefeatureValue": 1,
+                "nonedeltaMultiplier": 1.2,
+                "spellCheck": false,
+                "spellCheckDistance": 1,
+                "filterZeros": true,
+                "log": true
+              }
+            }
+          }
+        }
+      }
+    },
+    "intentDomains": {},
+    "extraSentences": [
+      [
+        "en",
+        "switch on light"
+      ],
+      [
+        "en",
+        "switch on the light"
+      ],
+      [
+        "en",
+        "turn on the light"
+      ],
+      [
+        "en",
+        "turn on light"
+      ],
+      [
+        "en",
+        "turn on light in the %room%"
+      ],
+      [
+        "en",
+        "turn on the light in %room%"
+      ],
+      [
+        "en",
+        "turn on all the lights"
+      ],
+      [
+        "en",
+        "turn on the lights"
+      ]
+    ]
+  },
+  "ner": {
+    "settings": {
+      "tag": "ner",
+      "entityPreffix": "%",
+      "entitySuffix": "%"
+    },
+    "rules": {
+      "en": {
+        "room": {
+          "name": "room",
+          "type": "enum",
+          "rules": [
+            {
+              "option": "kitchen",
+              "texts": [
+                "kitchen"
+              ]
+            },
+            {
+              "option": "dining room",
+              "texts": [
+                "dining room"
+              ]
+            },
+            {
+              "option": "bathroom",
+              "texts": [
+                "bathroom",
+                "toilette",
+                "lavatory"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "nlgManager": {
+    "settings": {
+      "tag": "nlg-manager"
+    },
+    "responses": {}
+  },
+  "actionManager": {
+    "settings": {
+      "tag": "action-manager"
+    },
+    "actions": {}
+  },
+  "slotManager": {
+    "switch.on.light": {
+      "room": {
+        "intent": "switch.on.light",
+        "entity": "room",
+        "mandatory": false,
+        "locales": {}
+      }
+    }
+  }
+}
