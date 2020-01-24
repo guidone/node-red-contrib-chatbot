@@ -1,32 +1,32 @@
 <script type="text/javascript">
-  $.RedBot.registerType('chatbot-nlpjs', {
+  $.RedBot.registerType('chatbot-nlpjs-train', {
     category: $.RedBot.config.name,
     color: '#FFCC66',
     defaults: {
       name: {
         value: ''
+        // TODO check not empty and valid chars
       }
+      
     },
     inputs: 1,
     outputs: 1,
-    paletteLabel: 'NLP.js Process',
+    paletteLabel: 'NLP.js Train',
     icon: 'chatbot-message.png',
     label: function() {
-      return this.name || 'NLP.js Process' + (this.name != null && this.name !== '' ? ' (' + this.name + ')' : ' (default)');
+      return 'NLP.js Train' + (this.name != null && this.name !== '' ? ' (' + this.name + ')' : ' (default)');
     }
-  
-   
   });
 </script>
 
-<script type="text/x-red" data-template-name="chatbot-nlpjs">
+<script type="text/x-red" data-template-name="chatbot-nlpjs-train">
 <div class="form-row">
   <label for="node-input-name"><i class="icon-tag"></i> Model Name</label>
   <input type="text" id="node-input-name" placeholder="Model Name">
 </div>
 
 </script>
-<script type="text/x-red" data-help-name="chatbot-nlpjs">
+<script type="text/x-red" data-help-name="chatbot-nlpjs-train">
 </script>
 
 

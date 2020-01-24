@@ -1,0 +1,97 @@
+<script type="text/javascript">
+
+  $.RedBot.registerType('chatbot-nlpjs-intent',{
+    category: $.RedBot.config.name + ' Parsers',
+    color: '#FFCC66',
+    defaults: {
+      intent: {
+        value: '',
+        validate: function(intent) {
+          return $.RedBot.validate.notEmpty(intent);
+        }
+      },
+      utterances: {
+        value: [],
+        validate: function(utterances) {
+          return $.RedBot.validate.arrayNotEmpty(utterances);
+        }
+      },
+      outputs: {
+        value: 1
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'chatbot-listen-lexicon.png',
+    paletteLabel: 'NLP.js Intent',
+    label: function() {
+      return this.name || 'NLP.js Intent';
+    },
+    oneditsave: function() {
+      var domRules = $('#node-input-values-container').editableList('items');
+      var node = this;
+      var idx;
+      // init
+      node.utterances = [];
+      // store terms, all lowercase
+      for(idx = 0; idx < domRules.length; idx++) {
+        var selector = domRules[idx].find('input');
+        node.utterances.push(selector.val().toLowerCase());
+      }
+    },
+    oneditprepare: function() {
+      $('#node-input-name')
+        .blur(function() {
+          var intent = $(this).val();
+          intent = intent.replace(/ /g, '');
+          $(this).val(intent);
+        });
+      $('#node-input-values-container')
+        .css('min-width', '450px')
+        .editableList({
+          addButton: 'Add term',
+          addItem: function(container, i, entity) {
+            var value = typeof entity == 'object' ? '' : entity;
+            var row = $('<div/>').appendTo(container);
+            $('<input/>', {
+                style: 'width:100%',
+                class: 'node-input-rule-property-name',
+                type: 'text',
+                value: value
+              }).appendTo(row);
+          },
+          removable: true,
+          sortable: true
+        });
+      var utterances = this.utterances || [];
+      // populate the control
+      var idx;
+      for (idx = 0; idx < utterances.length; idx++) {
+        $("#node-input-values-container").editableList('addItem', utterances[idx]);
+      }
+    },
+    oneditresize: function() {
+      var dialogForm = $('#dialog-form');
+      var rowName = $('.form-row-name', dialogForm);
+      var rowLabel = $('.form-row-label', dialogForm);
+      var height = dialogForm.height() - rowName.height() - rowLabel.height() - 20;
+      $('#node-input-values-container').editableList('height', height);
+    }
+  });
+</script>
+
+
+<script type="text/x-red" data-template-name="chatbot-nlpjs-intent">
+<div class="form-row form-row-name">
+  <label for="node-input-intent"><i class="icon-tag"></i> Intent</label>
+  <input type="text" id="node-input-intent" placeholder="Intent">
+</div>
+<div class="form-row form-row-label" style="margin-bottom:0;">
+  <label style="width:100%;"><i class="fa fa-list"></i> <span>Utterances</span></label>
+</div>
+<div class="form-row node-input-values-container-row">
+  <ol id="node-input-values-container"></ol>
+</div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-nlpjs-intent"></script>

@@ -13,7 +13,7 @@ const {
 
 
 
-const { NlpManager } = require('node-nlp');
+//const { NlpManager } = require('node-nlp');
 
 
 
@@ -27,7 +27,7 @@ module.exports = function(RED) {
     const node = this;
     
 
-    this.on('input', function(msg, send, done) {
+    this.on('input', async function(msg, send, done) {
       // send/done compatibility for node-red < 1.0
       send = send || function() { node.send.apply(node, arguments) };
       done = done || function(error) { node.error.call(node, error, msg) };
@@ -40,14 +40,20 @@ module.exports = function(RED) {
       //const template = MessageTemplate(msg, node);
       const transport = getTransport(msg);
 
+      const global = this.context().global;
+
+      const name = extractValue('string', 'name', node, msg, false);
+
       // DOCS
       // entities
       // https://github.com/axa-group/nlp.js/blob/master/docs/v3/slot-filling.md#entities-with-the-same-name
 
+      const manager = global.get('nlp_' + (!_.isEmpty(name) ? name : 'default'));
 
-      const manager = new NlpManager({ languages: ['en'] });
 
-      manager.addDocument('en', 'switch on light', 'switch.on.light');
+      
+
+      /*manager.addDocument('en', 'switch on light', 'switch.on.light');
       manager.addDocument('en', 'switch on the light', 'switch.on.light');
       manager.addDocument('en', 'turn on the light', 'switch.on.light');
       manager.addDocument('en', 'turn on light', 'switch.on.light');
@@ -61,16 +67,17 @@ module.exports = function(RED) {
 
       manager.addNamedEntityText('room', 'kitchen', ['en'], ['kitchen']);
       manager.addNamedEntityText('room', 'dining room', ['en'], ['dining room']);
-      manager.addNamedEntityText('room', 'bathroom', ['en'], ['bathroom', 'toilette', 'lavatory']);
+      manager.addNamedEntityText('room', 'bathroom', ['en'], ['bathroom', 'toilette', 'lavatory']);*/
 
 
-      (async() => {
-        await manager.train();
-        manager.save();
-        const response = await manager.process('en', msg.payload.content);
-        console.log(response);
-        done();
-      })();
+
+      const response = await manager.process('en', msg.payload.content);
+      console.log(response);
+      
+      // TODO prepare resposne same as other nodes
+      
+      done();
+
 
 
     });

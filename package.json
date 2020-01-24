@@ -79,7 +79,9 @@
       "chatbot-broadcast": "./nodes/chatbot-broadcast.js",
       "chatbot-alexa-speech": "./nodes/chatbot-alexa-speech.js",
       "chatbot-slack-blocks": "./nodes/chatbot-slack-blocks.js",
-      "chatbot-nlp": "./nodes/chatbot-nlp.js"
+      "chatbot-nlp": "./nodes/chatbot-nlp.js",
+      "chatbot-nlp-train": "./nodes/chatbot-nlp-train.js",
+      "chatbot-nlp-intent": "./nodes/chatbot-nlp-intent.js"
     }
   },
   "maintainers": [
