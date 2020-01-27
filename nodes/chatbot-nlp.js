@@ -74,6 +74,18 @@ module.exports = function(RED) {
       const response = await manager.process('en', msg.payload.content);
       console.log(response);
       
+      send({
+        ...msg,
+        payload: {
+          type: 'intent',
+          //isFallback: isFallback,
+          intent: response.intent,
+          //variables: !_.isEmpty(variables) ? variables : null,
+          //answer: answer
+        }
+      });
+      
+
       // TODO prepare resposne same as other nodes
       
       done();

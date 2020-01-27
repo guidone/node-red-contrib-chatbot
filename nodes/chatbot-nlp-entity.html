@@ -1,20 +1,21 @@
 <script type="text/javascript">
 
-  $.RedBot.registerType('chatbot-nlpjs-intent',{
+  $.RedBot.registerType('chatbot-nlpjs-entity',{
     category: $.RedBot.config.name + ' Parsers',
     color: '#FFCC66',
     defaults: {
-      intent: {
+      name: {
         value: '',
         validate: function(intent) {
           return $.RedBot.validate.notEmpty(intent);
         }
       },
-      utterances: {
+      entities: {
         value: [],
-        validate: function(utterances) {
+        // TODO validate
+        /*validate: function(utterances) {
           return $.RedBot.validate.arrayNotEmpty(utterances);
-        }
+        }*/
       },
       outputs: {
         value: 1
@@ -23,20 +24,29 @@
     inputs: 1,
     outputs: 1,
     icon: 'chatbot-listen-lexicon.png',
-    paletteLabel: 'NLP.js Intent',
+    paletteLabel: 'NLP.js Entity',
     label: function() {
-      return 'NLP.js Intent' + (this.intent != null && this.intent !== '' ? ' (' + this.intent + ')' : '');
+      return 'NLP.js Entity' + (this.name != null && this.name !== '' ? ' (' + this.name + ')' : '');
     },
     oneditsave: function() {
       var domRules = $('#node-input-values-container').editableList('items');
       var node = this;
       var idx;
       // init
-      node.utterances = [];
+      node.entities = [];
       // store terms, all lowercase
       for(idx = 0; idx < domRules.length; idx++) {
-        var selector = domRules[idx].find('input');
-        node.utterances.push(selector.val().toLowerCase());
+        var selectorName = domRules[idx].find('input[name=name]');
+        var selectorAliases = domRules[idx].find('input[name=aliases]');
+        var aliases = [];
+        var splitAliases = selectorAliases.val().split(',');
+        for(var k = 0; k < splitAliases.length; k++) {
+          aliases.push($.trim(splitAliases[k]));
+        }
+        node.entities.push({
+          name: selectorName.val().toLowerCase(),
+          aliases: aliases
+        });
       }
     },
     oneditprepare: function() {
@@ -49,25 +59,35 @@
       $('#node-input-values-container')
         .css('min-width', '450px')
         .editableList({
-          addButton: 'Add term',
+          addButton: 'Add entity',
           addItem: function(container, i, entity) {
-            var value = typeof entity == 'object' ? '' : entity;
-            var row = $('<div/>').appendTo(container);
+            //var value = typeof entity == 'object' ? '' : entity;
+            var row = $('<div class="rb-nlp-entity"/>').appendTo(container);
             $('<input/>', {
                 style: 'width:100%',
-                class: 'node-input-rule-property-name',
-                type: 'text',
-                value: value
+                class: 'node-input-name',
+                name: 'name',
+                type: 'text', 
+                placeholder: 'Name',
+                value: entity.name
               }).appendTo(row);
+            $('<input/>', {
+              style: 'width:100%',
+              name: 'aliases',
+              class: 'node-input-aliases',
+              placeholder: 'Aliases',
+              type: 'text',
+              value: (entity.aliases || []).join(',')
+            }).appendTo(row);
           },
           removable: true,
           sortable: true
         });
-      var utterances = this.utterances || [];
+      var entities = this.entities || [];
       // populate the control
       var idx;
-      for (idx = 0; idx < utterances.length; idx++) {
-        $("#node-input-values-container").editableList('addItem', utterances[idx]);
+      for (idx = 0; idx < entities.length; idx++) {
+        $("#node-input-values-container").editableList('addItem', entities[idx]);
       }
     },
     oneditresize: function() {
@@ -81,10 +101,10 @@
 </script>
 
 
-<script type="text/x-red" data-template-name="chatbot-nlpjs-intent">
+<script type="text/x-red" data-template-name="chatbot-nlpjs-entity">
 <div class="form-row form-row-name">
-  <label for="node-input-intent"><i class="icon-tag"></i> Intent</label>
-  <input type="text" id="node-input-intent" placeholder="Intent">
+  <label for="node-input-intent"><i class="icon-tag"></i> Entity name</label>
+  <input type="text" id="node-input-name" placeholder="Name">
 </div>
 <div class="form-row form-row-label" style="margin-bottom:0;">
   <label style="width:100%;"><i class="fa fa-list"></i> <span>Utterances</span></label>
@@ -94,4 +114,4 @@
 </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-nlpjs-intent"></script>
+<script type="text/x-red" data-help-name="chatbot-nlpjs-entity"></script>

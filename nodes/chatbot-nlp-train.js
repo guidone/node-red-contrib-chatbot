@@ -55,12 +55,25 @@ module.exports = function(RED) {
 
       console.log('payload', payload)
 
+      // adding intents
       if (_.isObject(payload.intents)) {
         Object.keys(payload.intents).forEach(language => {
           Object.keys(payload.intents[language] || {}).forEach(intent => {
             (payload.intents[language][intent] || []).forEach(utterance => {
               console.log(`[${language.toUpperCase()}] - ${intent} : ${utterance}`);
               manager.addDocument(language, utterance, intent);
+            });
+          });
+        });
+      }
+
+      // adding entities
+      if (_.isObject(payload.entities)) {
+        Object.keys(payload.entities).forEach(language => {
+          Object.keys(payload.entities[language] || {}).forEach(name => {
+            (payload.entities[language][name] || []).forEach(entity => {
+              console.log(`[${language.toUpperCase()}] - ${name} : ${entity.name} (${entity.aliases.join(',')})`);              
+              manager.addNamedEntityText(name, entity.name, [language], _.isEmpty(entity.aliases) ? entity.aliases : null);
             });
           });
         });
@@ -80,9 +93,7 @@ module.exports = function(RED) {
 
       await manager.train();
       manager.save();
-      
-      // TODO store somewhere the model
-      
+          
       global.set('nlp_' + (!_.isEmpty(name) ? name : 'default'), manager);
 
       //const response = await manager.process('en', msg.payload.content);

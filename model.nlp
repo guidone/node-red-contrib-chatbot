@@ -33,74 +33,82 @@
         },
         "stemDict": {
           "light,on,switch": {
-            "intent": "switch.on.light",
+            "intent": "switch.on",
             "domain": "default"
           },
-          "light,on,switch,the": {
-            "intent": "switch.on.light",
+          "%room%,in,light,on,switch": {
+            "intent": "switch.on",
             "domain": "default"
           },
-          "light,on,the,turn": {
-            "intent": "switch.on.lights",
+          "%room%,in,light,on,turn": {
+            "intent": "switch.on",
             "domain": "default"
           },
-          "light,on,turn": {
-            "intent": "switch.on.light",
+          "%room%,bulb,in,light,up": {
+            "intent": "switch.on",
             "domain": "default"
           },
-          "%room%,in,light,on,the,turn": {
-            "intent": "switch.on.light",
+          "light,off,switch": {
+            "intent": "switch.off",
             "domain": "default"
           },
-          "all,light,on,the,turn": {
-            "intent": "switch.on.lights",
+          "%room%,in,light,off,switch": {
+            "intent": "switch.off",
+            "domain": "default"
+          },
+          "%room%,in,light,off,turn": {
+            "intent": "switch.off",
+            "domain": "default"
+          },
+          "%room%,cancel,in,light": {
+            "intent": "switch.off",
             "domain": "default"
           }
         },
         "intentDict": {
-          "switch.on.light": "default",
-          "switch.on.lights": "default"
+          "switch.on": "default",
+          "switch.off": "default"
         },
         "sentences": [
           {
             "domain": "default",
-            "utterance": "switch on light",
-            "intent": "switch.on.light"
+            "utterance": "switch on lights",
+            "intent": "switch.on"
           },
           {
             "domain": "default",
-            "utterance": "switch on the light",
-            "intent": "switch.on.light"
+            "utterance": "switch on lights in %room%",
+            "intent": "switch.on"
           },
           {
             "domain": "default",
-            "utterance": "turn on the light",
-            "intent": "switch.on.light"
+            "utterance": "turn on lights in %room%",
+            "intent": "switch.on"
           },
           {
             "domain": "default",
-            "utterance": "turn on light",
-            "intent": "switch.on.light"
+            "utterance": "light up bulbs in %room%",
+            "intent": "switch.on"
           },
           {
             "domain": "default",
-            "utterance": "turn on light in the %room%",
-            "intent": "switch.on.light"
+            "utterance": "switch off lights",
+            "intent": "switch.off"
           },
           {
             "domain": "default",
-            "utterance": "turn on the light in %room%",
-            "intent": "switch.on.light"
+            "utterance": "switch off lights in %room%",
+            "intent": "switch.off"
           },
           {
             "domain": "default",
-            "utterance": "turn on all the lights",
-            "intent": "switch.on.lights"
+            "utterance": "turn off lights in %room%",
+            "intent": "switch.off"
           },
           {
             "domain": "default",
-            "utterance": "turn on the lights",
-            "intent": "switch.on.lights"
+            "utterance": "cancel lights in %room%",
+            "intent": "switch.off"
           }
         ],
         "domains": {
@@ -120,32 +128,37 @@
               "switch": 1,
               "on": 1,
               "light": 1,
-              "the": 1,
-              "turn": 1,
               "in": 1,
               "%room%": 1,
-              "all": 1
+              "turn": 1,
+              "up": 1,
+              "bulb": 1,
+              "off": 1,
+              "cancel": 1
             },
             "intents": {
-              "switch.on.light": 1,
-              "switch.on.lights": 1
+              "switch.on": 1,
+              "switch.off": 1
             },
             "intentFeatures": {
-              "switch.on.light": [
+              "switch.on": [
                 "switch",
                 "on",
                 "light",
-                "the",
-                "turn",
                 "in",
-                "%room%"
-              ],
-              "switch.on.lights": [
+                "%room%",
                 "turn",
-                "on",
-                "all",
-                "the",
-                "light"
+                "up",
+                "bulb"
+              ],
+              "switch.off": [
+                "switch",
+                "off",
+                "light",
+                "in",
+                "%room%",
+                "turn",
+                "cancel"
               ]
             },
             "neuralNetwork": {
@@ -153,54 +166,62 @@
                 "switch",
                 "on",
                 "light",
-                "the",
-                "turn",
                 "in",
                 "%room%",
-                "all",
+                "turn",
+                "up",
+                "bulb",
+                "off",
+                "cancel",
                 "nonefeature"
               ],
               "intents": [
-                "switch.on.light",
-                "switch.on.lights",
+                "switch.on",
+                "switch.off",
                 "None"
               ],
               "perceptrons": [
                 [
-                  4.193695545196533,
-                  4.3780670166015625,
-                  4.3780670166015625,
-                  -3.5430874824523926,
-                  0.18438905477523804,
-                  2.4534671306610107,
-                  2.4534671306610107,
-                  -9.27392864227295,
-                  -1.4378904104232788,
-                  1.4381995802532956
+                  1.1134848594665527,
+                  7.74910306930542,
+                  2.653953790664673,
+                  0.09303548187017441,
+                  0.09303548187017441,
+                  0.9879655241966248,
+                  4.375724792480469,
+                  4.375724792480469,
+                  -5.64764928817749,
+                  -3.823218584060669,
+                  -0.8701886534690857,
+                  0.8916345613932084
                 ],
                 [
-                  -4.107018947601318,
-                  -1.025106430053711,
-                  -1.025106430053711,
-                  6.241482734680176,
-                  3.0819132328033447,
-                  -2.983595132827759,
-                  -2.983595132827759,
-                  6.553151607513428,
-                  -0.27316951751708984,
-                  -0.6208728396719602
+                  0.2785951793193817,
+                  -6.399176120758057,
+                  3.9670159816741943,
+                  0.23020751774311066,
+                  0.23020751774311066,
+                  0.005544439423829317,
+                  -2.9679312705993652,
+                  -2.9679312705993652,
+                  6.683314323425293,
+                  6.650803089141846,
+                  -1.2856980562210083,
+                  1.3403950932981668
                 ],
                 [
-                  -0.737144410610199,
-                  -1.4711436033248901,
-                  -1.4711436033248901,
-                  -0.32429996132850647,
-                  -0.7340014576911926,
-                  -0.011735429055988789,
-                  -0.011735429055988789,
-                  -0.0012868322664871812,
-                  8.823710441589355,
-                  3.676289115429653
+                  -1.1461504697799683,
+                  -0.632498562335968,
+                  -1.7901307344436646,
+                  -0.7163263559341431,
+                  -0.7163263559341431,
+                  -0.10764749348163605,
+                  -0.20006832480430603,
+                  -0.20006832480430603,
+                  -0.6212995052337646,
+                  -0.3362640142440796,
+                  8.912069320678711,
+                  3.5618274549493703
                 ]
               ],
               "perceptronSettings": {
@@ -223,35 +244,35 @@
     "extraSentences": [
       [
         "en",
-        "switch on light"
+        "switch on lights"
       ],
       [
         "en",
-        "switch on the light"
+        "switch on lights in %room%"
       ],
       [
         "en",
-        "turn on the light"
+        "turn on lights in %room%"
       ],
       [
         "en",
-        "turn on light"
+        "light up bulbs in %room%"
       ],
       [
         "en",
-        "turn on light in the %room%"
+        "switch off lights"
       ],
       [
         "en",
-        "turn on the light in %room%"
+        "switch off lights in %room%"
       ],
       [
         "en",
-        "turn on all the lights"
+        "turn off lights in %room%"
       ],
       [
         "en",
-        "turn on the lights"
+        "cancel lights in %room%"
       ]
     ]
   },
@@ -274,17 +295,27 @@
               ]
             },
             {
+              "option": "toilette",
+              "texts": [
+                "toilette"
+              ]
+            },
+            {
               "option": "dining room",
               "texts": [
                 "dining room"
               ]
             },
             {
-              "option": "bathroom",
+              "option": "balcony",
               "texts": [
-                "bathroom",
-                "toilette",
-                "lavatory"
+                "balcony"
+              ]
+            },
+            {
+              "option": "basement",
+              "texts": [
+                "basement"
               ]
             }
           ]
@@ -305,9 +336,17 @@
     "actions": {}
   },
   "slotManager": {
-    "switch.on.light": {
+    "switch.on": {
       "room": {
-        "intent": "switch.on.light",
+        "intent": "switch.on",
+        "entity": "room",
+        "mandatory": false,
+        "locales": {}
+      }
+    },
+    "switch.off": {
+      "room": {
+        "intent": "switch.off",
         "entity": "room",
         "mandatory": false,
         "locales": {}
