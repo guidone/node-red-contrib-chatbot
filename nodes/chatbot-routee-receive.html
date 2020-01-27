@@ -26,6 +26,13 @@
       log: {
         value: null
       },
+      multiWebHook: {
+        value: false
+      },
+      multiWebHookPath: {
+        value: '',
+        // TODO validation
+      },
       debug: {
         value: false
       }
@@ -41,9 +48,25 @@
             $('#node-config-input-botname').prop('readonly', true);
             $('.form-editable').hide();
             $('.form-warning').show();
-            $('.form-warning .bot-name').html('"' + node.botname + '"');
+            $('.form-warning .bot-name').html('"' + node.botname + '"');            
+          }
+          $('.rd-ui-port').html(':' + response.uiPort);
+        });  
+
+      $('#node-config-input-multiWebHook')
+        .change(function() {
+          var enabled = $(this).is(':checked');
+          if (enabled) {
+            $('.form-row-multiWebHookPath').show();  
+          } else {
+            $('.form-row-multiWebHookPath').hide();
           }
         });  
+      if (node.multiWebHook) {
+          $('.form-row-multiWebHookPath').show();  
+        } else {
+          $('.form-row-multiWebHookPath').hide();
+        }
     },
     paletteName: 'Routee Bot',
     credentials: {
@@ -96,6 +119,21 @@
         Select the chat context provider to use with this bot, if none is selected then non-persistent "memory" will be used.<br>
         To extend <strong>RedBot</strong> with a new chat context provider see <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Creating-a-Chat-Context-Provider" target="_blank">this tutorial</a>.
       </div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-multiWebHook" style="width:auto;">Support multiple chatbots</label>
+      <input type="checkbox" value="true" id="node-config-input-multiWebHook" style="margin-top:0px;">
+      <span class="redbot-form-hint">
+        Enable this option in order to have multiple chatbots (with different endpoints) in the same <b>Node-RED</b> instance
+      </span>
+    </div>
+    <div class="form-row-multiWebHookPath">
+      <label for="node-config-input-appId">Webhook URL</label>
+      <span class="rb-webhook">http://locahost<span class="rd-ui-port"></span>/redbot/routee/</span> 
+      <input type="text" id="node-config-input-multiWebHookPath">
+      <span class="redbot-form-hint">
+        Configure a different endpoint for each chatbot
+      </span>
     </div>
     <div class="form-row">
       <label for="node-config-input-debug">Debug</label>
