@@ -11,7 +11,7 @@ module.exports = function(RED) {
 
     this.entities = config.entities;
     this.name = config.name;
-    //this.showdebug = config.showdebug;
+    this.language = config.language;
 
     this.on('input', function(msg, send, done) {
 
@@ -21,7 +21,7 @@ module.exports = function(RED) {
 
       const entities = utils.extractValue('array', 'entities', node, msg);
       const name = utils.extractValue('string', 'name', node, msg, false);
-      const language = 'en'; // TODO set other languages
+      const language = utils.extractValue('string', 'language', node, msg, false);
 
       msg.payload = _.isObject(msg.payload) ? msg.payload : {}; 
       //var currentLexicon = msg.payload != null && _.isObject(msg.payload.lexicon) ? msg.payload.lexicon : {};

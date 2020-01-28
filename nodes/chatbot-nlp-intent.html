@@ -10,6 +10,10 @@
           return $.RedBot.validate.notEmpty(intent);
         }
       },
+      language: {
+        value: 'en',
+        required: true
+      },
       utterances: {
         value: [],
         validate: function(utterances) {
@@ -74,7 +78,8 @@
       var dialogForm = $('#dialog-form');
       var rowName = $('.form-row-name', dialogForm);
       var rowLabel = $('.form-row-label', dialogForm);
-      var height = dialogForm.height() - rowName.height() - rowLabel.height() - 20;
+      var rowLanguage = $('.form-row-language', dialogForm);
+      var height = dialogForm.height() - rowName.height() - rowLabel.height() - rowLanguage.height() - 20;
       $('#node-input-values-container').editableList('height', height);
     }
   });
@@ -85,6 +90,44 @@
 <div class="form-row form-row-name">
   <label for="node-input-intent"><i class="icon-tag"></i> Intent</label>
   <input type="text" id="node-input-intent" placeholder="Intent">
+</div>
+<div class="form-row form-row-language">
+  <label for="node-input-language">Language</label>
+  <select id="node-input-language" placeholder="Language to match">
+    <option value="ar">Arabic</option>
+    <option value="bn">Bengali</option>
+    <option value="ca">Catalan</option>
+    <option value="cs">Czech</option>
+    <option value="da">Danish</option>
+    <option value="de">German</option>
+    <option value="el">Greek</option>
+    <option value="en">English</option>
+    <option value="es">Spanish</option>
+    <option value="eu">Basque</option>
+    <option value="fa">Persian</option>
+    <option value="fi">Finnish</option>
+    <option value="fr">French</option>
+    <option value="ga">Irish</option>
+    <option value="gl">Galician</option>
+    <option value="hi">Hindi</option>
+    <option value="hu">Hungarian</option>
+    <option value="hy">Armenian</option>
+    <option value="it">Italian</option>
+    <option value="ja">Japanese</option>
+    <option value="nl">Dutch</option>
+    <option value="no">Norwegian</option>
+    <option value="pt">Portuguese</option>
+    <option value="ro">Romanian</option>
+    <option value="ru">Russian</option>
+    <option value="sl">Slovenian</option>
+    <option value="sv">Swedish</option>
+    <option value="ta">Tamil</option>
+    <option value="th">Thai</option>
+    <option value="tl">Tagalog</option>
+    <option value="tr">Turkish</option>
+    <option value="uk">Ukrainian</option>
+    <option value="zh">Chinese</option>
+  </select>
 </div>
 <div class="form-row form-row-label" style="margin-bottom:0;">
   <label style="width:100%;"><i class="fa fa-list"></i> <span>Utterances</span></label>

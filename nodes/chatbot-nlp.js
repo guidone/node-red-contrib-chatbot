@@ -73,14 +73,18 @@ module.exports = function(RED) {
 
       const response = await manager.process('en', msg.payload.content);
       console.log(response);
-      
+
+      const variables = {};
+      (response.entities || []).forEach(entity => variables[entity.entity] = entity.option);
+
       send({
         ...msg,
         payload: {
           type: 'intent',
-          //isFallback: isFallback,
+          isFallback: response.intent === 'None',
+          language: response.localeIso2,
           intent: response.intent,
-          //variables: !_.isEmpty(variables) ? variables : null,
+          variables: !_.isEmpty(variables) ? variables : null,
           //answer: answer
         }
       });
