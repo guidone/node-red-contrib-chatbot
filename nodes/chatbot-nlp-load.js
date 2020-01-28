@@ -24,25 +24,19 @@ module.exports = function(RED) {
       
       const global = this.context().global;
 
-      
       fs.readFile(filename, 'utf8', (err, json) => {
         if (err) {
           done(err);
           return;
         }
-        console.log('loaded', json)
-        
         const manager = new NlpManager();
         manager.import(json);
-
         // store globally          
         global.set('nlp_' + (!_.isEmpty(name) ? name : 'default'), manager);
-
+        // pass thru
         send({ ...msg, payload: manager });
         done();
       });
-
-
     });
   }
 
