@@ -16,9 +16,6 @@ const {
 const { NlpManager } = require('node-nlp');
 
 
-
-
-
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
 
@@ -26,13 +23,16 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
     const node = this;
     
+    this.name = config.name;
+    this.debug = config.debug;
+
     this.on('input', async function(msg, send, done) {
       // send/done compatibility for node-red < 1.0
       send = send || function() { node.send.apply(node, arguments) };
       done = done || function(error) { node.error.call(node, error, msg) };
 
-
       const name = extractValue('string', 'name', node, msg, false);
+      const debug = extractValue('boolean', 'debug', node, msg, false);
 
       const global = this.context().global;
 
@@ -49,18 +49,29 @@ module.exports = function(RED) {
       // entities
       // https://github.com/axa-group/nlp.js/blob/master/docs/v3/slot-filling.md#entities-with-the-same-name
 
-      // TODO collect all languages
-      const manager = new NlpManager({ languages: ['en'] });
       const { payload } = msg;
+      // collect all languages from payload
+      const languages = _.uniq([...Object.keys(payload.intents || {}), ...Object.keys(payload.entities || {})]);
+      
+      const manager = new NlpManager({ 
+        languages, 
+        nlu: { log: debug },
+        autoSave: false,
+        autoLoad: false 
+      });
+      
 
-      console.log('payload', payload)
+          console.log('payload', payload)
 
       // adding intents
       if (_.isObject(payload.intents)) {
         Object.keys(payload.intents).forEach(language => {
           Object.keys(payload.intents[language] || {}).forEach(intent => {
             (payload.intents[language][intent] || []).forEach(utterance => {
-              console.log(`[${language.toUpperCase()}] - ${intent} : ${utterance}`);
+              if (debug) {
+                // eslint-disable-next-line no-console
+                console.log(`Intent: ${intent} [${language.toUpperCase()}] : ${utterance}`);
+              }
               manager.addDocument(language, utterance, intent);
             });
           });
@@ -72,33 +83,22 @@ module.exports = function(RED) {
         Object.keys(payload.entities).forEach(language => {
           Object.keys(payload.entities[language] || {}).forEach(name => {
             (payload.entities[language][name] || []).forEach(entity => {
-              console.log(`[${language.toUpperCase()}] - ${name} : ${entity.name} (${entity.aliases.join(',')})`);              
+              if (debug) {
+                // eslint-disable-next-line no-console
+                console.log(`Entity ${name} [${language.toUpperCase()}] : ${entity.name} (${entity.aliases.join(',')})`);
+              }              
               manager.addNamedEntityText(name, entity.name, [language], _.isEmpty(entity.aliases) ? entity.aliases : null);
             });
           });
         });
       }
 
-
-
-      // TODO collect language from payload
-      
-
-
-      /*manager.addNamedEntityText('room', 'kitchen', ['en'], ['kitchen']);
-      manager.addNamedEntityText('room', 'dining room', ['en'], ['dining room']);
-      manager.addNamedEntityText('room', 'bathroom', ['en'], ['bathroom', 'toilette', 'lavatory']);
-      */
-
-
       await manager.train();
       manager.save();
-          
+      // store globally          
       global.set('nlp_' + (!_.isEmpty(name) ? name : 'default'), manager);
 
-      //const response = await manager.process('en', msg.payload.content);
-      //console.log(response);
-      send(msg);
+      send({...msg, payload: manager });
       done();
     });
   }

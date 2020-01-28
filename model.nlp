@@ -1,23 +1,203 @@
 {
   "settings": {
     "languages": [
+      "it",
       "en"
     ],
+    "nlu": {
+      "log": true
+    },
+    "autoSave": false,
+    "autoLoad": false,
     "tag": "nlp",
     "threshold": 0.5,
-    "autoLoad": true,
-    "autoSave": true,
     "modelFileName": "model.nlp"
   },
   "nluManager": {
     "settings": {
-      "tag": "nlu-manager"
+      "tag": "nlu-manager",
+      "log": true
     },
     "locales": [
+      "it",
       "en"
     ],
     "languageNames": {},
     "domainManagers": {
+      "it": {
+        "settings": {
+          "locale": "it",
+          "tag": "domain-manager-it",
+          "nluByDomain": {
+            "default": {
+              "className": "NeuralNlu",
+              "settings": {}
+            }
+          },
+          "trainByDomain": false,
+          "useStemDict": true
+        },
+        "stemDict": {
+          "accend,la,luc": {
+            "intent": "switch.on",
+            "domain": "default"
+          },
+          "accend,le,luc": {
+            "intent": "switch.on",
+            "domain": "default"
+          },
+          "accend,le,luc,tutt": {
+            "intent": "switch.on",
+            "domain": "default"
+          },
+          "%room%,accend,in,le,luc": {
+            "intent": "switch.on",
+            "domain": "default"
+          },
+          "illumin": {
+            "intent": "switch.on",
+            "domain": "default"
+          },
+          "appicc": {
+            "intent": "switch.on",
+            "domain": "default"
+          }
+        },
+        "intentDict": {
+          "switch.on": "default"
+        },
+        "sentences": [
+          {
+            "domain": "default",
+            "utterance": "accendi la luce",
+            "intent": "switch.on"
+          },
+          {
+            "domain": "default",
+            "utterance": "accendi le luci",
+            "intent": "switch.on"
+          },
+          {
+            "domain": "default",
+            "utterance": "accendi tutte le luci",
+            "intent": "switch.on"
+          },
+          {
+            "domain": "default",
+            "utterance": "accendi le luci in %room%",
+            "intent": "switch.on"
+          },
+          {
+            "domain": "default",
+            "utterance": "illumina",
+            "intent": "switch.on"
+          },
+          {
+            "domain": "default",
+            "utterance": "appiccia",
+            "intent": "switch.on"
+          }
+        ],
+        "domains": {
+          "master_domain": {
+            "settings": {
+              "locale": "it",
+              "tag": "nlu-it",
+              "keepStopwords": true,
+              "nonefeatureValue": 1,
+              "nonedeltaMultiplier": 1.2,
+              "spellCheck": false,
+              "spellCheckDistance": 1,
+              "filterZeros": true,
+              "log": true
+            },
+            "features": {
+              "accend": 1,
+              "la": 1,
+              "luc": 1,
+              "le": 1,
+              "tutt": 1,
+              "in": 1,
+              "%room%": 1,
+              "illumin": 1,
+              "appicc": 1
+            },
+            "intents": {
+              "switch.on": 1
+            },
+            "intentFeatures": {
+              "switch.on": [
+                "accend",
+                "la",
+                "luc",
+                "le",
+                "tutt",
+                "in",
+                "%room%",
+                "illumin",
+                "appicc"
+              ]
+            },
+            "neuralNetwork": {
+              "features": [
+                "accend",
+                "la",
+                "luc",
+                "le",
+                "tutt",
+                "in",
+                "%room%",
+                "illumin",
+                "appicc",
+                "nonefeature"
+              ],
+              "intents": [
+                "switch.on",
+                "None"
+              ],
+              "perceptrons": [
+                [
+                  2.774411916732788,
+                  1.407799482345581,
+                  2.774411916732788,
+                  1.366612195968628,
+                  0.04852667450904846,
+                  0.018375173211097717,
+                  0.018375173211097717,
+                  6.885468006134033,
+                  6.861793041229248,
+                  -5.415233135223389,
+                  5.550770109096725
+                ],
+                [
+                  -0.9305406808853149,
+                  -0.4629935324192047,
+                  -0.9305406808853149,
+                  -0.4675470292568207,
+                  -0.1128295511007309,
+                  -0.05552259832620621,
+                  -0.05552259832620621,
+                  -2.239654779434204,
+                  -2.2224247455596924,
+                  10.022379875183105,
+                  2.318277479432119
+                ]
+              ],
+              "perceptronSettings": {
+                "log": true,
+                "locale": "it",
+                "tag": "nlu-it",
+                "keepStopwords": true,
+                "nonefeatureValue": 1,
+                "nonedeltaMultiplier": 1.2,
+                "spellCheck": false,
+                "spellCheckDistance": 1,
+                "filterZeros": true
+              }
+            }
+          }
+        }
+      },
       "en": {
         "settings": {
           "locale": "en",
@@ -225,6 +405,7 @@
                 ]
               ],
               "perceptronSettings": {
+                "log": true,
                 "locale": "en",
                 "tag": "nlu-en",
                 "keepStopwords": true,
@@ -232,8 +413,7 @@
                 "nonedeltaMultiplier": 1.2,
                 "spellCheck": false,
                 "spellCheckDistance": 1,
-                "filterZeros": true,
-                "log": true
+                "filterZeros": true
               }
             }
           }
@@ -242,6 +422,30 @@
     },
     "intentDomains": {},
     "extraSentences": [
+      [
+        "it",
+        "accendi la luce"
+      ],
+      [
+        "it",
+        "accendi le luci"
+      ],
+      [
+        "it",
+        "accendi tutte le luci"
+      ],
+      [
+        "it",
+        "accendi le luci in %room%"
+      ],
+      [
+        "it",
+        "illumina"
+      ],
+      [
+        "it",
+        "appiccia"
+      ],
       [
         "en",
         "switch on lights"
@@ -283,6 +487,38 @@
       "entitySuffix": "%"
     },
     "rules": {
+      "it": {
+        "room": {
+          "name": "room",
+          "type": "enum",
+          "rules": [
+            {
+              "option": "bagno",
+              "texts": [
+                "bagno"
+              ]
+            },
+            {
+              "option": "cucina",
+              "texts": [
+                "cucina"
+              ]
+            },
+            {
+              "option": "salotto",
+              "texts": [
+                "salotto"
+              ]
+            },
+            {
+              "option": "balcone",
+              "texts": [
+                "balcone"
+              ]
+            }
+          ]
+        }
+      },
       "en": {
         "room": {
           "name": "room",

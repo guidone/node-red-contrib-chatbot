@@ -1,0 +1,32 @@
+<script type="text/javascript">
+  $.RedBot.registerType('chatbot-nlpjs-save',{
+    category: $.RedBot.config.name + ' Parsers',
+    color: '#FFCC66',
+    defaults: {
+      filename: {
+        value: '',
+        required: true
+      },
+      outputs: {
+        value: 0
+      }
+    },
+    inputs: 1,
+    outputs: 0,
+    icon: 'chatbot-listen-lexicon.png',
+    paletteLabel: 'NLP.js Save',
+    label: function() {
+      return 'NLP.js Save';
+    }
+  });
+</script>
+
+
+<script type="text/x-red" data-template-name="chatbot-nlpjs-save">
+<div class="form-row form-row-name">
+  <label for="node-input-intent"><i class="icon-tag"></i> Model filename</label>
+  <input type="text" id="node-input-filename" placeholder="Filename">
+</div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-nlpjs-save"></script>

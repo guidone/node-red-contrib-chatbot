@@ -26,6 +26,7 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
     const node = this;
     
+    this.name = config.name;
 
     this.on('input', async function(msg, send, done) {
       // send/done compatibility for node-red < 1.0
@@ -53,25 +54,14 @@ module.exports = function(RED) {
 
       
 
-      /*manager.addDocument('en', 'switch on light', 'switch.on.light');
-      manager.addDocument('en', 'switch on the light', 'switch.on.light');
-      manager.addDocument('en', 'turn on the light', 'switch.on.light');
-      manager.addDocument('en', 'turn on light', 'switch.on.light');
-      manager.addDocument('en', 'turn on light in the %room%', 'switch.on.light');
-      manager.addDocument('en', 'turn on the light in %room%', 'switch.on.light');
-      
-      manager.addDocument('en', 'turn on the light number %number%', 'switch.on.light.bynumber');
 
-      manager.addDocument('en', 'turn on all the lights', 'switch.on.lights');
-      manager.addDocument('en', 'turn on the lights', 'switch.on.lights');
+      let language = await msg.chat().get('language');
 
-      manager.addNamedEntityText('room', 'kitchen', ['en'], ['kitchen']);
-      manager.addNamedEntityText('room', 'dining room', ['en'], ['dining room']);
-      manager.addNamedEntityText('room', 'bathroom', ['en'], ['bathroom', 'toilette', 'lavatory']);*/
+      // TODO if not, try to guess
+      console.log('Detecging', language)
 
 
-
-      const response = await manager.process('en', msg.payload.content);
+      const response = await manager.process(language, msg.payload.content);
       console.log(response);
 
       const variables = {};
@@ -84,18 +74,11 @@ module.exports = function(RED) {
           isFallback: response.intent === 'None',
           language: response.localeIso2,
           intent: response.intent,
-          variables: !_.isEmpty(variables) ? variables : null,
-          //answer: answer
+          variables: !_.isEmpty(variables) ? variables : null
         }
       });
-      
-
-      // TODO prepare resposne same as other nodes
-      
+    
       done();
-
-
-
     });
   }
 

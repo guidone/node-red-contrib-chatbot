@@ -6,8 +6,10 @@
       name: {
         value: ''
         // TODO check not empty and valid chars
+      },
+      debug: {
+        value: false
       }
-      
     },
     inputs: 1,
     outputs: 1,
@@ -22,7 +24,14 @@
 <script type="text/x-red" data-template-name="chatbot-nlpjs-train">
 <div class="form-row">
   <label for="node-input-name"><i class="icon-tag"></i> Model Name</label>
-  <input type="text" id="node-input-name" placeholder="Model Name">
+  <input type="text" id="node-input-name" placeholder="Model name">
+</div>
+<div class="form-row">
+  <label for="node-input-debug">Debug</label>
+  <input type="checkbox" value="true" id="node-input-debug">
+  <span class="redbot-form-hint">
+    Show debug information while training the model
+  </span>
 </div>
 
 </script>

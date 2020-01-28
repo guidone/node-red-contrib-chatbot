@@ -82,7 +82,9 @@
       "chatbot-nlp": "./nodes/chatbot-nlp.js",
       "chatbot-nlp-train": "./nodes/chatbot-nlp-train.js",
       "chatbot-nlp-intent": "./nodes/chatbot-nlp-intent.js",
-      "chatbot-nlp-entity": "./nodes/chatbot-nlp-entity.js"
+      "chatbot-nlp-entity": "./nodes/chatbot-nlp-entity.js",
+      "chatbot-nlp-save": "./nodes/chatbot-nlp-save.js",
+      "chatbot-nlp-load": "./nodes/chatbot-nlp-load.js"
     }
   },
   "maintainers": [

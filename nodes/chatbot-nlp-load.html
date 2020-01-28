@@ -1,0 +1,40 @@
+<script type="text/javascript">
+  $.RedBot.registerType('chatbot-nlpjs-load',{
+    category: $.RedBot.config.name + ' Parsers',
+    color: '#FFCC66',
+    defaults: {
+      filename: {
+        value: '',
+        required: true
+      },
+      name: {
+        value: '',
+        required: true
+      },
+      outputs: {
+        value: 0
+      }
+    },
+    inputs: 1,
+    outputs: 0,
+    icon: 'chatbot-listen-lexicon.png',
+    paletteLabel: 'NLP.js Load',
+    label: function() {
+      return 'NLP.js Load';
+    }
+  });
+</script>
+
+
+<script type="text/x-red" data-template-name="chatbot-nlpjs-load">
+  <div class="form-row">
+    <label for="node-input-name"><i class="icon-tag"></i> Model Name</label>
+    <input type="text" id="node-input-name" placeholder="Model name">
+  </div>
+  <div class="form-row form-row-name">
+    <label for="node-input-intent"><i class="icon-tag"></i> Model filename</label>
+    <input type="text" id="node-input-filename" placeholder="Filename">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-nlpjs-load"></script>
