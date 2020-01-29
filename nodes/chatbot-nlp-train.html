@@ -4,8 +4,8 @@
     color: '#FFCC66',
     defaults: {
       name: {
-        value: ''
-        // TODO check not empty and valid chars
+        value: '',
+        validate: $.RedBot.validate.nlpModel
       },
       debug: {
         value: false
@@ -25,6 +25,9 @@
 <div class="form-row">
   <label for="node-input-name"><i class="icon-tag"></i> Model Name</label>
   <input type="text" id="node-input-name" placeholder="Model name">
+  <span class="redbot-form-hint">
+    Leave blank if you don't need to use more than one NLP model in the chatbot. Only use letters and numbers, no spaces.
+  </span>
 </div>
 <div class="form-row">
   <label for="node-input-debug">Debug</label>

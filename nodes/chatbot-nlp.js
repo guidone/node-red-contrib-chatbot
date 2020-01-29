@@ -1,23 +1,8 @@
 const _ = require('underscore');
+const { Language } = require('node-nlp');
 
-const { ChatExpress } = require('chat-platform');
 const RegisterType = require('../lib/node-installer');
-const { 
-  isValidMessage, 
-  getChatId, 
-  getMessageId, 
-  getTransport, 
-  extractValue,
-  append 
-} = require('../lib/helpers/utils');
-
-
-
-//const { NlpManager } = require('node-nlp');
-
-
-
-
+const { isValidMessage, extractValue } = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
@@ -36,34 +21,40 @@ module.exports = function(RED) {
       if (!isValidMessage(msg, node)) {
         return;
       }
-      const chatId = getChatId(msg);
-      const messageId = getMessageId(msg);
-      //const template = MessageTemplate(msg, node);
-      const transport = getTransport(msg);
 
       const global = this.context().global;
-
       const name = extractValue('string', 'name', node, msg, false);
+      const content = msg.payload != null ? msg.payload.content : null;
 
       // DOCS
       // entities
       // https://github.com/axa-group/nlp.js/blob/master/docs/v3/slot-filling.md#entities-with-the-same-name
 
+      // get the right nlp model
       const manager = global.get('nlp_' + (!_.isEmpty(name) ? name : 'default'));
-
-
       
-
-
+      // check if string
+      if (!_.isString(content)) {
+        done('Incoming message is not a string');
+        return;
+      }
       let language = await msg.chat().get('language');
-
-      // TODO if not, try to guess
-      console.log('Detecging', language)
-
-
-      const response = await manager.process(language, msg.payload.content);
-      console.log(response);
-
+      language = '' // TODO remove
+      if (_.isEmpty(language)) {
+        const languageGuesser = new Language();
+        const guess = languageGuesser.guess(content);
+        if (!_.isEmpty(guess)) {
+          language = guess[0].alpha2;
+        }
+      }
+      // skip if language is not detected
+      if (_.isEmpty(language)) {
+        done('Unable to detect content language, skipping');
+        return;
+      }
+      // finally process
+      const response = await manager.process(language, content);
+      // extract vars
       const variables = {};
       (response.entities || []).forEach(entity => variables[entity.entity] = entity.option);
 
@@ -77,7 +68,6 @@ module.exports = function(RED) {
           variables: !_.isEmpty(variables) ? variables : null
         }
       });
-    
       done();
     });
   }

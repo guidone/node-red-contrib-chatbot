@@ -17,7 +17,7 @@
       utterances: {
         value: [],
         validate: function(utterances) {
-          return $.RedBot.validate.arrayNotEmpty(utterances);
+          return $.RedBot.validate.utterances(utterances);
         }
       },
       outputs: {
@@ -53,7 +53,7 @@
       $('#node-input-values-container')
         .css('min-width', '450px')
         .editableList({
-          addButton: 'Add term',
+          addButton: 'Add utterance',
           addItem: function(container, i, entity) {
             var value = typeof entity == 'object' ? '' : entity;
             var row = $('<div/>').appendTo(container);

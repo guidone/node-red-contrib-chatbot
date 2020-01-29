@@ -359,6 +359,41 @@
     }
     return valid;
   };
+  $.RedBot.validate.entities = function(entities) {
+    if (entities == null) {
+      return false;
+    }
+    var valid = true;
+    var idx;
+    for(idx = 0; idx < entities.length; idx++) {
+      if (!$.RedBot.validate.entity(entities[idx])) {
+        valid = false;
+      }
+    }
+    return valid;
+  };
+  $.RedBot.validate.nlpModel = function(name) {
+    return typeof name === 'string' && (name === '' || name.match(/^[A-Za-z0-9-_]*$/));
+  };
+  $.RedBot.validate.utterances = function(utterances) {
+    if (utterances == null) {
+      return false;
+    }
+    var valid = true;
+    var idx;
+    for(idx = 0; idx < utterances.length; idx++) {
+      if (!$.RedBot.validate.utterance(utterances[idx])) {
+        valid = false;
+      }
+    }
+    return valid;
+  };
+  $.RedBot.validate.utterance = function(utterance) {
+    return utterance != null && utterance !== ''; 
+  }; 
+  $.RedBot.validate.entity = function(entity) {
+    return typeof entity === 'object' && entity.name != null && entity.name !== '';
+  };
   $.RedBot.validate.param = function(param) {
     return param != null && param.platform != null && param.name != null && param.value != null;  
   };

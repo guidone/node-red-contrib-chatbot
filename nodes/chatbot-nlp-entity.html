@@ -16,10 +16,9 @@
       },
       entities: {
         value: [],
-          // TODO validate
-        /*validate: function(utterances) {
-          return $.RedBot.validate.arrayNotEmpty(utterances);
-        }*/
+        validate: function(entities) {
+          return $.RedBot.validate.entities(entities);
+        }
       },
       outputs: {
         value: 1
