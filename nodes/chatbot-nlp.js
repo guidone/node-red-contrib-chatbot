@@ -39,7 +39,6 @@ module.exports = function(RED) {
         return;
       }
       let language = await msg.chat().get('language');
-      language = '' // TODO remove
       if (_.isEmpty(language)) {
         const languageGuesser = new Language();
         const guess = languageGuesser.guess(content);
