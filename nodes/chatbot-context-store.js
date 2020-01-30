@@ -56,6 +56,8 @@ module.exports = function(RED) {
     result.eventTypes = _(ChatPlatform.getEvents()).sortBy(event => event.name);
     // collect params
     result.params = ChatPlatform.getParams();
+    // add port
+    result.uiPort = RED.settings.uiPort;
     res.send(result);
   });
 

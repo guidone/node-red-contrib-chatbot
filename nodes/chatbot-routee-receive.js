@@ -43,6 +43,8 @@ module.exports = function(RED) {
     this.log = n.log;
     this.usernames = n.usernames != null ? n.usernames.split(',') : [];
     this.appId = n.appId;
+    this.multiWebHook = n.multiWebHook;
+    this.multiWebHookPath = n.multiWebHookPath;
     this.fromNumber = n.fromNumber;
     this.debug = n.debug;
 
@@ -67,6 +69,8 @@ module.exports = function(RED) {
       appId: node.appId,
       fromNumber: node.fromNumber,
       logfile: node.log,
+      multiWebHook: node.multiWebHook,
+      multiWebHookPath: node.multiWebHookPath,
       contextProvider: contextStorageNode != null ? contextStorageNode.contextStorage : null,
       contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null,
       debug: node.debug
@@ -111,7 +115,7 @@ module.exports = function(RED) {
         botConfiguration.contextProvider,
         { ...botConfiguration.contextParams, id: this.store }
       );
-      // try to start the servers
+      // try to start the servers      
       try {
         node.contextProvider.start();
         node.chat = RouteeServer.createServer({
@@ -122,6 +126,8 @@ module.exports = function(RED) {
           contextProvider: node.contextProvider,
           logfile: botConfiguration.logfile,
           debug: botConfiguration.debug,
+          multiWebHook: botConfiguration.multiWebHook,
+          multiWebHookPath: botConfiguration.multiWebHookPath,
           RED: RED
         });
         // add extensions
