@@ -31,7 +31,9 @@
       },
       multiWebHookPath: {
         value: '',
-        // TODO validation
+        validate: function(value) {
+          return !this.multiWebHook || $.RedBot.validate.isPath(value); 
+        }
       },
       debug: {
         value: false

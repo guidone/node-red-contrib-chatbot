@@ -182,6 +182,9 @@
     }
   ];
   $.RedBot.validate = {};
+  $.RedBot.validate.isPath = function(value) {
+    return typeof value === 'string' && value.length !== 0 && value.match(/^[A-Za-z0-9_-]*$/);
+  };
   $.RedBot.validate.isVariable = function(value) {
     return $.RedBot.validate.string(value) && value.match(/^\{\{[A-Za-z0-9_-]*\}\}$/) != null;
   };
