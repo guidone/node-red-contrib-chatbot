@@ -24,15 +24,6 @@ module.exports = function(RED) {
 
       const global = this.context().global;
 
-      // check if valid message
-      //if (!isValidMessage(msg, node)) {
-       // return;
-      //}
-      //const chatId = getChatId(msg);
-      //const messageId = getMessageId(msg);
-      //const template = MessageTemplate(msg, node);
-      //const transport = getTransport(msg);
-
       // DOCS
       // entities
       // https://github.com/axa-group/nlp.js/blob/master/docs/v3/slot-filling.md#entities-with-the-same-name
@@ -48,7 +39,6 @@ module.exports = function(RED) {
         autoSave: false,
         autoLoad: false 
       });
-
 
       // adding intents
       if (_.isObject(payload.intents)) {
