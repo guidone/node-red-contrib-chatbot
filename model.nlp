@@ -36,42 +36,60 @@
           "useStemDict": true
         },
         "stemDict": {
-          "%room%,in,light,on,switch,the": {
-            "intent": "switch.on",
+          "light,on,switch": {
+            "intent": "switch.on.light",
             "domain": "default"
           },
-          "%room%,in,light,on,turn": {
-            "intent": "switch.on",
+          "light,on,turn": {
+            "intent": "switch.on.light",
             "domain": "default"
           },
-          "%room%,in,light,on,the,turn": {
-            "intent": "switch.on",
+          "i,light,more,want": {
+            "intent": "switch.on.light",
+            "domain": "default"
+          },
+          "light,on,power": {
+            "intent": "switch.on.light",
+            "domain": "default"
+          },
+          "on,power": {
+            "intent": "switch.on.light",
             "domain": "default"
           }
         },
         "intentDict": {
-          "switch.on": "default"
+          "switch.on.light": "default"
         },
         "sentences": [
           {
             "domain": "default",
-            "utterance": "switch on the the lights in the %room%",
-            "intent": "switch.on"
+            "utterance": "switch on lights",
+            "intent": "switch.on.light"
           },
           {
             "domain": "default",
-            "utterance": "switch on the lights in %room%",
-            "intent": "switch.on"
+            "utterance": "turn on lights",
+            "intent": "switch.on.light"
           },
           {
             "domain": "default",
-            "utterance": "turn on lights in %room%",
-            "intent": "switch.on"
+            "utterance": "turn lights on",
+            "intent": "switch.on.light"
           },
           {
             "domain": "default",
-            "utterance": "turn on the lights in the %room%",
-            "intent": "switch.on"
+            "utterance": "i want more light",
+            "intent": "switch.on.light"
+          },
+          {
+            "domain": "default",
+            "utterance": "power on lights",
+            "intent": "switch.on.light"
+          },
+          {
+            "domain": "default",
+            "utterance": "power on",
+            "intent": "switch.on.light"
           }
         ],
         "domains": {
@@ -90,63 +108,68 @@
             "features": {
               "switch": 1,
               "on": 1,
-              "the": 1,
               "light": 1,
-              "in": 1,
-              "%room%": 1,
-              "turn": 1
+              "turn": 1,
+              "i": 1,
+              "want": 1,
+              "more": 1,
+              "power": 1
             },
             "intents": {
-              "switch.on": 1
+              "switch.on.light": 1
             },
             "intentFeatures": {
-              "switch.on": [
+              "switch.on.light": [
                 "switch",
                 "on",
-                "the",
                 "light",
-                "in",
-                "%room%",
-                "turn"
+                "turn",
+                "i",
+                "want",
+                "more",
+                "power"
               ]
             },
             "neuralNetwork": {
               "features": [
                 "switch",
                 "on",
-                "the",
                 "light",
-                "in",
-                "%room%",
                 "turn",
+                "i",
+                "want",
+                "more",
+                "power",
                 "nonefeature"
               ],
               "intents": [
-                "switch.on",
+                "switch.on.light",
                 "None"
               ],
               "perceptrons": [
                 [
-                  1.1957087516784668,
-                  2.5363898277282715,
-                  0.2850762903690338,
-                  2.5363898277282715,
-                  2.5363898277282715,
-                  2.5363898277282715,
-                  1.3406808376312256,
-                  -0.8325508236885071,
-                  0.8500089676188702
+                  2.1412577629089355,
+                  6.692287445068359,
+                  0.3974938690662384,
+                  2.1552305221557617,
+                  2.9451076984405518,
+                  2.9451076984405518,
+                  2.9451076984405518,
+                  2.3958020210266113,
+                  -3.1904468536376953,
+                  3.223863867942124
                 ],
                 [
-                  -0.3105599880218506,
-                  -0.8328723311424255,
-                  -0.3124452531337738,
-                  -0.8328723311424255,
-                  -0.8328723311424255,
-                  -0.8328723311424255,
-                  -0.5223121643066406,
-                  8.552105903625488,
-                  3.8631935016743695
+                  -0.295221209526062,
+                  -1.9561980962753296,
+                  -1.3292356729507446,
+                  -0.3211669623851776,
+                  -0.6555989980697632,
+                  -0.6555989980697632,
+                  -0.6555989980697632,
+                  -1.339809775352478,
+                  9.203872680664062,
+                  3.2960407516388757
                 ]
               ],
               "perceptronSettings": {
@@ -168,19 +191,27 @@
     "extraSentences": [
       [
         "en",
-        "switch on the the lights in the %room%"
+        "switch on lights"
       ],
       [
         "en",
-        "switch on the lights in %room%"
+        "turn on lights"
       ],
       [
         "en",
-        "turn on lights in %room%"
+        "turn lights on"
       ],
       [
         "en",
-        "turn on the lights in the %room%"
+        "i want more light"
+      ],
+      [
+        "en",
+        "power on lights"
+      ],
+      [
+        "en",
+        "power on"
       ]
     ]
   },
@@ -190,34 +221,7 @@
       "entityPreffix": "%",
       "entitySuffix": "%"
     },
-    "rules": {
-      "en": {
-        "room": {
-          "name": "room",
-          "type": "enum",
-          "rules": [
-            {
-              "option": "kitchen",
-              "texts": [
-                "kitchen"
-              ]
-            },
-            {
-              "option": "dining room",
-              "texts": [
-                "dining room"
-              ]
-            },
-            {
-              "option": "lavatory",
-              "texts": [
-                "lavatory"
-              ]
-            }
-          ]
-        }
-      }
-    }
+    "rules": {}
   },
   "nlgManager": {
     "settings": {
@@ -231,14 +235,5 @@
     },
     "actions": {}
   },
-  "slotManager": {
-    "switch.on": {
-      "room": {
-        "intent": "switch.on",
-        "entity": "room",
-        "mandatory": false,
-        "locales": {}
-      }
-    }
-  }
+  "slotManager": {}
 }
