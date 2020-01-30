@@ -19,7 +19,7 @@ module.exports = function(RED) {
       send = send || function() { node.send.apply(node, arguments) };
       done = done || function(error) { node.error.call(node, error, msg) };
 
-      const entities = utils.extractValue('array', 'entities', node, msg);
+      const entities = utils.extractValue('arrayOfEntities', 'entities', node, msg);
       const name = utils.extractValue('string', 'name', node, msg, false);
       const language = utils.extractValue('string', 'language', node, msg, false);
 
@@ -27,16 +27,18 @@ module.exports = function(RED) {
       //var currentLexicon = msg.payload != null && _.isObject(msg.payload.lexicon) ? msg.payload.lexicon : {};
       // collect the lexicon of the node and mix with the one of the incoming payload
       if (_.isArray(entities) && !_.isEmpty(entities)) {
-        // append utterances
-        if (msg.payload.entities == null) {
+
+        // make sure we replace the entities[] in the payload
+        if (!_.isObject(msg.payload.entities) || _.isArray(msg.payload.entities)) {          
           msg.payload.entities = {};
         }
-        if (msg.payload.entities[language] == null) {
+        if (!_.isObject(msg.payload.entities[language])) {
           msg.payload.entities[language] = {};
         }
-        if (msg.payload.entities[language][name] == null) {
+        if (!_.isObject(msg.payload.entities[language][name])) {
           msg.payload.entities[language][name] = {};
         }
+        // append entities
         msg.payload.entities[language][name] = [
           ...(_.isArray(msg.payload.entities[language][name]) ? msg.payload.entities[language][name] : []),
           ...entities
