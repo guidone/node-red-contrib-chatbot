@@ -19,7 +19,7 @@ module.exports = function(RED) {
       send = send || function() { node.send.apply(node, arguments) };
       done = done || function(error) { node.error.call(node, error, msg) };
 
-      const utterances = utils.extractValue('array', 'utterances', node, msg);
+      const utterances = utils.extractValue('arrayOfString', 'utterances', node, msg);
       const intent = utils.extractValue('string', 'intent', node, msg, false);
       const language = utils.extractValue('string', 'language', node, msg, false);
 
