@@ -1,11 +1,10 @@
 {
   "settings": {
     "languages": [
-      "it",
       "en"
     ],
     "nlu": {
-      "log": true
+      "log": false
     },
     "autoSave": false,
     "autoLoad": false,
@@ -16,188 +15,13 @@
   "nluManager": {
     "settings": {
       "tag": "nlu-manager",
-      "log": true
+      "log": false
     },
     "locales": [
-      "it",
       "en"
     ],
     "languageNames": {},
     "domainManagers": {
-      "it": {
-        "settings": {
-          "locale": "it",
-          "tag": "domain-manager-it",
-          "nluByDomain": {
-            "default": {
-              "className": "NeuralNlu",
-              "settings": {}
-            }
-          },
-          "trainByDomain": false,
-          "useStemDict": true
-        },
-        "stemDict": {
-          "accend,la,luc": {
-            "intent": "switch.on",
-            "domain": "default"
-          },
-          "accend,le,luc": {
-            "intent": "switch.on",
-            "domain": "default"
-          },
-          "accend,le,luc,tutt": {
-            "intent": "switch.on",
-            "domain": "default"
-          },
-          "%room%,accend,in,le,luc": {
-            "intent": "switch.on",
-            "domain": "default"
-          },
-          "illumin": {
-            "intent": "switch.on",
-            "domain": "default"
-          },
-          "appicc": {
-            "intent": "switch.on",
-            "domain": "default"
-          }
-        },
-        "intentDict": {
-          "switch.on": "default"
-        },
-        "sentences": [
-          {
-            "domain": "default",
-            "utterance": "accendi la luce",
-            "intent": "switch.on"
-          },
-          {
-            "domain": "default",
-            "utterance": "accendi le luci",
-            "intent": "switch.on"
-          },
-          {
-            "domain": "default",
-            "utterance": "accendi tutte le luci",
-            "intent": "switch.on"
-          },
-          {
-            "domain": "default",
-            "utterance": "accendi le luci in %room%",
-            "intent": "switch.on"
-          },
-          {
-            "domain": "default",
-            "utterance": "illumina",
-            "intent": "switch.on"
-          },
-          {
-            "domain": "default",
-            "utterance": "appiccia",
-            "intent": "switch.on"
-          }
-        ],
-        "domains": {
-          "master_domain": {
-            "settings": {
-              "locale": "it",
-              "tag": "nlu-it",
-              "keepStopwords": true,
-              "nonefeatureValue": 1,
-              "nonedeltaMultiplier": 1.2,
-              "spellCheck": false,
-              "spellCheckDistance": 1,
-              "filterZeros": true,
-              "log": true
-            },
-            "features": {
-              "accend": 1,
-              "la": 1,
-              "luc": 1,
-              "le": 1,
-              "tutt": 1,
-              "in": 1,
-              "%room%": 1,
-              "illumin": 1,
-              "appicc": 1
-            },
-            "intents": {
-              "switch.on": 1
-            },
-            "intentFeatures": {
-              "switch.on": [
-                "accend",
-                "la",
-                "luc",
-                "le",
-                "tutt",
-                "in",
-                "%room%",
-                "illumin",
-                "appicc"
-              ]
-            },
-            "neuralNetwork": {
-              "features": [
-                "accend",
-                "la",
-                "luc",
-                "le",
-                "tutt",
-                "in",
-                "%room%",
-                "illumin",
-                "appicc",
-                "nonefeature"
-              ],
-              "intents": [
-                "switch.on",
-                "None"
-              ],
-              "perceptrons": [
-                [
-                  2.774411916732788,
-                  1.407799482345581,
-                  2.774411916732788,
-                  1.366612195968628,
-                  0.04852667450904846,
-                  0.018375173211097717,
-                  0.018375173211097717,
-                  6.885468006134033,
-                  6.861793041229248,
-                  -5.415233135223389,
-                  5.550770109096725
-                ],
-                [
-                  -0.9305406808853149,
-                  -0.4629935324192047,
-                  -0.9305406808853149,
-                  -0.4675470292568207,
-                  -0.1128295511007309,
-                  -0.05552259832620621,
-                  -0.05552259832620621,
-                  -2.239654779434204,
-                  -2.2224247455596924,
-                  10.022379875183105,
-                  2.318277479432119
-                ]
-              ],
-              "perceptronSettings": {
-                "log": true,
-                "locale": "it",
-                "tag": "nlu-it",
-                "keepStopwords": true,
-                "nonefeatureValue": 1,
-                "nonedeltaMultiplier": 1.2,
-                "spellCheck": false,
-                "spellCheckDistance": 1,
-                "filterZeros": true
-              }
-            }
-          }
-        }
-      },
       "en": {
         "settings": {
           "locale": "en",
@@ -212,11 +36,7 @@
           "useStemDict": true
         },
         "stemDict": {
-          "light,on,switch": {
-            "intent": "switch.on",
-            "domain": "default"
-          },
-          "%room%,in,light,on,switch": {
+          "%room%,in,light,on,switch,the": {
             "intent": "switch.on",
             "domain": "default"
           },
@@ -224,40 +44,23 @@
             "intent": "switch.on",
             "domain": "default"
           },
-          "%room%,bulb,in,light,up": {
+          "%room%,in,light,on,the,turn": {
             "intent": "switch.on",
-            "domain": "default"
-          },
-          "light,off,switch": {
-            "intent": "switch.off",
-            "domain": "default"
-          },
-          "%room%,in,light,off,switch": {
-            "intent": "switch.off",
-            "domain": "default"
-          },
-          "%room%,in,light,off,turn": {
-            "intent": "switch.off",
-            "domain": "default"
-          },
-          "%room%,cancel,in,light": {
-            "intent": "switch.off",
             "domain": "default"
           }
         },
         "intentDict": {
-          "switch.on": "default",
-          "switch.off": "default"
+          "switch.on": "default"
         },
         "sentences": [
           {
             "domain": "default",
-            "utterance": "switch on lights",
+            "utterance": "switch on the the lights in the %room%",
             "intent": "switch.on"
           },
           {
             "domain": "default",
-            "utterance": "switch on lights in %room%",
+            "utterance": "switch on the lights in %room%",
             "intent": "switch.on"
           },
           {
@@ -267,28 +70,8 @@
           },
           {
             "domain": "default",
-            "utterance": "light up bulbs in %room%",
+            "utterance": "turn on the lights in the %room%",
             "intent": "switch.on"
-          },
-          {
-            "domain": "default",
-            "utterance": "switch off lights",
-            "intent": "switch.off"
-          },
-          {
-            "domain": "default",
-            "utterance": "switch off lights in %room%",
-            "intent": "switch.off"
-          },
-          {
-            "domain": "default",
-            "utterance": "turn off lights in %room%",
-            "intent": "switch.off"
-          },
-          {
-            "domain": "default",
-            "utterance": "cancel lights in %room%",
-            "intent": "switch.off"
           }
         ],
         "domains": {
@@ -307,105 +90,66 @@
             "features": {
               "switch": 1,
               "on": 1,
+              "the": 1,
               "light": 1,
               "in": 1,
               "%room%": 1,
-              "turn": 1,
-              "up": 1,
-              "bulb": 1,
-              "off": 1,
-              "cancel": 1
+              "turn": 1
             },
             "intents": {
-              "switch.on": 1,
-              "switch.off": 1
+              "switch.on": 1
             },
             "intentFeatures": {
               "switch.on": [
                 "switch",
                 "on",
+                "the",
                 "light",
                 "in",
                 "%room%",
-                "turn",
-                "up",
-                "bulb"
-              ],
-              "switch.off": [
-                "switch",
-                "off",
-                "light",
-                "in",
-                "%room%",
-                "turn",
-                "cancel"
+                "turn"
               ]
             },
             "neuralNetwork": {
               "features": [
                 "switch",
                 "on",
+                "the",
                 "light",
                 "in",
                 "%room%",
                 "turn",
-                "up",
-                "bulb",
-                "off",
-                "cancel",
                 "nonefeature"
               ],
               "intents": [
                 "switch.on",
-                "switch.off",
                 "None"
               ],
               "perceptrons": [
                 [
-                  1.1134848594665527,
-                  7.74910306930542,
-                  2.653953790664673,
-                  0.09303548187017441,
-                  0.09303548187017441,
-                  0.9879655241966248,
-                  4.375724792480469,
-                  4.375724792480469,
-                  -5.64764928817749,
-                  -3.823218584060669,
-                  -0.8701886534690857,
-                  0.8916345613932084
+                  1.1957087516784668,
+                  2.5363898277282715,
+                  0.2850762903690338,
+                  2.5363898277282715,
+                  2.5363898277282715,
+                  2.5363898277282715,
+                  1.3406808376312256,
+                  -0.8325508236885071,
+                  0.8500089676188702
                 ],
                 [
-                  0.2785951793193817,
-                  -6.399176120758057,
-                  3.9670159816741943,
-                  0.23020751774311066,
-                  0.23020751774311066,
-                  0.005544439423829317,
-                  -2.9679312705993652,
-                  -2.9679312705993652,
-                  6.683314323425293,
-                  6.650803089141846,
-                  -1.2856980562210083,
-                  1.3403950932981668
-                ],
-                [
-                  -1.1461504697799683,
-                  -0.632498562335968,
-                  -1.7901307344436646,
-                  -0.7163263559341431,
-                  -0.7163263559341431,
-                  -0.10764749348163605,
-                  -0.20006832480430603,
-                  -0.20006832480430603,
-                  -0.6212995052337646,
-                  -0.3362640142440796,
-                  8.912069320678711,
-                  3.5618274549493703
+                  -0.3105599880218506,
+                  -0.8328723311424255,
+                  -0.3124452531337738,
+                  -0.8328723311424255,
+                  -0.8328723311424255,
+                  -0.8328723311424255,
+                  -0.5223121643066406,
+                  8.552105903625488,
+                  3.8631935016743695
                 ]
               ],
               "perceptronSettings": {
-                "log": true,
                 "locale": "en",
                 "tag": "nlu-en",
                 "keepStopwords": true,
@@ -423,36 +167,12 @@
     "intentDomains": {},
     "extraSentences": [
       [
-        "it",
-        "accendi la luce"
-      ],
-      [
-        "it",
-        "accendi le luci"
-      ],
-      [
-        "it",
-        "accendi tutte le luci"
-      ],
-      [
-        "it",
-        "accendi le luci in %room%"
-      ],
-      [
-        "it",
-        "illumina"
-      ],
-      [
-        "it",
-        "appiccia"
+        "en",
+        "switch on the the lights in the %room%"
       ],
       [
         "en",
-        "switch on lights"
-      ],
-      [
-        "en",
-        "switch on lights in %room%"
+        "switch on the lights in %room%"
       ],
       [
         "en",
@@ -460,23 +180,7 @@
       ],
       [
         "en",
-        "light up bulbs in %room%"
-      ],
-      [
-        "en",
-        "switch off lights"
-      ],
-      [
-        "en",
-        "switch off lights in %room%"
-      ],
-      [
-        "en",
-        "turn off lights in %room%"
-      ],
-      [
-        "en",
-        "cancel lights in %room%"
+        "turn on the lights in the %room%"
       ]
     ]
   },
@@ -487,38 +191,6 @@
       "entitySuffix": "%"
     },
     "rules": {
-      "it": {
-        "room": {
-          "name": "room",
-          "type": "enum",
-          "rules": [
-            {
-              "option": "bagno",
-              "texts": [
-                "bagno"
-              ]
-            },
-            {
-              "option": "cucina",
-              "texts": [
-                "cucina"
-              ]
-            },
-            {
-              "option": "salotto",
-              "texts": [
-                "salotto"
-              ]
-            },
-            {
-              "option": "balcone",
-              "texts": [
-                "balcone"
-              ]
-            }
-          ]
-        }
-      },
       "en": {
         "room": {
           "name": "room",
@@ -531,27 +203,15 @@
               ]
             },
             {
-              "option": "toilette",
-              "texts": [
-                "toilette"
-              ]
-            },
-            {
               "option": "dining room",
               "texts": [
                 "dining room"
               ]
             },
             {
-              "option": "balcony",
+              "option": "lavatory",
               "texts": [
-                "balcony"
-              ]
-            },
-            {
-              "option": "basement",
-              "texts": [
-                "basement"
+                "lavatory"
               ]
             }
           ]
@@ -575,14 +235,6 @@
     "switch.on": {
       "room": {
         "intent": "switch.on",
-        "entity": "room",
-        "mandatory": false,
-        "locales": {}
-      }
-    },
-    "switch.off": {
-      "room": {
-        "intent": "switch.off",
         "entity": "room",
         "mandatory": false,
         "locales": {}

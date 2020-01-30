@@ -1,20 +1,8 @@
 const _ = require('underscore');
-
-const { ChatExpress } = require('chat-platform');
-const RegisterType = require('../lib/node-installer');
-const { 
-  isValidMessage, 
-  getChatId, 
-  getMessageId, 
-  getTransport, 
-  extractValue,
-  append 
-} = require('../lib/helpers/utils');
-
-
-
 const { NlpManager } = require('node-nlp');
 
+const RegisterType = require('../lib/node-installer');
+const { extractValue } = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
@@ -50,18 +38,17 @@ module.exports = function(RED) {
       // https://github.com/axa-group/nlp.js/blob/master/docs/v3/slot-filling.md#entities-with-the-same-name
 
       const { payload } = msg;
+
       // collect all languages from payload
       const languages = _.uniq([...Object.keys(payload.intents || {}), ...Object.keys(payload.entities || {})]);
-      
+    
       const manager = new NlpManager({ 
         languages, 
-        nlu: { log: debug },
+        nlu: { log: debug || false },
         autoSave: false,
         autoLoad: false 
       });
-      
 
-          console.log('payload', payload)
 
       // adding intents
       if (_.isObject(payload.intents)) {
