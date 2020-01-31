@@ -16,9 +16,7 @@
 <script type="text/x-red" data-template-name="chatbot-language">
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-language"><p>Detect the language of the incoming message, if matches the selected one in the configuration panel, message is sent to the first output, otherwise the second output.</p>
-<p><img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram">
-<img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook">
-<img src="https://img.shields.io/badge/platform-Slack-green.svg" alt="Slack">
-<img src="https://img.shields.io/badge/platform-Smooch-orange.svg" alt="Smooch"></p>
+<script type="text/x-red" data-help-name="chatbot-language"><p>Detect the language of the incoming message and store it the chat context (<code>language</code>) as two-letters ISO codes (_en_, _it_, etc.).</p>
+<p>Some chat platforms already provide the user&#39;s language, this node is used to override that settings and guess the language from what the user is actually typing (for example a user who is writing in Italian but using the English version of the  <strong>Telegram</strong> client).</p>
+<p>Language guessing can be inaccurate for short sentences.</p>
 </script>
