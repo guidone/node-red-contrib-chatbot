@@ -1,66 +1,46 @@
 const _ = require('underscore');
-const lngDetector = new (require('languagedetect'));
+const { Language } = require('node-nlp');
+
 const RegisterType = require('../lib/node-installer');
+const { isCommand } = require('../lib/helpers/regexps');
+const { isValidMessage } = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
 
   function ChatBotLanguage(config) {
     RED.nodes.createNode(this, config);
-    var node = this;
-    this.language = config.language;
-    this.mode = config.mode;
-
-    this.on('input', function(msg) {
-
-      var language = node.language;
-      var mode = node.mode;
-
+    const node = this;
+    
+    this.on('input', async function(msg, send, done) {
+      // send/done compatibility for node-red < 1.0
+      send = send || function() { node.send.apply(node, arguments) };
+      done = done || function(error) { node.error.call(node, error, msg) };
+      // check if valid message
+      if (!isValidMessage(msg, node)) {
+        done();
+        return;
+      }
       // exit if not string
       if (_.isString(msg.payload.content)) {
         // if it's a command, then don't care about the language
-        if (msg.payload.content.match(/^\/[A-Za-z0-9]*$/)) {
-          node.send([msg, null]);
+        if (isCommand(msg.payload.content)) {
+          send(msg);
+          done();
           return;
         }
-        // if it's shorter than 5 chars, make it through, it's hard to tell the language
-        if (msg.payload.content.length <= 5) {
-          node.send([msg, null]);
-          return;
-        }
-        // match the language
-        var matchLanguage = lngDetector.detect(msg.payload.content, 10);
-        // find position
-        var position = -1;
-        _(matchLanguage).each(function(duet, idx) {
-          if (duet[0] === language) {
-            position = idx;
-          }
-        });
-        // set the trigger level
-        var trigger = 0;
-        switch(mode) {
-          case 'strict':
-            trigger = 0;
-            break;
-          case 'medium':
-            trigger = 2;
-            break;
-          case 'loose':
-            trigger = 5;
-            break;
-        }
-
-        if (position !== -1 && position <= trigger) {
-          node.send([msg, null]);
-          return;
-        }
-
+        // now detect
+        const languageGuesser = new Language();
+        const guess = languageGuesser.guess(msg.payload.content);
+        if (!_.isEmpty(guess)) {
+          await msg.chat().set('language', guess[0].alpha2);
+        }      
       }
-
-      node.send([null, msg]);
+      // go through
+      node.send(msg);
+      done();
     });
   }
+  
   registerType('chatbot-language', ChatBotLanguage);
-
 };

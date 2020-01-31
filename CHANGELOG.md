@@ -1,3 +1,4 @@
+* **0.18.10** Added nodes for NLP.js, deprecated `Listen node`, breaking changes for `Language node`, added _Is Language ..._ rule to `Rules node` 
 * **0.18.9** Support for multiple webhook for Routee 
 * **0.18.8** Fix refresh of access token in Routee 
 * **0.18.7** Fixed Alexa nodes not properly working with the multi transport framework

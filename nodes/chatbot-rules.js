@@ -7,6 +7,20 @@ const when = utils.when;
 
 const Types = {
 
+  isLanguage(rule, message) {
+    return new Promise((resolve, reject) => {
+      var chatContext = message.chat();
+      when(chatContext.get('language'))
+        .then(language => {
+          if (rule.language === language) {
+            resolve(rule);
+          } else {
+            reject();
+          }
+        });      
+    });
+  },
+
   isTransportPreferred(rule, message) {
     return new Promise((resolve, reject) => {
       message.isTransportPreferred(rule.transport, message)

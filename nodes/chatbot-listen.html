@@ -573,7 +573,8 @@
   </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-listen"><p>Simple keyword based language interpreter. If the inbound message matches the keywords then it&#39;s redirected to the related output </p>
+<script type="text/x-red" data-help-name="chatbot-listen"><p><strong>This node is deprecated, use the [[NLP.js nodes|NLPjs-Train]]</strong></p>
+<p>Simple keyword based language interpreter. If the inbound message matches the keywords then it&#39;s redirected to the related output </p>
 <p>All the keywords for a row must match the input message in order to have the message go through the related output. Smaller keywords requires an exact match, longer ones match with <em>Levehnstein</em> algorithm (so for example the keyword <em>&quot;building&quot;</em> also matches <em>&quot;boilding&quot;</em>).</p>
 <p>If a rule is matched, the following rules are skipped and not evaluated. A rule with just a <code>*</code> matches everything and it&#39;s generally used as a catch-all at the end if every other rules are not matched. The node will not try to parse command-like sentences (for example <code>/my_command</code>)</p>
 <p>Given these two set of tokens

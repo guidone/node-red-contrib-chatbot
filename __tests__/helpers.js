@@ -87,6 +87,35 @@ describe('Value extractors', () => {
     assert.equal(extractValue('boolean', 'aBoolean', RED.node , msg3), null);
   });
 
+  it('should extract an array of entities', () => {
+    const entities = [
+      { name: 'orange', aliases: ['orange blue', 'orange red'] },
+      { name: 'apple', aliases: null }
+    ];
+    const wrongentities = [
+      { name: 'orange', aliases: 'orange blue,orange red' },
+      { name: 'apple', aliases: null }
+    ];
+    const msg1 = RED.createMessage(entities);
+    const msg2 = RED.createMessage({ myentity: entities });
+    const msg3 = RED.createMessage(wrongentities);
+    
+    const extract1 = extractValue('arrayOfEntities', 'entities', RED.node , msg1);
+    assert.isArray(extract1);
+    assert.lengthOf(extract1, 2);
+    assert.equal(extract1[0].name, 'orange');
+    assert.equal(extract1[1].name, 'apple');
+
+    const extract2 = extractValue('arrayOfEntities', 'myentity', RED.node , msg2);
+    assert.isArray(extract2);
+    assert.lengthOf(extract2, 2);
+    assert.equal(extract2[0].name, 'orange');
+    assert.equal(extract2[1].name, 'apple');
+
+    const extract3 = extractValue('arrayOfEntities', 'myentity', RED.node , msg3);
+    assert.isNull(extract3);
+  });
+
   it('should extract a string', () => {
     const msg1 = RED.createMessage('I am a string');
     const msg2 = RED.createMessage({ aString: 'I am a string' });

@@ -2,16 +2,9 @@
   $.RedBot.registerType('chatbot-language',{
     category: $.RedBot.config.name + ' Flow',
     color: '#FFCC66',
-    defaults: {
-      language: {
-        value: 'english'
-      },
-      mode: {
-        value: 'medium'
-      }
-    },
+    defaults: {},
     inputs: 1,
-    outputs: 2,
+    outputs: 1,
     paletteLabel: 'Language',
     icon: 'chatbot-language.png',
     label: function() {
@@ -21,80 +14,9 @@
 </script>
 
 <script type="text/x-red" data-template-name="chatbot-language">
-<div class="form-row">
-  <label for="node-input-language"><i class="icon-flag"></i> Language</label>
-  <select id="node-input-language" placeholder="Language to match">
-    <option value="albanian">Albanian</option>
-    <option value="arabic">Arabic</option>
-    <option value="azeri">Azeri</option>
-    <option value="bengali">Bengali</option>
-    <option value="bulgarian">Bulgarian</option>
-    <option value="cebuano">Cebuano</option>
-    <option value="croatian">Croatian</option>
-    <option value="czech">Czech</option>
-    <option value="danish">Danish</option>
-    <option value="dutch">Dutch</option>
-    <option value="english">English</option>
-    <option value="estonian">Estonian</option>
-    <option value="farsi">Farsi</option>
-    <option value="finnish">Finnish</option>
-    <option value="french">French</option>
-    <option value="german">German</option>
-    <option value="hausa">Hausa</option>
-    <option value="hawaiian">Hawaiian</option>
-    <option value="hindi">Hindi</option>
-    <option value="hungarian">Hungarian</option>
-    <option value="icelandic">Icelandic</option>
-    <option value="indonesian">Indonesian</option>
-    <option value="italian">Italian</option>
-    <option value="kazakh">Kazakh</option>
-    <option value="kyrgyz">Kyrgyz</option>
-    <option value="latin">Latin</option>
-    <option value="latvian">Latvian</option>
-    <option value="lithuanian">Lithuanian</option>
-    <option value="macedonian">Macedonian</option>
-    <option value="mongolian">Mongolian</option>
-    <option value="nepali">Nepali</option>
-    <option value="norwegian">Norwegian</option>
-    <option value="pashto">Pashto</option>
-    <option value="pidgin">Pidgin</option>
-    <option value="polish">Polish</option>
-    <option value="portuguese">Portuguese</option>
-    <option value="romanian">Romanian</option>
-    <option value="russian">Russian</option>
-    <option value="serbian">Serbian</option>
-    <option value="slovak">Slovak</option>
-    <option value="slovene">Slovene</option>
-    <option value="somali">Somali</option>
-    <option value="spanish">Spanish</option>
-    <option value="swahili">Swahili</option>
-    <option value="swedish">Swedish</option>
-    <option value="tagalog">Tagalog</option>
-    <option value="turkish">Turkish</option>
-    <option value="ukrainian">Ukrainian</option>
-    <option value="urdu">Urdu</option>
-    <option value="uzbek">Uzbek</option>
-    <option value="vietnamese">Vietnamese</option>
-    <option value="welsh">Welsh</option>
-  </select>
-</div>
-<div class="form-row">
-  <label for="node-input-mode"><i class="icon-cog"></i> Mode</label>
-  <select id="node-input-mode">
-    <option value="strict">Strict</option>
-    <option value="medium">Medium</option>
-    <option value="lousy">Loose</option>
-  </select>
-  <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;">
-  The language detection algorithm could be not accurate for short sentences, this adjust the tolerance of the
-  recognition, use <em>"medium"</em> for most of the situations.
-  </div>
-</div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-language"><p>Detect the language of the incoming message, if matches the selected one in the configuration panel, message is sent to the first output, otherwise the second output.</p>
-<p><img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram">
-<img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook">
-<img src="https://img.shields.io/badge/platform-Slack-green.svg" alt="Slack">
-<img src="https://img.shields.io/badge/platform-Smooch-orange.svg" alt="Smooch"></p>
+<script type="text/x-red" data-help-name="chatbot-language"><p>Detect the language of the incoming message and store it the chat context (<code>language</code>) as two-letters ISO codes (_en_, _it_, etc.).</p>
+<p>Some chat platforms already provide the user&#39;s language, this node is used to override that settings and guess the language from what the user is actually typing (for example a user who is writing in Italian but using the English version of the  <strong>Telegram</strong> client).</p>
+<p>Language guessing can be inaccurate for short sentences.</p>
 </script>

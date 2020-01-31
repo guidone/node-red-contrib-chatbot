@@ -59,6 +59,7 @@
             + '  <option value="hasNotVariable">Variable ... is not defined</option>'
             + '  <option value="hasVariable">Variable ... is defined</option>'
             + '  <option value="isVariable">Variable ... is ...</option>'
+            + '  <option value="isLanguage">Language is ...</option>'
             + '</optgroup>'
             + '<optgroup label="Transport">'
             + '  <option value="transport">Transport is ...</option>'
@@ -75,6 +76,7 @@
             container.find('input').hide();
             container.find('span').hide();
             container.find('select[name!=type]').hide();
+            container.find('.message-types,.event-types').hide();
             container.find('.' + type).show();
           });
         // get options for message type
@@ -122,7 +124,7 @@
             + '<option value="">Select type</option>'
             + eventTypes
             + '</select>'
-            + '<div class="event-types" style="display:inline-block;margin-left:5px;" />')
+            + '<div class="messageEvent event-types" style="display:inline-block;margin-left:5px;" />')
           .append('<input class="isSlotConfirmationStatus" style="display:none;width:25%;margin-left:10px;" type="text" name="slot" placeholder="Slot"/>')
           .append('<select class="isSlotConfirmationStatus isIntentConfirmationStatus isNotSlotConfirmationStatus" name="confirmationStatus" style="display:none;width:25%;margin-left:10px;">'
             + '<option value="">Select status</option>'
@@ -134,13 +136,49 @@
             + '<option value="">Select transport</option>'
             + transportOptions
             + '</select>')
+          .append('<select class="isLanguage" name="language" style="display:none;width:40%;margin-left:10px;">'
+            + '<option value="">Select language</option>'
+            + '<option value="ar">Arabic</option>'
+            + '<option value="bn">Bengali</option>'
+            + '<option value="ca">Catalan</option>'
+            + '<option value="cs">Czech</option>'
+            + '<option value="da">Danish</option>'
+            + '<option value="de">German</option>'
+            + '<option value="el">Greek</option>'
+            + '<option value="en">English</option>'
+            + '<option value="es">Spanish</option>'
+            + '<option value="eu">Basque</option>'
+            + '<option value="fa">Persian</option>'
+            + '<option value="fi">Finnish</option>'
+            + '<option value="fr">French</option>'
+            + '<option value="ga">Irish</option>'
+            + '<option value="gl">Galician</option>'
+            + '<option value="hi">Hindi</option>'
+            + '<option value="hu">Hungarian</option>'
+            + '<option value="hy">Armenian</option>'
+            + '<option value="it">Italian</option>'
+            + '<option value="ja">Japanese</option>'
+            + '<option value="nl">Dutch</option>'
+            + '<option value="no">Norwegian</option>'
+            + '<option value="pt">Portuguese</option>'
+            + '<option value="ro">Romanian</option>'
+            + '<option value="ru">Russian</option>'
+            + '<option value="sl">Slovenian</option>'
+            + '<option value="sv">Swedish</option>'
+            + '<option value="ta">Tamil</option>'
+            + '<option value="th">Thai</option>'
+            + '<option value="tl">Tagalog</option>'
+            + '<option value="tr">Turkish</option>'
+            + '<option value="uk">Ukrainian</option>'
+            + '<option value="zh">Chinese</option>'
+            + '</select>')
           .append('<span class="isTransportAvailable" style="display:none;"> is available</span>')
           .append('<span class="isTransportPreferred" style="display:none;"> is preferred</span>')
           .append('<select class="messageType notMessageType" name="messageType" style="display:none;width:40%;margin-left:10px;">'
             + '<option value="">Select type</option>'
             + messageTypes
             + '</select>'
-            + '<div class="message-types" style="display:inline-block;margin-left:5px;" />');
+            + '<div class="messageType notMessageType message-types" style="display:inline-block;margin-left:5px;" />');
         var finalspan = $('<span/>',{style:"float: right;margin-top: 6px;"}).appendTo(row);
         finalspan.append('&nbsp;&#8594; <span class="node-input-rule-index">' + (i + 1) + '</span>');
 
@@ -215,6 +253,9 @@
         if (rule.slot != null) {
           $('input[name=slot]', container).val(rule.slot);
         }
+        if (rule.language != null) {
+          $('select[name=language]', container).val(rule.language);
+        }
 
       },
       removeItem: function(opt) {
@@ -274,6 +315,9 @@
           var obj = {
             type: type
           };
+          if (type === 'isLanguage') {
+            obj.language = rule.find('select[name=language]').val();
+          }
           if (type === 'hasNotVariable' || type === 'hasVariable') {
             obj.variable = rule.find('input[name=variable]').val();
           }

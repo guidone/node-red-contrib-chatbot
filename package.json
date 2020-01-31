@@ -78,7 +78,13 @@
       "chatbot-alexa-directive": "./nodes/chatbot-alexa-directive.js",
       "chatbot-broadcast": "./nodes/chatbot-broadcast.js",
       "chatbot-alexa-speech": "./nodes/chatbot-alexa-speech.js",
-      "chatbot-slack-blocks": "./nodes/chatbot-slack-blocks.js"
+      "chatbot-slack-blocks": "./nodes/chatbot-slack-blocks.js",
+      "chatbot-nlp": "./nodes/chatbot-nlp.js",
+      "chatbot-nlp-train": "./nodes/chatbot-nlp-train.js",
+      "chatbot-nlp-intent": "./nodes/chatbot-nlp-intent.js",
+      "chatbot-nlp-entity": "./nodes/chatbot-nlp-entity.js",
+      "chatbot-nlp-save": "./nodes/chatbot-nlp-save.js",
+      "chatbot-nlp-load": "./nodes/chatbot-nlp-load.js"
     }
   },
   "maintainers": [
@@ -107,12 +113,12 @@
     "dialogflow": "^0.7.0",
     "fast-levenshtein": "^1.1.3",
     "jszip": "^3.1.3",
-    "languagedetect": "^1.1.1",
     "marked": "^0.3.6",
     "mime": "^1.3.4",
     "mime-types": "^2.1.21",
     "moment": "^2.13.0",
     "node-emoji": "^1.3.1",
+    "node-nlp": "^4.0.2",
     "node-telegram-bot-api": "^0.40.0",
     "prettyjson": "^1.2.1",
     "qr-image": "^3.1.0",

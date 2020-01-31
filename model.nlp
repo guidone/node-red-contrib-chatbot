@@ -1,0 +1,239 @@
+{
+  "settings": {
+    "languages": [
+      "en"
+    ],
+    "nlu": {
+      "log": false
+    },
+    "autoSave": false,
+    "autoLoad": false,
+    "tag": "nlp",
+    "threshold": 0.5,
+    "modelFileName": "model.nlp"
+  },
+  "nluManager": {
+    "settings": {
+      "tag": "nlu-manager",
+      "log": false
+    },
+    "locales": [
+      "en"
+    ],
+    "languageNames": {},
+    "domainManagers": {
+      "en": {
+        "settings": {
+          "locale": "en",
+          "tag": "domain-manager-en",
+          "nluByDomain": {
+            "default": {
+              "className": "NeuralNlu",
+              "settings": {}
+            }
+          },
+          "trainByDomain": false,
+          "useStemDict": true
+        },
+        "stemDict": {
+          "light,on,switch": {
+            "intent": "switch.on.light",
+            "domain": "default"
+          },
+          "light,on,turn": {
+            "intent": "switch.on.light",
+            "domain": "default"
+          },
+          "i,light,more,want": {
+            "intent": "switch.on.light",
+            "domain": "default"
+          },
+          "light,on,power": {
+            "intent": "switch.on.light",
+            "domain": "default"
+          },
+          "on,power": {
+            "intent": "switch.on.light",
+            "domain": "default"
+          }
+        },
+        "intentDict": {
+          "switch.on.light": "default"
+        },
+        "sentences": [
+          {
+            "domain": "default",
+            "utterance": "switch on lights",
+            "intent": "switch.on.light"
+          },
+          {
+            "domain": "default",
+            "utterance": "turn on lights",
+            "intent": "switch.on.light"
+          },
+          {
+            "domain": "default",
+            "utterance": "turn lights on",
+            "intent": "switch.on.light"
+          },
+          {
+            "domain": "default",
+            "utterance": "i want more light",
+            "intent": "switch.on.light"
+          },
+          {
+            "domain": "default",
+            "utterance": "power on lights",
+            "intent": "switch.on.light"
+          },
+          {
+            "domain": "default",
+            "utterance": "power on",
+            "intent": "switch.on.light"
+          }
+        ],
+        "domains": {
+          "master_domain": {
+            "settings": {
+              "locale": "en",
+              "tag": "nlu-en",
+              "keepStopwords": true,
+              "nonefeatureValue": 1,
+              "nonedeltaMultiplier": 1.2,
+              "spellCheck": false,
+              "spellCheckDistance": 1,
+              "filterZeros": true,
+              "log": true
+            },
+            "features": {
+              "switch": 1,
+              "on": 1,
+              "light": 1,
+              "turn": 1,
+              "i": 1,
+              "want": 1,
+              "more": 1,
+              "power": 1
+            },
+            "intents": {
+              "switch.on.light": 1
+            },
+            "intentFeatures": {
+              "switch.on.light": [
+                "switch",
+                "on",
+                "light",
+                "turn",
+                "i",
+                "want",
+                "more",
+                "power"
+              ]
+            },
+            "neuralNetwork": {
+              "features": [
+                "switch",
+                "on",
+                "light",
+                "turn",
+                "i",
+                "want",
+                "more",
+                "power",
+                "nonefeature"
+              ],
+              "intents": [
+                "switch.on.light",
+                "None"
+              ],
+              "perceptrons": [
+                [
+                  2.1412577629089355,
+                  6.692287445068359,
+                  0.3974938690662384,
+                  2.1552305221557617,
+                  2.9451076984405518,
+                  2.9451076984405518,
+                  2.9451076984405518,
+                  2.3958020210266113,
+                  -3.1904468536376953,
+                  3.223863867942124
+                ],
+                [
+                  -0.295221209526062,
+                  -1.9561980962753296,
+                  -1.3292356729507446,
+                  -0.3211669623851776,
+                  -0.6555989980697632,
+                  -0.6555989980697632,
+                  -0.6555989980697632,
+                  -1.339809775352478,
+                  9.203872680664062,
+                  3.2960407516388757
+                ]
+              ],
+              "perceptronSettings": {
+                "locale": "en",
+                "tag": "nlu-en",
+                "keepStopwords": true,
+                "nonefeatureValue": 1,
+                "nonedeltaMultiplier": 1.2,
+                "spellCheck": false,
+                "spellCheckDistance": 1,
+                "filterZeros": true
+              }
+            }
+          }
+        }
+      }
+    },
+    "intentDomains": {},
+    "extraSentences": [
+      [
+        "en",
+        "switch on lights"
+      ],
+      [
+        "en",
+        "turn on lights"
+      ],
+      [
+        "en",
+        "turn lights on"
+      ],
+      [
+        "en",
+        "i want more light"
+      ],
+      [
+        "en",
+        "power on lights"
+      ],
+      [
+        "en",
+        "power on"
+      ]
+    ]
+  },
+  "ner": {
+    "settings": {
+      "tag": "ner",
+      "entityPreffix": "%",
+      "entitySuffix": "%"
+    },
+    "rules": {}
+  },
+  "nlgManager": {
+    "settings": {
+      "tag": "nlg-manager"
+    },
+    "responses": {}
+  },
+  "actionManager": {
+    "settings": {
+      "tag": "action-manager"
+    },
+    "actions": {}
+  },
+  "slotManager": {}
+}

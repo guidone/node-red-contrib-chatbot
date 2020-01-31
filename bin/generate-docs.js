@@ -73,6 +73,12 @@ var mappings = {
   'Universal-Connector-node.md': 'chatbot-universal-receive.html|chatbot-universal-receive',
   'Slack-blocks-node.md': 'chatbot-slack-blocks.html',
   'Params-node.md': 'chatbot-params.html',
+  'NLPjs-Train.md': 'chatbot-nlp-train.html|chatbot-nlpjs-train',
+  'NLPjs-Entity.md': 'chatbot-nlp-entity.html|chatbot-nlpjs-entity',
+  'NLPjs-Intent.md': 'chatbot-nlp-intent.html|chatbot-nlpjs-intent',
+  'NLPjs-Save.md': 'chatbot-nlp-save.html|chatbot-nlpjs-save',
+  'NLPjs-Load.md': 'chatbot-nlp-load.html|chatbot-nlpjs-load',
+  'NLPjs-Process.md': 'chatbot-nlp.html|chatbot-nlpjs'
 };
 
 function collectImages(html) {
