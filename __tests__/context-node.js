@@ -93,7 +93,7 @@ describe('Chat context node', () => {
     RED.node.config({
       command: 'set',
       fieldName: 'myValue',
-      fieldType: 'bol',
+      fieldType: 'bool',
       fieldValue: 'true'
     });
     msg.chat().set({
