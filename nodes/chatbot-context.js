@@ -57,7 +57,7 @@ module.exports = function(RED) {
           case 'num':
             task = when(chatContext.set(fieldName, Number(fieldValue)));
             break;
-          case 'bol':
+          case 'bool':
             task = when(chatContext.set(fieldName, /^true$/i.test(fieldValue)));
             break;
           case 'json':
