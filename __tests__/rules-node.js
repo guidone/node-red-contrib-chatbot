@@ -3,10 +3,48 @@ var assert = require('chai').assert;
 var RED = require('../lib/red-stub')();
 var RulesBlock = require('../nodes/chatbot-rules');
 
-describe('Chat rules node', function() {
+describe('Chat rules node', () => {
 
-  it('should match goes through the first if the topic is null', function() {
-    var msg = RED.createMessage(null);
+  it('should go through the first if language is the same', () => {
+    const msg = RED.createMessage(null);
+    RED.node.config({
+      rules: [
+        { type: 'isLanguage', language: 'en' },
+        { type: 'catchAll' }
+      ]
+    });
+    RulesBlock(RED);
+    msg.chat().set({ language: 'en' });
+    RED.node.get().emit('input', msg);
+
+    return RED.node.get().await()
+      .then(() => {
+        assert.isNull(RED.node.message(1));
+        assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
+      });
+  });
+
+  it('should go through the second if language is not the same', () => {
+    const msg = RED.createMessage(null);
+    RED.node.config({
+      rules: [
+        { type: 'isLanguage', language: 'en' },
+        { type: 'catchAll' }
+      ]
+    });
+    RulesBlock(RED);
+    msg.chat().set({ language: 'it' });
+    RED.node.get().emit('input', msg);
+
+    return RED.node.get().await()
+      .then(() => {
+        assert.isNull(RED.node.message(0));
+        assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
+      });
+  });
+
+  it('should match goes through the first if the topic is null', () => {
+    const msg = RED.createMessage(null);
     RED.node.config({
       rules: [
         { type: 'isTopicEmpty' },
@@ -18,14 +56,14 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(1));
         assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
       });
   });
 
-  it('should go with the second if the topic is not null', function() {
-    var msg = RED.createMessage(null);
+  it('should go with the second if the topic is not null', () => {
+    const msg = RED.createMessage(null);
     RED.node.config({
       rules: [
         { type: 'isTopicEmpty' },
@@ -37,14 +75,14 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(0));
         assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
       });
   });
 
-  it('should match goes through the first if the variable my_var is null', function() {
-    var msg = RED.createMessage(null);
+  it('should match goes through the first if the variable my_var is null', () => {
+    const msg = RED.createMessage(null);
     RED.node.config({
       rules: [
         { type: 'hasNotVariable', variable: 'my_var' },
@@ -56,14 +94,14 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(1));
         assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
       });
   });
 
-  it('should match goes through the second if the variable my_var has a value', function() {
-    var msg = RED.createMessage(null);
+  it('should match goes through the second if the variable my_var has a value', () => {
+    const msg = RED.createMessage(null);
     RED.node.config({
       rules: [
         { type: 'hasNotVariable', variable: 'my_var' },
@@ -75,14 +113,14 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(0));
         assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
       });
   });
 
-  it('should match goes through the first if the topic is different than my_topic', function() {
-    var msg = RED.createMessage(null);
+  it('should match goes through the first if the topic is different than my_topic', () => {
+    const msg = RED.createMessage(null);
     RED.node.config({
       rules: [
         { type: 'isNotTopic', topic: 'my_topic' },
@@ -94,14 +132,14 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(1));
         assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
       });
   });
 
-  it('should match goes through the second if the topic is my_topic', function() {
-    var msg = RED.createMessage(null);
+  it('should match goes through the second if the topic is my_topic', () => {
+    const msg = RED.createMessage(null);
     RED.node.config({
       rules: [
         { type: 'isNotTopic', topic: 'my_topic' },
@@ -113,14 +151,14 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(0));
         assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
       });
   });
 
-  it('should match goes through the first if the topic is equal to my_topic', function() {
-    var msg = RED.createMessage(null);
+  it('should match goes through the first if the topic is equal to my_topic', () => {
+    const msg = RED.createMessage(null);
     RED.node.config({
       rules: [
         { type: 'isTopic', topic: 'my_topic' },
@@ -132,14 +170,14 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(1));
         assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
       });
   });
 
-  it('should match goes through the second if the topic is not my_topic', function() {
-    var msg = RED.createMessage(null);
+  it('should match goes through the second if the topic is not my_topic', () => {
+    const msg = RED.createMessage(null);
     RED.node.config({
       rules: [
         { type: 'isTopic', topic: 'my_topic' },
@@ -151,15 +189,15 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(0));
         assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
       });
   });
 
 
-  it('should match goes through the first if the namespace.my_topic contains namespace.', function() {
-    var msg = RED.createMessage(null);
+  it('should match goes through the first if the namespace.my_topic contains namespace.', () => {
+    const msg = RED.createMessage(null);
     RED.node.config({
       rules: [
         { type: 'topicIncludes', topic: 'namespace.' },
@@ -171,14 +209,14 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(1));
         assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
       });
   });
 
-  it('should match goes through the second if the namespace.my_topic doesn\'t contain another_namespace.', function() {
-    var msg = RED.createMessage(null);
+  it('should match goes through the second if the namespace.my_topic doesn\'t contain another_namespace.', () => {
+    const msg = RED.createMessage(null);
     RED.node.config({
       rules: [
         { type: 'topicIncludes', topic: 'another_namespace.' },
@@ -190,14 +228,14 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(0));
         assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
       });
   });
 
-  it('should match goes through the first if the message is inbound', function() {
-    var msg = RED.createMessage({inbound: true});
+  it('should match goes through the first if the message is inbound', () => {
+    const msg = RED.createMessage({inbound: true});
     RED.node.config({
       rules: [
         { type: 'inbound' },
@@ -208,14 +246,14 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(1));
         assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
       });
   });
 
-  it('should match goes through the first if the message is outbound', function() {
-    var msg = RED.createMessage({inbound: false});
+  it('should match goes through the first if the message is outbound', () => {
+    const msg = RED.createMessage({inbound: false});
     RED.node.config({
       rules: [
         { type: 'outbound' },
@@ -226,14 +264,14 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(1));
         assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
       });
   });
 
-  it('should match goes through the first if the message is outbound but with rules in payload', function() {
-    var msg = RED.createMessage({
+  it('should match goes through the first if the message is outbound but with rules in payload', () => {
+    const msg = RED.createMessage({
       inbound: false,
       rules: [
         { type: 'outbound' },
@@ -245,14 +283,14 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(1));
         assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
       });
   });
 
-  it('should match goes through the first if the variable my_var is not null', function() {
-    var msg = RED.createMessage(null);
+  it('should match goes through the first if the variable my_var is not null', () => {
+    const msg = RED.createMessage(null);
     RED.node.config({
       rules: [
         { type: 'hasVariable', variable: 'my_var' },
@@ -264,14 +302,14 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(1));
         assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
       });
   });
 
-  it('should match goes through the second if the variable my_var has not a value', function() {
-    var msg = RED.createMessage(null);
+  it('should match goes through the second if the variable my_var has not a value', () => {
+    const msg = RED.createMessage(null);
     RED.node.config({
       rules: [
         { type: 'hasVariable', variable: 'my_var' },
@@ -282,14 +320,14 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
     msg.chat().set({});
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(0));
         assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
       });
   });
 
-  it('should match goes through the first if the message is the command /my_command', function() {
-    var msg = RED.createMessage({
+  it('should match goes through the first if the message is the command /my_command', () => {
+    const msg = RED.createMessage({
       content: '/my_command'
     });
     RED.node.config({
@@ -302,14 +340,14 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(1));
         assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
       });
   });
 
-  it('should match goes through the first if the message is the command /my_command with parameter', function() {
-    var msg = RED.createMessage({
+  it('should match goes through the first if the message is the command /my_command with parameter', () => {
+    const msg = RED.createMessage({
       content: '/my_command 12345'
     });
     RED.node.config({
@@ -322,14 +360,14 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(1));
         assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
       });
   });
 
-  it('should match goes through the second if the message is not the command /my_command', function() {
-    var msg = RED.createMessage({
+  it('should match goes through the second if the message is not the command /my_command', () => {
+    const msg = RED.createMessage({
       content: 'a simple message'
     });
     RED.node.config({
@@ -342,14 +380,14 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(0));
         assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
       });
   });
 
-  it('should match goes through the first if the message is any command', function() {
-    var msg = RED.createMessage({
+  it('should match goes through the first if the message is any command', () => {
+    const msg = RED.createMessage({
       content: '/my_command'
     });
     RED.node.config({
@@ -362,14 +400,14 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(1));
         assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
       });
   });
 
-  it('should go through the second if the message is not the a command', function() {
-    var msg = RED.createMessage({
+  it('should go through the second if the message is not the a command', () => {
+    const msg = RED.createMessage({
       content: 'a simple message'
     });
     RED.node.config({
@@ -382,14 +420,14 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(0));
         assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
       });
   });
 
-  it('should go through the first if is production env', function() {
-    var msg = RED.createMessage({
+  it('should go through the first if is production env', () => {
+    const msg = RED.createMessage({
       content: 'a simple message'
     }, 'telegram', { environment: 'production'});
     RED.node.config({
@@ -403,14 +441,14 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(1));
         assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
       });
   });
 
-  it('should go through the first if is development env', function() {
-    var msg = RED.createMessage({
+  it('should go through the first if is development env', () => {
+    const msg = RED.createMessage({
       content: 'a simple message'
     }, 'telegram', { environment: 'development'});
     RED.node.config({
@@ -425,14 +463,14 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(0));
         assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
       });
   });
 
-  it('should go through the first if is type message', function() {
-    var msg = RED.createMessage({
+  it('should go through the first if is type message', () => {
+    const msg = RED.createMessage({
       content: 'a simple message'
     }, 'telegram', { environment: 'development'});
     RED.node.config({
@@ -447,15 +485,15 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(2));
         assert.isNull(RED.node.message(1));
         assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
       });
   });
 
-  it('should go through the first if is type message', function() {
-    var msg = RED.createMessage({
+  it('should go through the first if is type message', () => {
+    const msg = RED.createMessage({
       content: 'a simple message',
       type: 'message'
     }, 'telegram', { environment: 'development'});
@@ -471,15 +509,15 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(2));
         assert.isNull(RED.node.message(1));
         assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
       });
   });
 
-  it('should go through the second if is type video', function() {
-    var msg = RED.createMessage({
+  it('should go through the second if is type video', () => {
+    const msg = RED.createMessage({
       content: 'a simple message',
       type: 'video'
     }, 'telegram', { environment: 'development'});
@@ -495,15 +533,15 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(2));
         assert.isNull(RED.node.message(0));
         assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
       });
   });
 
-  it('should go through the third if is type image', function() {
-    var msg = RED.createMessage({
+  it('should go through the third if is type image', () => {
+    const msg = RED.createMessage({
       content: 'a simple message',
       type: 'image'
     }, 'telegram', { environment: 'development'});
@@ -519,15 +557,15 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(0));
         assert.isNull(RED.node.message(1));
         assert.equal(RED.node.message(2).originalMessage.chat.id, '42');
       });
   });
 
-  it('should go through the second if is type command', function() {
-    var msg = RED.createMessage({
+  it('should go through the second if is type command', () => {
+    const msg = RED.createMessage({
       content: '/my_command',
       type: 'image'
     }, 'telegram', { environment: 'development'});
@@ -543,15 +581,15 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(0));
         assert.isNull(RED.node.message(2));
         assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
       });
   });
 
-  it('should go through the first if is type is not command', function() {
-    var msg = RED.createMessage({
+  it('should go through the first if is type is not command', () => {
+    const msg = RED.createMessage({
       content: 'no command',
       type: 'image'
     }, 'telegram', { environment: 'development'});
@@ -566,14 +604,14 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
         assert.isNull(RED.node.message(1));
       });
   });
 
-  it('should go through the first if the transport is Telegram', function() {
-    var msg = RED.createMessage({
+  it('should go through the first if the transport is Telegram', () => {
+    const msg = RED.createMessage({
       content: 'no command',
       type: 'image'
     }, 'telegram', { environment: 'development'});
@@ -588,14 +626,14 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
         assert.isNull(RED.node.message(1));
       });
   });
 
-  it('should go through the second if the transport is Facebook', function() {
-    var msg = RED.createMessage({
+  it('should go through the second if the transport is Facebook', () => {
+    const msg = RED.createMessage({
       content: 'no command',
       type: 'image'
     }, 'telegram', { environment: 'development'});
@@ -610,14 +648,14 @@ describe('Chat rules node', function() {
     RED.node.get().emit('input', msg);
 
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
         assert.isNull(RED.node.message(0));
       });
   });
 
-  it('should go through the first if the variable is eq to test_value', function() {
-    var msg = RED.createMessage({
+  it('should go through the first if the variable is eq to test_value', () => {
+    const msg = RED.createMessage({
       content: 'no command',
       type: 'image'
     }, 'telegram', { environment: 'development'});
@@ -631,14 +669,14 @@ describe('Chat rules node', function() {
     RulesBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
         assert.isNull(RED.node.message(1));
       });
   });
 
-  it('should go through the second if the variable is neq to test_value', function() {
-    var msg = RED.createMessage({
+  it('should go through the second if the variable is neq to test_value', () => {
+    const msg = RED.createMessage({
       content: 'no command',
       type: 'image'
     }, 'telegram', { environment: 'development'});
@@ -652,14 +690,14 @@ describe('Chat rules node', function() {
     RulesBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
         assert.isNull(RED.node.message(0));
       });
   });
 
-  it('should go through the first if the message is event', function() {
-    var msg = RED.createMessage({
+  it('should go through the first if the message is event', () => {
+    const msg = RED.createMessage({
       content: 'no command',
       type: 'event',
       eventType: 'new-user'
@@ -674,14 +712,14 @@ describe('Chat rules node', function() {
     RulesBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
         assert.isNull(RED.node.message(1));
       });
   });
 
-  it('should go through the second if the message is a different event', function() {
-    var msg = RED.createMessage({
+  it('should go through the second if the message is a different event', () => {
+    const msg = RED.createMessage({
       content: 'no command',
       type: 'event',
       eventType: 'referral'
@@ -696,14 +734,14 @@ describe('Chat rules node', function() {
     RulesBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
         assert.isNull(RED.node.message(0));
       });
   });
 
-  it('should go through the first is pending', function() {
-    var msg = RED.createMessage({
+  it('should go through the first is pending', () => {
+    const msg = RED.createMessage({
       content: 'no command',
       type: 'event',
       eventType: 'referral'
@@ -718,14 +756,14 @@ describe('Chat rules node', function() {
     RulesBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
         assert.isNull(RED.node.message(1));
       });
   });
 
-  it('should go through the second is pending', function() {
-    var msg = RED.createMessage({
+  it('should go through the second is pending', () => {
+    const msg = RED.createMessage({
       content: 'no command',
       type: 'event',
       eventType: 'referral'
@@ -739,14 +777,14 @@ describe('Chat rules node', function() {
     RulesBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
         assert.isNull(RED.node.message(0));
       });
   });
 
-  it('should go through the first is not pending', function() {
-    var msg = RED.createMessage({
+  it('should go through the first is not pending', () => {
+    const msg = RED.createMessage({
       content: 'no command',
       type: 'event',
       eventType: 'referral'
@@ -760,14 +798,14 @@ describe('Chat rules node', function() {
     RulesBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
         assert.isNull(RED.node.message(1));
       });
   });
 
-  it('should go through the second is not pending', function() {
-    var msg = RED.createMessage({
+  it('should go through the second is not pending', () => {
+    const msg = RED.createMessage({
       content: 'no command',
       type: 'event',
       eventType: 'referral'
@@ -782,14 +820,14 @@ describe('Chat rules node', function() {
     RulesBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
         assert.isNull(RED.node.message(0));
       });
   });
 
-  it('should go through the first if intent', function() {
-    var msg = RED.createMessage({
+  it('should go through the first if intent', () => {
+    const msg = RED.createMessage({
       type: 'intent',
       intent: 'my_intent'
     }, 'telegram');
@@ -802,14 +840,14 @@ describe('Chat rules node', function() {
     RulesBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
         assert.isNull(RED.node.message(1));
       });
   });
 
-  it('should go through the second if intent my_intent', function() {
-    var msg = RED.createMessage({
+  it('should go through the second if intent my_intent', () => {
+    const msg = RED.createMessage({
       type: 'intent',
       intent: 'my_intent'
     }, 'telegram');
@@ -823,15 +861,15 @@ describe('Chat rules node', function() {
     RulesBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.isNull(RED.node.message(0));
         assert.equal(RED.node.message(1).originalMessage.chat.id, '42');
         assert.isNull(RED.node.message(2));
       });
   });
 
-  it('should go through the first if intent my_intent is confirmed', function() {
-    var msg = RED.createMessage({
+  it('should go through the first if intent my_intent is confirmed', () => {
+    const msg = RED.createMessage({
       type: 'intent',
       intent: 'my_intent',
       confirmationStatus: 'confirmed'
@@ -845,14 +883,14 @@ describe('Chat rules node', function() {
     RulesBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
         assert.isNull(RED.node.message(1));
       });
   });
 
-  it('should go through the first if slot room if my_intent is confirmed', function() {
-    var msg = RED.createMessage({
+  it('should go through the first if slot room if my_intent is confirmed', () => {
+    const msg = RED.createMessage({
       type: 'intent',
       intent: 'my_intent',
       confirmationStatus: 'confirmed',
@@ -872,14 +910,14 @@ describe('Chat rules node', function() {
     RulesBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
         assert.isNull(RED.node.message(1));
       });
   });
 
-  it('should go through the first if dialog is pending', function() {
-    var msg = RED.createMessage({
+  it('should go through the first if dialog is pending', () => {
+    const msg = RED.createMessage({
       type: 'intent',
       intent: 'my_intent',
       dialogState: 'pending'
@@ -893,7 +931,7 @@ describe('Chat rules node', function() {
     RulesBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
-      .then(function() {
+      .then(() => {
         assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
         assert.isNull(RED.node.message(1));
       });

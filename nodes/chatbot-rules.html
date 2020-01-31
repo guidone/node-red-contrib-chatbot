@@ -76,6 +76,7 @@
             container.find('input').hide();
             container.find('span').hide();
             container.find('select[name!=type]').hide();
+            container.find('.message-types,.event-types').hide();
             container.find('.' + type).show();
           });
         // get options for message type
@@ -123,7 +124,7 @@
             + '<option value="">Select type</option>'
             + eventTypes
             + '</select>'
-            + '<div class="event-types" style="display:inline-block;margin-left:5px;" />')
+            + '<div class="messageEvent event-types" style="display:inline-block;margin-left:5px;" />')
           .append('<input class="isSlotConfirmationStatus" style="display:none;width:25%;margin-left:10px;" type="text" name="slot" placeholder="Slot"/>')
           .append('<select class="isSlotConfirmationStatus isIntentConfirmationStatus isNotSlotConfirmationStatus" name="confirmationStatus" style="display:none;width:25%;margin-left:10px;">'
             + '<option value="">Select status</option>'
@@ -177,7 +178,7 @@
             + '<option value="">Select type</option>'
             + messageTypes
             + '</select>'
-            + '<div class="message-types" style="display:inline-block;margin-left:5px;" />');
+            + '<div class="messageType notMessageType message-types" style="display:inline-block;margin-left:5px;" />');
         var finalspan = $('<span/>',{style:"float: right;margin-top: 6px;"}).appendTo(row);
         finalspan.append('&nbsp;&#8594; <span class="node-input-rule-index">' + (i + 1) + '</span>');
 
