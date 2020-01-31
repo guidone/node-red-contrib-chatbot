@@ -24,7 +24,6 @@ module.exports = function(RED) {
       const language = utils.extractValue('string', 'language', node, msg, false);
 
       msg.payload = _.isObject(msg.payload) ? msg.payload : {}; 
-      //var currentLexicon = msg.payload != null && _.isObject(msg.payload.lexicon) ? msg.payload.lexicon : {};
       // collect the lexicon of the node and mix with the one of the incoming payload
       if (_.isArray(utterances) && !_.isEmpty(utterances)) {
         // append utterances

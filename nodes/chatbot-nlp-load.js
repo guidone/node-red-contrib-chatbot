@@ -4,7 +4,6 @@ const RegisterType = require('../lib/node-installer');
 const fs = require('fs');
 const { NlpManager } = require('node-nlp');
 
-
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
 

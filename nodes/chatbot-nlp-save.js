@@ -12,7 +12,6 @@ module.exports = function(RED) {
     this.filename = config.filename;
 
     this.on('input', function(msg, send, done) {
-
       // send/done compatibility for node-red < 1.0
       send = send || function() { node.send.apply(node, arguments) };
       done = done || function(error) { node.error.call(node, error, msg) };
@@ -20,11 +19,8 @@ module.exports = function(RED) {
       const filename = utils.extractValue('string', 'filename', node, msg, false);
       const manager = msg.payload; 
 
-
       if (manager != null && _.isFunction(manager.export)) {
-
         const json = manager.export(false);
-        console.log('save', json);
         fs.writeFile(filename, json, (err) => {
           if (err) {
             done(err);

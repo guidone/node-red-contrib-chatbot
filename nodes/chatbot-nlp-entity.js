@@ -14,7 +14,6 @@ module.exports = function(RED) {
     this.language = config.language;
 
     this.on('input', function(msg, send, done) {
-
       // send/done compatibility for node-red < 1.0
       send = send || function() { node.send.apply(node, arguments) };
       done = done || function(error) { node.error.call(node, error, msg) };
@@ -24,7 +23,6 @@ module.exports = function(RED) {
       const language = utils.extractValue('string', 'language', node, msg, false);
 
       msg.payload = _.isObject(msg.payload) ? msg.payload : {}; 
-      //var currentLexicon = msg.payload != null && _.isObject(msg.payload.lexicon) ? msg.payload.lexicon : {};
       // collect the lexicon of the node and mix with the one of the incoming payload
       if (_.isArray(entities) && !_.isEmpty(entities)) {
 
