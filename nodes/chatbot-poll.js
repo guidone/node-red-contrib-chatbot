@@ -35,15 +35,32 @@ module.exports = function(RED) {
       //const transport = getTransport(msg);
 
 
+      const options = [
+        'Uno',
+        'Due',
+        'Tre'
+      ];
+
+      const isQuiz = false;
+      const isAnonymous = false;
+      const answer = null;  
+      const title = 'This is a poll';
+
 
       node.send({
         ...msg,
         
         payload: {
           chatId, 
-          type: 'poll'          
+          type: 'poll',
+          options,
+          isQuiz,
+          isAnonymous,
+          answer,
+          title          
         }        
       });
+
       done();
     });
   }
