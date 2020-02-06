@@ -5,6 +5,7 @@ const RegisterType = require('../lib/node-installer');
 const { 
   isValidMessage, 
   getChatId, 
+  MessageTemplate,
   getMessageId, 
   getTransport, 
   extractValue,
@@ -23,15 +24,13 @@ module.exports = function(RED) {
     this.language = config.language;
 
     this.on('input', function(msg, send, done) {
-
-
       // send/done compatibility for node-red < 1.0
       send = send || function() { node.send.apply(node, arguments) };
       done = done || function(error) { node.error.call(node, error, msg) };
 
       const chatId = getChatId(msg);
       //const messageId = getMessageId(msg);
-      //const template = MessageTemplate(msg, node);
+      const template = MessageTemplate(msg, node);
       //const transport = getTransport(msg);
 
 
@@ -41,27 +40,30 @@ module.exports = function(RED) {
         'Tre'
       ];
 
-      const isQuiz = false;
+      const pollType = 'regular';
       const isAnonymous = false;
-      const answer = null;  
-      const title = 'This is a poll';
+      const allowMultipleAnswers = false;
+      const correctOptionId = null;  
+      const question = 'This is a poll';
 
 
-      node.send({
-        ...msg,
-        
-        payload: {
-          chatId, 
-          type: 'poll',
-          options,
-          isQuiz,
-          isAnonymous,
-          answer,
-          title          
-        }        
-      });
-
-      done();
+      template({ question, options })
+        .then(({ question, options }) => {
+          node.send({
+            ...msg,        
+            payload: {
+              chatId, 
+              question,
+              type: 'poll',
+              options,
+              isAnonymous, 
+              pollType, 
+              allowMultipleAnswers, 
+              correctOptionId          
+            }        
+          });  
+          done();
+        });
     });
   }
 
