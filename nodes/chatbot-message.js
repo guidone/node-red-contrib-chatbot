@@ -50,7 +50,17 @@ module.exports = function(RED) {
       const messages = extractValue(['string','messages', 'number'], 'message', node, msg)
         || extractValue('string', 'answer', node, msg, false);
       const fallback = extractValue('string', 'fallback', node, msg, false);
-      const message = _.isArray(messages) ? node.pickOne(messages) : messages;
+      
+      // extract a valid string
+      let message;
+      if (_.isArray(messages)) {
+        message = node.pickOne(messages);
+      } else if (_.isObject(msg.data) && _.isString(msg.data.body) && !_.isEmpty(msg.data.body)) {
+        // support for MC Content in mission control
+        message = msg.data.body;        
+      } else {
+        message = messages;
+      }
 
       template(message)
         .then(message => {
