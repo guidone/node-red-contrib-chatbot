@@ -47,7 +47,7 @@ module.exports = function(RED) {
       // also try to get message from the "answer" key in payload, that to try to get the answer directly from nodes
       // like dialogflow/recast
       // also try to get an array of messages from config and pick one randomly
-      const messages = extractValue(['string','messages', 'number'], 'message', node, msg)
+      const messages = extractValue(['string','messages', 'number'], 'message', node, msg, true, true)
         || extractValue('string', 'answer', node, msg, false);
       const fallback = extractValue('string', 'fallback', node, msg, false);
       
