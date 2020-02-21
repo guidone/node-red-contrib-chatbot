@@ -322,5 +322,49 @@ describe('Chat message node', () => {
       });
   });
 
+  it('message with defined language and same language in context, should pass', () => {
+    const msg = RED.createMessage('Original message');
+    RED.node.config({
+      message: [{message: 'I will send this'}],
+      language: 'it'
+    });
+    MessageBlock(RED);
+    msg.chat().set('language', 'it');
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(() => {
+        assert.equal(RED.node.message().payload.content, 'I will send this');
+      });
+  });
+
+  it('message with defined language and different language in context, should not pass', () => {
+    const msg = RED.createMessage('Original message');
+    RED.node.config({
+      message: [{message: 'I will send this'}],
+      language: 'en '
+    });
+    MessageBlock(RED);
+    msg.chat().set('language', 'it');
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(() => {
+        assert.equal(RED.node.message().payload, 'Original message');
+      });
+  });
+
+  it('message with defined language and undefined language in context, should pass', () => {
+    const msg = RED.createMessage('Original message');
+    RED.node.config({
+      message: [{message: 'I will send this'}],
+      language: 'it'
+    });
+    MessageBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(() => {
+        assert.equal(RED.node.message().payload.content, 'I will send this');
+      });
+  });
+  
 });
 

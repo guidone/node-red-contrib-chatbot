@@ -27,9 +27,6 @@
       log: {
         value: null
       },
-      parseMode: {
-        value: ''
-      },
       debug: {
         value: false
       },
@@ -141,17 +138,6 @@
       <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
         Select the chat context provider to use with this bot, if none is selected then non-persistent "memory" will be used.<br>
         To extend <strong>RedBot</strong> with a new chat context provider see <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Creating-a-Chat-Context-Provider" target="_blank">this tutorial</a>.
-      </div>
-    </div>
-    <div class="form-row">
-      <label for="node-config-input-parseMode">Parse</label>
-      <select id="node-config-input-parseMode" placeholder="Select parse mode">
-        <option value="">None</option>
-        <option value="Markdown">Markdown</option>
-        <option value="HTML">HTML</option>
-      </select>
-      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;clear:both;margin-top:5px;">
-      Render the text content of messages, inline buttons and keywords with Markdown or HTML
       </div>
     </div>
     <div class="form-row">

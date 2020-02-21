@@ -41,7 +41,6 @@ module.exports = function(RED) {
     this.log = n.log;
     this.usernames = n.usernames != null ? n.usernames.split(',') : [];
     this.polling = n.polling;
-    this.parseMode = n.parseMode;
     this.providerToken = n.providerToken;
     this.debug = n.debug;
     this.webHook = n.webHook;
@@ -67,7 +66,6 @@ module.exports = function(RED) {
       token: node.credentials != null && node.credentials.token != null ? node.credentials.token.trim() : null,
       providerToken: node.providerToken,
       polling: node.polling,
-      parseMode: node.parseMode,
       logfile: node.log,
       contextProvider: contextStorageNode != null ? contextStorageNode.contextStorage : null,
       contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null,
@@ -122,8 +120,7 @@ module.exports = function(RED) {
           authorizedUsernames: botConfiguration.authorizedUsernames,
           token: botConfiguration.token,
           providerToken: botConfiguration.providerToken,
-          polling: botConfiguration.polling,
-          parseMode: botConfiguration.parseMode,
+          polling: botConfiguration.polling,        
           contextProvider: node.contextProvider,
           logfile: botConfiguration.logfile,
           debug: botConfiguration.debug,

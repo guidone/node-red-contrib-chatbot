@@ -41,7 +41,6 @@ module.exports = function(RED) {
     this.connectorParams = n.connectorParams;
     this.usernames = n.usernames != null ? n.usernames.split(',') : [];
     this.polling = n.polling;
-    this.parseMode = n.parseMode;
     this.providerToken = n.providerToken;
     this.debug = n.debug;
 
