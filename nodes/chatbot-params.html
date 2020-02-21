@@ -31,6 +31,28 @@
           $('input[type=radio][value=false]', container).attr('checked', true);
         }  
         break;
+      case 'select':
+        var options = '';
+        var idx = 0;
+        for (idx = 0; idx < param.options.length; idx++) {
+          options += '<option value="' + param.options[idx].value + '">' + param.options[idx].label + '</option>';
+        }
+        container
+          .append(
+            '<div class="form-row" style="display:inline-block;margin-left:10px;">'
+            + '<select autocomplete="disable" style="width:100%;" placeholder="' 
+            + (param.placeholder != null && param.placeholder != '' ? param.placeholder : '') + '">'
+            + options
+            + '</select>'
+            + '</div>'
+          )
+        $('select', container).val(defaultParam != null ? defaultParam : '')  
+        $('select', container)
+          .change(function() {
+            callback($(this).val());
+          });
+        break;
+        break;
     }
   }
 

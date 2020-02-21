@@ -179,8 +179,7 @@ describe('Validators', function() {
     var base = {
       authorizedUsernames: '12213123',
       token: 'xxx:xxxxyyyyyyzzzz',
-      polling: 1000,
-      parseMode: 'none',
+      polling: 1000,      
       contextProvider: 'memory',
       logfile: null,
       connectMode: 'polling'

@@ -39,9 +39,7 @@ module.exports = function(RED) {
     this.botname = n.botname;
     this.store = n.store;
     this.log = n.log;
-    this.usernames = n.usernames != null ? n.usernames.split(',') : [];
-    //this.polling = n.polling;
-    //this.parseMode = n.parseMode;
+    this.usernames = n.usernames != null ? n.usernames.split(',') : [];  
     this.webHook = n.webHook;
     this.debug = n.debug;
 
