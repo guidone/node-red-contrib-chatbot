@@ -1,3 +1,4 @@
+* **0.18.13** Fixed a bug with multi endpoints chatbots (picking the wrong one) 
 * **0.18.12** Moved _parseMode_ from Telegram config to `Params node`, added language drop down to `Message node` for multi-language support
 * **0.18.11** Enable MS Teams nodes 
 * **0.18.10** Added nodes for NLP.js, deprecated `Listen node`, breaking changes for `Language node`, added _Is Language ..._ rule to `Rules node` 
