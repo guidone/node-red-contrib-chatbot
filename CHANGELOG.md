@@ -1,3 +1,4 @@
+* **0.18.15** Fix Slack events
 * **0.18.14** Fixed bug  with base url on callbacks 
 * **0.18.13** Fixed a bug with multi endpoints chatbots (picking the wrong one) 
 * **0.18.12** Moved _parseMode_ from Telegram config to `Params node`, added language drop down to `Message node` for multi-language support
