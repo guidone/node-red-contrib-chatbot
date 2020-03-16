@@ -41,7 +41,7 @@
           .append(
             '<div class="form-row" style="display:inline-block;margin-left:10px;">'
             + '<select autocomplete="disable" style="width:100%;" placeholder="' 
-            + (param.placeholder != null && param.placeholder != '' ? param.placeholder : '') + '">'
+            + (param.placeholder != null && param.placeholder != '' ? param.placeholder : '') + '">'            
             + options
             + '</select>'
             + '</div>'
@@ -51,7 +51,9 @@
           .change(function() {
             callback($(this).val());
           });
-        break;
+        if (param.default != null) {
+          callback(param.default);
+        }     
         break;
     }
   }
@@ -173,7 +175,7 @@
           return;
         } else {
           // build transport options
-          var transportOptions = '';
+          var transportOptions = '<option value="all">All</option>';
           for(idx = 0; idx < node.platforms.length; idx++) {
             // only if some parameters
             if (node.availableParams[node.platforms[idx].id] != null) {

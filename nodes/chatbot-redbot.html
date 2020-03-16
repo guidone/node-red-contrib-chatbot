@@ -71,26 +71,26 @@
           + availablePlatforms[platforms[idx]].name.replace(/ /g,'&nbsp;')
           + '</span> ';
       }
-
+      // only 3 by columns
+      var countColumns = Math.ceil(platforms.length / 3);      
 
       $(node)
         .empty()
         .append(
           '<div class="inner" '
-          + 'style="display:inline-flex;max-width:18px;line-height:0px;max-height:34px;flex-wrap: wrap;justify-content: flex-start;'
-          + 'align-content: center;align-items: flex-end;">' +markup + '</div>'
+            + 'style="display:inline-flex;max-width:' + (countColumns * 9) + 'px;line-height:0px;max-height:27px;'
+            + 'flex-wrap: wrap;justify-content: flex-start;align-content: center;align-items: flex-end;vertical-align: top;">' 
+            + markup 
+            + '</div>'
         );
 
-
-      var tooltip = new Tooltip($('.inner', node).get(0), {
-        //placement: 'right-start', 
+      var tooltip = new Tooltip($('.inner', node).get(0), {         
         placement: 'top',
         title: markupPopup,
         html: true,
         trigger: 'hover',
         template: '<div class="tooltip tooltip-platform" role="tooltip"><div class="tooltip-arrow tooltip-platform-arrow"></div><div class="tooltip-inner"></div></div>'
       });  
-      //$(node).data('tooltip', tooltip);
     }
   };
   $.RedBot.buttonTypes = [
