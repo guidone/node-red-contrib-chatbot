@@ -59,6 +59,7 @@ module.exports = function(RED) {
 
       send({
         ...msg,
+        previous: msg.payload, // store previous msg, use POP to retrieve
         payload: {
           type: 'intent',
           isFallback: response.intent === 'None',
