@@ -1,6 +1,7 @@
 const _ = require('underscore');
 const { NlpManager } = require('node-nlp');
 
+const lcd = require('../lib/helpers/lcd');
 const RegisterType = require('../lib/node-installer');
 const { extractValue } = require('../lib/helpers/utils');
 
@@ -35,10 +36,15 @@ module.exports = function(RED) {
     
       const manager = new NlpManager({ 
         languages, 
-        nlu: { log: debug || false },
+        nlu: { log: false },
         autoSave: false,
         autoLoad: false 
       });
+
+      if (debug) {
+        // eslint-disable-next-line no-console
+        console.log(lcd.white('[NLP] ') + lcd.grey('Training model ') + lcd.green(name));
+      }
 
       // adding intents
       if (_.isObject(payload.intents)) {
@@ -47,7 +53,7 @@ module.exports = function(RED) {
             (payload.intents[language][intent] || []).forEach(utterance => {
               if (debug) {
                 // eslint-disable-next-line no-console
-                console.log(`Intent: ${intent} [${language.toUpperCase()}] : ${utterance}`);
+                console.log('  Intent: ' + lcd.white(intent) + ' [' + language.toUpperCase() + '] ' + lcd.green(utterance));
               }
               manager.addDocument(language, utterance, intent);
             });
@@ -62,7 +68,10 @@ module.exports = function(RED) {
             (payload.entities[language][name] || []).forEach(entity => {
               if (debug) {
                 // eslint-disable-next-line no-console
-                console.log(`Entity ${name} [${language.toUpperCase()}] : ${entity.name} (${entity.aliases.join(',')})`);
+                console.log(
+                  '  Entity: ' + lcd.white(name) + ' [' + language.toUpperCase() + '] ' 
+                  + lcd.green(entity.name) + ` (${entity.aliases.join(',')})`
+                );
               }              
               manager.addNamedEntityText(name, entity.name, [language], _.isEmpty(entity.aliases) ? entity.aliases : null);
             });

@@ -14,7 +14,7 @@
     inputs: 1,
     outputs: 1,
     paletteLabel: 'NLP.js Train',
-    icon: 'chatbot-message.png',
+    icon: 'chatbot-listen-lexicon.png',
     label: function() {
       return 'NLP.js Train' + (this.name != null && this.name !== '' ? ' (' + this.name + ')' : ' (default)');
     }
@@ -36,7 +36,6 @@
     Show debug information while training the model
   </span>
 </div>
-
 </script>
 <script type="text/x-red" data-help-name="chatbot-nlpjs-train"><p>The <code>NLP.js nodes</code> uses <a href="https://github.com/axa-group/nlp.js">NLP.js</a> for Natural Language Processing.</p>
 <p>In order to work it requires a properly trained model using <code>NLP.js Train</code>, <code>NLP.js Intent</code> and <code>NLP.js Entity</code>. An <em>intent</em> is a string representation of the abstract meaning of the user sentence, it requires an arbitrary name (that will be likely used in a <code>Rules node</code> to control the chatbot flow) and one or more utterances (a set of all different way of expressing the same actions).</p>
