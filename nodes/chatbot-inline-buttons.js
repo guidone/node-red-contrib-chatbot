@@ -1,8 +1,15 @@
 const MessageTemplate = require('../lib/message-template-async');
 const emoji = require('node-emoji');
+
 const utils = require('../lib/helpers/utils');
 const { ChatExpress } = require('chat-platform');
 const RegisterType = require('../lib/node-installer');
+const {
+  isValidMessage,
+  getChatId,
+  getMessageId,
+  extractValue
+} = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
@@ -13,41 +20,46 @@ module.exports = function(RED) {
     this.name = config.name;
     this.buttons = config.buttons;
     this.message = config.message;
-    this.transports = ['telegram', 'facebook', 'smooch', 'slack', 'viber'];
 
-    this.on('input', function(msg) {
-
+    this.on('input', function(msg, send, done) {
+      // send/done compatibility for node-red < 1.0
+      send = send || function() { node.send.apply(node, arguments) };
+      done = done || function(error) { node.error.call(node, error, msg) };
       var transport = utils.getTransport(msg);
 
       // check if valid message
-      if (!utils.isValidMessage(msg, node)) {
+      if (!isValidMessage(msg, node)) {
         return;
       }
       // check transport compatibility
-      if (!ChatExpress.isSupported(transport, 'message') && !utils.matchTransport(node, msg)) {
+      if (!ChatExpress.isSupported(transport, 'inline-buttons') && !utils.matchTransport(node, msg)) {
         return;
       }
 
-      var chatId = utils.getChatId(msg);
-      var messageId = utils.getMessageId(msg);
-      var template = MessageTemplate(msg, node);
+      const chatId = getChatId(msg);
+      const messageId = getMessageId(msg);
+      const template = MessageTemplate(msg, node);
 
       // prepare buttons, first the config, then payload
-      var buttons = utils.extractValue('buttons', 'buttons', node, msg);
-      var message = utils.extractValue('string', 'message', node, msg);
-      var name = utils.extractValue('string', 'name', node, msg);
+      const buttons = extractValue('buttons', 'buttons', node, msg);
+      const message = extractValue('string', 'message', node, msg);
+      const name = extractValue('string', 'name', node, msg);
 
-      template(message)
-        .then(function(message) {
-          msg.payload = {
-            type: 'inline-buttons',
-            name: name,
-            content: message != null ? emoji.emojify(message) : null,
-            chatId: chatId,
-            messageId: messageId,
-            buttons: buttons
-          };
-          node.send(msg);
+      template(message, buttons)
+        .then(([message, buttons]) => {
+          console.log('risultato --', buttons)
+          send({
+            ...msg,
+            payload: {
+              type: 'inline-buttons',
+              name,
+              content: message != null ? emoji.emojify(message) : null,
+              chatId,
+              messageId,
+              buttons
+            }
+          });
+          done();
         });
     });
 
