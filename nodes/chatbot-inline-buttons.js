@@ -47,7 +47,6 @@ module.exports = function(RED) {
 
       template(message, buttons)
         .then(([message, buttons]) => {
-          console.log('risultato --', buttons)
           send({
             ...msg,
             payload: {
