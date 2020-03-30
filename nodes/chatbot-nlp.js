@@ -6,7 +6,7 @@ const lcd = require('../lib/helpers/lcd');
 const RegisterType = require('../lib/node-installer');
 const MessageTemplate = require('../lib/message-template-async');
 const { variable: isVariable } = require('../lib/helpers/validators');
-const { isValidMessage, extractValue } = require('../lib/helpers/utils');
+const { isValidMessage, extractValue, isCommand } = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
@@ -25,6 +25,15 @@ module.exports = function(RED) {
       done = done || function(error) { node.error.call(node, error, msg) };
       // check if valid message
       if (!isValidMessage(msg, node)) {
+        return;
+      }
+      // if it's a command, don't parse it, skip
+      if (isCommand(msg)) {
+        send({
+          ...msg,
+          previous: msg.payload, // store previous msg, use POP to retrieve
+        });
+        done();
         return;
       }
 
@@ -81,7 +90,7 @@ module.exports = function(RED) {
 
       if (debug) {
         // eslint-disable-next-line no-console
-        console.log(lcd.white('[NLP] ') + lcd.grey('Processing model ') + lcd.green('name'));
+        console.log(lcd.white('[NLP] ') + lcd.grey('Processing model ') + lcd.green(name));
         // eslint-disable-next-line no-console
         console.log('  Input: ' + lcd.green(`"${content}"`) + lcd.white(` (${language})`));
         // eslint-disable-next-line no-console
