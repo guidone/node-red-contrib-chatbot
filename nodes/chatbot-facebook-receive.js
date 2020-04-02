@@ -13,6 +13,8 @@ const when = utils.when;
 const warn = clc.yellow;
 const green = clc.green;
 
+const { GenericOutNode, GenericInNode, GenericBotNode } = require('../lib/sender-factory');
+
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
 
@@ -169,21 +171,54 @@ module.exports = function(RED) {
         });
     });
   }
-  registerType('chatbot-facebook-node', FacebookBotNode, {
-    credentials: {
-      token: {
-        type: 'text'
+
+
+  registerType(
+    'chatbot-facebook-node',
+    GenericBotNode(
+      'facebook',
+      RED,
+      (node, botConfiguration) => {
+        return FacebookServer.createServer({
+          authorizedUsernames: botConfiguration.usernames,
+          token: botConfiguration.token,
+          verifyToken: botConfiguration.verify_token,
+          appSecret: botConfiguration.app_secret,
+          contextProvider: node.contextProvider,
+          logfile: botConfiguration.logfile,
+          debug: botConfiguration.debug,
+          multiWebHook: botConfiguration.multiWebHook,
+          profileFields: botConfiguration.profileFields,
+          RED: RED
+        });
       },
-      app_secret: {
-        type: 'text'
-      },
-      verify_token: {
-        type: 'text'
+      node => ({
+        authorizedUsernames: node.usernames,
+        token: node.credentials != null && node.credentials.token != null ? node.credentials.token.trim() : null,
+        verifyToken: node.credentials != null && node.credentials.verify_token != null ? node.credentials.verify_token.trim() : null,
+        appSecret: node.credentials != null && node.credentials.app_secret != null ? node.credentials.app_secret.trim() : null,
+        logfile: node.log,
+        profileFields: node.profileFields,
+        debug: node.debug,
+        multiWebHook: node.multiWebHook
+      })
+    ),
+    {
+      credentials: {
+        token: {
+          type: 'text'
+        },
+        app_secret: {
+          type: 'text'
+        },
+        verify_token: {
+          type: 'text'
+        }
       }
     }
-  });
+  );
 
-  function FacebookInNode(config) {
+  /*function FacebookInNode(config) {
 
     RED.nodes.createNode(this, config);
     var node = this;
@@ -206,8 +241,8 @@ module.exports = function(RED) {
           isMaster = true;
           global.set(nodeGlobalKey, node.id);
           // store a list of chatbots and its references
-          global.set('chatbot_info_' + this.config.id.replace('.','_'), { 
-            nodeId: node.id, 
+          global.set('chatbot_info_' + this.config.id.replace('.','_'), {
+            nodeId: node.id,
             transport: 'facebook',
             name: this.config.botname
           });
@@ -246,10 +281,10 @@ module.exports = function(RED) {
       }
       done();
     });
-  }
-  registerType('chatbot-facebook-receive', FacebookInNode);
+  }*/
+  registerType('chatbot-facebook-receive', GenericInNode('facebook', RED));
 
-  function FacebookOutNode(config) {
+  /*function FacebookOutNode(config) {
     RED.nodes.createNode(this, config);
     var node = this;
     var global = this.context().global;
@@ -308,7 +343,7 @@ module.exports = function(RED) {
         }
       });
     });
-  }
-  registerType('chatbot-facebook-send', FacebookOutNode);
+  }*/
+  registerType('chatbot-facebook-send', GenericOutNode('facebook', RED));
 
 };
