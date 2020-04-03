@@ -3,6 +3,16 @@ const MessageTemplate = require('../lib/message-template-async');
 const utils = require('../lib/helpers/utils');
 const validators = require('../lib/helpers/validators');
 const RegisterType = require('../lib/node-installer');
+const { ChatExpress } = require('chat-platform');
+const {
+  isValidMessage,
+  getChatId,
+  getMessageId,
+  getTransport,
+  extractValue,
+  append,
+  when
+} = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
@@ -19,53 +29,62 @@ module.exports = function(RED) {
     this.sharable = config.sharable;
     this.transports = ['facebook', 'slack'];
 
-    this.on('input', function(msg) {
-
-      // check transport compatibility
-      if (!utils.matchTransport(node, msg)) {
+    this.on('input', async function(msg, send, done) {
+      // send/done compatibility for node-red < 1.0
+      send = send || function() { node.send.apply(node, arguments) };
+      done = done || function(error) { node.error.call(node, error, msg) };
+      // check if valid message
+      if (!isValidMessage(msg, node)) {
         return;
       }
-
-      var chatId = utils.getChatId(msg);
-      var messageId = utils.getMessageId(msg);
-      var template = MessageTemplate(msg, node);
-
+      const chatId = getChatId(msg);
+      const messageId = getMessageId(msg);
+      const template = MessageTemplate(msg, node);
+      const transport = getTransport(msg);
+      // check transport compatibility
+      if (!ChatExpress.isSupported(transport, 'generic-template')) {
+        done(`Node "message" is not supported by ${transport} transport`);
+        return;
+      }
       // get values from config
-      var buttons = utils.extractValue('buttons', 'buttons', node, msg);
-      var title = utils.extractValue('string', 'title', node, msg);
-      var subtitle = utils.extractValue('string', 'subtitle', node, msg);
-      var imageUrl = utils.extractValue('string', 'imageUrl', node, msg);
-      var aspectRatio = utils.extractValue('string', 'aspectRatio', node, msg);
-      var sharable = utils.extractValue('boolean', 'sharable', node, msg);
+      const buttons = extractValue('buttons', 'buttons', node, msg);
+      const title = extractValue('string', 'title', node, msg);
+      const subtitle = extractValue('string', 'subtitle', node, msg);
+      const imageUrl = extractValue('string', 'imageUrl', node, msg);
+      const aspectRatio = extractValue('string', 'aspectRatio', node, msg);
+      const sharable = extractValue('boolean', 'sharable', node, msg);
 
-      var elements = [];
+      let elements = [];
       // if inbound is another message from a generic template, then push them toghether to create a carousel
       if (msg.payload != null && validators.genericTemplateElements(msg.payload.elements)) {
         elements = _.union(elements, msg.payload.elements);
       }
 
-      template(title, subtitle, imageUrl)
-        .then(function(translated) {
-          // add the current one if not empty
-          if (!_.isEmpty(translated[0])) {
-            elements.push({
-              title: translated[0],
-              subtitle: translated[1],
-              imageUrl: translated[2],
-              buttons: buttons
-            });
-          }
-          // prep payload
-          msg.payload = {
-            type: 'generic-template',
-            aspectRatio: !_.isEmpty(aspectRatio) ? aspectRatio : 'horizontal',
-            sharable: _.isBoolean(sharable) ? sharable : true,
-            elements: elements,
-            chatId: chatId,
-            messageId: messageId
-          };
-          node.send(msg);
-        });
+      const translated = await template({ title, subtitle, imageUrl, buttons });
+
+      console.log('translated', translated)
+
+      // add the current one if not empty
+
+      elements.push({
+        title: translated.title,
+        subtitle: translated.subtitle,
+        imageUrl: translated.imageUrl,
+        buttons: translated.buttons
+      });
+
+      send({
+        ...msg,
+        payload: {
+          type: 'generic-template',
+          aspectRatio: !_.isEmpty(aspectRatio) ? aspectRatio : 'horizontal',
+          sharable: _.isBoolean(sharable) ? sharable : true,
+          elements: elements,
+          chatId: chatId,
+          messageId: messageId
+        }
+      })
+      done();
     });
   }
 
