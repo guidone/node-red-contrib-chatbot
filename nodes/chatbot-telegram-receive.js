@@ -181,7 +181,7 @@ module.exports = function(RED) {
     });
   }
 
-  registerType(
+  /*registerType(
     'chatbot-telegram-node',
     TelegramBotNode,
     {
@@ -191,9 +191,9 @@ module.exports = function(RED) {
         }
       }
     }
-  );
+  );*/
 
-  /*registerType(
+  registerType(
     'chatbot-telegram-node',
     GenericBotNode(
       'telegram',
@@ -212,15 +212,15 @@ module.exports = function(RED) {
           RED: RED
         });
       },
-      node => ({
-        authorizedUsernames: node.usernames,
+      (config, node) => ({
+        authorizedUsernames: config.usernames,
         token: node.credentials != null && node.credentials.token != null ? node.credentials.token.trim() : null,
-        providerToken: node.providerToken,
-        polling: node.polling,
-        logfile: node.log,
-        debug: node.debug,
-        webHook: node.webHook,
-        connectMode: node.connectMode
+        providerToken: config.providerToken,
+        polling: config.polling,
+        logfile: config.log,
+        debug: config.debug,
+        webHook: config.webHook,
+        connectMode: config.connectMode
       })
     ),
     {
@@ -230,7 +230,7 @@ module.exports = function(RED) {
         }
       }
     }
-  );*/
+  );
 
   /*function TelegramInNode(config) {
 

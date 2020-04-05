@@ -1,33 +1,13 @@
-const _ = require('underscore');
-const moment = require('moment');
-const SlackServer = require('../lib/platforms/slack');
-const { ContextProviders, ChatExpress } = require('chat-platform');
-const utils = require('../lib/helpers/utils');
-const clc = require('cli-color');
-const lcd = require('../lib/helpers/lcd');
-const prettyjson = require('prettyjson');
-const validators = require('../lib/helpers/validators');
-const RegisterType = require('../lib/node-installer');
 
-const when = utils.when;
-const warn = clc.yellow;
-const green = clc.green;
+const SlackServer = require('../lib/platforms/slack');
+const RegisterType = require('../lib/node-installer');
+const { GenericOutNode, GenericInNode, GenericBotNode } = require('../lib/sender-factory');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
 
-  // register Slack server
-  if (RED.redbot == null) {
-    RED.redbot = {};
-  }
-  if (RED.redbot.platforms == null) {
-    RED.redbot.platforms = {};
-  }
-  RED.redbot.platforms.slack = SlackServer;
 
-  var contextProviders = ContextProviders(RED);
-
-  function SlackBotNode(n) {
+  /*function SlackBotNode(n) {
     RED.nodes.createNode(this, n);
     var node = this;
     var environment = this.context().global.environment === 'production' ? 'production' : 'development';
@@ -73,7 +53,7 @@ module.exports = function(RED) {
     if (slackConfigs[node.botname] != null) {
       var validation = validators.platform.slack(slackConfigs[node.botname]);
       if (validation != null) {
-        /* eslint-disable no-console */
+
         console.log('');
         console.log(lcd.error('Found a Slack configuration in settings.js "' + node.botname + '", but it\'s invalid.'));
         console.log(lcd.grey('Errors:'));
@@ -85,7 +65,7 @@ module.exports = function(RED) {
         console.log(lcd.grey('Found a valid Slack configuration in settings.js: "' + node.botname + '":'));
         console.log(prettyjson.render(slackConfigs[node.botname]));
         console.log('');
-        /* eslint-enable no-console */
+
         botConfiguration = slackConfigs[node.botname];
       }
     }
@@ -166,19 +146,59 @@ module.exports = function(RED) {
           done();
         });
     });
-  }
-  registerType('chatbot-slack-node', SlackBotNode, {
-    credentials: {
-      token: {
-        type: 'text'
+  }*/
+
+  registerType(
+    'chatbot-slack-node',
+    GenericBotNode(
+      'slack',
+      RED,
+      (node, botConfiguration) => {
+        return SlackServer.createServer({
+          botname: botConfiguration.botname,
+          authorizedUsernames: botConfiguration.usernames,
+          token: botConfiguration.token,
+          oauthToken : botConfiguration.oauthToken,
+          contextProvider: node.contextProvider,
+          logfile: botConfiguration.logfile,
+          debug: botConfiguration.debug,
+          username: botConfiguration.username,
+          iconEmoji: botConfiguration.iconEmoji,
+          RED: RED
+        });
       },
-      oauthToken: {
-        type: 'text'
+      (config, node) => ({
+        botname: config.botname,
+        token: node.credentials != null && node.credentials.token != null ? node.credentials.token.trim() : null,
+        oauthToken: node.credentials != null && node.credentials.oauthToken != null ? node.credentials.oauthToken.trim() : null,
+        debug: config.debug,
+        logfile: config.log,
+        username: config.username,
+        iconEmoji: config.iconEmoji
+
+        /*authorizedUsernames: config.usernames,
+        token: node.credentials != null && node.credentials.token != null ? node.credentials.token.trim() : null,
+        providerToken: config.providerToken,
+        polling: config.polling,
+        logfile: config.log,
+        debug: config.debug,
+        webHook: config.webHook,
+        connectMode: config.connectMode*/
+      })
+    ),
+    {
+      credentials: {
+        token: {
+          type: 'text'
+        },
+        oauthToken: {
+          type: 'text'
+        }
       }
     }
-  });
+  );
 
-  function SlackInNode(config) {
+  /*function SlackInNode(config) {
 
     RED.nodes.createNode(this, config);
     var node = this;
@@ -235,10 +255,10 @@ module.exports = function(RED) {
       }
       done();
     });
-  }
-  registerType('chatbot-slack-receive', SlackInNode);
+  }*/
+  registerType('chatbot-slack-receive', GenericInNode('slack', RED));
 
-  function SlackOutNode(config) {
+  /*function SlackOutNode(config) {
     RED.nodes.createNode(this, config);
     var node = this;
     var global = this.context().global;
@@ -296,7 +316,7 @@ module.exports = function(RED) {
         }
       });
     });
-  }
-  registerType('chatbot-slack-send', SlackOutNode);
+  }*/
+  registerType('chatbot-slack-send', GenericOutNode('slack', RED));
 
 };

@@ -192,15 +192,15 @@ module.exports = function(RED) {
           RED: RED
         });
       },
-      node => ({
-        authorizedUsernames: node.usernames,
+      (config, node) => ({
+        authorizedUsernames: config.usernames,
         token: node.credentials != null && node.credentials.token != null ? node.credentials.token.trim() : null,
         verifyToken: node.credentials != null && node.credentials.verify_token != null ? node.credentials.verify_token.trim() : null,
         appSecret: node.credentials != null && node.credentials.app_secret != null ? node.credentials.app_secret.trim() : null,
-        logfile: node.log,
-        profileFields: node.profileFields,
-        debug: node.debug,
-        multiWebHook: node.multiWebHook
+        logfile: config.log,
+        profileFields: config.profileFields,
+        debug: config.debug,
+        multiWebHook: config.multiWebHook
       })
     ),
     {
