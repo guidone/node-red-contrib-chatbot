@@ -43,7 +43,7 @@ module.exports = function(RED) {
       const transport = getTransport(msg);
       // check transport compatibility
       if (!ChatExpress.isSupported(transport, 'generic-template')) {
-        done(`Node "message" is not supported by ${transport} transport`);
+        done(`Node "generic-template" is not supported by ${transport} transport`);
         return;
       }
       // get values from config
