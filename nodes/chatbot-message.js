@@ -68,7 +68,10 @@ module.exports = function(RED) {
         // if both context language and message language are defined and are different, then skip
         // message block was meant for a different language, skip if language is not defined in the node or
         // in the chat context (the platform don't provide it)
-        if (!_.isEmpty(contextLanguage) && !_.isEmpty(language) && contextLanguage !== language) {
+        // "none" means no filtering, so no language match is done, language = null in the config means that the
+        // language value passed in the payload (from a mc_content for example) have to match the language in the
+        // context (if present)
+        if (!_.isEmpty(contextLanguage) && !_.isEmpty(language) && language !== 'none' && contextLanguage !== language) {
           send(msg);
           done();
           return;

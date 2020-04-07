@@ -10,7 +10,7 @@
         value: ['']
       },
       language: {
-        value: null
+        value: 'none'
       }
     },
     inputs: 1,
@@ -84,7 +84,8 @@
 <div class="form-row form-row-language">
   <label for="node-input-language">Language</label>
   <select id="node-input-language" placeholder="Language to match">
-    <option value="">Not defined</option>
+    <option value="none">Any language</option>
+    <option value="">Match with context language</option>
     <option value="ar">Arabic</option>
     <option value="bn">Bengali</option>
     <option value="ca">Catalan</option>
@@ -161,5 +162,3 @@ return msg;
 <img src="https://img.shields.io/badge/platform-Twilio-ee324a.svg" alt="Twilio">
 <img src="https://img.shields.io/badge/platform-Viber-8079d0.svg" alt="Viber"></p>
 </script>
-
-
