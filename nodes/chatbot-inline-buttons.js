@@ -1,8 +1,7 @@
 const MessageTemplate = require('../lib/message-template-async');
 const emoji = require('node-emoji');
-
-const utils = require('../lib/helpers/utils');
 const { ChatExpress } = require('chat-platform');
+
 const RegisterType = require('../lib/node-installer');
 const {
   isValidMessage,
@@ -12,6 +11,9 @@ const {
   appendPayload,
   getTransport
 } = require('../lib/helpers/utils');
+
+require('../lib/platforms/telegram');
+require('../lib/platforms/facebook/facebook');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
@@ -27,11 +29,7 @@ module.exports = function(RED) {
       // send/done compatibility for node-red < 1.0
       send = send || function() { node.send.apply(node, arguments) };
       done = done || function(error) { node.error.call(node, error, msg) };
-      //const sendPayload = payload => send({ ...msg, payload: appendPayload(msg.payload, { ...payload, inbound: false }) });
-
-
       const sendPayload = appendPayload(send, msg);
-
       const transport = getTransport(msg);
 
       // check if valid message
@@ -39,7 +37,7 @@ module.exports = function(RED) {
         return;
       }
       // check transport compatibility
-      if (!ChatExpress.isSupported(transport, 'inline-buttons') && !utils.matchTransport(node, msg)) {
+      if (!ChatExpress.isSupported(transport, 'inline-buttons')) {
         return;
       }
 
@@ -65,7 +63,6 @@ module.exports = function(RED) {
           done();
         });
     });
-
   }
 
   registerType('chatbot-inline-buttons', ChatBotInlineButtons);

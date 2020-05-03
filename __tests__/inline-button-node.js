@@ -262,9 +262,8 @@ describe('Chat inline buttons node', function() {
 
   });
 
-  it('should send inline buttons in Telegram, message from upstream node', function () {
-
-    var msg = RED.createMessage('message for the buttons', 'telegram');
+  it('should send inline buttons in Telegram, message from upstream node', async () => {
+    const msg = RED.createMessage('message for the buttons', 'telegram');
     RED.node.config({
       buttons: [
         {
@@ -288,23 +287,76 @@ describe('Chat inline buttons node', function() {
     });
     InlineButtonsBlock(RED);
     RED.node.get().emit('input', msg);
-    return RED.node.get().await()
-      .then(function () {
-        assert.equal(RED.node.message().payload.type, 'inline-buttons');
-        assert.equal(RED.node.message().payload.content, 'message for the buttons');
-        assert.equal(RED.node.message().payload.chatId, 42);
-        assert.isArray(RED.node.message().payload.buttons);
-        assert.equal(RED.node.message().payload.buttons[0].type, 'postback');
-        assert.equal(RED.node.message().payload.buttons[0].value, 'value 1');
-        assert.equal(RED.node.message().payload.buttons[0].label, 'Value 1');
-        assert.equal(RED.node.message().payload.buttons[1].type, 'url');
-        assert.equal(RED.node.message().payload.buttons[1].url, 'http://javascript-jedi.com');
-        assert.equal(RED.node.message().payload.buttons[1].label, 'Value 2');
-        assert.equal(RED.node.message().payload.buttons[2].type, 'call');
-        assert.equal(RED.node.message().payload.buttons[2].value, '+39347123456');
-        assert.equal(RED.node.message().payload.buttons[2].label, 'Call me');
-      });
+    await RED.node.get().await();
 
+    assert.equal(RED.node.message().payload.type, 'inline-buttons');
+    assert.equal(RED.node.message().payload.content, 'message for the buttons');
+    assert.equal(RED.node.message().payload.chatId, 42);
+    assert.isArray(RED.node.message().payload.buttons);
+    assert.equal(RED.node.message().payload.buttons[0].type, 'postback');
+    assert.equal(RED.node.message().payload.buttons[0].value, 'value 1');
+    assert.equal(RED.node.message().payload.buttons[0].label, 'Value 1');
+    assert.equal(RED.node.message().payload.buttons[1].type, 'url');
+    assert.equal(RED.node.message().payload.buttons[1].url, 'http://javascript-jedi.com');
+    assert.equal(RED.node.message().payload.buttons[1].label, 'Value 2');
+    assert.equal(RED.node.message().payload.buttons[2].type, 'call');
+    assert.equal(RED.node.message().payload.buttons[2].value, '+39347123456');
+    assert.equal(RED.node.message().payload.buttons[2].label, 'Call me');
+  });
+
+  it('should send inline buttons in Telegram appending upstream text message', async () => {
+    const msg = RED.createRawMessage({
+      buttons: [
+        {
+          type: 'postback',
+          value: 'value 1',
+          label: 'Value 1',
+          answer: null,
+          alert: false
+        },
+        {
+          type: 'url',
+          url: 'http://javascript-jedi.com',
+          label: 'Value 2'
+        },
+        {
+          type: 'call',
+          value: '+39347123456',
+          label: 'Call me'
+        }
+      ],
+      message: 'message for the buttons',
+      payload: {
+        type: 'message',
+        content: 'I am the previous message',
+        chatId: 42,
+        inbound: false
+      }
+    }, 'telegram');
+    RED.node.config({});
+
+    InlineButtonsBlock(RED);
+    RED.node.get().emit('input', msg);
+    await RED.node.get().await();
+    const response = RED.node.message().payload;
+
+    assert.equal(response[0].type, 'message');
+    assert.equal(response[0].chatId, 42);
+    assert.equal(response[0].inbound, false);
+    assert.equal(response[0].content, 'I am the previous message');
+    assert.equal(response[1].type, 'inline-buttons');
+    assert.equal(response[1].content, 'message for the buttons');
+    assert.equal(response[1].chatId, 42);
+    assert.isArray(response[1].buttons);
+    assert.equal(response[1].buttons[0].type, 'postback');
+    assert.equal(response[1].buttons[0].value, 'value 1');
+    assert.equal(response[1].buttons[0].label, 'Value 1');
+    assert.equal(response[1].buttons[1].type, 'url');
+    assert.equal(response[1].buttons[1].url, 'http://javascript-jedi.com');
+    assert.equal(response[1].buttons[1].label, 'Value 2');
+    assert.equal(response[1].buttons[2].type, 'call');
+    assert.equal(response[1].buttons[2].value, '+39347123456');
+    assert.equal(response[1].buttons[2].label, 'Call me');
   });
 
 });

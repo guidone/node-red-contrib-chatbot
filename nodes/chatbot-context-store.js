@@ -39,7 +39,7 @@ module.exports = function(RED) {
     const keys = RED.settings.functionGlobalContext.keys();
     const result = {};
     // get all configurations in the global settings
-    ChatPlatform.getPlatforms().forEach(platform => result[platform.id] = RED.settings.functionGlobalContext.get(platform.id)); 
+    ChatPlatform.getPlatforms().forEach(platform => result[platform.id] = RED.settings.functionGlobalContext.get(platform.id));
     // list of master nodes in the flow
     keys.forEach(key => {
       if (!key.startsWith('chatbot_info_')) {
@@ -52,7 +52,7 @@ module.exports = function(RED) {
       .map(key => RED.settings.functionGlobalContext.get(key))
     // collect message types
     result.messageTypes = _(ChatPlatform.getMessageTypes()).sortBy(type => type.label);
-    // collect message types
+    // collect events
     result.eventTypes = _(ChatPlatform.getEvents()).sortBy(event => event.name);
     // collect params
     result.params = ChatPlatform.getParams();
