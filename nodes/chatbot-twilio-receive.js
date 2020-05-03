@@ -13,6 +13,7 @@ const when = utils.when;
 const warn = clc.yellow;
 const green = clc.green;
 
+const { GenericOutNode, GenericInNode, GenericBotNode } = require('../lib/sender-factory');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
@@ -165,13 +166,42 @@ module.exports = function(RED) {
         });
     });
   }
-  registerType('chatbot-twilio-node', TwilioBotNode, {
-    credentials: {
-      authToken: {
-        type: 'text'
+
+  registerType(
+    'chatbot-twilio-node',
+    GenericBotNode(
+      'twilio',
+      RED,
+      (node, botConfiguration) => {
+        return TwilioServer.createServer({
+          authorizedUsernames: botConfiguration.authorizedUsernames,
+          authToken: botConfiguration.authToken,
+          accountSid: botConfiguration.accountSid,
+          fromNumber: botConfiguration.fromNumber,
+          contextProvider: node.contextProvider,
+          logfile: botConfiguration.logfile,
+          debug: botConfiguration.debug,
+          RED: RED
+        });
+      },
+      (config, node) => ({
+        authorizedUsernames: config.usernames,
+        authToken: node.credentials != null && node.credentials.authToken != null ? node.credentials.authToken.trim() : null,
+        accountSid: config.accountSid,
+        fromNumber: config.fromNumber,
+        logfile: config.log,
+        debug: config.debug
+      }),
+      botConfiguration => botConfiguration.authToken != null
+    ),
+    {
+      credentials: {
+        authToken: {
+          type: 'text'
+        }
       }
     }
-  });
+  );
 
   function TwilioInNode(config) {
 
@@ -231,7 +261,8 @@ module.exports = function(RED) {
       done();
     });
   }
-  registerType('chatbot-twilio-receive', TwilioInNode);
+  registerType('chatbot-twilio-receive', GenericInNode('twilio', RED));
+
 
   function TwilioOutNode(config) {
     RED.nodes.createNode(this, config);
@@ -292,6 +323,6 @@ module.exports = function(RED) {
       });
     });
   }
-  registerType('chatbot-twilio-send', TwilioOutNode);
+  registerType('chatbot-twilio-send', GenericOutNode('twilio', RED));
 
 };

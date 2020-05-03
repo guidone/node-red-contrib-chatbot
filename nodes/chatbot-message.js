@@ -8,8 +8,8 @@ const {
   getMessageId,
   getTransport,
   extractValue,
-  append,
-  when
+  when,
+  appendPayload
 } = require('../lib/helpers/utils');
 const MessageTemplate = require('../lib/message-template-async');
 
@@ -32,6 +32,7 @@ module.exports = function(RED) {
       // send/done compatibility for node-red < 1.0
       send = send || function() { node.send.apply(node, arguments) };
       done = done || function(error) { node.error.call(node, error, msg) };
+      const sendPayload = appendPayload(send, msg);
       // check if valid message
       if (!isValidMessage(msg, node)) {
         return;
@@ -77,18 +78,14 @@ module.exports = function(RED) {
           return;
         }
         // payload
-        const payload = {
+        sendPayload({
           type: 'message',
           content: emoji.emojify(parsedMessage),
           chatId: chatId,
           messageId: messageId,
           inbound: false,
           fallback: fallback
-        };
-        // append
-        append(msg, payload);
-        // send out reply
-        send(msg);
+        });
         done();
       } catch(e) {
         done(e);

@@ -4,8 +4,8 @@ const { UniversalPlatform, ContextProviders } = require('chat-platform');
 
 const isEmpty = value => _.isEmpty(value) && !_.isNumber(value);
 
-const { 
-  extractValue 
+const {
+  extractValue
 } = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
@@ -23,7 +23,7 @@ module.exports = function(RED) {
     this.botProduction = config.botProduction;
     this.botDevelopment = config.botDevelopment;
 
-    this.on('input', function(msg, send, done) {
+    this.on('input', async function(msg, send, done) {
       // send/done compatibility for node-red < 1.0
       send = send || function() { node.send.apply(node, arguments) };
       done = done || function(error) { node.error.call(node, error, msg) };
@@ -41,7 +41,7 @@ module.exports = function(RED) {
         return;
       }
 
-      // get the platform 
+      // get the platform
       let platformNode;
       if (RED.nodes.getNode(botNode) != null) {
         platformNode = RED.nodes.getNode(botNode).chat;
@@ -61,6 +61,7 @@ module.exports = function(RED) {
       // finally send
       platformNode.createMessage(chatId, userId, null, msg)
         .then(message => {
+          console.log('messaggio creato---', message)
           send(message);
           done();
         });

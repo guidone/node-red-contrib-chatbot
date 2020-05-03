@@ -8,7 +8,9 @@ const {
   isValidMessage,
   getChatId,
   getMessageId,
-  extractValue
+  extractValue,
+  appendPayload,
+  getTransport
 } = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
@@ -25,7 +27,12 @@ module.exports = function(RED) {
       // send/done compatibility for node-red < 1.0
       send = send || function() { node.send.apply(node, arguments) };
       done = done || function(error) { node.error.call(node, error, msg) };
-      var transport = utils.getTransport(msg);
+      //const sendPayload = payload => send({ ...msg, payload: appendPayload(msg.payload, { ...payload, inbound: false }) });
+
+
+      const sendPayload = appendPayload(send, msg);
+
+      const transport = getTransport(msg);
 
       // check if valid message
       if (!isValidMessage(msg, node)) {
@@ -47,16 +54,13 @@ module.exports = function(RED) {
 
       template(message, buttons)
         .then(([message, buttons]) => {
-          send({
-            ...msg,
-            payload: {
-              type: 'inline-buttons',
-              name,
-              content: message != null ? emoji.emojify(message) : null,
-              chatId,
-              messageId,
-              buttons
-            }
+          sendPayload({
+            type: 'inline-buttons',
+            name,
+            content: message != null ? emoji.emojify(message) : null,
+            chatId,
+            messageId,
+            buttons
           });
           done();
         });
