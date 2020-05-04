@@ -216,4 +216,39 @@ describe('Chat image node', () => {
       });
   });
 
+  it('should send image appending upstream text message', async () => {
+    const msg = RED.createRawMessage({
+      message: 'message for the buttons',
+      payload: {
+        type: 'message',
+        content: 'I am the previous message',
+        chatId: 42,
+        inbound: false
+      }
+    }, 'telegram');
+    RED.node.config({
+      name: 'my file',
+      image: '{{myfile}}',
+      caption: '{{mycaption}} for {{myfile}}'
+    });
+    msg.chat().set({
+      myfile: __dirname + '/dummy/image.png',
+      mycaption: 'I am a caption'
+    });
+    ImageBlock(RED);
+    RED.node.get().emit('input', msg);
+    await RED.node.get().await();
+    const response = RED.node.message().payload;
+
+    assert.equal(response[0].type, 'message');
+    assert.equal(response[0].chatId, 42);
+    assert.equal(response[0].inbound, false);
+    assert.equal(response[0].content, 'I am the previous message');
+    assert.equal(response[1].type, 'photo');
+    assert.equal(response[1].inbound, false);
+    assert.instanceOf(response[1].content, Buffer);
+    assert.equal(response[1].filename, 'image.png');
+    assert.equal(response[1].chatId, 42);
+  });
+
 });

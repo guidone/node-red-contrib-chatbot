@@ -5,13 +5,14 @@ const fetchers = require('../lib/helpers/fetchers-obj');
 const validators = require('../lib/helpers/validators');
 const { ChatExpress } = require('chat-platform');
 const RegisterType = require('../lib/node-installer');
-const { 
-  enrichFilePayload, 
-  isValidMessage, 
-  getChatId, 
-  getMessageId, 
-  getTransport, 
-  extractValue 
+const {
+  enrichFilePayload,
+  isValidMessage,
+  getChatId,
+  getMessageId,
+  getTransport,
+  extractValue,
+  appendPayload
 } = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
@@ -24,11 +25,12 @@ module.exports = function(RED) {
     this.name = config.name;
     this.caption = config.caption;
     this.filename = config.filename; // for retrocompatibility
-    
+
     this.on('input', function(msg, send, done) {
       // send/done compatibility for node-red < 1.0
       send = send || function() { node.send.apply(node, arguments) };
       done = done || function(error) { node.error.call(node, error, msg) };
+      const sendPayload = appendPayload(send, msg);
       // check if valid message
       if (!isValidMessage(msg, node)) {
         return;
@@ -49,7 +51,7 @@ module.exports = function(RED) {
         || extractValue('stringWithVariables', 'image', node, msg)
         || extractValue('string', 'filename', node, msg, false, true, false); // for retrocompatibility
       let caption = extractValue('string', 'caption', node, msg, false);
-  
+
       template({ content, caption })
         .then(({ content, caption }) => {
           // get the content
@@ -70,11 +72,11 @@ module.exports = function(RED) {
           }
 
           fetcher(content)
-            .then(file => enrichFilePayload(file, msg, node))  
+            .then(file => enrichFilePayload(file, msg, node))
             .then(file => {
               // check if a valid file
               const error = ChatExpress.isValidFile(transport, 'photo', file);
-              if (error != null) { 
+              if (error != null) {
                 node.error(error);
                 throw error;
               }
@@ -83,18 +85,15 @@ module.exports = function(RED) {
             .then(
               file => {
                 // send out the message
-                node.send({
-                  ...msg,
-                  payload: {
-                    type: 'photo',
-                    content: file.buffer,
-                    filename: file.filename,
-                    mimeType: file.mimeType,
-                    caption: caption,
-                    chatId: chatId,
-                    messageId: messageId,
-                    inbound: false
-                  }
+                sendPayload({
+                  type: 'photo',
+                  content: file.buffer,
+                  filename: file.filename,
+                  mimeType: file.mimeType,
+                  caption: caption,
+                  chatId: chatId,
+                  messageId: messageId,
+                  inbound: false
                 });
               },
               node.error

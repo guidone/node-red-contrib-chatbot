@@ -6,13 +6,14 @@ const BufferTransformers = require('../lib/buffer-transformers');
 const RegisterType = require('../lib/node-installer');
 const validators = require('../lib/helpers/validators');
 const fetchers = require('../lib/helpers/fetchers-obj');
-const { 
-  enrichFilePayload, 
-  isValidMessage, 
-  getChatId, 
-  getMessageId, 
-  getTransport, 
-  extractValue 
+const {
+  enrichFilePayload,
+  isValidMessage,
+  getChatId,
+  getMessageId,
+  getTransport,
+  extractValue,
+  appendPayload
 } = require('../lib/helpers/utils');
 
 
@@ -27,21 +28,24 @@ module.exports = function(RED) {
     this.name = config.name;
     this.caption = config.caption;
 
-    this.on('input', function(msg) {
-      const chatId = getChatId(msg);
-      const messageId = getMessageId(msg);
-      const transport = getTransport(msg);
-      const template = MessageTemplate(msg, node);
-
+    this.on('input', function(msg, send, done) {
+      // send/done compatibility for node-red < 1.0
+      send = send || function() { node.send.apply(node, arguments) };
+      done = done || function(error) { node.error.call(node, error, msg) };
+      const sendPayload = appendPayload(send, msg);
       // check if valid message
       if (!isValidMessage(msg, node)) {
         return;
       }
+      const chatId = getChatId(msg);
+      const messageId = getMessageId(msg);
+      const transport = getTransport(msg);
+      const template = MessageTemplate(msg, node);
       // check transport compatibility
       if (!ChatExpress.isSupported(transport, 'document')) {
         return;
       }
-    
+
       let content = extractValue('filepath', 'document', node, msg, true, true, true)
         || extractValue('stringWithVariables', 'document', node, msg, true, true, true)
         || extractValue('url', 'document', node, msg, true, true, true)
@@ -69,11 +73,11 @@ module.exports = function(RED) {
           }
 
           fetcher(content)
-            .then(file => enrichFilePayload(file, msg, node))  
+            .then(file => enrichFilePayload(file, msg, node))
             .then(file => {
               // check if a valid file and zip it if not right extension
               const error = ChatExpress.isValidFile(transport, 'document', file);
-              if (error != null && _.isString(error) && error.includes('Unsupported file format')) { 
+              if (error != null && _.isString(error) && error.includes('Unsupported file format')) {
                 return BufferTransformers.zip(file);
               } else if (error != null) {
                 node.error(error);
@@ -81,22 +85,19 @@ module.exports = function(RED) {
               }
               return file;
             })
-            
+
             .then(
               file => {
                 // send out reply
-                node.send({
-                  ...msg,
-                  payload: {
-                    type: 'document',
-                    content: file.buffer,
-                    caption,
-                    filename: file.filename,
-                    mimeType: file.mimeType,
-                    chatId: chatId,
-                    messageId: messageId,
-                    inbound: false
-                  }
+                sendPayload({
+                  type: 'document',
+                  content: file.buffer,
+                  caption,
+                  filename: file.filename,
+                  mimeType: file.mimeType,
+                  chatId: chatId,
+                  messageId: messageId,
+                  inbound: false
                 });
               },
               node.error

@@ -224,4 +224,34 @@ describe('Chat document node', () => {
       );
   });
 
+  it('should send document appending upstream text message', async () => {
+    const msg = RED.createRawMessage({
+      message: 'message for the buttons',
+      payload: {
+        type: 'message',
+        content: 'I am the previous message',
+        chatId: 42,
+        inbound: false
+      }
+    }, 'telegram');
+    RED.node.config({
+      name: 'my file',
+      document: __dirname + '/dummy/image.png'
+    });
+    DocumentBlock(RED);
+    RED.node.get().emit('input', msg);
+    await RED.node.get().await();
+    const response = RED.node.message().payload;
+
+    assert.equal(response[0].type, 'message');
+    assert.equal(response[0].chatId, 42);
+    assert.equal(response[0].inbound, false);
+    assert.equal(response[0].content, 'I am the previous message');
+    assert.equal(response[1].type, 'document');
+    assert.equal(response[1].mimeType, 'application/zip');
+    assert.equal(response[1].inbound, false);
+    assert.instanceOf(response[1].content, Buffer);
+    assert.equal(response[1].filename, 'image.zip');
+  });
+
 });
