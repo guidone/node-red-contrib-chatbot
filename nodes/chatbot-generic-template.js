@@ -9,9 +9,7 @@ const {
   getChatId,
   getMessageId,
   getTransport,
-  extractValue,
-  append,
-  when
+  extractValue
 } = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
@@ -62,10 +60,7 @@ module.exports = function(RED) {
 
       const translated = await template({ title, subtitle, imageUrl, buttons });
 
-      console.log('translated', translated)
-
       // add the current one if not empty
-
       elements.push({
         title: translated.title,
         subtitle: translated.subtitle,
