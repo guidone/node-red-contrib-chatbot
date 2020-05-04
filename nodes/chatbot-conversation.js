@@ -59,12 +59,9 @@ module.exports = function(RED) {
         return;
       }
       // finally send
-      platformNode.createMessage(chatId, userId, null, msg)
-        .then(message => {
-          console.log('messaggio creato---', message)
-          send(message);
-          done();
-        });
+      const message = await platformNode.createMessage(chatId, userId, null, msg)
+      send(message);
+      done();
     });
   }
 

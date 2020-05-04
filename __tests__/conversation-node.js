@@ -85,7 +85,7 @@ describe('Chat conversation node', () => {
         () => {
           assert.isNull(RED.node.message());
           assert.equal(RED.node.error(), 'Both chatId and userId are empty');
-        }  
+        }
       );
   });
 
@@ -108,7 +108,7 @@ describe('Chat conversation node', () => {
         () => {
           assert.isNull(RED.node.message());
           assert.equal(RED.node.error(), 'chatId was correctly specified but without a valid chatbot configuration');
-        }  
+        }
       );
   });
 
@@ -116,4 +116,3 @@ describe('Chat conversation node', () => {
 
 
 });
-
