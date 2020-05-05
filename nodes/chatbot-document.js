@@ -80,7 +80,7 @@ module.exports = function(RED) {
               if (error != null && _.isString(error) && error.includes('Unsupported file format')) {
                 return BufferTransformers.zip(file);
               } else if (error != null) {
-                node.error(error);
+                done(error);
                 throw error;
               }
               return file;
@@ -99,6 +99,7 @@ module.exports = function(RED) {
                   messageId: messageId,
                   inbound: false
                 });
+                done();
               },
               node.error
             );
