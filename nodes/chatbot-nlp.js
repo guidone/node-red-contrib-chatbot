@@ -127,6 +127,7 @@ module.exports = function(RED) {
         previous: msg.payload, // store previous msg, use POP to retrieve
         payload: {
           type: 'intent',
+          score: response.score,
           isFallback: intent === 'None',
           language: response.localeIso2,
           intent,
