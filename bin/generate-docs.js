@@ -78,7 +78,8 @@ var mappings = {
   'NLPjs-Intent.md': 'chatbot-nlp-intent.html|chatbot-nlpjs-intent',
   'NLPjs-Save.md': 'chatbot-nlp-save.html|chatbot-nlpjs-save',
   'NLPjs-Load.md': 'chatbot-nlp-load.html|chatbot-nlpjs-load',
-  'NLPjs-Process.md': 'chatbot-nlp.html|chatbot-nlpjs'
+  'NLPjs-Process.md': 'chatbot-nlp.html|chatbot-nlpjs',
+  'Pop-Message-node.md': 'chatbot-pop-message.html'
 };
 
 function collectImages(html) {
@@ -231,7 +232,3 @@ tasks.then(
     clc.red('Something went wrong');
   }
 );
-
-
-
-
