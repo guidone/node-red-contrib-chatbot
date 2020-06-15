@@ -28,7 +28,7 @@ module.exports = function(RED) {
       const transport = getTransport(msg);      
       // get vars
       let params = extractValue('params', 'params', node, msg)
-      template(params.filter(param => param.platform === transport))
+      template(params.filter(param => param.platform === transport || param.platform === 'all'))
         .then(params => {        
           send({ 
             ...msg,

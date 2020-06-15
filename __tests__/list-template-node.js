@@ -3,6 +3,8 @@ var assert = require('chai').assert;
 var RED = require('../lib/red-stub')();
 var ListTemplateBlock = require('../nodes/chatbot-list-template');
 
+require('../lib/platforms/facebook/facebook');
+
 describe('Chat list template node', function() {
 
   it('should not pass through with Telegram', function() {
@@ -67,7 +69,7 @@ describe('Chat list template node', function() {
     assert.isNull(RED.node.message());
   });
 
-  it('should create a list template with Facebook', function() {
+  it('should create a list template with Facebook', async function() {
     var msg = RED.createMessage({}, 'facebook');
     RED.node.config({
       title: 'message for the template',
@@ -95,7 +97,8 @@ describe('Chat list template node', function() {
     });
     ListTemplateBlock(RED);
     RED.node.get().emit('input', msg);
-    var payload = RED.node.message().payload;
+    await RED.node.get().await();
+    const payload = RED.node.message().payload;
 
     assert.equal(payload.type, 'list-template');
     assert.equal(payload.chatId, 42);
@@ -106,13 +109,13 @@ describe('Chat list template node', function() {
     assert.equal(payload.elements[0].imageUrl, 'http://the.image.png');
     assert.isArray(payload.elements[0].buttons);
     assert.lengthOf(payload.elements[0].buttons, 1);
-    var buttons = payload.elements[0].buttons;
+    const buttons = payload.elements[0].buttons;
     assert.equal(buttons[0].type, 'postback');
     assert.equal(buttons[0].value, 'value 1');
     assert.equal(buttons[0].label, 'Value 1');
   });
 
-  it('should create a list template with Facebook passing the buttons as payload in upstream node', function() {
+  it('should create a list template with Facebook passing the buttons as payload in upstream node', async () => {
     var msg = RED.createMessage([
       {
         type: 'postback',
@@ -139,7 +142,8 @@ describe('Chat list template node', function() {
     });
     ListTemplateBlock(RED);
     RED.node.get().emit('input', msg);
-    var payload = RED.node.message().payload;
+    await RED.node.get().await()
+    const payload = RED.node.message().payload;
 
     assert.equal(payload.type, 'list-template');
     assert.equal(payload.chatId, 42);
@@ -150,14 +154,14 @@ describe('Chat list template node', function() {
     assert.equal(payload.elements[0].imageUrl, 'http://the.image.png');
     assert.isArray(payload.elements[0].buttons);
     assert.lengthOf(payload.elements[0].buttons, 1);
-    var buttons = payload.elements[0].buttons;
+    const buttons = payload.elements[0].buttons;
     assert.equal(buttons[0].type, 'postback');
     assert.equal(buttons[0].value, 'value 1');
     assert.equal(buttons[0].label, 'Value 1');
   });
 
-  it('should create a list template with Facebook passing all params in the payload of upstream node', function() {
-    var msg = RED.createMessage({
+  it('should create a list template with Facebook passing all params in the payload of upstream node', async () => {
+    const msg = RED.createMessage({
       title: 'message for the template',
       subtitle: 'I am a subtitle',
       imageUrl: 'http://the.image.png',
@@ -184,7 +188,8 @@ describe('Chat list template node', function() {
     RED.node.config({});
     ListTemplateBlock(RED);
     RED.node.get().emit('input', msg);
-    var payload = RED.node.message().payload;
+    await RED.node.get().await()
+    const payload = RED.node.message().payload;
 
     assert.equal(payload.type, 'list-template');
     assert.equal(payload.chatId, 42);
@@ -194,19 +199,19 @@ describe('Chat list template node', function() {
     assert.equal(payload.elements[0].subtitle, 'I am a subtitle');
     assert.equal(payload.elements[0].imageUrl, 'http://the.image.png');
     assert.isObject(payload.elements[0].default_action);
-    assert.equal(payload.elements[0].default_action.type, 'web_url');
+    assert.equal(payload.elements[0].default_action.type, 'url');
     assert.equal(payload.elements[0].default_action.url, 'http://javascript-jedi.com');
     assert.equal(payload.elements[0].default_action.label, 'Value 2');
     assert.isArray(payload.elements[0].buttons);
     assert.lengthOf(payload.elements[0].buttons, 1);
-    var buttons = payload.elements[0].buttons;
+    const buttons = payload.elements[0].buttons;
     assert.equal(buttons[0].type, 'postback');
     assert.equal(buttons[0].value, 'value 1');
     assert.equal(buttons[0].label, 'Value 1');
   });
 
-  it('should create a list template chaining two list template', function() {
-    var msg = RED.createMessage({
+  it('should create a list template chaining two list template', async () => {
+    const msg = RED.createMessage({
       elements: [{
         title: 'message for the template',
         subtitle: 'I am a subtitle',
@@ -242,8 +247,9 @@ describe('Chat list template node', function() {
     });
     ListTemplateBlock(RED);
     RED.node.get().emit('input', msg);
-    var payload = RED.node.message().payload;
-    var buttons = null;
+    await RED.node.get().await()
+    const payload = RED.node.message().payload;
+    let buttons = null;
 
     assert.equal(payload.type, 'list-template');
     assert.equal(payload.chatId, 42);
@@ -265,8 +271,8 @@ describe('Chat list template node', function() {
     assert.equal(buttons[0].type, 'share');
   });
 
-  it('should create a list template with global button chaining two generic template', function() {
-    var msg = RED.createMessage({
+  it('should create a list template with global button chaining two generic template', async () => {
+    const msg = RED.createMessage({
       elements: [{
         title: 'message for the template',
         subtitle: 'I am a subtitle',
@@ -294,8 +300,9 @@ describe('Chat list template node', function() {
     });
     ListTemplateBlock(RED);
     RED.node.get().emit('input', msg);
-    var payload = RED.node.message().payload;
-    var buttons = null;
+    await RED.node.get().await()
+    const payload = RED.node.message().payload;
+    let buttons = null;
 
     assert.equal(payload.type, 'list-template');
     assert.equal(payload.chatId, 42);

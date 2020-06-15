@@ -2,14 +2,14 @@ const _ = require('underscore');
 const emoji = require('node-emoji');
 const { ChatExpress } = require('chat-platform');
 const RegisterType = require('../lib/node-installer');
-const { 
-  isValidMessage, 
-  getChatId, 
-  getMessageId, 
-  getTransport, 
+const {
+  isValidMessage,
+  getChatId,
+  getMessageId,
+  getTransport,
   extractValue,
-  append,
-  when 
+  when,
+  appendPayload
 } = require('../lib/helpers/utils');
 const MessageTemplate = require('../lib/message-template-async');
 
@@ -32,6 +32,7 @@ module.exports = function(RED) {
       // send/done compatibility for node-red < 1.0
       send = send || function() { node.send.apply(node, arguments) };
       done = done || function(error) { node.error.call(node, error, msg) };
+      const sendPayload = appendPayload(send, msg);
       // check if valid message
       if (!isValidMessage(msg, node)) {
         return;
@@ -54,14 +55,10 @@ module.exports = function(RED) {
         || extractValue('string', 'answer', node, msg, false);
       const fallback = extractValue('string', 'fallback', node, msg, false);
       const language = extractValue('string', 'language', node, msg, false);
-      
       // extract a valid string
       let message;
       if (_.isArray(messages)) {
         message = node.pickOne(messages);
-      } else if (_.isObject(msg.data) && _.isString(msg.data.body) && !_.isEmpty(msg.data.body)) {
-        // support for MC Content in mission control
-        message = msg.data.body;        
       } else {
         message = messages;
       }
@@ -69,32 +66,30 @@ module.exports = function(RED) {
       try {
         const parsedMessage = await template(message)
         const contextLanguage = await when(chat.get('language'));
-        
         // if both context language and message language are defined and are different, then skip
         // message block was meant for a different language, skip if language is not defined in the node or
         // in the chat context (the platform don't provide it)
-        if (!_.isEmpty(contextLanguage) && !_.isEmpty(language) && contextLanguage !== language) {
+        // "none" means no filtering, so no language match is done, language = null in the config means that the
+        // language value passed in the payload (from a mc_content for example) have to match the language in the
+        // context (if present)
+        if (!_.isEmpty(contextLanguage) && !_.isEmpty(language) && language !== 'none' && contextLanguage !== language) {
           send(msg);
           done();
           return;
         }
         // payload
-        const payload = {
+        sendPayload({
           type: 'message',
           content: emoji.emojify(parsedMessage),
           chatId: chatId,
           messageId: messageId,
           inbound: false,
           fallback: fallback
-        };
-        // append
-        append(msg, payload);
-        // send out reply
-        send(msg);
+        });
         done();
       } catch(e) {
         done(e);
-      }              
+      }
     });
   }
 

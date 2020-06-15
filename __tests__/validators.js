@@ -179,7 +179,7 @@ describe('Validators', function() {
     var base = {
       authorizedUsernames: '12213123',
       token: 'xxx:xxxxyyyyyyzzzz',
-      polling: 1000,      
+      polling: 1000,
       contextProvider: 'memory',
       logfile: null,
       connectMode: 'polling'
@@ -347,5 +347,17 @@ describe('Validators', function() {
     assert.isFalse(validators.invoice(Object.assign(invoice, { currency: null })));
   });
 
-});
+  it('validates an array of messages', () => {
 
+    assert.isTrue(validators.arrayOfMessage([
+      { type: 'message', content: 'I am the previous message', chatId: 42, inbound: false },
+      { type: 'inline-buttons', content: 'I am the previous message', chatId: 42, inbound: false }
+    ]));
+    assert.isFalse(validators.arrayOfMessage([
+      { type: 'postback', content: 'I am the previous message', chatId: 42  },
+      { type: 'url', content: 'I am the previous message', chatId: 42, inbound: false }
+    ]))
+
+  })
+
+});

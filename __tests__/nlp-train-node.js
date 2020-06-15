@@ -9,7 +9,7 @@ require('../lib/platforms/slack');
 
 describe('Chat nlp entity node', () => {
 
-  it('set the entity payload', () => {    
+  it('set the entity payload', () => {
     const msg = RED.createMessage({
       intents: {
         en: {
@@ -54,8 +54,9 @@ describe('Chat nlp entity node', () => {
         assert.equal(payload.intent, 'switch.on');
         assert.isObject(payload.variables);
         assert.equal(payload.variables.room, 'kitchen');
+        assert.isObject(RED.node.message().previous);
+        assert.equal(RED.node.message().previous.content, 'switch on lights in the kitchen');
       });
   });
-  
-});
 
+});

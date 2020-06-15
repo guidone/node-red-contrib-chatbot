@@ -1,8 +1,12 @@
 const _ = require('underscore');
 const { Language } = require('node-nlp');
 
+const prettyjson = require('prettyjson');
+const lcd = require('../lib/helpers/lcd');
 const RegisterType = require('../lib/node-installer');
-const { isValidMessage, extractValue } = require('../lib/helpers/utils');
+const MessageTemplate = require('../lib/message-template-async');
+const { variable: isVariable } = require('../lib/helpers/validators');
+const { isValidMessage, extractValue, isCommand } = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
@@ -10,8 +14,10 @@ module.exports = function(RED) {
   function ChatBotNLPjs(config) {
     RED.nodes.createNode(this, config);
     const node = this;
-    
+
     this.name = config.name;
+    this.debug = config.debug;
+    this.scoreThreshold = config.scoreThreshold;
 
     this.on('input', async function(msg, send, done) {
       // send/done compatibility for node-red < 1.0
@@ -21,10 +27,35 @@ module.exports = function(RED) {
       if (!isValidMessage(msg, node)) {
         return;
       }
+      // if it's a command, don't parse it, skip
+      if (isCommand(msg)) {
+        send({
+          ...msg,
+          previous: msg.payload, // store previous msg, use POP to retrieve
+        });
+        done();
+        return;
+      }
 
+      const template = MessageTemplate(msg, node);
       const global = this.context().global;
       const name = extractValue('string', 'name', node, msg, false);
+      const debug = extractValue('boolean', 'debug', node, msg, false);
+      let scoreThreshold = extractValue(['number', 'string', 'variable'], 'scoreThreshold', node, msg, false);
       const content = msg.payload != null ? msg.payload.content : null;
+
+      // if not number, then evaluate it
+      if (isVariable(scoreThreshold)) {
+        scoreThreshold = await template.evaluate(scoreThreshold);
+      } else if (_.isString(scoreThreshold)) {
+        scoreThreshold = parseInt(scoreThreshold, 10);
+      }
+      if (isNaN(scoreThreshold) || scoreThreshold <= 0 || scoreThreshold > 100) {
+        // eslint-disable-next-line no-console
+        console.log(lcd.node({ scoreThreshold }, { title: 'Invalid scoreThreshold value, must be > 0 and <= 100', nodeId: node.id }));
+        scoreThreshold = 50;
+      }
+      scoreThreshold = scoreThreshold / 100;
 
       // DOCS
       // entities
@@ -32,7 +63,7 @@ module.exports = function(RED) {
 
       // get the right nlp model
       const manager = global.get('nlp_' + (!_.isEmpty(name) ? name : 'default'));
-      
+
       // check if string
       if (!_.isString(content)) {
         done('Incoming message is not a string');
@@ -57,13 +88,49 @@ module.exports = function(RED) {
       const variables = {};
       (response.entities || []).forEach(entity => variables[entity.entity] = entity.option);
 
+      if (debug) {
+        // eslint-disable-next-line no-console
+        console.log(lcd.white('[NLP] ') + lcd.grey('Processing model ') + lcd.green(name));
+        // eslint-disable-next-line no-console
+        console.log('  Input: ' + lcd.green(`"${content}"`) + lcd.white(` (${language})`));
+        // eslint-disable-next-line no-console
+        console.log(lcd.white('  Score threshold: ') + lcd.green(scoreThreshold * 100) + lcd.grey(' %'));
+        // eslint-disable-next-line no-console
+        console.log(lcd.white('  Language guessed: ') + lcd.green(response.languageGuessed));
+        // eslint-disable-next-line no-console
+        console.log(lcd.white('  Intent: ') + lcd.green(response.intent));
+        // eslint-disable-next-line no-console
+        console.log(lcd.white('  Domain: ') + lcd.green(response.domain));
+        // eslint-disable-next-line no-console
+        console.log(lcd.white('  Score: ') + lcd.green((response.score * 100).toFixed(1)) + lcd.grey(' %'));
+        // eslint-disable-next-line no-console
+        console.log(
+          lcd.white('  Sentiment: ')
+          + lcd.green(response.sentiment.vote)
+          + ' score ' + lcd.green((response.sentiment.score * 100).toFixed(1)) + lcd.grey(' %')
+        );
+        if (!_.isEmpty(variables)) {
+          // eslint-disable-next-line no-console
+          console.log(lcd.white('  Variables: '));
+          // eslint-disable-next-line no-console
+          console.log(prettyjson.render(variables))
+        }
+      }
+      // if above the score
+      let intent = 'None';
+      if (response.score > scoreThreshold) {
+        intent = response.intent;
+      }
+
       send({
         ...msg,
+        previous: msg.payload, // store previous msg, use POP to retrieve
         payload: {
           type: 'intent',
-          isFallback: response.intent === 'None',
+          score: response.score,
+          isFallback: intent === 'None',
           language: response.localeIso2,
-          intent: response.intent,
+          intent,
           variables: !_.isEmpty(variables) ? variables : null
         }
       });

@@ -4,8 +4,8 @@ const { UniversalPlatform, ContextProviders } = require('chat-platform');
 
 const isEmpty = value => _.isEmpty(value) && !_.isNumber(value);
 
-const { 
-  extractValue 
+const {
+  extractValue
 } = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
@@ -23,7 +23,7 @@ module.exports = function(RED) {
     this.botProduction = config.botProduction;
     this.botDevelopment = config.botDevelopment;
 
-    this.on('input', function(msg, send, done) {
+    this.on('input', async function(msg, send, done) {
       // send/done compatibility for node-red < 1.0
       send = send || function() { node.send.apply(node, arguments) };
       done = done || function(error) { node.error.call(node, error, msg) };
@@ -31,7 +31,14 @@ module.exports = function(RED) {
       const chatId = extractValue('stringOrNumber', 'chatId', node, msg, false);
       const userId = extractValue('stringOrNumber', 'userId', node, msg, false);
 
-      const botNode = global.environment === 'production' ? node.botProduction : node.botDevelopment;
+      // get from config, but check also params
+      let botNode = global.environment === 'production' ? node.botProduction : node.botDevelopment;
+      if (msg != null && _.isString(msg.botNode) && !_.isEmpty(msg.botNode)) {
+        botNode = msg.botNode;
+      } else if (msg != null && msg.payload != null && _.isString(msg.payload.botNode) && !_.isEmpty(msg.payload.botNode)) {
+        botNode = msg.payload.botNode;
+      }
+
       // check userId or chatId
       if (isEmpty(chatId) && isEmpty(userId)) {
         done('Both chatId and userId are empty');
@@ -41,7 +48,7 @@ module.exports = function(RED) {
         return;
       }
 
-      // get the platform 
+      // get the platform
       let platformNode;
       if (RED.nodes.getNode(botNode) != null) {
         platformNode = RED.nodes.getNode(botNode).chat;
@@ -59,11 +66,9 @@ module.exports = function(RED) {
         return;
       }
       // finally send
-      platformNode.createMessage(chatId, userId, null, msg)
-        .then(message => {
-          send(message);
-          done();
-        });
+      const message = await platformNode.createMessage(chatId, userId, null, msg)
+      send(message);
+      done();
     });
   }
 

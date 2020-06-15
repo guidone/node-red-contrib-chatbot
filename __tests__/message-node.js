@@ -365,6 +365,34 @@ describe('Chat message node', () => {
         assert.equal(RED.node.message().payload.content, 'I will send this');
       });
   });
-  
-});
 
+  it('should send text appending upstream text message', async () => {
+    const msg = RED.createRawMessage({
+      message: 'message for the buttons',
+      payload: {
+        type: 'message',
+        content: 'I am the previous message',
+        chatId: 42,
+        inbound: false
+      }
+    }, 'telegram');
+    RED.node.config({
+      message: [{message: 'I will send this'}],
+      language: 'it'
+    });
+    MessageBlock(RED);
+    RED.node.get().emit('input', msg);
+    await RED.node.get().await();
+    const response = RED.node.message().payload;
+
+    assert.equal(response[0].type, 'message');
+    assert.equal(response[0].chatId, 42);
+    assert.equal(response[0].inbound, false);
+    assert.equal(response[0].content, 'I am the previous message');
+    assert.equal(response[1].type, 'message');
+    assert.equal(response[1].inbound, false);
+    assert.equal(response[1].content, 'I will send this');
+    assert.equal(response[1].chatId, 42);
+  });
+
+});

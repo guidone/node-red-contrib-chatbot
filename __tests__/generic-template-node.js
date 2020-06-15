@@ -1,9 +1,11 @@
-var _ = require('underscore');
-var assert = require('chai').assert;
-var RED = require('../lib/red-stub')();
-var GenericTemplateBlock = require('../nodes/chatbot-generic-template');
+const _ = require('underscore');
+const assert = require('chai').assert;
+const RED = require('../lib/red-stub')();
+const GenericTemplateBlock = require('../nodes/chatbot-generic-template');
 
-describe('Chat generic template node', function() {
+require('../lib/platforms/facebook/facebook');
+
+describe('Chat generic template node', () => {
 
   it('should not pass through with Telegram', function() {
     var msg = RED.createMessage({}, 'telegram');
@@ -42,7 +44,7 @@ describe('Chat generic template node', function() {
       );
   });
 
-  it('should not pass through with Smooch', function() {
+  it('should not pass through with Smooch', () => {
     var msg = RED.createMessage({}, 'smooch');
     RED.node.config({
       title: 'message for the template',
@@ -79,7 +81,7 @@ describe('Chat generic template node', function() {
       );
   });
 
-  it('should create a generic template with Facebook', function() {
+  it('should create a generic template with Facebook', () => {
     var msg = RED.createMessage({}, 'facebook');
     RED.node.config({
       title: 'message for the template',

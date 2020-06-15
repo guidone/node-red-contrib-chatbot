@@ -241,6 +241,85 @@ describe('Message template', () => {
 
   });
 
-  
+  it('Uses special vars userid, chatid, transport, messageid using msg', async () => {
+    const msg = RED.createMessage({
+      type: 'message',
+      content: 'I am the current message'
+    });
+    const node = {};
+    RED.nodes.createNode(node, {});
+    const template = MessageTemplate(msg, node);
+    const result = await template(`Test with statics {{chatId}} {{userId}} {{transport}} {{messageId}}`);
+    assert.equal(result, 'Test with statics 42 43 telegram 72');
+    assert(await template('{{message}}'), 'I am the current message');
+  });
+
+  it('Uses variables from global context', async () => {
+    const msg = RED.createMessage();
+    const node = {};
+    RED.nodes.createNode(node, {});
+    RED.global.set('var_1', 42);
+    RED.global.set('var_2', 'global variable');
+    const template = MessageTemplate(msg, node);
+    assert.equal(await template(`{{var_1}}`), '42');
+    assert.equal(await template(`{{var_2}}`), 'global variable');
+    assert.equal(await template.evaluate(`{{var_1}}`), '42');
+    assert.equal(await template.evaluate(`{{var_2}}`), 'global variable');
+  });
+
+  it('Uses variables from payload context', async () => {
+    const msg = RED.createMessage({
+      name: 'guido',
+      complex: {
+        key1: 'value1',
+        key2: {
+          key3: 'value3'
+        }
+      }
+    });
+    const node = {};
+    RED.nodes.createNode(node, {});
+    RED.global.set('var_1', 42);
+    RED.global.set('var_2', 'global variable');
+    const template = MessageTemplate(msg, node);
+    assert.equal(await template(`{{payload.name}}`), 'guido');
+    assert.equal(await template(`{{payload.complex.key2.key3}}`), 'value3');
+    assert.equal(await template(`{{payload.complex.key1}}`), 'value1');
+
+    assert.equal(await template.evaluate('{{payload.name}}'), 'guido');
+    assert.equal(await template.evaluate(`{{payload.complex.key2.key3}}`), 'value3');
+    assert.equal(await template.evaluate(`{{payload.complex.key1}}`), 'value1');
+  });
+
+  it('Uses language tx', async () => {
+    const msg = RED.createMessage();
+    const node = {};
+    RED.nodes.createNode(node, {});
+    const chatContext = msg.chat();
+    RED.global.set('tx', (token, language) => {
+      if (language === 'en') {
+        if (token === 'ns.translate_1') {
+          return 'hello';
+        } else if (token === 'ns.translate_2') {
+          return 'welcome';
+        }
+      } else {
+        if (language === 'it') {
+          if (token === 'ns.translate_1') {
+            return 'ciao';
+          } else if (token === 'ns.translate_2') {
+            return 'prego';
+          }
+        }
+      }
+    });
+    await chatContext.set('language', 'en');
+    const template = MessageTemplate(msg, node);
+    assert.equal(await template(`{{tx.ns.translate_1}}`), 'hello');
+    assert.equal(await template(`{{tx.ns.translate_2}}`), 'welcome');
+    await chatContext.set('language', 'it');
+    assert.equal(await template(`{{tx.ns.translate_1}}`), 'ciao');
+    assert.equal(await template(`{{tx.ns.translate_2}}`), 'prego');
+  });
 
 });

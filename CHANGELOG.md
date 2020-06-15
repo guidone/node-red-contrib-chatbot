@@ -1,3 +1,4 @@
+* **0.19.0** [[Changes in 0.19.0|Changes-0.19.0]]
 * **0.18.15** Fix Slack events
 * **0.18.14** Fixed bug  with base url on callbacks 
 * **0.18.13** Fixed a bug with multi endpoints chatbots (picking the wrong one) 
