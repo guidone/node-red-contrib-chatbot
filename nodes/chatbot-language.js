@@ -11,7 +11,7 @@ module.exports = function(RED) {
   function ChatBotLanguage(config) {
     RED.nodes.createNode(this, config);
     const node = this;
-    
+
     this.on('input', async function(msg, send, done) {
       // send/done compatibility for node-red < 1.0
       send = send || function() { node.send.apply(node, arguments) };
@@ -34,13 +34,13 @@ module.exports = function(RED) {
         const guess = languageGuesser.guess(msg.payload.content);
         if (!_.isEmpty(guess)) {
           await msg.chat().set('language', guess[0].alpha2);
-        }      
+        }
       }
       // go through
       node.send(msg);
       done();
     });
   }
-  
+
   registerType('chatbot-language', ChatBotLanguage);
 };

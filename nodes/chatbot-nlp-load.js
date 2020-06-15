@@ -20,7 +20,7 @@ module.exports = function(RED) {
 
       const filename = utils.extractValue('string', 'filename', node, msg, false);
       const name = utils.extractValue('string', 'name', node, msg, false);
-      
+
       const global = this.context().global;
 
       fs.readFile(filename, 'utf8', (err, json) => {
@@ -30,7 +30,7 @@ module.exports = function(RED) {
         }
         const manager = new NlpManager();
         manager.import(json);
-        // store globally          
+        // store globally
         global.set('nlp_' + (!_.isEmpty(name) ? name : 'default'), manager);
         // pass thru
         send({ ...msg, payload: manager });

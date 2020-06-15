@@ -31,7 +31,14 @@ module.exports = function(RED) {
       const chatId = extractValue('stringOrNumber', 'chatId', node, msg, false);
       const userId = extractValue('stringOrNumber', 'userId', node, msg, false);
 
-      const botNode = global.environment === 'production' ? node.botProduction : node.botDevelopment;
+      // get from config, but check also params
+      let botNode = global.environment === 'production' ? node.botProduction : node.botDevelopment;
+      if (msg != null && _.isString(msg.botNode) && !_.isEmpty(msg.botNode)) {
+        botNode = msg.botNode;
+      } else if (msg != null && msg.payload != null && _.isString(msg.payload.botNode) && !_.isEmpty(msg.payload.botNode)) {
+        botNode = msg.payload.botNode;
+      }
+
       // check userId or chatId
       if (isEmpty(chatId) && isEmpty(userId)) {
         done('Both chatId and userId are empty');
