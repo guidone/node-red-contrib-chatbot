@@ -347,7 +347,7 @@ describe('Validators', function() {
     assert.isFalse(validators.invoice(Object.assign(invoice, { currency: null })));
   });
 
-  it.only('validates an array of messages', () => {
+  it('validates an array of messages', () => {
 
     assert.isTrue(validators.arrayOfMessage([
       { type: 'message', content: 'I am the previous message', chatId: 42, inbound: false },

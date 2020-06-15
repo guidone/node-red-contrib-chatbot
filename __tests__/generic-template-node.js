@@ -81,7 +81,7 @@ describe('Chat generic template node', () => {
       );
   });
 
-  it.only('should create a generic template with Facebook', () => {
+  it('should create a generic template with Facebook', () => {
     var msg = RED.createMessage({}, 'facebook');
     RED.node.config({
       title: 'message for the template',
