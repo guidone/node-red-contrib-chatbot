@@ -1,3 +1,4 @@
+* **0.19.1** Fixed param in settings.js config for authorized users `authorizedUsernames` (previously `usernames`)
 * **0.19.0** [[Changes in 0.19.0|Changes-0.19.0]]
 * **0.18.15** Fix Slack events
 * **0.18.14** Fixed bug  with base url on callbacks 
