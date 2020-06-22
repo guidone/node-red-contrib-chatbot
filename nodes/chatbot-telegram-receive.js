@@ -25,7 +25,7 @@ module.exports = function(RED) {
         });
       },
       (config, node) => ({
-        authorizedUsernames: config.authorizedUsernames,
+        authorizedUsernames: config.usernames,
         token: node.credentials != null && node.credentials.token != null ? node.credentials.token.trim() : null,
         providerToken: config.providerToken,
         polling: config.polling,
