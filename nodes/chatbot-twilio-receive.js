@@ -23,7 +23,7 @@ module.exports = function(RED) {
         });
       },
       (config, node) => ({
-        authorizedUsernames: config.usernames,
+        authorizedUsernames: config.authorizedUsernames,
         authToken: node.credentials != null && node.credentials.authToken != null ? node.credentials.authToken.trim() : null,
         accountSid: config.accountSid,
         fromNumber: config.fromNumber,
