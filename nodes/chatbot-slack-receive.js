@@ -26,6 +26,7 @@ module.exports = function(RED) {
         });
       },
       (config, node) => ({
+        usernames: config.usernames,
         botname: config.botname,
         token: node.credentials != null && node.credentials.token != null ? node.credentials.token.trim() : null,
         oauthToken: node.credentials != null && node.credentials.oauthToken != null ? node.credentials.oauthToken.trim() : null,
