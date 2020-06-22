@@ -12,7 +12,7 @@ module.exports = function(RED) {
       RED,
       (node, botConfiguration) => {
         return TwilioServer.createServer({
-          authorizedUsernames: botConfiguration.authorizedUsernames,
+          authorizedUsernames: botConfiguration.usernames,
           authToken: botConfiguration.authToken,
           accountSid: botConfiguration.accountSid,
           fromNumber: botConfiguration.fromNumber,
@@ -23,7 +23,7 @@ module.exports = function(RED) {
         });
       },
       (config, node) => ({
-        authorizedUsernames: config.authorizedUsernames,
+        usernames: config.usernames,
         authToken: node.credentials != null && node.credentials.authToken != null ? node.credentials.authToken.trim() : null,
         accountSid: config.accountSid,
         fromNumber: config.fromNumber,

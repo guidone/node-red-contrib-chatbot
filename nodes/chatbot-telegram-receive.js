@@ -12,7 +12,7 @@ module.exports = function(RED) {
       RED,
       (node, botConfiguration) => {
         return TelegramServer.createServer({
-          authorizedUsernames: botConfiguration.authorizedUsernames,
+          authorizedUsernames: botConfiguration.usernames,
           token: botConfiguration.token,
           providerToken: botConfiguration.providerToken,
           polling: botConfiguration.polling,
@@ -25,7 +25,7 @@ module.exports = function(RED) {
         });
       },
       (config, node) => ({
-        authorizedUsernames: config.authorizedUsernames,
+        usernames: config.usernames,
         token: node.credentials != null && node.credentials.token != null ? node.credentials.token.trim() : null,
         providerToken: config.providerToken,
         polling: config.polling,
