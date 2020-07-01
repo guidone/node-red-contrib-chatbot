@@ -33,7 +33,7 @@
     oneditprepare: function() {
       var node = this;
       var nodeRedUrl = $.RedBot.getNodeRedUrl();
-      
+
       // fetch available context providers
       $.get(nodeRedUrl + 'redbot/globals')
         .done(function(response) {
@@ -205,6 +205,9 @@ To verify that everything is working fine, try a simple flow to send out an SMS<
       passThrough: {
         value: false
       },
+      errorOutput: {
+        value: false
+      },
       outputs: {
         value: 0
       }
@@ -216,10 +219,43 @@ To verify that everything is working fine, try a simple flow to send out an SMS<
     label: function () {
       return 'Twilio Sender';
     },
+    inputLabels: 'Chat flow',
+    outputLabels: function(idx) {
+      if (idx === 0 && this.track) {
+        return 'Track';
+      } else if (idx === 0 && this.passThrough) {
+        return 'Pass through';
+      } else if (idx === 1) {
+        return 'Error';
+      }
+    },
+    oneditprepare: function() {
+      // cannot be checked at the same time
+      $('#node-input-passThrough')
+        .click(function() {
+          if ($(this).is(':checked')) {
+            $('#node-input-track').prop('checked', false);
+          }
+        });
+      $('#node-input-track')
+        .click(function() {
+          if ($(this).is(':checked')) {
+            $('#node-input-passThrough').prop('checked', false);
+          }
+        });
+    },
     oneditsave: function() {
+      var count = 0;
       var track = $('#node-input-track').is(':checked');
       var passThrough = $('#node-input-passThrough').is(':checked');
-      this.outputs = track || passThrough ? 1 : 0;
+      var errorOutput = $('#node-input-errorOutput').is(':checked');
+      if (track || passThrough) {
+        count = 1;
+      }
+      if (errorOutput) {
+        count += 1;
+      }
+      this.outputs = count;
     }
   });
 </script>
@@ -247,11 +283,14 @@ To verify that everything is working fine, try a simple flow to send out an SMS<
     <div class="redbot-form-hint">
     Forward the message to the output pin after sending (useful to chain messages and keep the right order)
     </div>
+    <label for="node-input-errorOutput" style="margin-bottom:0px;margin-top:15px;">Error Output</label>
+    <input type="checkbox" value="true" id="node-input-errorOutput" style="margin-top:0px;">
+    <div class="redbot-form-hint">
+    Redirect the flow to the error pin in case of platform specific error on sending the message
+    </div>
   </div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-twilio-send">
   <p>Output node for Twilio.</p>
 </script>
-
-
