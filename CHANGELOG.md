@@ -1,3 +1,4 @@
+* **0.19.3** Added error pin to sender nodes for Telegram, Slack, Facebook, Twilio 
 * **0.19.2** Reverted previous, fixed param in settings.js config for authorized users `usernames` 
 * **0.19.1** Fixed param in settings.js config for authorized users `authorizedUsernames` (previously `usernames`)
 * **0.19.0** [[Changes in 0.19.0|Changes-0.19.0]]
