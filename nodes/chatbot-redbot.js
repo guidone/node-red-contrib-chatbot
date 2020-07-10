@@ -3,7 +3,7 @@ const fs = require('fs');
 const moment = require('moment');
 
 require('../lib/platforms/telegram');
-require('../lib/platforms/slack');
+require('../lib/platforms/slack/index');
 require('../lib/platforms/twilio/twilio');
 require('../lib/platforms/viber');
 require('../lib/platforms/facebook/facebook');
@@ -18,4 +18,3 @@ try {
 } catch(e) {
   lcd.error('Unable to open node-red-contrib-chatbot/package.json');
 }
-

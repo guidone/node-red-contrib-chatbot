@@ -4,7 +4,7 @@ const RED = require('../lib/red-stub')();
 const NLPEntityBlock = require('../nodes/chatbot-nlp-entity');
 
 require('../lib/platforms/telegram');
-require('../lib/platforms/slack');
+require('../lib/platforms/slack/index');
 
 describe('Chat nlp entity node', () => {
 
@@ -15,7 +15,7 @@ describe('Chat nlp entity node', () => {
       language: 'en',
       entities: [
         { name: 'orange' },
-        { name: 'apple', aliases: ['golden apple', 'granny smith apple'] } 
+        { name: 'apple', aliases: ['golden apple', 'granny smith apple'] }
       ]
     });
     NLPEntityBlock(RED);
@@ -44,7 +44,7 @@ describe('Chat nlp entity node', () => {
       language: 'en',
       entities: [
         { name: 'orange' },
-        { name: 'apple', aliases: ['golden apple', 'granny smith apple'] } 
+        { name: 'apple', aliases: ['golden apple', 'granny smith apple'] }
       ]
     });
     RED.node.config({});
@@ -70,12 +70,12 @@ describe('Chat nlp entity node', () => {
 
   it('set the entity payload from message and append to previous', () => {
     const msg = RED.createMessage({
-      entities: { 
-        en: { 
+      entities: {
+        en: {
           fruits: [
             { name: 'banana' }
-          ] 
-        } 
+          ]
+        }
       }
     });
     RED.node.config({
@@ -83,7 +83,7 @@ describe('Chat nlp entity node', () => {
       language: 'en',
       entities: [
         { name: 'orange' },
-        { name: 'apple', aliases: ['golden apple', 'granny smith apple'] } 
+        { name: 'apple', aliases: ['golden apple', 'granny smith apple'] }
       ]
     });
     NLPEntityBlock(RED);
@@ -107,4 +107,3 @@ describe('Chat nlp entity node', () => {
   });
 
 });
-

@@ -1,22 +1,22 @@
 const RegisterType = require('../lib/node-installer');
 const _ = require('underscore');
 const { ChatExpress } = require('chat-platform');
-const { 
-  isValidMessage, 
-  getChatId, 
-  getMessageId, 
-  getTransport, 
-  extractValue 
+const {
+  isValidMessage,
+  getChatId,
+  getMessageId,
+  getTransport,
+  extractValue
 } = require('../lib/helpers/utils');
 const MessageTemplate = require('../lib/message-template-async');
 
 require('../lib/platforms/telegram');
-require('../lib/platforms/slack');
+require('../lib/platforms/slack/index');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
 
-  function ChatBotSlackBlocks(config) {    
+  function ChatBotSlackBlocks(config) {
     RED.nodes.createNode(this, config);
     const node = this;
     this.blocks = config.blocks;
@@ -32,7 +32,7 @@ module.exports = function(RED) {
       const chatId = getChatId(msg);
       const messageId = getMessageId(msg);
       const template = MessageTemplate(msg, node);
-      const transport = getTransport(msg);   
+      const transport = getTransport(msg);
       // check transport compatibility
       if (!ChatExpress.isSupported(transport, 'blocks')) {
         done(`Node "blocks" is not supported by ${transport} transport`);
@@ -51,8 +51,8 @@ module.exports = function(RED) {
 
       template(rawBlocks)
         .then(renderedBlocks => {
-          send({ 
-            ...msg, 
+          send({
+            ...msg,
             payload: {
               type: 'blocks',
               content: _.isObject(renderedBlocks) && renderedBlocks.blocks != null ? renderedBlocks.blocks : renderedBlocks,
@@ -65,6 +65,6 @@ module.exports = function(RED) {
         });
     });
   }
-  
+
   registerType('chatbot-slack-blocks', ChatBotSlackBlocks);
 };
