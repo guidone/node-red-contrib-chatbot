@@ -208,6 +208,8 @@ describe('Validators', function() {
     var base = {
       botname: 'guidone_bot',
       token: 'xoxb-00000000-1111111111111',
+      serverPort: '3001',
+      signingSecret: 'mysecret',
       usernames: null,
       contextProvider: 'memory',
       logfile: null,
@@ -215,12 +217,14 @@ describe('Validators', function() {
     };
 
     assert.isNull(validators.platform.slack(base));
-    assert.isNotNull(validators.platform.slack(_.extend(base, { botname: null})));
-    assert.isNotNull(validators.platform.slack(_.extend(base, { token: null})));
-    assert.isNotNull(validators.platform.slack(_.extend(base, { token: ''})));
-    assert.isNotNull(validators.platform.slack(_.extend(base, { contextProvider: 'wrong_context'})));
-    assert.isNotNull(validators.platform.slack(_.extend(base, { usernames: 42})));
-    assert.isNotNull(validators.platform.slack(_.extend(base, { logfile: 42})));
+    assert.isNotNull(validators.platform.slack(_.extend(base, { botname: null })));
+    assert.isNotNull(validators.platform.slack(_.extend(base, { signingSecret: null })));
+    assert.isNotNull(validators.platform.slack(_.extend(base, { serverPort: null })));
+    assert.isNotNull(validators.platform.slack(_.extend(base, { token: null })));
+    assert.isNotNull(validators.platform.slack(_.extend(base, { token: '' })));
+    assert.isNotNull(validators.platform.slack(_.extend(base, { contextProvider: 'wrong_context' })));
+    assert.isNotNull(validators.platform.slack(_.extend(base, { usernames: 42 })));
+    assert.isNotNull(validators.platform.slack(_.extend(base, { logfile: 42 })));
   });
 
   it('validates a Facebook configuration', function() {

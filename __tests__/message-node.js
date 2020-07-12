@@ -4,7 +4,7 @@ const RED = require('../lib/red-stub')();
 const MessageBlock = require('../nodes/chatbot-message');
 
 require('../lib/platforms/telegram');
-require('../lib/platforms/slack');
+require('../lib/platforms/slack/index');
 
 describe('Chat message node', () => {
 

@@ -4,7 +4,7 @@ const RED = require('../lib/red-stub')();
 const NLPEntityBlock = require('../nodes/chatbot-nlp-intent');
 
 require('../lib/platforms/telegram');
-require('../lib/platforms/slack');
+require('../lib/platforms/slack/index');
 
 describe('Chat nlp intent node', () => {
 
@@ -15,7 +15,7 @@ describe('Chat nlp intent node', () => {
       language: 'en',
       utterances: [
         'switch on the lights',
-        'turn on the lights' 
+        'turn on the lights'
       ]
     });
     NLPEntityBlock(RED);
@@ -30,7 +30,7 @@ describe('Chat nlp intent node', () => {
         assert.lengthOf(payload.intents.en['switch.on'], 2);
         assert.equal(payload.intents.en['switch.on'][0], 'switch on the lights');
         assert.equal(payload.intents.en['switch.on'][1], 'turn on the lights');
-        
+
       });
   });
 
@@ -40,7 +40,7 @@ describe('Chat nlp intent node', () => {
       language: 'en',
       utterances: [
         'switch on the lights',
-        'turn on the lights' 
+        'turn on the lights'
       ]
     });
     RED.node.config({});
@@ -56,34 +56,34 @@ describe('Chat nlp intent node', () => {
         assert.lengthOf(payload.intents.en['switch.on'], 2);
         assert.equal(payload.intents.en['switch.on'][0], 'switch on the lights');
         assert.equal(payload.intents.en['switch.on'][1], 'turn on the lights');
-        
+
       });
   });
 
   it('set the intent payload and append to previous', () => {
     const msg = RED.createMessage({
-      intents: { 
-        en: { 
-          'switch.on': ['switch on all the lights'] 
+      intents: {
+        en: {
+          'switch.on': ['switch on all the lights']
         },
-        it: { 
-          'switch.on': ['appiccia la luce'] 
-        } 
-      } 
+        it: {
+          'switch.on': ['appiccia la luce']
+        }
+      }
     });
     RED.node.config({
       intent: 'switch.on',
       language: 'en',
       utterances: [
         'switch on the lights',
-        'turn on the lights' 
+        'turn on the lights'
       ]
     });
     NLPEntityBlock(RED);
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
       .then(() => {
-        const payload = RED.node.message().payload;      
+        const payload = RED.node.message().payload;
         assert.isObject(payload);
         assert.isObject(payload.intents);
         assert.isObject(payload.intents.en);
@@ -98,4 +98,3 @@ describe('Chat nlp intent node', () => {
       });
   });
 });
-
