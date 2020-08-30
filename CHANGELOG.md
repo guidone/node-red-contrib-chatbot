@@ -1,3 +1,4 @@
+* **0.19.7** Bumped NLP.js
 * **0.19.6** Add formatting for captions in Telegram
 * **0.19.5** Fix Slack cleanup on closing connection
 * **0.19.4** Update Slack to new API [[changes in configuration|Changes-0.19.4]]
