@@ -72,8 +72,15 @@ module.exports = function(RED) {
                   '  Entity: ' + lcd.white(name) + ' [' + language.toUpperCase() + '] ' 
                   + lcd.green(entity.name) + ` (${entity.aliases.join(',')})`
                 );
-              }              
-              manager.addNamedEntityText(name, entity.name, [language], _.isEmpty(entity.aliases) ? entity.aliases : null);
+              }    
+              var texts;
+              if( !Array.isArray(entity.aliases) || (entity.aliases.length == 1 && entity.aliases[0] == '' ) ){
+                texts = null;
+              }else{
+                entity.aliases.push(entity.name);
+                texts = entity.aliases;
+              }
+              manager.addNamedEntityText(name, entity.name, [language], texts);
             });
           });
         });
