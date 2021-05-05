@@ -86,7 +86,7 @@ module.exports = function(RED) {
       const response = await manager.process(language, content);
       // extract vars
       const variables = {};
-      (response.entities || []).forEach(entity => variables[entity.entity] = entity.option);
+      (response.entities || []).forEach(entity => variables[entity.entity] = entity.option ? entity.option : entity.resolution);
 
       if (debug) {
         // eslint-disable-next-line no-console
