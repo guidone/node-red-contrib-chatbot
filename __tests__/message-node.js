@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const assert = require('chai').assert;
 const RED = require('../lib/red-stub')();
 const MessageBlock = require('../nodes/chatbot-message');

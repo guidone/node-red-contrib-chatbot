@@ -1,46 +1,42 @@
-var _ = require('underscore');
-var assert = require('chai').assert;
-var RED = require('../lib/red-stub')();
-var LocationBlock = require('../nodes/chatbot-location');
+const assert = require('chai').assert;
+const RED = require('../lib/red-stub')();
+const LocationBlock = require('../nodes/chatbot-location');
 
-describe('Chat request node', function() {
+require('../lib/platforms/telegram');
+require('../lib/platforms/slack/index');
 
-  it('should send a location message in Telegram', function() {
-    var msg = RED.createMessage(null, 'telegram');
+describe('Chat request node', () => {
+
+  it('should send a location message in Telegram', () => {
+    const msg = RED.createMessage(null, 'telegram');
     RED.node.config({
       latitude: '45.4842045',
       longitude: '9.1809077'
     });
     LocationBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.isObject(RED.node.message().payload.content, 'is an object');
-    assert.equal(RED.node.message().payload.content.latitude, '45.4842045');
-    assert.equal(RED.node.message().payload.content.longitude, '9.1809077');
+    return RED.node.get().await()
+      .then(() => {
+        assert.isObject(RED.node.message().payload.content, 'is an object');
+        assert.equal(RED.node.message().payload.content.latitude, '45.4842045');
+        assert.equal(RED.node.message().payload.content.longitude, '9.1809077');
+      });
   });
 
-  it('should send a location message in Slack', function() {
-    var msg = RED.createMessage(null, 'slack');
+  it('should send a location message in Slack', () => {
+    const msg = RED.createMessage(null, 'slack');
     RED.node.config({
       latitude: '45.4842045',
       longitude: '9.1809077'
     });
     LocationBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.isObject(RED.node.message().payload.content, 'is an object');
-    assert.equal(RED.node.message().payload.content.latitude, '45.4842045');
-    assert.equal(RED.node.message().payload.content.longitude, '9.1809077');
-  });
-
-  it('should send a location message in Smooch', function() {
-    var msg = RED.createMessage(null, 'smooch');
-    RED.node.config({
-      latitude: '45.4842045',
-      longitude: '9.1809077'
-    });
-    LocationBlock(RED);
-    RED.node.get().emit('input', msg);
-    assert.isNull(RED.node.message());
+    return RED.node.get().await()
+      .then(() => {
+        assert.isObject(RED.node.message().payload.content, 'is an object');
+        assert.equal(RED.node.message().payload.content.latitude, '45.4842045');
+        assert.equal(RED.node.message().payload.content.longitude, '9.1809077');
+      });
   });
 
 });
-
