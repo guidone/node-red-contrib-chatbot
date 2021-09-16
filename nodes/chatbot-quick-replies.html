@@ -37,6 +37,7 @@
       node.buttons = [];
       var idx;
       for(idx = 0; idx < buttons.length; idx++) {
+        console.log('adding', $(buttons[idx]).RB_getButtonData())
         node.buttons.push($(buttons[idx]).RB_getButtonData());
       }
     },
@@ -46,10 +47,12 @@
         .editableList({
           addButton: 'Add button',
           addItem: function(container, i, item) {
+            console.log('add', item)
             $(container).RB_mountButtonDialog({
-              types: ['quick-reply', 'location'],
+              types: ['quick-reply', 'phone', 'email'],
               badges: false
             });
+            console.log('setting', item)
             $(container).RB_setButtonData(item, {
               badges: false
             });
@@ -106,6 +109,3 @@
 </ul>
 <p><img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook"></p>
 </script>
-
-
-

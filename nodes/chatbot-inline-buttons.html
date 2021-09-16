@@ -321,6 +321,16 @@
           url: url.val()
         };
         break;
+      case 'phone':
+        result = {
+          type: 'phone'
+        };
+        break;
+      case 'email':
+        result = {
+          type: 'email'
+        };
+        break;
     }
 
     return result;
@@ -339,7 +349,7 @@
 
     options = options || {};
     options.types = options.types != null ?
-      options.types : ['url', 'postback', 'call', 'share', 'login', 'newline', 'logout', 'location', 'quick-reply', 'dialog', 'key'];
+      options.types : ['url', 'postback', 'call', 'share', 'login', 'newline', 'logout', 'location', 'quick-reply', 'dialog', 'key', 'email', 'phone'];
     options.platforms = options.platforms != null ? options.platforms : ['facebook', 'telegram'];
     options.badges = options.badges !== false;
 
@@ -403,6 +413,14 @@
       .append('<span>Extensions</span><div class="redbot-platforms facebook"/>')
       .appendTo(panelUrl);
 
+    var panelEmail = $('<div class="panel panel-email" style="display:none;"/>').appendTo(container);
+    $('<div/>').css('marginTop','5px')
+      .append($('<div class="redbot-form-hint">Send user email associated to the Facebook Messenger account</div>'))
+      .appendTo(panelEmail);
+    var panelPhone = $('<div class="panel panel-phone" style="display:none;"/>').appendTo(container);
+    $('<div/>').css('marginTop','5px')
+      .append($('<div class="redbot-form-hint">Send user phone number associated to the Facebook Messenger account</div>'))
+      .appendTo(panelPhone);
     var panelPostback = $('<div class="panel panel-postback" style="display:none;"/>').appendTo(container);
     $('<div/>').css('marginTop','5px')
       .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="label" placeholder="Button label"/>'))
@@ -492,8 +510,6 @@
     $('<div/>').css('marginTop','5px')
       .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="url" placeholder="Authentication URL callback"/>'))
       .appendTo(panelLogin);
-
-    container.RB_Platforms();      
 
     return container;
   };
@@ -1169,5 +1185,3 @@ return msg;
   }
 
 </style>
-
-
