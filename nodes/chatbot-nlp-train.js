@@ -11,7 +11,7 @@ module.exports = function(RED) {
   function ChatBotNLPjs(config) {
     RED.nodes.createNode(this, config);
     const node = this;
-    
+
     this.name = config.name;
     this.debug = config.debug;
 
@@ -33,12 +33,13 @@ module.exports = function(RED) {
 
       // collect all languages from payload
       const languages = _.uniq([...Object.keys(payload.intents || {}), ...Object.keys(payload.entities || {})]);
-    
-      const manager = new NlpManager({ 
-        languages, 
+
+      const manager = new NlpManager({
+        languages,
         nlu: { log: false },
         autoSave: false,
-        autoLoad: false 
+        autoLoad: false,
+        forceNER: true
       });
 
       if (debug) {
@@ -69,10 +70,10 @@ module.exports = function(RED) {
               if (debug) {
                 // eslint-disable-next-line no-console
                 console.log(
-                  '  Entity: ' + lcd.white(name) + ' [' + language.toUpperCase() + '] ' 
+                  '  Entity: ' + lcd.white(name) + ' [' + language.toUpperCase() + '] '
                   + lcd.green(entity.name) + ` (${entity.aliases.join(',')})`
                 );
-              }              
+              }
               manager.addNamedEntityText(name, entity.name, [language], _.isEmpty(entity.aliases) ? entity.aliases : null);
             });
           });
@@ -81,7 +82,7 @@ module.exports = function(RED) {
 
       await manager.train();
       manager.save();
-      // store globally          
+      // store globally
       global.set('nlp_' + (!_.isEmpty(name) ? name : 'default'), manager);
 
       send({...msg, payload: manager });
