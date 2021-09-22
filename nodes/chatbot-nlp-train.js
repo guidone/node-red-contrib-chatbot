@@ -74,7 +74,7 @@ module.exports = function(RED) {
                   + lcd.green(entity.name) + ` (${entity.aliases.join(',')})`
                 );
               }
-              manager.addNamedEntityText(name, entity.name, [language], _.isEmpty(entity.aliases) ? entity.aliases : null);
+              manager.addNamedEntityText(name, entity.name, [language], !_.isEmpty(entity.aliases) ? entity.aliases : null);
             });
           });
         });
