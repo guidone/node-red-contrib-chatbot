@@ -5,13 +5,13 @@ const fetchers = require('../lib/helpers/fetchers-obj');
 const validators = require('../lib/helpers/validators');
 const { ChatExpress } = require('chat-platform');
 const RegisterType = require('../lib/node-installer');
-const { 
-  enrichFilePayload, 
-  isValidMessage, 
-  getChatId, 
-  getMessageId, 
-  getTransport, 
-  extractValue 
+const {
+  enrichFilePayload,
+  isValidMessage,
+  getChatId,
+  getMessageId,
+  getTransport,
+  extractValue
 } = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
@@ -24,7 +24,7 @@ module.exports = function(RED) {
     this.name = config.name;
     this.caption = config.caption;
     this.filename = config.filename; // for retrocompatibility
-    
+
     this.on('input', function(msg) {
       const chatId = getChatId(msg);
       const messageId = getMessageId(msg);
@@ -45,7 +45,7 @@ module.exports = function(RED) {
         || extractValue('stringWithVariables', 'sticker', node, msg)
         || extractValue('string', 'filename', node, msg, false, true, false); // for retrocompatibility
       let caption = extractValue('string', 'caption', node, msg, false);
-  
+
       template({ content, caption })
         .then(({ content, caption }) => {
           // get the content
@@ -60,7 +60,7 @@ module.exports = function(RED) {
             node.error('Looks like you are passing a very long string (> 4064 bytes) in the payload as image url or path\n'
               + 'Perhaps you are using a "Http request" and passing the result as string instead of buffer?');
             return;
-          } else if (_.isString(content) && content.length < 50) {
+          } else if (_.isString(content) && content.length < 256) {
             // could be a sticker id, it's ok
             fetcher = fetchers.identity;
           } else {
@@ -69,11 +69,11 @@ module.exports = function(RED) {
           }
 
           fetcher(content)
-            .then(file => enrichFilePayload(file, msg, node))  
+            .then(file => enrichFilePayload(file, msg, node))
             .then(file => {
               // check if a valid file
               const error = ChatExpress.isValidFile(transport, 'sticker', file);
-              if (error != null) { 
+              if (error != null) {
                 node.error(error);
                 throw error;
               }
@@ -88,9 +88,9 @@ module.exports = function(RED) {
                     type: 'sticker',
                     content: file.buffer,
                     filename: file.filename,
-                    caption: caption,
-                    chatId: chatId,
-                    messageId: messageId,
+                    caption,
+                    chatId,
+                    messageId,
                     inbound: false
                   }
                 });
