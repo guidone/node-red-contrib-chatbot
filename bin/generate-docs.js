@@ -53,8 +53,6 @@ var mappings = {
   'Inline-Query-node.md': 'chatbot-inline-query.html',
   'Dialog-node.md': 'chatbot-dialog.html',
   'Rules-node.md': 'chatbot-rules.html',
-  'Recast-node.md': 'chatbot-recast.html|chatbot-recast',
-  'Recast-token-node.md': 'chatbot-recast.html|chatbot-recast-token',
   'Dialogflow-node.md': 'chatbot-dialogflow.html|chatbot-dialogflow',
   'Dialogflow-token-node.md': 'chatbot-dialogflow.html|chatbot-dialogflow-token',
   'Invoice-node.md': 'chatbot-invoice.html',

@@ -1,3 +1,4 @@
+* **0.19.9** Improved NLP (extract all entities, uses alias for multiple entities, fix alias in utterances), improved param nodes for chained messages, remove deprecated nodes (Recast, Listen, Listen-lexicon), in Messenger quick replies removed location and added email / phone buttons 
 * **0.19.8** Upgraded NLP.js, refactored location node
 * **0.19.7** Bumped NLP.js
 * **0.19.6** Add formatting for captions in Telegram
