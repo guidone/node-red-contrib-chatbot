@@ -37,6 +37,7 @@
       node.buttons = [];
       var idx;
       for(idx = 0; idx < buttons.length; idx++) {
+        console.log('adding', $(buttons[idx]).RB_getButtonData())
         node.buttons.push($(buttons[idx]).RB_getButtonData());
       }
     },
@@ -46,10 +47,12 @@
         .editableList({
           addButton: 'Add button',
           addItem: function(container, i, item) {
+            console.log('add', item)
             $(container).RB_mountButtonDialog({
-              types: ['quick-reply', 'location'],
+              types: ['quick-reply', 'phone', 'email'],
               badges: false
             });
+            console.log('setting', item)
             $(container).RB_setButtonData(item, {
               badges: false
             });
@@ -96,16 +99,41 @@
 </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-quick-replies"><p><code>Quick Replies node</code> provide a way to present buttons to the user in response to a message.</p>
+<script type="text/x-red" data-help-name="chatbot-quick-replies"><p><code>Quick Replies node</code> provide a way to present buttons to the user in response to a message in <strong>Facebook Messenger</strong>.</p>
 <p>Quick Replies appear prominently above the composer, with the keyboard less prominent. When a quick reply is tapped, the message is sent in the conversation with developer-defined metadata in the callback.</p>
 <p>After the user taps one, they are dismissed, which prevents the scenario where users could tap on buttons attached to old messages in a conversation.</p>
-<p>Only two types of buttons can be specified here: </p>
+<p>Only three types of buttons can be specified here: </p>
 <ul>
 <li><strong>quick-reply</strong>: very similar to <code>postback</code> (see <code>Buttons node</code> for more details), has a <em>label</em> and <em>value</em> (which is the text sent back to the chat when the button is pressed). The button can also have an icon with specified by the <em>url</em> field</li>
-<li><strong>location</strong>: allows the user to share his position</li>
+<li><strong>email</strong>: allows the user to share his email</li>
+<li><strong>phone</strong>: allows the user to share his phone number</li>
 </ul>
-<p><img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook"></p>
+<p>The text message can be passed through the payload by the upstream node:</p>
+<pre><code class="lang-javascript">return { 
+  ...msg,
+  message: &#39;Select one&#39;,
+  buttons: [
+    { type: &#39;quick-reply&#39;, label: &#39;Test 1&#39;, value: &#39;test1&#39; },
+    { type: &#39;quick-reply&#39;, label: &#39;Test 2&#39;, value: &#39;test2&#39; }
+  ]
+ ;
+</code></pre>
+<p>Available parameters for the <code>msg.payload</code></p>
+<dl class="message-properties">
+
+
+<dt>message<span class="property-type">string</span><dd>The text above the quick replies</dd>
+<dt>buttons<span class="property-type">[buttons]</span><dd>The quick-reply button</dd>
+
+</dl>
+<p>The <code>button</code> object</p>
+<dl class="message-properties">
+
+
+<dt>type<span class="property-type">string</span><dd>Type of quick reply button: <em>quick-reply</em>, <em>email</em>, <em>phone</em></dd>
+<dt>label<span class="property-type">string</span><dd>The label of the button (only for <em>quick-reply</em>)</dd>
+<dt>value<span class="property-type">string</span><dd>The value returned when clicked (only for <em>quick-reply</em>)</dd>
+<dt>image_url<span class="property-type">string</span><dd>The image for the button (only for <em>quick-reply</em>)</dd>
+
+</dl>
 </script>
-
-
-

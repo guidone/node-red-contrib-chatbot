@@ -18,12 +18,12 @@
     _cache: {},
     getNodeRedUrl: function() {
       if ($.RedBot.inIframe()) {
-        /* 
-          Cover the case of Node-RED used inside hassio iframe. I really don't see a valid reason to make it work inside a docker 
+        /*
+          Cover the case of Node-RED used inside hassio iframe. I really don't see a valid reason to make it work inside a docker
           container on a Raspberry Pi, no reason to run inside an iframe, no reason why I should prepare a USB pen to login via ssh
           in the Rasperry (who owns a USB pen today?), no reason why I should spend hours trying to insall hassio when with a simple
           npm install I could have Node-RED, no reason why the terminal add renders using canvas elements (nice, but say goodbye to
-          copy and paste), no reason to log into two different shells just to give a look to logs.  
+          copy and paste), no reason to log into two different shells just to give a look to logs.
         */
         return window.location.pathname.replace(/\/$/, '') + RED.settings.httpNodeRoot;
       } else {
@@ -65,32 +65,32 @@
       for(idx = 0; idx < platforms.length; idx++) {
         var color = availablePlatforms[platforms[idx]].color;
         markup += '<div style="display:inline-block;flex: 0 0 6px;width:6px;height:6px;margin-right:3px;margin-top:3px;background-color:'+color+'"></div>';
-        markupPopup += '<span class="platform" style="font-size:10px;background-color:' 
-          + color  
+        markupPopup += '<span class="platform" style="font-size:10px;background-color:'
+          + color
           + ';padding: 2px 3px 2px 3px;border-radius:2px;text-transform:uppercase;color:#ffffff;margin-left:5px;">'
           + availablePlatforms[platforms[idx]].name.replace(/ /g,'&nbsp;')
           + '</span> ';
       }
       // only 3 by columns
-      var countColumns = Math.ceil(platforms.length / 3);      
+      var countColumns = Math.ceil(platforms.length / 3);
 
       $(node)
         .empty()
         .append(
           '<div class="inner" '
             + 'style="display:inline-flex;max-width:' + (countColumns * 9) + 'px;line-height:0px;max-height:27px;'
-            + 'flex-wrap: wrap;justify-content: flex-start;align-content: center;align-items: flex-end;vertical-align: top;">' 
-            + markup 
+            + 'flex-wrap: wrap;justify-content: flex-start;align-content: center;align-items: flex-end;vertical-align: top;">'
+            + markup
             + '</div>'
         );
 
-      var tooltip = new Tooltip($('.inner', node).get(0), {         
+      var tooltip = new Tooltip($('.inner', node).get(0), {
         placement: 'top',
         title: markupPopup,
         html: true,
         trigger: 'hover',
         template: '<div class="tooltip tooltip-platform" role="tooltip"><div class="tooltip-arrow tooltip-platform-arrow"></div><div class="tooltip-inner"></div></div>'
-      });  
+      });
     }
   };
   $.RedBot.buttonTypes = [
@@ -105,6 +105,18 @@
       label: 'Postback',
       className: 'platform-combo-telegram-facebook-slack-viber',
       platforms: ['facebook', 'telegram', 'slack', 'viber']
+    },
+    {
+      type: 'phone',
+      label: 'Phone number',
+      className: 'platform-combo-facebook',
+      platforms: ['facebook']
+    },
+    {
+      type: 'email',
+      label: 'Email',
+      className: 'platform-combo-facebook',
+      platforms: ['facebook']
     },
     {
       type: 'dialog',
@@ -287,6 +299,8 @@
       case 'newline':
       case 'share':
       case 'logout':
+      case 'email':
+      case 'phone':
       case 'location':
         return true;
       case 'login':
@@ -391,13 +405,13 @@
     return valid;
   };
   $.RedBot.validate.utterance = function(utterance) {
-    return utterance != null && utterance !== ''; 
-  }; 
+    return utterance != null && utterance !== '';
+  };
   $.RedBot.validate.entity = function(entity) {
     return typeof entity === 'object' && entity.name != null && entity.name !== '';
   };
   $.RedBot.validate.param = function(param) {
-    return param != null && param.platform != null && param.name != null && param.value != null;  
+    return param != null && param.platform != null && param.name != null && param.value != null;
   };
   $.RedBot.validate.params = function(params) {
     if (params == null) {
@@ -497,15 +511,17 @@
 
   $.fn.extend({
     RB_Platforms: function() {
-      $('.redbot-platforms', this).each(function() {        
+      console.log('contain', this)
+      $('.redbot-platforms', this).each(function() {
         var platforms = $(this).attr('class')
           .split(' ')
           .filter(function(platform) {
             return platform !== 'redbot-platforms';
           });
-          var currentStyle = $(this).attr('style') != null ? $(this).attr('style') : '';
-          $(this).attr('style', currentStyle + ';display:inline-block;margin-left:5px;');
-          $.RedBot.supportedBy($(this), platforms);
+        console.log('waht', platforms)
+        var currentStyle = $(this).attr('style') != null ? $(this).attr('style') : '';
+        $(this).attr('style', currentStyle + ';display:inline-block;margin-left:5px;');
+        $.RedBot.supportedBy($(this), platforms);
       });
     }
   });
@@ -538,7 +554,7 @@
   margin-top: 3px !important;
   font-size: 13px !important;
   border: none !important;
-  border-bottom: 1px solid #bbbbbb !important; 
+  border-bottom: 1px solid #bbbbbb !important;
   border-radius: 0px !important;
   padding: 0px !important;
   height: 25px !important;

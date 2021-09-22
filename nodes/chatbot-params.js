@@ -1,15 +1,16 @@
+const _ = require('underscore');
 const RegisterType = require('../lib/node-installer');
-const { 
-  isValidMessage,  
-  getTransport, 
-  extractValue 
+const {
+  isValidMessage,
+  getTransport,
+  extractValue
 } = require('../lib/helpers/utils');
 const MessageTemplate = require('../lib/message-template-async');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
 
-  function ChatBotParams(config) {    
+  function ChatBotParams(config) {
     RED.nodes.createNode(this, config);
     const node = this;
     this.params = config.params;
@@ -22,25 +23,28 @@ module.exports = function(RED) {
       if (!isValidMessage(msg, node)) {
         done('Invalid input message');
         return;
-      }      
+      }
       // get RedBot values
       const template = MessageTemplate(msg, node, { preserveNumbers: true });
-      const transport = getTransport(msg);      
+      const transport = getTransport(msg);
       // get vars
       let params = extractValue('params', 'params', node, msg)
       template(params.filter(param => param.platform === transport || param.platform === 'all'))
-        .then(params => {        
-          send({ 
+        .then(p => {
+          const params = p.reduce((accumulator, param) => ({ ...accumulator, [param.name]: param.value }), {});
+          send({
             ...msg,
-            payload: {
+            payload: _.isArray(msg.payload) ?
+              msg.payload.map(obj => ({ ...obj, params })) : { ...msg.payload, params }
+            /*payload: {
               ...msg.payload,
-              params: params.reduce((accumulator, param) => ({ ...accumulator, [param.name]: param.value }), {})
-            }            
+              params:
+            } */
           });
           done();
         });
     });
   }
-  
+
   registerType('chatbot-params', ChatBotParams);
 };

@@ -75,6 +75,15 @@ module.exports = function(RED) {
         const guess = languageGuesser.guess(content);
         if (!_.isEmpty(guess)) {
           language = guess[0].alpha2;
+          if (debug) {
+            // eslint-disable-next-line no-console
+            console.log(lcd.white('[NLP] gueesed language ') +  lcd.green(language));
+          }
+        }
+      } else {
+        if (debug) {
+          // eslint-disable-next-line no-console
+          console.log(lcd.white('[NLP] detecting with user language ') +  lcd.green(language));
         }
       }
       // skip if language is not detected
@@ -86,7 +95,23 @@ module.exports = function(RED) {
       const response = await manager.process(language, content);
       // extract vars
       const variables = {};
-      (response.entities || []).forEach(entity => variables[entity.entity] = entity.option ? entity.option : entity.resolution);
+      (response.entities || []).forEach(entity => {
+        const name = entity.alias != null ? entity.alias : entity.entity;
+        const obj = entity.option ? entity.option : entity.resolution;
+        obj.entity = entity.entity;
+        // ensure all extracted entity has at least "value" and "entity" keeping all
+        // other keys for retrocompatibility
+        if (obj.value == null) {
+          if (obj.values != null && Array.isArray(obj.values) && obj.values.length !== 0) {
+            obj.value = obj.values[0].value;
+            // handle the exception of duration as string
+            if (obj.entity === 'duration') {
+              obj.value = parseInt(obj.value, 10);
+            }
+          }
+        }
+        variables[name] = obj;
+      });
 
       if (debug) {
         // eslint-disable-next-line no-console
