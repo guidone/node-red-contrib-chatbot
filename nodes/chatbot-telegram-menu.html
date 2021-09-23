@@ -1,0 +1,88 @@
+<script type="text/javascript">
+  $.RedBot.registerType('chatbot-telegram-menu', {
+    category: $.RedBot.config.name,
+    color: '#FFCC66',
+    defaults: {
+      bot: {
+        value: "",
+        type: 'chatbot-telegram-node',
+        required: true
+      },
+      items: {
+        value: [],
+        validate: function(items) {
+          var valid = true;
+          var idx;
+          for(idx = 0; idx < items.length; idx++) {
+            if (!$.RedBot.validate.telegram.command(items[idx])) {
+              valid = false;
+            }
+          }
+          return valid;
+        }
+      }
+    },
+    inputs: 1,
+    outputs: 0,
+    paletteLabel: 'Telegram Menu',
+    icon: 'chatbot-menu.png',
+    label: function() {
+      return this.name || 'Telegram Menu';
+    },
+    oneditsave: function() {
+      var items = $("#node-input-items-container").editableList('items');
+      var node = this;
+      node.items = [];
+      var idx;
+      for(idx = 0; idx < items.length; idx++) {
+        var container = $(items[idx]);
+        node.items.push({
+          command: $('input[name=command]', container).val(),
+          description: $('input[name=description]', container).val(),
+        });
+      }
+    },
+    oneditprepare: function() {
+      $('#node-input-items-container').css('min-height','300px').css('min-width','450px').editableList({
+        addButton: 'Add command',
+        addItem: function(container, i, item) {
+          var main = $('<div/>').appendTo(container)
+            .append('<input class="node-input-rule-type" type="text" name="command" style="width:30%" placeholder="/command"/>')
+            .append('<input class="node-input-rule-type" type="text" name="description" style="width:60%;margin-left:10px;" placeholder="Description"/>')
+          $('input[name=command]', container).val(item.command);
+          $('input[name=description]', container).val(item.description);
+        },
+        removable: true,
+        sortable: true
+      });
+      if (this.items != null) {
+        this.items.forEach(function(item) {
+          $('#node-input-items-container').editableList('addItem', item);
+        });
+      }
+    },
+    oneditresize: function() {
+      var dialogForm = $('#dialog-form');
+      var rowBot = $('.form-row-bot', dialogForm);
+      var rowLabel = $('.form-row-label', dialogForm);
+      var height = dialogForm.height() - rowLabel.height() - rowBot.height() - 30;
+      $('#node-input-items-container').editableList('height', height);
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-telegram-menu">
+  <div class="form-row form-row-bot">
+    <label for="node-input-bot" style="display:block;width:100%;">Telegram Bot</label>
+    <input type="text" id="node-input-bot" placeholder="Bot">
+  </div>
+  <div class="form-row form-row-label form-row-buttons" style="margin-bottom:0;">
+    <label><span>Commands</span></label>
+  </div>
+  <div class="form-row form-row-items node-input-rule-container-row">
+    <ol id="node-input-items-container"></ol>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-telegram-menu">
+</script>
