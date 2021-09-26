@@ -426,6 +426,10 @@
     }
     return valid;
   };
+  $.RedBot.validate.telegram = {};
+  $.RedBot.validate.telegram.command = function(params) {
+    return typeof params === 'object' && typeof params.command === 'string' && params.command != null && params.command !== '';
+  };
   $.RedBot.buttonTypes.findButton = function(type) {
     var button = null;
     this.forEach(function(current) {

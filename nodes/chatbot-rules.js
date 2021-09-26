@@ -17,7 +17,7 @@ const Types = {
           } else {
             reject();
           }
-        });      
+        });
     });
   },
 
@@ -139,7 +139,7 @@ const Types = {
       when(chatContext.get(rule.variable))
         .then(
           function(variable) {
-            if (variable === rule.value) {
+            if (variable == rule.value) {
               resolve(rule);
             } else {
               reject();

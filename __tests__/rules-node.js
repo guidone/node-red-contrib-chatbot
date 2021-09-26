@@ -1,7 +1,6 @@
-var _ = require('underscore');
-var assert = require('chai').assert;
-var RED = require('../lib/red-stub')();
-var RulesBlock = require('../nodes/chatbot-rules');
+const assert = require('chai').assert;
+const RED = require('../lib/red-stub')();
+const RulesBlock = require('../nodes/chatbot-rules');
 
 describe('Chat rules node', () => {
 
@@ -675,6 +674,27 @@ describe('Chat rules node', () => {
       });
   });
 
+  it('should go through the first if the variable is eq to test_value with louse checking', () => {
+    const msg = RED.createMessage({
+      content: 'no command',
+      type: 'image'
+    }, 'telegram', { environment: 'development'});
+    RED.node.config({
+      rules: [
+        { type: 'isVariable', variable: 'myVar', value: '1' },
+        { type: 'catchAll' }
+      ]
+    });
+    msg.chat().set('myVar', 1);
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(() => {
+        assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
+        assert.isNull(RED.node.message(1));
+      });
+  });
+
   it('should go through the second if the variable is neq to test_value', () => {
     const msg = RED.createMessage({
       content: 'no command',
@@ -938,4 +958,3 @@ describe('Chat rules node', () => {
   });
 
 });
-

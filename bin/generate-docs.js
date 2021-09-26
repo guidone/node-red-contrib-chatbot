@@ -40,6 +40,7 @@ var mappings = {
   'Context-node.md': 'chatbot-context.html',
   'Sticker-node.md': 'chatbot-sticker.html',
   'Animation-node.md': 'chatbot-animation.html',
+  'Telegram-Menu-node.md': 'chatbot-telegram-menu.html',
   'Waiting-node.md': 'chatbot-waiting.html',
   'Slack-Receiver-node.md': 'chatbot-slack-receive.html|chatbot-slack-node',
   'Telegram-Receiver-node.md': 'chatbot-telegram-receive.html|chatbot-telegram-node',
