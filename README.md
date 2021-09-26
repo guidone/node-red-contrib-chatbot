@@ -67,7 +67,7 @@ Now you have a useful bot that answers *"Hi there!"* to any received message. We
 ## Credits
 * Inspired by the Karl-Heinz Wind work [node-red-contrib-telegram](https://github.com/windkh/node-red-contrib-telegrambot)
 * [Telegram Bot API for NodeJS](https://github.com/yagop/node-telegram-bot-api)
-* [NLP Compromise](https://github.com/nlp-compromise/compromise)
+* [NLP.js](https://github.com/axa-group/nlp.js)
 
 ## The MIT License
 Permission is hereby granted, free of charge, to any person obtaining a copy
