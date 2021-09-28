@@ -62,6 +62,7 @@
       "chatbot-transport": "./nodes/chatbot-transport.js",
       "chatbot-rivescript": "./nodes/chatbot-rivescript.js",
       "chatbot-messenger-menu": "./nodes/chatbot-messenger-menu.js",
+      "chatbot-messenger-template": "./nodes/chatbot-messenger-template.js",
       "chatbot-telegram-menu": "./nodes/chatbot-telegram-menu.js",
       "chatbot-context-store": "./nodes/chatbot-context-store.js",
       "chatbot-inline-query": "./nodes/chatbot-inline-query.js",

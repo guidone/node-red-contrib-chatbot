@@ -1,0 +1,228 @@
+<script type="text/javascript">
+
+  $.RedBot.registerType('chatbot-messenger-template', {
+    category: $.RedBot.config.name,
+    color: '#FFCC66',
+    defaults: {
+      name: {
+        value: ''
+      },
+      templateType: {
+        value: 'generic'
+      },
+      text: {
+        value: ''
+      },
+      json: {
+        value: ''
+      },
+      title: {
+        value: '',
+        validate: function(title) {
+          return $.RedBot.validate.isEmpty(title) || title.length <= 80 ;
+        }
+      },
+      subtitle: {
+        value: '',
+        validate: function(subtitle) {
+          return subtitle == null || subtitle.length <= 80
+        }
+      },
+      imageUrl: {
+        value: ''
+      },
+      mediaUrl: {
+        value: ''
+      },
+      mediaType: {
+        value: 'image'
+      },
+      attachmentId: {
+        value: ''
+      },
+      productId: {
+        value: ''
+      },
+      buttons: {
+        value: [],
+        validate: function(buttons) {
+          var valid = true;
+          var idx;
+          for(idx = 0; idx < buttons.length; idx++) {
+            if (!$.RedBot.validate.button(buttons[idx])) {
+              valid = false;
+            }
+          }
+          return valid && buttons.length <= 3 && buttons.length >= 0;
+        }
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'Messenger Template',
+    icon: 'chatbot-generic-template.png',
+    label: function() {
+      return this.name || 'Messenger Template';
+    },
+    oneditsave: function() {
+      var buttons = $("#node-input-buttons-container").editableList('items');
+      var node = this;
+      node.buttons = [];
+      var idx;
+      for(idx = 0; idx < buttons.length; idx++) {
+        node.buttons.push($(buttons[idx]).RB_getButtonData());
+      }
+      $('#node-input-json').val(this.editor.getValue());
+      // remove editor
+      this.editor.destroy();
+      delete this.editor;
+    },
+    oneditprepare: function() {
+      var node = this;
+      var dialogForm = $('#dialog-form');
+      // select template
+      $('#node-input-templateType')
+        .change(function() {
+          var templateType = $(this).val();
+          $('.form-row-template', dialogForm).hide();
+          $('.form-row-template-' + templateType, dialogForm).show();
+        });
+      $('.form-row-template', dialogForm).hide();
+      $('.form-row-template-' + node.templateType, dialogForm).show();
+      // buttons editor
+      $('#node-input-buttons-container')
+        .css('min-width','450px')
+        .editableList({
+          addItem: function(container, i, item) {
+            $(container).RB_mountButtonDialog({
+              types: ['url', 'postback', 'call', 'login', 'newline', 'logout', 'share'],
+              platforms: ['facebook', 'slack'],
+              badges: true
+            });
+            $(container).RB_setButtonData(item);
+          },
+          removable: true,
+          sortable: true
+        });
+      $.RedBot.fetchPlatforms()
+        .done(function() {
+          if (node.buttons != null) {
+            node.buttons.forEach(function(button) {
+              $('#node-input-buttons-container').editableList('addItem', button);
+            });
+          }
+        });
+      // json editor
+      this.editor = RED.editor.createEditor({
+        id: 'node-input-json-editor',
+        mode: 'ace/mode/json',
+        value: $('#node-input-json').val(),
+        globals: {
+          node: true,
+          msg:true,
+          context:true,
+          RED: true,
+          util: true,
+          flow: true,
+          global: true,
+          console: true,
+          Buffer: true,
+          setTimeout: true,
+          clearTimeout: true,
+          setInterval: true,
+          clearInterval: true
+        }
+      });
+    },
+    oneditresize: function() {
+      /*var dialogForm = $('#dialog-form');
+      var rowName = $('.form-row-name', dialogForm);
+      var rowTitle = $('.form-row-title', dialogForm);
+      var rowSubtitle = $('.form-row-subtitle', dialogForm);
+      var rowImageUrl = $('.form-row-imageUrl', dialogForm);
+      var rowLabel = $('.form-row-label', dialogForm);
+      var rowCarousel = $('.form-row-carousel', dialogForm);
+      var height = dialogForm.height() - rowName.height() - rowTitle.height() - rowSubtitle.height()
+        - rowImageUrl.height() - rowLabel.height() - rowCarousel.height() - 40;
+      $('#node-input-buttons-container').editableList('height', height);*/
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-messenger-template">
+  <div class="form-row form-row-name">
+    <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row form-row-name">
+    <label for="node-input-templateType">Template type</label>
+    <select id="node-input-templateType" placeholder="Template type">
+      <option value="generic">Generic</option>
+      <option value="button">Button</option>
+      <option value="receipt">Receipt</option>
+      <option value="media">Media</option>
+      <option value="product">Product</option>
+      <option value="customer_feedback">Customer feedback</option>
+    </select>
+  </div>
+<div class="form-row form-row-title form-row-template form-row-template-button">
+  <label for="node-input-title">Text</label>
+  <input type="text" id="node-input-text" placeholder="Text">
+</div>
+<div class="form-row form-row-title form-row-template form-row-template-generic">
+  <label for="node-input-title">Title</label>
+  <input type="text" id="node-input-title" placeholder="Title">
+</div>
+<div class="form-row form-row-subtitle form-row-template form-row-template-generic">
+  <label for="node-input-subtitle">Subtitle</label>
+  <input type="text" id="node-input-subtitle" placeholder="Subtitle">
+</div>
+<div class="form-row form-row-imageUrl form-row-template form-row-template-generic">
+  <label for="node-input-image_url">Image URL</label>
+  <input type="text" id="node-input-imageUrl" placeholder="Image URL">
+</div>
+<div class="form-row form-row-imageUrl form-row-template form-row-template-media">
+  <label for="node-input-mediaType">Media type</label>
+    <select id="node-input-mediaType" placeholder="Media type">
+      <option value="video">Video</option>
+      <option value="image">Image</option>
+  </select>
+</div>
+<div class="form-row form-row-mediaUrl form-row-template form-row-template-media">
+  <label for="node-input-mediaUrl">Media URL</label>
+  <input type="text" id="node-input-mediaUrl" placeholder="Media URL">
+</div>
+<div class="form-row form-row-attachmentId form-row-template form-row-template-media">
+  <label for="node-input-attachmentId">Attachment Id</label>
+  <input type="text" id="node-input-attachmentId" placeholder="Attachment Id">
+</div>
+<div class="form-row form-row-productId form-row-template form-row-template-product">
+  <label for="node-input-productId">Product Id</label>
+  <input type="text" id="node-input-productId" placeholder="Product Id">
+</div>
+<div class="form-row form-row-label form-row-template form-row-template-generic form-row-template-button form-row-template-media" style="margin-bottom:0;">
+  <label><i class="fa fa-list"></i> <span>Buttons</span></label>
+</div>
+<div class="form-row node-input-rule-container-row form-row-template form-row-template-generic form-row-template-button form-row-template-media">
+  <ol id="node-input-buttons-container" style="height: 250px;"></ol>
+</div>
+<div class="form-row form-row-template form-row-template-receipt form-row-template-customer_feedback">
+  <input type="hidden" id="node-input-json" autofocus="autofocus">
+  <div style="height: 250px; min-height:150px;margin-top: 25px;" class="node-text-editor" id="node-input-json-editor" ></div>
+</div>
+<div class="redbot-form-hint form-row-template form-row-template-receipt">
+  Read the <a href="https://developers.facebook.com/docs/messenger-platform/send-messages/template/receipt" target="_blank">receipt template</a> help page to build the receipt JSON.
+</div>
+<div class="redbot-form-hint form-row-template form-row-template-customer_feedback">
+  Read the <a href="https://developers.facebook.com/docs/messenger-platform/send-messages/templates/customer-feedback-template" target="_blank">customer feedback template</a> help page to build the customer feedback JSON.
+</div>
+<div class="redbot-form-hint form-row-template form-row-template-media">
+  Read the <a href="https://developers.facebook.com/docs/messenger-platform/send-messages/template/media" target="_blank">media template</a> help page to learn how to build media url.
+</div>
+<div class="redbot-form-hint form-row-template form-row-template-product">
+  Read the <a href="https://developers.facebook.com/docs/messenger-platform/send-messages/template/product" target="_blank">product template</a> help page to learn how to specify product id.
+</div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-messenger-template">
+</script>
