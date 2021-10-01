@@ -79,7 +79,7 @@ module.exports = function(RED) {
             return;
           }
         } else {
-          done('It\'s not possible to combine different template types or one of the element');
+          done('It\'s not possible to combine different template types');
           return;
         }
       }
