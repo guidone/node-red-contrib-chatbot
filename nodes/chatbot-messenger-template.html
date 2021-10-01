@@ -213,5 +213,88 @@
 </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-messenger-template">
+<script type="text/x-red" data-help-name="chatbot-messenger-template"><p>The <code>Messenger Template node</code> is used to send any of the supported template in Facebook Messenger:</p>
+<ul>
+<li><a href="https://developers.facebook.com/docs/messenger-platform/send-messages/template/generic">Generic template</a></li>
+<li><a href="https://developers.facebook.com/docs/messenger-platform/send-messages/template/list">Button template</a></li>
+<li><a href="https://developers.facebook.com/docs/messenger-platform/send-messages/template/media">Media template</a></li>
+<li><a href="https://developers.facebook.com/docs/messenger-platform/send-messages/template/product">Product template</a></li>
+<li><a href="https://developers.facebook.com/docs/messenger-platform/send-messages/template/receipt">Receipt template</a></li>
+<li><a href="https://developers.facebook.com/docs/messenger-platform/send-messages/templates/customer-feedback-template">Customer Feedback Template</a> </li>
+</ul>
+<p>For the last two templates it&#39;s not available an advanced UI, just a JSON editor where to copy and paste the payload for the desired template (read the <strong>Facebook</strong> documentation about how to generate it).</p>
+<p>Two <em>generic templates</em> can be combined together in a carousel by simply chaining <code>Messenger Template node</code> (to maximum of 10). Each template can have a maximum of 3 buttons, <code>title</code> and <code>subtitle</code> are limited to 80 chars.</p>
+<p><em>Generic templates</em> and <em>button template</em> can have up to 3 buttons, see <code>Buttons node</code> for a complete list of available buttons (only <code>quick-reply</code> and <code>location</code> are not available here). </p>
+<p>In order to create a generic template in a upstream <code>Function node</code></p>
+<pre><code>msg.payload = {
+  templateType: &#39;generic&#39;,
+  title: &#39;my title&#39;,
+  subtitle: &#39;I am a sub title&#39;,
+  imageUrl: &#39;http://image.server.com/cover.png&#39;,
+  buttons: [
+    {
+      type: &#39;url&#39;,
+      url: &#39;http://javascript-jedi.com&#39;,
+      label: &#39;Javascript Jedi&#39;
+    }
+  ]
+}
+</code></pre><p>or in order to pass a collection of elements for the carousel</p>
+<pre><code>msg.payload = {
+  elements: [
+    {
+      templateType: &#39;generic&#39;,
+      title: &#39;my title&#39;,
+      subtitle: &#39;I am a sub title&#39;,
+      imageUrl: &#39;http://image.server.com/cover.png&#39;,
+      buttons: [
+        {
+          type: &#39;url&#39;,
+          url: &#39;http://javascript-jedi.com&#39;,
+          label: &#39;Javascript Jedi&#39;
+        }
+      ]
+    },
+    {
+      templateType: &#39;generic&#39;,
+      title: &#39;another title&#39;,
+      subtitle: &#39;Second sub title&#39;,
+      imageUrl: &#39;http://image.server.com/cover2.png&#39;,
+      buttons: [
+        {
+          type: &#39;url&#39;,
+          url: &#39;http://javascript-jedi.com&#39;,
+          label: &#39;Javascript Jedi&#39;
+        }
+      ]
+    }
+  ]      
+}
+</code></pre><p>Some additional parameters can like <em>shareable</em> or <em>aspectRatio</em> can be defined using the <code>Params node</code>.</p>
+<p>Available parameters for the <code>msg.payload</code></p>
+<dl class="message-properties">
+
+
+<dt>templateType<span class="property-type">string</span><dd>Could be: <em>generic</em>, <em>button</em>, _customer_feedback_, <em>media</em> or <em>product</em></dd>
+<dt>title<span class="property-type">string</span><dd>Title of the list element (for <em>generic</em> templates)</dd>
+<dt>subtitle<span class="property-type">string</span><dd>Sub title of the list element (for <em>generic</em> templates)</dd>
+<dt>imageUrl<span class="property-type">string</span><dd>Url of the image element (for <em>generic</em> templates)</dd>
+<dt>buttons<span class="property-type">array of [button]</span><dd>Array of buttons, see <code>Buttons node</code> for more details (for <em>generic</em> or <em>button</em> templates)</dd>
+<dt>mediaUrl<span class="property-type">string</span><dd>Url of the media element (for <em>media</em> templates)</dd>
+<dt>mediaType<span class="property-type">string</span><dd>Type of media element, can be <em>video</em> or <em>image</em> (for <em>media</em> templates)</dd>
+<dt>attachmentId<span class="property-type">string</span><dd>Facebook attachment id (for <em>media</em> templates)</dd>
+<dt>productId<span class="property-type">stgring</span><dd>Facebook product id (for <em>product</em> templates)</dd>
+
+</dl>
+<p>The <code>[element]</code> object|</p>
+<dl class="message-properties">
+
+
+<dt>title<span class="property-type">string</span><dd>Title of the generic template element</dd>
+<dt>subtitle<span class="property-type">string</span><dd>Sub title of the generic template element</dd>
+<dt>imageUrl<span class="property-type">string</span><dd>Url of the generic template image</dd>
+<dt>buttons<span class="property-type">array of [button]</span><dd>Array of buttons, see <code>Buttons node</code> for more details</dd>
+
+</dl>
+<p><img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook"></p>
 </script>
