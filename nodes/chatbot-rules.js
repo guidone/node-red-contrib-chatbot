@@ -232,6 +232,16 @@ const Types = {
     });
   },
 
+  commandStartsWith(rule, message) {
+    return new Promise(function(resolve, reject) {
+      if (message.payload != null && helpers.isCommandStartsWith(message.payload.content, rule.command)) {
+        resolve(rule);
+      } else {
+        reject();
+      }
+    });
+  },
+
   command(rule, message) {
     return new Promise(function(resolve, reject) {
       if (message.payload != null && helpers.isCommand(message.payload.content, rule.command)) {
