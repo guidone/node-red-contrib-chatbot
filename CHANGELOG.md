@@ -1,3 +1,4 @@
+* **0.19.11** Added and fixed Facebook Messenger templates, remove deprected templates in Facebook Messenger, expose message id in Telegram, delete a message in Telegram
 * **0.19.10** Added Telegram menu node, fix sticker node send by id, changed routing error into a warning, enable receiving vide notes, fix louse checking in rules node 
 * **0.19.9** Improved NLP (extract all entities, uses alias for multiple entities, fix alias in utterances), improved param nodes for chained messages, remove deprecated nodes (Recast, Listen, Listen-lexicon), in Messenger quick replies removed location and added email / phone buttons 
 * **0.19.8** Upgraded NLP.js, refactored location node
