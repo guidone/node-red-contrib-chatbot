@@ -40,7 +40,7 @@
       var _this = this;
       this.editor = RED.editor.createEditor({
         id: 'node-input-func-editor',
-        mode: 'ace/mode/javascript',
+        mode: 'ace/mode/json',
         value: $('#node-input-blocks').val(),
         globals: {
           node: true,
@@ -58,7 +58,7 @@
           clearInterval: true
         }
       });
-      
+
     },
     oneditresize: function(size) {
       var dialogForm = $('#dialog-form');
@@ -155,5 +155,3 @@
 </dl>
 <p><img src="https://img.shields.io/badge/platform-Slack-green.svg" alt="Slack"></p>
 </script>
-
-

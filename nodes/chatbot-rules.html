@@ -41,6 +41,7 @@
             + '</optgroup>'
             + '<optgroup label="Message">'
             + '  <option value="command">Message is command ...</option>'
+            + '  <option value="commandStartsWith">Message is command and starts with ...</option>'
             + '  <option value="anyCommand">Message is a command</option>'
             + '  <option value="environment">Environment is ...</option>'
             + '  <option value="outbound">Message is outbound</option>'
@@ -107,7 +108,7 @@
           .append('<input class="isVariable" style="display:none;width:25%;margin-left:10px;" type="text" name="variableName" placeholder="Name"/>')
           .append('<span class="isVariable" style="display:none;">&nbsp;is&nbsp;</span>')
           .append('<input class="isVariable" style="display:none;width:25%;margin-left:0px;" type="text" name="variableValue" placeholder="Value"/>')
-          .append('<input class="command" style="display:none;width:50%;margin-left:10px;" type="text" name="command" placeholder="/command"/>')
+          .append('<input class="command commandStartsWith" style="display:none;width:50%;margin-left:10px;" type="text" name="command" placeholder="/command"/>')
           .append('<input class="isNotTopic isTopic topicIncludes" style="display:none;width:40%;margin-left:10px;" type="text" name="topic" placeholder="Topic"/>')
           .append('<select class="environment" name="environment" style="display:none;width:40%;margin-left:10px;">'
             + '<option value="">Select environment</option>'
@@ -328,7 +329,7 @@
           if (type === 'isNotTopic' || type === 'isTopic' || type === 'topicIncludes') {
             obj.topic = rule.find('input[name=topic]').val();
           }
-          if (type === 'command') {
+          if (type === 'command' || type === 'commandStartsWith') {
             obj.command = rule.find('input[name=command]').val();
           }
           if (type === 'environment') {
@@ -365,7 +366,7 @@
     oneditprepare: function() {
       var node = this;
       var nodeRedUrl = $.RedBot.getNodeRedUrl();
-      
+
       $.get(nodeRedUrl + 'redbot/globals')
         .done(function(response) {
           node.messageTypes = response.messageTypes;
@@ -511,5 +512,3 @@ return msg;
 <img src="https://img.shields.io/badge/platform-Slack-green.svg" alt="Slack">
 <img src="https://img.shields.io/badge/platform-Smooch-orange.svg" alt="Smooch"></p>
 </script>
-
-

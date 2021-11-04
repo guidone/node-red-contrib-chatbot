@@ -14,9 +14,9 @@ var tasks = new Promise(function(resolve) {
 
 var mappings = {
   'Generic-Template-node.md': 'chatbot-generic-template.html',
-  'List-Template-node.md': 'chatbot-list-template.html',
   'Quick-Replies-node.md': 'chatbot-quick-replies.html',
   'Messenger-Menu-node.md': 'chatbot-messenger-menu.html',
+  'Messenger-Template-node.md': 'chatbot-messenger-template.html',
   'Document-node.md': 'chatbot-document.html',
   'Message-node.md': 'chatbot-message.html',
   'QR-Code-node.md': 'chatbot-qrcode.html',

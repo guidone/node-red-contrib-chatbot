@@ -65,9 +65,10 @@ module.exports = function(RED) {
         done('No active chatbot for this configuration. Means that the configuration was found but no receiver node is using it');
         return;
       }
+
       // finally send
       const message = await platformNode.createMessage(chatId, userId, null, msg)
-      send(message);
+      send({ ...msg, ...message });
       done();
     });
   }
