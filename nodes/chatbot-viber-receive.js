@@ -34,7 +34,7 @@ module.exports = function(RED) {
     var environment = this.context().global.environment === 'production' ? 'production' : 'development';
     var isUsed = utils.isUsed(RED, node.id);
     var startNode = utils.isUsedInEnvironment(RED, node.id, environment);
-    var viberConfigs = RED.settings.functionGlobalContext.get('viber') || {};
+    var viberConfigs = this.context().global.get('viber') || {};
 
     this.botname = n.botname;
     this.store = n.store;

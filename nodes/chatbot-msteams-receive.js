@@ -25,7 +25,7 @@ module.exports = function(RED) {
     var environment = this.context().global.environment === 'production' ? 'production' : 'development';
     var isUsed = utils.isUsed(RED, node.id);
     var startNode = utils.isUsedInEnvironment(RED, node.id, environment);
-    var msteamsConfigs = RED.settings.functionGlobalContext.get('msteams') || {};
+    var msteamsConfigs = this.context().global.get('msteams') || {};
 
     this.botname = n.botname;
     this.store = n.store;

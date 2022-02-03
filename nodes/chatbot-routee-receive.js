@@ -36,7 +36,7 @@ module.exports = function(RED) {
     var environment = this.context().global.environment === 'production' ? 'production' : 'development';
     var isUsed = utils.isUsed(RED, node.id);
     var startNode = utils.isUsedInEnvironment(RED, node.id, environment);
-    var routeeConfigs = RED.settings.functionGlobalContext.get('routee') || {};
+    var routeeConfigs = this.context().global.get('routee') || {};
 
     this.botname = n.botname;
     this.store = n.store;

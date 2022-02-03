@@ -33,7 +33,7 @@ module.exports = function(RED) {
     var environment = this.context().global.environment === 'production' ? 'production' : 'development';
     var isUsed = utils.isUsed(RED, node.id);
     var startNode = utils.isUsedInEnvironment(RED, node.id, environment);
-    var universalConfigs = RED.settings.functionGlobalContext.get('universal') || {};
+    var universalConfigs = this.context().global.get('universal') || {};
 
     this.botname = n.botname;
     this.store = n.store;
