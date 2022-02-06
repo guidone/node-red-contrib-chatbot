@@ -3,11 +3,13 @@ const nlp = require('compromise');
 const moment = require('moment');
 const utils = require('../lib/helpers/utils');
 const RegisterType = require('../lib/node-installer');
+const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 const cloneMessage = utils.cloneMessage;
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
+  const globalContextHelper = GlobalContextHelper(RED);
 
   var yesWords = ['yes', 'on', 'true', 'yeah', 'ya', 'si'];
   var noWords = ['no', 'off', 'false', 'nei', 'nein'];
@@ -21,6 +23,7 @@ module.exports = function(RED) {
   function ChatBotParse(config) {
     RED.nodes.createNode(this, config);
     var node = this;
+    globalContextHelper.init(this.context().global);
     this.parseType = config.parseType;
     this.parseVariable = config.parseVariable;
 

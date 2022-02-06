@@ -9,16 +9,19 @@ const {
   extractValue
 } = require('../lib/helpers/utils');
 const MessageTemplate = require('../lib/message-template-async');
+const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 require('../lib/platforms/telegram');
 require('../lib/platforms/slack/index');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
+  const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotSlackBlocks(config) {
     RED.nodes.createNode(this, config);
     const node = this;
+    globalContextHelper.init(this.context().global);
     this.blocks = config.blocks;
 
     this.on('input', function(msg, send, done) {

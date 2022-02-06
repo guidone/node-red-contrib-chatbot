@@ -2,6 +2,7 @@ const utils = require('../lib/helpers/utils');
 const helpers = require('../lib/helpers/regexps');
 const _ = require('underscore');
 const RegisterType = require('../lib/node-installer');
+const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 const when = utils.when;
 
@@ -436,10 +437,12 @@ function executeRules(rules, message, global, current) {
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
+  const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotRules(config) {
     RED.nodes.createNode(this, config);
     var node = this;
+    globalContextHelper.init(this.context().global);
     var global = this.context().global;
     node.rules = config.rules;
 

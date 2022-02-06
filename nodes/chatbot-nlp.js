@@ -7,13 +7,16 @@ const RegisterType = require('../lib/node-installer');
 const MessageTemplate = require('../lib/message-template-async');
 const { variable: isVariable } = require('../lib/helpers/validators');
 const { isValidMessage, extractValue, isCommand } = require('../lib/helpers/utils');
+const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
+  const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotNLPjs(config) {
     RED.nodes.createNode(this, config);
     const node = this;
+    globalContextHelper.init(this.context().global);
 
     this.name = config.name;
     this.debug = config.debug;
@@ -62,7 +65,7 @@ module.exports = function(RED) {
       // https://github.com/axa-group/nlp.js/blob/master/docs/v3/slot-filling.md#entities-with-the-same-name
 
       // get the right nlp model
-      const manager = global.get('nlp_' + (!_.isEmpty(name) ? name : 'default'));
+      const manager = globalContextHelper.get('nlp_' + (!_.isEmpty(name) ? name : 'default'));
 
       // check if string
       if (!_.isString(content)) {

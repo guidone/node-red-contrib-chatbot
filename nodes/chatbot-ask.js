@@ -3,13 +3,16 @@ const MessageTemplate = require('../lib/message-template-async');
 const emoji = require('node-emoji');
 const _ = require('underscore');
 const RegisterType = require('../lib/node-installer');
+const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
+  const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotAsk(config) {
     RED.nodes.createNode(this, config);
     var node = this;
+    globalContextHelper.init(this.context().global);
     this.buttons = config.buttons;
     this.message = config.message;
     this.inline = config.inline;

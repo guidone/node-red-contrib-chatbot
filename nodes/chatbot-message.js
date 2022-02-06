@@ -12,13 +12,16 @@ const {
   appendPayload
 } = require('../lib/helpers/utils');
 const MessageTemplate = require('../lib/message-template-async');
+const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
+  const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotMessage(config) {
     RED.nodes.createNode(this, config);
     var node = this;
+    globalContextHelper.init(this.context().global);
     this.message = config.message;
     this.parse_mode = config.parse_mode;
     this.language = config.language;

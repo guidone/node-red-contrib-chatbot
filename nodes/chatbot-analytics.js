@@ -2,13 +2,16 @@ const RegisterType = require('../lib/node-installer');
 const analytics = {
   dashbot: require('../lib/analytics/dashbot')
 };
+const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
+  const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotAnalytics(config) {
     RED.nodes.createNode(this, config);
     var node = this;
+    globalContextHelper.init(this.context().global);
     this.platform = config.platform;
     this.token = config.token;
 

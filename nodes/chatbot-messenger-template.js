@@ -10,13 +10,16 @@ const {
   getTransport,
   extractValue
 } = require('../lib/helpers/utils');
+const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
+  const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotMessengerTemplate(config) {
     RED.nodes.createNode(this, config);
     var node = this;
+    globalContextHelper.init(this.context().global);
     this.name = config.name;
     this.templateType = config.templateType;
     this.text = config.text;

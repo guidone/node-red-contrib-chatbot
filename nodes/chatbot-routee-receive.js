@@ -9,6 +9,7 @@ const prettyjson = require('prettyjson');
 const validators = require('../lib/helpers/validators');
 const RegisterType = require('../lib/node-installer');
 const { when } = require('../lib/helpers/utils');
+const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 
 const warn = clc.yellow;
@@ -17,6 +18,7 @@ const green = clc.green;
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
+  const globalContextHelper = GlobalContextHelper(RED);
 
   // register Slack server
   if (RED.redbot == null) {
@@ -33,10 +35,11 @@ module.exports = function(RED) {
   function RouteeBotNode(n) {
     RED.nodes.createNode(this, n);
     var node = this;
+    globalContextHelper.init(this.context().global);
     var environment = this.context().global.environment === 'production' ? 'production' : 'development';
     var isUsed = utils.isUsed(RED, node.id);
     var startNode = utils.isUsedInEnvironment(RED, node.id, environment);
-    var routeeConfigs = this.context().global.get('routee') || {};
+    var routeeConfigs = globalContextHelper.get('routee') || {};
 
     this.botname = n.botname;
     this.store = n.store;
@@ -185,6 +188,7 @@ module.exports = function(RED) {
 
     RED.nodes.createNode(this, config);
     var node = this;
+    globalContextHelper.init(this.context().global);
     var global = this.context().global;
     var environment = global.environment === 'production' ? 'production' : 'development';
     var nodeGlobalKey = null;
@@ -200,9 +204,9 @@ module.exports = function(RED) {
         this.status({fill: 'green', shape: 'ring', text: 'connected'});
         nodeGlobalKey = 'routee_master_' + this.config.id.replace('.','_');
         var isMaster = false;
-        if (global.get(nodeGlobalKey) == null) {
+        if (globalContextHelper.get(nodeGlobalKey) == null) {
           isMaster = true;
-          global.set(nodeGlobalKey, node.id);
+          globalContextHelper.set(nodeGlobalKey, node.id);
         }
         node.chat.on('message', function (message) {
           var context = message.chat();
@@ -232,7 +236,7 @@ module.exports = function(RED) {
     }
 
     this.on('close', function (done) {
-      node.context().global.set(nodeGlobalKey, null);
+      globalContextHelper.set(nodeGlobalKey, null);
       if (node.chat != null) {
         node.chat.off('message');
       }
@@ -244,6 +248,7 @@ module.exports = function(RED) {
   function RouteeOutNode(config) {
     RED.nodes.createNode(this, config);
     var node = this;
+    globalContextHelper.init(this.context().global);
     var global = this.context().global;
     var environment = global.environment === 'production' ? 'production' : 'development';
 

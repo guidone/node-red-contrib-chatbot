@@ -1,13 +1,16 @@
 const _ = require('underscore');
 const utils = require('../lib/helpers/utils');
 const RegisterType = require('../lib/node-installer');
+const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
+  const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotNLPIntent(config) {
     RED.nodes.createNode(this, config);
     var node = this;
+    globalContextHelper.init(this.context().global);
 
     this.utterances = config.utterances;
     this.intent = config.intent;

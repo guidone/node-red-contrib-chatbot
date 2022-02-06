@@ -2,13 +2,16 @@ const MessageTemplate = require('../lib/message-template-async');
 const utils = require('../lib/helpers/utils');
 const _ = require('underscore');
 const RegisterType = require('../lib/node-installer');
+const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
+  const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotInvoiceShipping(config) {
     RED.nodes.createNode(this, config);
     var node = this;
+    globalContextHelper.init(this.context().global);
     this.name = config.name;
     this.shippingOptions = config.shippingOptions;
     this.transports = ['telegram'];

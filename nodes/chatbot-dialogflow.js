@@ -4,6 +4,7 @@ const lcd = require('../lib/helpers/lcd');
 const dialogflow = require('dialogflow');
 const when = utils.when;
 const RegisterType = require('../lib/node-installer');
+const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 function parseValue(value) {
   if (value.kind === 'stringValue') {
@@ -37,10 +38,12 @@ function parseFields(fields) {
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
+  const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotDialogflow(config) {
     RED.nodes.createNode(this, config);
     var node = this;
+    globalContextHelper.init(this.context().global);
     node.dialogflow = config.dialogflow;
     node.language = config.language;
     node.debug = config.debug;
@@ -163,6 +166,7 @@ module.exports = function(RED) {
 
   function DialogflowToken(n) {
     RED.nodes.createNode(this, n);
+    globalContextHelper.init(this.context().global);
   }
 
   registerType('chatbot-dialogflow-token', DialogflowToken, {

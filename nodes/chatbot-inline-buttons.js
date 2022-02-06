@@ -11,16 +11,19 @@ const {
   appendPayload,
   getTransport
 } = require('../lib/helpers/utils');
+const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 require('../lib/platforms/telegram');
 require('../lib/platforms/facebook/facebook');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
+  const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotInlineButtons(config) {
     RED.nodes.createNode(this, config);
     var node = this;
+    globalContextHelper.init(this.context().global);
     this.name = config.name;
     this.buttons = config.buttons;
     this.message = config.message;

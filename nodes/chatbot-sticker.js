@@ -13,13 +13,16 @@ const {
   getTransport,
   extractValue
 } = require('../lib/helpers/utils');
+const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
+  const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotSticker(config) {
     RED.nodes.createNode(this, config);
     const node = this;
+    globalContextHelper.init(this.context().global);
     this.sticker = config.sticker;
     this.name = config.name;
     this.caption = config.caption;
