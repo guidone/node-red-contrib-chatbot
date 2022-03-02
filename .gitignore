@@ -6,3 +6,4 @@ node_modules
 /ngrok
 .vscode/settings.json
 model.nlp
+/plugins
