@@ -5,6 +5,7 @@ const lcd = require('../lib/helpers/lcd');
 const helpers = require('../lib/helpers/regexps');
 const { when, getChatId, extractValue } = require('../lib/helpers/utils');
 const RegisterType = require('../lib/node-installer');
+const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 const getOrCreateBot = ({ script, scriptFile, context, debug }) => {
   return new Promise((resolve, reject) => {
@@ -48,10 +49,12 @@ const getOrCreateBot = ({ script, scriptFile, context, debug }) => {
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
+  const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotRivescript(config) {
     RED.nodes.createNode(this, config);
     const node = this;
+    globalContextHelper.init(this.context().global);
     this.script = config.script;
     this.debug = config.debug;
     this.scriptFile = config.scriptFile;

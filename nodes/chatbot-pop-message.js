@@ -1,11 +1,14 @@
 const RegisterType = require('../lib/node-installer');
+const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
+  const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotPopMessage(config) {
     RED.nodes.createNode(this, config);
     const node = this;
+    globalContextHelper.init(this.context().global);
 
     this.on('input', function(msg, send, done) {
       // send/done compatibility for node-red < 1.0

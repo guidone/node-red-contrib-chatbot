@@ -3,13 +3,16 @@ const _ = require('underscore');
 const when = utils.when;
 const RegisterType = require('../lib/node-installer');
 const { isValidMessage } = require('../lib/helpers/utils');
+const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
+  const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotContext(config) {
     RED.nodes.createNode(this, config);
     const node = this;
+    globalContextHelper.init(this.context().global);
     this.command = config.command;
     this.fieldValue = config.fieldValue;
     this.fieldType = config.fieldType;

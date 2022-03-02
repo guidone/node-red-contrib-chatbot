@@ -9,9 +9,11 @@ const {
   extractValue,
   append 
 } = require('../lib/helpers/utils');
+const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
+  const globalContextHelper = GlobalContextHelper(RED);
 
   const txType = {
     plainText: 'PlainText',
@@ -26,6 +28,7 @@ module.exports = function(RED) {
   function ChatBotAlexaSpeech(config) {
     RED.nodes.createNode(this, config);
     const node = this;
+    globalContextHelper.init(this.context().global);
     this.speechType = config.speechType;
     this.text = config.text;
     this.ssml = config.ssml;

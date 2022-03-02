@@ -1,5 +1,6 @@
 const _ = require('underscore');
 const RegisterType = require('../lib/node-installer');
+const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 const { UniversalPlatform, ContextProviders } = require('chat-platform');
 
 const isEmpty = value => _.isEmpty(value) && !_.isNumber(value);
@@ -10,10 +11,12 @@ const {
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
+  const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotConversation(config) {
     RED.nodes.createNode(this, config);
     const node = this;
+    globalContextHelper.init(this.context().global);
     const global = this.context().global;
 
     this.chatId = config.chatId;

@@ -4,13 +4,16 @@ const { Language } = require('node-nlp');
 const RegisterType = require('../lib/node-installer');
 const { isCommand } = require('../lib/helpers/regexps');
 const { isValidMessage } = require('../lib/helpers/utils');
+const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
+  const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotLanguage(config) {
     RED.nodes.createNode(this, config);
     const node = this;
+    globalContextHelper.init(this.context().global);
 
     this.on('input', async function(msg, send, done) {
       // send/done compatibility for node-red < 1.0

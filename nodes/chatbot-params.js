@@ -6,13 +6,16 @@ const {
   extractValue
 } = require('../lib/helpers/utils');
 const MessageTemplate = require('../lib/message-template-async');
+const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
+  const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotParams(config) {
     RED.nodes.createNode(this, config);
     const node = this;
+    globalContextHelper.init(this.context().global);
     this.params = config.params;
 
     this.on('input', function(msg, send, done) {

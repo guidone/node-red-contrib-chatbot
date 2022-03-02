@@ -5,13 +5,16 @@ const _ = require('underscore');
 const validators = require('../lib/helpers/validators');
 const RegisterType = require('../lib/node-installer');
 const lcd = require('../lib/helpers/lcd');
+const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
+  const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotInvoice(config) {
     RED.nodes.createNode(this, config);
     var node = this;
+    globalContextHelper.init(this.context().global);
     this.name = config.name;
     this.title = config.title;
     this.description = config.description;

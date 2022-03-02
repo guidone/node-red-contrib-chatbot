@@ -1,15 +1,18 @@
 const _ = require('underscore');
 const utils = require('../lib/helpers/utils');
 const RegisterType = require('../lib/node-installer');
+const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 const fs = require('fs');
 const { NlpManager } = require('node-nlp');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
+  const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotNLPLoad(config) {
     RED.nodes.createNode(this, config);
     const node = this;
+    globalContextHelper.init(this.context().global);
     this.filename = config.filename;
 
     this.on('input', function(msg, send, done) {
@@ -31,7 +34,7 @@ module.exports = function(RED) {
         const manager = new NlpManager();
         manager.import(json);
         // store globally
-        global.set('nlp_' + (!_.isEmpty(name) ? name : 'default'), manager);
+        globalContextHelper.set('nlp_' + (!_.isEmpty(name) ? name : 'default'), manager);
         // pass thru
         send({ ...msg, payload: manager });
         done();

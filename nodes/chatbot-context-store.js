@@ -1,13 +1,16 @@
 const _ = require('underscore');
 const { ChatExpress: ChatPlatform } = require('chat-platform');
 const RegisterType = require('../lib/node-installer');
+const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
+  const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotContextStore(config) {
     RED.nodes.createNode(this, config);
     var node = this;
+    globalContextHelper.init(this.context().global);
     // just store the information
     node.contextStorage = config.contextStorage;
     node.contextParams = {};
@@ -36,20 +39,20 @@ module.exports = function(RED) {
 
   // add an endpoint to get a list of context providers
   RED.httpNode.get('/redbot/globals', function(req, res) {
-    const keys = RED.settings.functionGlobalContext.keys();
+    const keys = globalContextHelper.keys();
     const result = {};
     // get all configurations in the global settings
-    ChatPlatform.getPlatforms().forEach(platform => result[platform.id] = RED.settings.functionGlobalContext.get(platform.id));
+    ChatPlatform.getPlatforms().forEach(platform => result[platform.id] = globalContextHelper.get(platform.id));
     // list of master nodes in the flow
     keys.forEach(key => {
       if (!key.startsWith('chatbot_info_')) {
-        result[key] = RED.settings.functionGlobalContext.get(key);
+        result[key] = globalContextHelper.get(key);
       }
     });
     // get a list of running chatbots in the flow
     result.activeChatbots = keys
       .filter(key => key.startsWith('chatbot_info_'))
-      .map(key => RED.settings.functionGlobalContext.get(key))
+      .map(key => globalContextHelper.get(key))
     // collect message types
     result.messageTypes = _(ChatPlatform.getMessageTypes()).sortBy(type => type.label);
     // collect events

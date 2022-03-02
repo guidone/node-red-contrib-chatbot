@@ -4,13 +4,16 @@ const { NlpManager } = require('node-nlp');
 const lcd = require('../lib/helpers/lcd');
 const RegisterType = require('../lib/node-installer');
 const { extractValue } = require('../lib/helpers/utils');
+const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
+  const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotNLPjs(config) {
     RED.nodes.createNode(this, config);
     const node = this;
+    globalContextHelper.init(this.context().global);
 
     this.name = config.name;
     this.debug = config.debug;
@@ -83,7 +86,7 @@ module.exports = function(RED) {
       await manager.train();
       manager.save();
       // store globally
-      global.set('nlp_' + (!_.isEmpty(name) ? name : 'default'), manager);
+      globalContextHelper.set('nlp_' + (!_.isEmpty(name) ? name : 'default'), manager);
 
       send({...msg, payload: manager });
       done();

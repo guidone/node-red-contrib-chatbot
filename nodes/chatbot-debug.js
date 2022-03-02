@@ -3,13 +3,16 @@ const utils = require('../lib/helpers/utils');
 const lcd = require('../lib/helpers/lcd');
 const when = utils.when;
 const RegisterType = require('../lib/node-installer');
+const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
+  const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotDebug(config) {
     RED.nodes.createNode(this, config);
     var node = this;
+    globalContextHelper.init(this.context().global);
     this.chatId = config.chatId;
 
     this.on('input', function(msg) {
