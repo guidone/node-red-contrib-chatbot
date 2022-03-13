@@ -53,7 +53,7 @@ module.exports = function(RED) {
       // get values from config
       const buttons = extractValue('buttons', 'buttons', node, msg);
       const title = extractValue('string', 'title', node, msg);
-      const templateType = extractValue('string', 'templateType', node, msg);
+      let templateType = extractValue('string', 'templateType', node, msg);
       const text = extractValue('string', 'text', node, msg);
       const json = extractValue(['string', 'hash'], 'json', node, msg);
       const subtitle = extractValue('string', 'subtitle', node, msg);
@@ -62,8 +62,16 @@ module.exports = function(RED) {
       const mediaType = extractValue('string', 'mediaType', node, msg);
       const attachmentId = extractValue('string', 'attachmentId', node, msg);
       const productId = extractValue('string', 'productId', node, msg);
+      let elements = extractValue('arrayOfFacebookTemplateElements', 'elements', node, msg);
 
-      let elements = [];
+      elements = elements != null ? elements : [];
+
+      // infer the templateType from a list of elements defined upstream
+      if (!_.isEmpty(elements) && ['generic', 'product'].includes(elements[0].templateType)
+      ) {
+        templateType = elements[0].templateType;
+      }
+      //let elements = [];
       let payload;
       // if inbound is another message from a generic template, then push them toghether to create a carousel
       if (msg.payload != null && msg.payload.type === 'template') {
@@ -102,12 +110,15 @@ module.exports = function(RED) {
 
       switch (templateType) {
         case 'generic':
-          elements.push({
-            title: translated.title,
-            subtitle: translated.subtitle,
-            imageUrl: translated.imageUrl,
-            buttons: translated.buttons
-          });
+          // skip if empty
+          if (!_.isEmpty(title)) {
+            elements.push({
+              title: translated.title,
+              subtitle: translated.subtitle,
+              imageUrl: translated.imageUrl,
+              buttons: translated.buttons
+            });
+          }
         break;
         case 'button':
           payload = {
@@ -129,9 +140,12 @@ module.exports = function(RED) {
           };
           break;
         case 'product':
-          elements.push({
-            id: translated.productId
-          });
+          // skip if empty
+          if (!_.isEmpty(translated.productId)) {
+            elements.push({
+              id: translated.productId
+            });
+          }
           break;
       }
 

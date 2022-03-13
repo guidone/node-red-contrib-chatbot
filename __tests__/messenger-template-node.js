@@ -38,7 +38,7 @@ describe('Chat generic template node', () => {
     RED.node.get().emit('input', msg);
     return RED.node.get().await()
       .then(
-        function() {},
+        function () { },
         function () {
           assert.isNull(RED.node.message());
         }
@@ -210,4 +210,69 @@ describe('Chat generic template node', () => {
       });
   });
 
+  it('should be possible to create generic templates upstream', async () => {
+    const msg = RED.createMessage({
+
+      elements: [
+        {
+          templateType: 'generic',
+          title: 'my title',
+          subtitle: 'I am a sub title',
+          imageUrl: 'https://picsum.photos/200/300',
+          buttons: [
+            {
+              type: 'url',
+              url: 'http://javascript-jedi.com',
+              label: 'Javascript Jedi'
+            }
+          ]
+        },
+        {
+          templateType: 'generic',
+          title: 'another title',
+          subtitle: 'Second sub title',
+          imageUrl: 'https://picsum.photos/200/300',
+          buttons: [
+            {
+              type: 'url',
+              url: 'http://javascript-jedi.com',
+              label: 'Javascript Jedi'
+            }
+          ]
+        }
+      ]
+
+    }, 'facebook');
+    RED.node.config({});
+    MessengerTemplateBlock(RED);
+    RED.node.get().emit('input', msg);
+    await RED.node.get().await()
+
+    const payload = RED.node.message().payload;
+
+    assert.equal(payload.type, 'template');
+    assert.equal(payload.templateType, 'generic');
+    assert.equal(payload.chatId, 42);
+    assert.isArray(payload.elements);
+    assert.lengthOf(payload.elements, 2);
+    assert.equal(payload.elements[0].title, 'my title');
+    assert.equal(payload.elements[0].subtitle, 'I am a sub title');
+    assert.equal(payload.elements[0].imageUrl, 'https://picsum.photos/200/300');
+    assert.isArray(payload.elements[0].buttons);
+    assert.lengthOf(payload.elements[0].buttons, 1);
+    const buttons = payload.elements[0].buttons;
+    assert.equal(buttons[0].type, 'url');
+    assert.equal(buttons[0].url, 'http://javascript-jedi.com');
+    assert.equal(buttons[0].label, 'Javascript Jedi');
+
+    assert.equal(payload.elements[1].title, 'another title');
+    assert.equal(payload.elements[1].subtitle, 'Second sub title');
+    assert.equal(payload.elements[1].imageUrl, 'https://picsum.photos/200/300');
+    assert.isArray(payload.elements[1].buttons);
+    assert.lengthOf(payload.elements[1].buttons, 1);
+    const buttons2 = payload.elements[1].buttons;
+    assert.equal(buttons2[0].type, 'url');
+    assert.equal(buttons2[0].url, 'http://javascript-jedi.com');
+    assert.equal(buttons2[0].label, 'Javascript Jedi');
+  });
 });
