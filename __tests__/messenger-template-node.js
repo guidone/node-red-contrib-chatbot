@@ -212,7 +212,6 @@ describe('Chat generic template node', () => {
 
   it('should be possible to create generic templates upstream', async () => {
     const msg = RED.createMessage({
-
       elements: [
         {
           templateType: 'generic',

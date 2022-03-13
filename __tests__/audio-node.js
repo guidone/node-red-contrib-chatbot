@@ -2,8 +2,6 @@ const fs = require('fs');
 const assert = require('chai').assert;
 const RED = require('../lib/red-stub')();
 const AudioBlock = require('../nodes/chatbot-audio');
-const path = require('path')
-const testDir = path.dirname(module.parent.filename)
 
 require('../lib/platforms/telegram');
 require('../lib/platforms/facebook/facebook');
@@ -57,7 +55,7 @@ describe('Chat audio node', () => {
 
   it('should send a local mp3 audio with filename parameter in upstream node Telegram', () => {
     const msg = RED.createMessage(null, 'telegram');
-    msg.filename = testDir + '/dummy/audio.mp3';
+    msg.filename = __dirname + '/dummy/audio.mp3';
     RED.node.config({});
     AudioBlock(RED);
     RED.node.get().emit('input', msg);
@@ -74,7 +72,7 @@ describe('Chat audio node', () => {
 
   it('should send a local audio file with a wrong filename parameter in upstream node Telegram', () => {
     const msg = RED.createMessage(null, 'telegram');
-    msg.filename = testDir + '/dummy/file-wrong.mp4';
+    msg.filename = __dirname + '/dummy/file-wrong.mp4';
     RED.node.config({});
     AudioBlock(RED);
     RED.node.get().emit('input', msg);
@@ -198,5 +196,5 @@ describe('Chat audio node', () => {
         }
       );
   });
-  
+
 });

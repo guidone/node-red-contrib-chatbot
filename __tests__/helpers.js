@@ -99,7 +99,7 @@ describe('Value extractors', () => {
     const msg1 = RED.createMessage(entities);
     const msg2 = RED.createMessage({ myentity: entities });
     const msg3 = RED.createMessage(wrongentities);
-    
+
     const extract1 = extractValue('arrayOfEntities', 'entities', RED.node , msg1);
     assert.isArray(extract1);
     assert.lengthOf(extract1, 2);
@@ -156,6 +156,21 @@ describe('Value extractors', () => {
     assert.isArray(extractValue('arrayOfObject', 'anArrayOfObject', RED.node , msg1));
     assert.isArray(extractValue('arrayOfObject', 'anArrayOfObject', RED.node , msg2));
     assert.equal(extractValue('arrayOfObject', 'anArrayOfObject', RED.node , msg3), null);
+  });
+
+  it('should extract an array of facebook templates elements', () => {
+    const msg1 = RED.createMessage({ elements: [
+      { templateType: 'product' },
+      { templateType: 'product' }
+    ] });
+    const msg2 = RED.createMessage({ elements: [
+      { templateType: 'generic' },
+      { templateType: 'generic' }
+    ] });
+    const msg3 = RED.createMessage({ elements: [{}, {}, {}] });
+    assert.isArray(extractValue('arrayOfFacebookTemplateElements', 'elements', RED.node , msg1));
+    assert.isArray(extractValue('arrayOfFacebookTemplateElements', 'elements', RED.node , msg2));
+    assert.equal(extractValue('arrayOfFacebookTemplateElements', 'elements', RED.node , msg3), null);
   });
 
   it('should extract an hash', () => {
@@ -245,4 +260,3 @@ describe('Value extractors', () => {
   });
 
 });
-
