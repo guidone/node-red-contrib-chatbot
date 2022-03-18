@@ -16,31 +16,35 @@ module.exports = function(RED) {
           botname: botConfiguration.botname,
           authorizedUsernames: botConfiguration.usernames,
           token: botConfiguration.token,
+          appToken: botConfiguration.appToken,
           signingSecret: botConfiguration.signingSecret,
           serverPort: botConfiguration.serverPort,
           contextProvider: node.contextProvider,
           logfile: botConfiguration.logfile,
           debug: botConfiguration.debug,
-          username: botConfiguration.username,
-          iconEmoji: botConfiguration.iconEmoji,
           RED: RED
         });
       },
       (config, node) => ({
         usernames: config.usernames,
         botname: config.botname,
-        token: node.credentials != null && node.credentials.token != null ? node.credentials.token.trim() : null,
-        signingSecret: node.credentials != null && node.credentials.signingSecret != null ? node.credentials.signingSecret.trim() : null,
+        token: node.credentials != null && node.credentials.token != null ?
+          node.credentials.token.trim() : null,
+        appToken: node.credentials != null && node.credentials.appToken != null ?
+          node.credentials.appToken.trim() : null,
+        signingSecret: node.credentials != null && node.credentials.signingSecret != null ?
+          node.credentials.signingSecret.trim() : null,
         serverPort: config.serverPort,
         debug: config.debug,
-        logfile: config.log,
-        username: config.username,
-        iconEmoji: config.iconEmoji
+        logfile: config.log
       })
     ),
     {
       credentials: {
         token: {
+          type: 'text'
+        },
+        appToken: {
           type: 'text'
         },
         signingSecret: {
