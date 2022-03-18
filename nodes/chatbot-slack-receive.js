@@ -22,6 +22,7 @@ module.exports = function(RED) {
           contextProvider: node.contextProvider,
           logfile: botConfiguration.logfile,
           debug: botConfiguration.debug,
+          useWebSocket: botConfiguration.useWebSocket,
           RED: RED
         });
       },
@@ -36,6 +37,7 @@ module.exports = function(RED) {
           node.credentials.signingSecret.trim() : null,
         serverPort: config.serverPort,
         debug: config.debug,
+        useWebSocket: config.useWebSocket,
         logfile: config.log
       })
     ),
@@ -55,7 +57,5 @@ module.exports = function(RED) {
   );
 
   registerType('chatbot-slack-receive', GenericInNode('slack', RED));
-
   registerType('chatbot-slack-send', GenericOutNode('slack', RED));
-
 };
