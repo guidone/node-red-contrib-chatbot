@@ -41,7 +41,6 @@ module.exports = function(RED) {
       }
 
       const template = MessageTemplate(msg, node);
-      const global = this.context().global;
       const name = extractValue('string', 'name', node, msg, false);
       const debug = extractValue('boolean', 'debug', node, msg, false);
       let scoreThreshold = extractValue(['number', 'string', 'variable'], 'scoreThreshold', node, msg, false);
