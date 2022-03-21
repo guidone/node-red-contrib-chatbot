@@ -26,8 +26,6 @@ module.exports = function(RED) {
       const name = extractValue('string', 'name', node, msg, false);
       const debug = extractValue('boolean', 'debug', node, msg, false);
 
-      const global = this.context().global;
-
       // DOCS
       // entities
       // https://github.com/axa-group/nlp.js/blob/master/docs/v3/slot-filling.md#entities-with-the-same-name

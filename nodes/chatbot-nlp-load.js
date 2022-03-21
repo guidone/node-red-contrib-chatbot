@@ -24,8 +24,6 @@ module.exports = function(RED) {
       const filename = utils.extractValue('string', 'filename', node, msg, false);
       const name = utils.extractValue('string', 'name', node, msg, false);
 
-      const global = this.context().global;
-
       fs.readFile(filename, 'utf8', (err, json) => {
         if (err) {
           done(err);
