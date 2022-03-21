@@ -1,27 +1,28 @@
+* **0.19.15** Fixed bug in modify message text for inline buttons in Telegram, fixed Slack connector, added support for web sockets
 * **0.19.11** Added and fixed Facebook Messenger templates, remove deprected templates in Facebook Messenger, expose message id in Telegram, delete a message in Telegram
-* **0.19.10** Added Telegram menu node, fix sticker node send by id, changed routing error into a warning, enable receiving vide notes, fix louse checking in rules node 
-* **0.19.9** Improved NLP (extract all entities, uses alias for multiple entities, fix alias in utterances), improved param nodes for chained messages, remove deprecated nodes (Recast, Listen, Listen-lexicon), in Messenger quick replies removed location and added email / phone buttons 
+* **0.19.10** Added Telegram menu node, fix sticker node send by id, changed routing error into a warning, enable receiving vide notes, fix louse checking in rules node
+* **0.19.9** Improved NLP (extract all entities, uses alias for multiple entities, fix alias in utterances), improved param nodes for chained messages, remove deprecated nodes (Recast, Listen, Listen-lexicon), in Messenger quick replies removed location and added email / phone buttons
 * **0.19.8** Upgraded NLP.js, refactored location node
 * **0.19.7** Bumped NLP.js
 * **0.19.6** Add formatting for captions in Telegram
 * **0.19.5** Fix Slack cleanup on closing connection
 * **0.19.4** Update Slack to new API [[changes in configuration|Changes-0.19.4]]
-* **0.19.3** Added error pin to sender nodes for Telegram, Slack, Facebook, Twilio 
-* **0.19.2** Reverted previous, fixed param in settings.js config for authorized users `usernames` 
+* **0.19.3** Added error pin to sender nodes for Telegram, Slack, Facebook, Twilio
+* **0.19.2** Reverted previous, fixed param in settings.js config for authorized users `usernames`
 * **0.19.1** Fixed param in settings.js config for authorized users `authorizedUsernames` (previously `usernames`)
 * **0.19.0** [[Changes in 0.19.0|Changes-0.19.0]]
 * **0.18.15** Fix Slack events
-* **0.18.14** Fixed bug  with base url on callbacks 
-* **0.18.13** Fixed a bug with multi endpoints chatbots (picking the wrong one) 
+* **0.18.14** Fixed bug  with base url on callbacks
+* **0.18.13** Fixed a bug with multi endpoints chatbots (picking the wrong one)
 * **0.18.12** Moved _parseMode_ from Telegram config to `Params node`, added language drop down to `Message node` for multi-language support
-* **0.18.11** Enable MS Teams nodes 
-* **0.18.10** Added nodes for NLP.js, deprecated `Listen node`, breaking changes for `Language node`, added _Is Language ..._ rule to `Rules node` 
-* **0.18.9** Support for multiple webhook for Routee 
-* **0.18.8** Fix refresh of access token in Routee 
+* **0.18.11** Enable MS Teams nodes
+* **0.18.10** Added nodes for NLP.js, deprecated `Listen node`, breaking changes for `Language node`, added _Is Language ..._ rule to `Rules node`
+* **0.18.9** Support for multiple webhook for Routee
+* **0.18.8** Fix refresh of access token in Routee
 * **0.18.7** Fixed Alexa nodes not properly working with the multi transport framework
-* **0.18.6** Added test endpoint for Telegram webhook 
-* **0.18.5** Support for Slack events 
-* **0.18.4** Fix postback buttons in Telegram using webhooks, fix validation of quick replies in Messenger, fix params for modify message, fix set value in context node  
+* **0.18.6** Added test endpoint for Telegram webhook
+* **0.18.5** Support for Slack events
+* **0.18.4** Fix postback buttons in Telegram using webhooks, fix validation of quick replies in Messenger, fix params for modify message, fix set value in context node
 * **0.18.3** Fix sticker node in Telegram, fix Conversation node and chatId in payload
 * **0.18.2** Fix again hassio
 * **0.18.1** Fix hassio empty dropdown in conversation node
@@ -33,48 +34,48 @@
 * **0.17.5** - Added animation node, improved runtime validation of `Conversation node`
 * **0.17.4** - Fix Voice node
 * **0.17.3** - Added Slack Block Kit
-* **0.17.2** - Fix conversation node chatId/userId switch 
-* **0.17.1** - Fix global configuration 
-* **0.17.0** - Multi transport support **[[(breaking changes)|Breaking-Changes-0.16.0]]** 
-* **0.16.12** - Improved behaviour of output pin of Universal Connector 
-* **0.16.11** - Upgraded to Rivescript 2.0, script can be an external file 
-* **0.16.10** - Improved parsing of plain file context store 
-* **0.16.9** - Improved console log with validation of Telegram invoice and error in file chat context 
+* **0.17.2** - Fix conversation node chatId/userId switch
+* **0.17.1** - Fix global configuration
+* **0.17.0** - Multi transport support **[[(breaking changes)|Breaking-Changes-0.16.0]]**
+* **0.16.12** - Improved behaviour of output pin of Universal Connector
+* **0.16.11** - Upgraded to Rivescript 2.0, script can be an external file
+* **0.16.10** - Improved parsing of plain file context store
+* **0.16.9** - Improved console log with validation of Telegram invoice and error in file chat context
 * **0.16.8** - Addedd web hook support for **Telegram**
-* **0.16.6** - Added OAuth token to Slack config (dowload private files) 
+* **0.16.6** - Added OAuth token to Slack config (dowload private files)
 * **0.16.5** - Fix on **Twilio** connector to support **Whatsapp**
 * **0.16.4** - Support for **Discord**
-* **0.16.3** - Fixed un-needed token in Alexa 
-* **0.16.2** - Added Slack extensions (username, icon_emoji) 
+* **0.16.3** - Fixed un-needed token in Alexa
+* **0.16.2** - Added Slack extensions (username, icon_emoji)
 * **0.16.1** - Fixed "+" for Twilio numbers
 * **0.16.0** - Alexa support, refactored [[intent message|Intent-message]], changed format of event message, message chaining. See [[all changes in 0.16.0|all-changes-in-0.16.0]]
-* **0.15.13** - Support for Slack commands 
-* **0.15.12** - Broadcast API support for Facebook Messenger 
+* **0.15.13** - Support for Slack commands
+* **0.15.12** - Broadcast API support for Facebook Messenger
 * **0.15.11** - Upgrade Facebook API to 3.*, enable long messages (> 4096) for Telegram
 * **0.15.10** - Enable small talk for Dialogflow.com
-* **0.15.9** - Fix parsing of Dialogflow.com responses 
-* **0.15.8** - DialogFlow node updated to API v2 
+* **0.15.9** - Fix parsing of Dialogflow.com responses
+* **0.15.8** - DialogFlow node updated to API v2
 * **0.15.7** - Silent messages for Telegram
-* **0.15.6** - Upgraded Slack lib, removed restriction of configuration name === bot name 
+* **0.15.6** - Upgraded Slack lib, removed restriction of configuration name === bot name
 * **0.15.5** - Fix issue with send picture in Facebook
 * **0.15.4** - Fixed some issues with the [[Extend node|Extend-node]], added support for platform with different names, added [[Support Table|Support-table]] node
 * **0.15.3** - Fixed Facebook permission "locale"
 * **0.15.2** - Better support of message types registration
 * **0.15.1** - Support for _optin.ref_ in Facebook Messenger
-* **0.15.0** - Twilio connector 
-* **0.14.6** - Added `pending` variable to chat context (supported by `Dialogflow node` and `Recast.ai node`) 
+* **0.15.0** - Twilio connector
+* **0.14.6** - Added `pending` variable to chat context (supported by `Dialogflow node` and `Recast.ai node`)
 * **0.14.5** - Removed unused fields from Facebook Profile that were causing permissions problem
-* **0.14.4** - `Universal Receiver node` now receives thw whole message, not just the payload 
-* **0.14.3** - Fixed bug with params resolving in `Message node`  
-* **0.14.2** - Fix message for inline buttons in **Viber** 
+* **0.14.4** - `Universal Receiver node` now receives thw whole message, not just the payload
+* **0.14.3** - Fixed bug with params resolving in `Message node`
+* **0.14.2** - Fix message for inline buttons in **Viber**
 * **0.14.0** - Added `Universal Connector node`
 * **0.13.6** - Added support for nested menu in `Messenger Menu node` via `Function node`
-* **0.13.5** - Some cleanup 
+* **0.13.5** - Some cleanup
 * **0.13.4** - Added [[Extend node|Extend-node]]
-* **0.13.3** - Fixed a bug with _track_ option and plain file context, added pass through option to `Sender node` to make the outpin pin optional 
-* **0.13.1** - All sender nodes have output pin enabled (w/o track option), in order to chain more messages and keep the order. Fixed parsing of numeric _chatId_ in `Conversation node`, fixed filename in `Document node` for **Telegram** 
+* **0.13.3** - Fixed a bug with _track_ option and plain file context, added pass through option to `Sender node` to make the outpin pin optional
+* **0.13.1** - All sender nodes have output pin enabled (w/o track option), in order to chain more messages and keep the order. Fixed parsing of numeric _chatId_ in `Conversation node`, fixed filename in `Document node` for **Telegram**
 * **0.13.0** - Viber support
-* **0.12.8** - Improve url regular expression, detect mistaken buffer in `Image node` 
+* **0.12.8** - Improve url regular expression, detect mistaken buffer in `Image node`
 * **0.12.7** - Fixed upload image in Slack with missing _filename_ param
 * **0.12.6** - Fix incorrect payload for `Message node`
 * **0.12.5** - Added events **new-user**, **referral**, filter by event in `Rules node`, now `Dialogflow node` and `Recast node` can be connected directly to a `Message node` if they provide and `answer`
@@ -82,16 +83,16 @@
 * **0.12.3** - Added support for Facebook _messaging_referrals_
 * **0.12.2** - Added debug flag to all receivers
 * **0.12.1** - Fixed send sticker in Telegram
-* **0.12.0** - Added `Invoice node` and `Invoice Shipping node` for Telegram 
-* **0.10.3** - Fixed concurrency in plain file context provider, improved error logging 
+* **0.12.0** - Added `Invoice node` and `Invoice Shipping node` for Telegram
+* **0.10.3** - Fixed concurrency in plain file context provider, improved error logging
 * **0.10.2** - Improved detect command and fixed error in Telegram postback
-* **0.10.1** - Dialogflow and React can store the intent in any variable, `Rules node` can now check the value of a variable 
+* **0.10.1** - Dialogflow and React can store the intent in any variable, `Rules node` can now check the value of a variable
 * **0.10.0** - [[Global Configuration|Global-Configuration]]
 * **0.9.29** - Fixed a bug where unused chatbots where launched even if not used (causing some polling error in Telegram)
 * **0.9.28** - Deprecated `Transport node` in favour of `Rules node`, fixed blank context dropdown, Facebook upload doesn't use temporary file anymore, fixed Dialogflow.com/Recast.ai second output
 * **0.9.27** - ...and another deprecation in Telegram lib
 * **0.9.26** - Update Telegram api library
-* **0.9.25** - Deprecated `Switch Node`, added message type rules to `Rules node`, relaxed some verification checks with Facebook Messenger, fixed small bugs with Dialogflow and Recast  
+* **0.9.25** - Deprecated `Switch Node`, added message type rules to `Rules node`, relaxed some verification checks with Facebook Messenger, fixed small bugs with Dialogflow and Recast
 * **0.9.24** - Fixed button labels for `Request node`
 * **0.9.23** - Added nodes for Recast.ai and Dialogflow.com, improved debugging in system console
 * **0.9.22** - Now `Node keyboard` can remove a previously sent keyboard
@@ -101,21 +102,21 @@
 * **0.9.18** - Added rule 'any command' to `Rules node`
 * **0.9.17** - Support for Node-RED projects. Telegram, Slack and Facebook nodes have multiple configuration for production and development, now the same flow runs in different environments. Deprecated `API.ai node`
 * **0.9.15** - Added `Rules node`, fixed messages being broadcasted multiple times, fixed `Conversation node` for Facebook
-* **0.9.14** - Fixed startup error on Facebook Messenger 
+* **0.9.14** - Fixed startup error on Facebook Messenger
 * **0.9.13** - Fixed dropdown "parse mode" for Telegram
-* **0.9.12** - New context engine available for Facebook Messenger 
-* **0.9.11** - Fix context provider drop down in hosted environments 
+* **0.9.12** - New context engine available for Facebook Messenger
+* **0.9.11** - Fix context provider drop down in hosted environments
 * **0.9.10** - If no context provider is specified, defaults to "memory". Fix error 409 with Telegram
 * **0.9.9** - Fix blocking bug with memory context provider and Telegram or Slack
 * **0.9.8** - Added support for client dialogs in Slack with `Dialog node`
 * **0.9.7** - `Generic template node` works also in Slack, fixed empty payload in `Conversation node`
 * **0.9.6** - Fix firstName, lastName, authorized in Telegram
 * **0.9.5** - New context engine available for Telegram, added support for inline queries in Telegram, added `Switch node`
-* **0.9.4** - Fixed bug with `Message node` + `Conversation node`, update libraries 
-* **0.9.3** - Added support to buttons for Slack 
-* **0.9.2** - Fixed regression and reverted **0.9.1** 
-* **0.9.1** - Slack: listen messages from other bots 
-* **0.9.0** - Added support for Slack, added persistent chat storage (json file), open architecture to implement third party chat context provider 
+* **0.9.4** - Fixed bug with `Message node` + `Conversation node`, update libraries
+* **0.9.3** - Added support to buttons for Slack
+* **0.9.2** - Fixed regression and reverted **0.9.1**
+* **0.9.1** - Slack: listen messages from other bots
+* **0.9.0** - Added support for Slack, added persistent chat storage (json file), open architecture to implement third party chat context provider
 * **0.8.7** - Bug fixing
 * **0.8.6** - Moved *parse mode* parameter to `Message node` to `Telegram Sender node`. Parsing is now also available in `Inline Buttons node` and `Keyboard node`
 * **0.8.5** - Added `Listen Lexicon node` for `Listen node`
@@ -132,7 +133,7 @@
 * **0.7.0** - Added Analytics node (Dashbot.io)
 * **0.6.25** - Edit message in Telegram
 * **0.6.24** - Fix document node filename in upstream payload
-* **0.6.23** - Added document node for Telegram and Facebook, minor bug fix 
+* **0.6.23** - Added document node for Telegram and Facebook, minor bug fix
 * **0.6.22** - Added node for Facebook external account linking
 * **0.6.21** - Added node for Facebook Messenger persistent menu
 * **0.6.20** - Fixed breaking error in Messenger, improved docs, parse node now parses numbers written in plain english
