@@ -26,8 +26,10 @@ module.exports = function(RED) {
       },
       (config, node) => ({
         usernames: config.usernames,
-        token: node.credentials != null && node.credentials.token != null ? node.credentials.token.trim() : null,
-        providerToken: config.providerToken,
+        token: node.credentials != null && node.credentials.token != null ?
+          node.credentials.token.trim() : null,
+        providerToken: node.credentials != null && node.credentials.providerToken != null ?
+          node.credentials.providerToken.trim() : null,
         polling: config.polling,
         logfile: config.log,
         debug: config.debug,
@@ -38,6 +40,9 @@ module.exports = function(RED) {
     {
       credentials: {
         token: {
+          type: 'text'
+        },
+        providerToken: {
           type: 'text'
         }
       }
