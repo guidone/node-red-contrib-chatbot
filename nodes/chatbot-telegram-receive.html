@@ -10,14 +10,6 @@
         value: '',
         required: false
       },
-      token: {
-        value: '',
-        required: true
-      },
-      providerToken: {
-        value: '',
-        required: false
-      },
       polling: {
         value: 1000,
         required: true,
@@ -78,6 +70,9 @@
     paletteName: 'Telegram Bot',
     credentials: {
       token: {
+        type: 'text'
+      },
+      providerToken: {
         type: 'text'
       }
     },
