@@ -1,3 +1,5 @@
+* **0.19.16** Fixed tokens not encrypted in Telegram, fixed reply in threads for Slack, added support for markdown in Slack
+* **0.19.15** Fixed bug in modify message text for inline buttons in Telegram, fixed Slack connector, added support for web sockets
 * **0.19.11** Added and fixed Facebook Messenger templates, remove deprected templates in Facebook Messenger, expose message id in Telegram, delete a message in Telegram
 * **0.19.10** Added Telegram menu node, fix sticker node send by id, changed routing error into a warning, enable receiving vide notes, fix louse checking in rules node 
 * **0.19.9** Improved NLP (extract all entities, uses alias for multiple entities, fix alias in utterances), improved param nodes for chained messages, remove deprecated nodes (Recast, Listen, Listen-lexicon), in Messenger quick replies removed location and added email / phone buttons 
