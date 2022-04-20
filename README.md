@@ -4,9 +4,7 @@ With **RedBot** you can visually build a full featured chat bot for **Telegram**
 
 ![Release](https://img.shields.io/npm/v/node-red-contrib-chatbot.svg)
 ![npm](https://img.shields.io/npm/dm/node-red-contrib-chatbot.svg)
-![Build](https://travis-ci.org/guidone/node-red-contrib-chatbot.svg?branch=master)
-[![Telegram](https://img.shields.io/badge/Join-Telegram%20group-orange.svg)](https://t.me/joinchat/yMz6hQMY5NE2Njg0)
-[![Trello](https://img.shields.io/badge/Join-Trello%20product%20board-blue.svg)](https://trello.com/b/JkrjeswQ)
+[![RedBot Forum](https://img.shields.io/badge/RedBot Forum%20group-orange.svg)](https://redbot.discourse.group/)
 
 > Node-RED is a tool for wiring together hardware devices, APIs and online services in new and interesting ways.
 
