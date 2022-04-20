@@ -1,5 +1,7 @@
 ![RedBot](https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/logo/RedBot_logo_small.png)
 
+:heavy_exclamation_mark: **New!** Try the new [RedBot forum](https://redbot.discourse.group/)
+
 With **RedBot** you can visually build a full featured chat bot for **Telegram**, **Facebook Messenger**, **Viber**, **Twilio** and **Slack** with Node-RED. ~~Almost~~ no coding skills required.
 
 ![Release](https://img.shields.io/npm/v/node-red-contrib-chatbot.svg)
