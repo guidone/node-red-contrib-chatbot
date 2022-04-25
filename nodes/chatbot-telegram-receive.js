@@ -20,6 +20,7 @@ module.exports = function(RED) {
           logfile: botConfiguration.logfile,
           debug: botConfiguration.debug,
           webHook: botConfiguration.webHook,
+          skipMediaFiles: botConfiguration.skipMediaFiles,
           connectMode: botConfiguration.connectMode,
           RED: RED
         });
@@ -34,6 +35,7 @@ module.exports = function(RED) {
         logfile: config.log,
         debug: config.debug,
         webHook: config.webHook,
+        skipMediaFiles: config.skipMediaFiles,
         connectMode: config.connectMode
       })
     ),

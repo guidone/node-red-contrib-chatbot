@@ -26,6 +26,9 @@
       debug: {
         value: false
       },
+      skipMediaFiles: {
+        value: false
+      },
       webHook: {
         value: '',
         validate: function(value) {
@@ -115,6 +118,13 @@
         address <code>https://your.instance.com/redbot/telegram</code>.
         Use <b>ngrok</b> to create a bridge to your local environment while in development mode, for example something
         like  <code>https://123456.ngrok.io/redbot/telegram</code>
+      </div>
+    </div>
+    <div class="form-row form-row-mode form-row-mode-skipMediaFiles">
+      <label for="node-config-input-skipMediaFiles">Skip media files</label>
+      <input type="checkbox" value="true" id="node-config-input-skipMediaFiles">
+      <div class="redbot-form-hint">
+        Skip media files (large media files can degrade performance)
       </div>
     </div>
     <div class="form-row">
