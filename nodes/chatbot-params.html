@@ -6,7 +6,7 @@
       case 'string':
         container.append(
           '<div class="form-row" style="display:inline-block;margin-left:10px;">'
-          + '<input type="text" value="' + (defaultParam != null ? defaultParam : '') 
+          + '<input type="text" value="' + (defaultParam != null ? defaultParam : '')
           + '" autocomplete="disable" style="width:100%;" placeholder="' + (param.placeholder != null && param.placeholder != '' ? param.placeholder : '') + '">'
           + '</div>');
         $('input', container)
@@ -14,11 +14,11 @@
             callback($(this).val());
           });
         break;
-      case 'boolean':        
+      case 'boolean':
         container.append(
           '<div class="form-row" style="display:inline-block;margin-left:10px;">'
           + '<input type="radio" name="radio_' + param.name + '" value="true" style="width:20px;margin-top:-2px;"> Yes'
-          + '<input type="radio" name="radio_' + param.name + '" value="false" style="width:20px;margin-top:-2px;margin-left:5px;"> No'    
+          + '<input type="radio" name="radio_' + param.name + '" value="false" style="width:20px;margin-top:-2px;margin-left:5px;"> No'
           + '</div>'
         );
         $('input', container)
@@ -29,7 +29,7 @@
           $('input[type=radio][value=true]', container).attr('checked', true);
         } else if (defaultParam === false || defaultParam === 'false') {
           $('input[type=radio][value=false]', container).attr('checked', true);
-        }  
+        }
         break;
       case 'select':
         var options = '';
@@ -40,20 +40,21 @@
         container
           .append(
             '<div class="form-row" style="display:inline-block;margin-left:10px;">'
-            + '<select autocomplete="disable" style="width:100%;" placeholder="' 
-            + (param.placeholder != null && param.placeholder != '' ? param.placeholder : '') + '">'            
+            + '<select autocomplete="disable" style="width:100%;" placeholder="'
+            + (param.placeholder != null && param.placeholder != '' ? param.placeholder : '') + '">'
             + options
             + '</select>'
             + '</div>'
           )
-        $('select', container).val(defaultParam != null ? defaultParam : '')  
+        $('select', container).val(defaultParam != null ? defaultParam : '')
         $('select', container)
           .change(function() {
             callback($(this).val());
           });
-        if (param.default != null) {
+        // if no initial value specified, then use one from param type
+        if (defaultParam == null && param.default != null && skipDefault !== true) {
           callback(param.default);
-        }     
+        }
         break;
     }
   }
@@ -78,10 +79,10 @@
 
     row.empty()
       .append('<span class="platform" '
-        + 'style="font-size:10px;background-color:' 
-        + (platformDefinition != null && platformDefinition.color != null ? platformDefinition.color : '#bbbbbb') 
+        + 'style="font-size:10px;background-color:'
+        + (platformDefinition != null && platformDefinition.color != null ? platformDefinition.color : '#bbbbbb')
         + ';padding: 2px 3px 2px 3px;border-radius:2px;text-transform:uppercase;color:#ffffff;margin-left:5px;"'
-        + '>' 
+        + '>'
         + platform + '</span>')
       .append('<select class="param-name" name="transport" style="width:40%;margin-left:10px;">'
             + '<option value="">Select parameter</option>'
@@ -106,16 +107,21 @@
         if (paramObj != null) {
           $('input[type=hidden].value', row).attr('name', param);
           $('input[type=hidden].type', row).attr('value', paramObj.type);
-          mountControl($('.control', row), paramObj, paramObj.default != null ? paramObj.default : null, function(value) {
-            $('input[type=hidden].value', row).attr('value', value);
-          });
+          mountControl(
+            $('.control', row),
+            paramObj,
+            paramObj.default != null ? paramObj.default : null,
+            function(value) {
+              $('input[type=hidden].value', row).attr('value', value);
+            }
+          );
           if (paramObj.description != null) {
             if (tooltip != null) {
               tooltip.dispose();
               tooltip = null;
             }
             tooltip = new Tooltip($('.hint', row).get(0), {
-              placement: 'right-start', 
+              placement: 'right-start',
               title: paramObj.description,
               trigger: 'hover'
             });
@@ -141,9 +147,14 @@
       $('input[type=hidden].value', row).attr('name', current.name);
       $('input[type=hidden].value', row).attr('value', current.value);
       $('select.param-name', row).val(current.name);
-      mountControl($('.control', row), paramObj, current.value, function(value) {
-        $('input[type=hidden].value', row).attr('value', value);
-      });
+      mountControl(
+        $('.control', row),
+        paramObj,
+        current.value,
+        function(value) {
+          $('input[type=hidden].value', row).attr('value', value);
+        }
+      );
       if (paramObj.description != null) {
         if (tooltip != null) {
           tooltip.dispose();
@@ -189,7 +200,7 @@
               + '<option value="">Select transport</option>'
               + transportOptions
               + '</select>')
-          $('select.transport', row)    
+          $('select.transport', row)
             .change(function() {
               buildParam.call(node, row, $(this).val());
             });
@@ -252,7 +263,7 @@
         var name = paramRow.find('input[type=hidden].value').attr('name');
         var value = paramRow.find('input[type=hidden].value').attr('value');
         var type = paramRow.find('input[type=hidden].type').attr('value');
-        
+
         // do some conversion
         if (type === 'boolean') {
           value = value === 'true' || value === true;
@@ -261,7 +272,7 @@
           platform: platform,
           name: name,
           value: value
-        });      
+        });
       });
     },
 
@@ -330,5 +341,3 @@ return msg;
 
 </dl>
 </script>
-
-

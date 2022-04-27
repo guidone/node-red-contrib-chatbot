@@ -26,6 +26,9 @@
       debug: {
         value: false
       },
+      skipMediaFiles: {
+        value: false
+      },
       webHook: {
         value: '',
         validate: function(value) {
@@ -109,12 +112,19 @@
     </div>
     <div class="form-row form-row-mode form-row-mode-webHook">
       <label for="node-config-input-webHook">Web Hook</label>
-      <input type="text" id="node-config-input-webHook">
+      <input type="text" id="node-config-input-webHook" style="width: inherit;margin: -3px 0px 0px 5px;">
       <div class="redbot-form-hint">
         Needs to be a public and secure internet address, accessible outside the local network and must hit your instance at the
         address <code>https://your.instance.com/redbot/telegram</code>.
         Use <b>ngrok</b> to create a bridge to your local environment while in development mode, for example something
         like  <code>https://123456.ngrok.io/redbot/telegram</code>
+      </div>
+    </div>
+    <div class="form-row form-row-skipMediaFiles">
+      <label for="node-config-input-skipMediaFiles">Skip media files</label>
+      <input type="checkbox" value="true" id="node-config-input-skipMediaFiles">
+      <div class="redbot-form-hint">
+        Skip media files (large media files can degrade performance)
       </div>
     </div>
     <div class="form-row">
@@ -141,7 +151,7 @@
     </div>
     <div class="form-row">
       <label for="node-config-input-debug">Debug</label>
-      <input type="checkbox" value="true" id="node-config-input-debug">
+      <input type="checkbox" value="true" id="node-config-input-debug" style="width: inherit;margin: -3px 0px 0px 5px;">
       <span class="redbot-form-hint">
         Show debug information on send/receive
       </span>
