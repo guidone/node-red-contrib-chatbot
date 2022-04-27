@@ -1,0 +1,86 @@
+.ui-grid-panel {
+  padding: 10px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-content: stretch;
+  align-items: stretch;
+
+  .ui-panel-title {
+    flex: 0 0 40px; 
+    margin: -10px -10px 5px -10px;
+    height: 40px;
+    line-height: 41px;
+    border-bottom: 1px solid #eeeeee;
+    font-size: 1.1em;
+    font-weight: 600;
+    padding-left: 10px;
+    padding-right: 10px;
+
+    .menu {
+      display: inline-block;
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      height: 40px;
+      line-height: 40px;
+      vertical-align: middle;
+    }
+
+    .hint-icon {
+      color: #888888;
+      margin-left: 8px;
+    }
+  }
+
+  .ui-grid-panel-content {
+    flex: 1 0;
+  }
+
+  .ui-grid-panel-empty {
+    height: 100%;
+    line-height: 100%;
+    vertical-align: middle;
+    text-align: center;
+    padding-top: 40px;
+    color: #999999;
+  }
+
+  .rs-form {
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 10px;
+  }
+
+  &.draggable {
+    .ui-panel-title:hover {
+      cursor: move;
+    }
+  }
+
+  &.not-scrollable {
+    .ui-grid-panel-content {
+      overflow: hidden;
+    }
+  }
+
+  &.scrollable {
+    .ui-grid-panel-content {
+      overflow: scroll;
+    }
+  }
+
+  &.nopadding {
+    .ui-grid-panel-content {
+      margin-left: -10px;
+      margin-right: -10px;
+      margin-bottom: -10px;
+      border-bottom-left-radius: 3px;
+      border-bottom-right-radius: 3px;
+      margin-top: -5px;
+    }
+  }
+}
+

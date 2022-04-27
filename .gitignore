@@ -5,8 +5,8 @@ node_modules
 .DS_Store
 /ngrok
 .vscode/settings.json
-model.nlp
-/plugins
+/model.nlp
 /mc_plugins
-/.env
+/plugins.js
 /.local-bots
+/.env

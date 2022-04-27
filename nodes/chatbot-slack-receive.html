@@ -32,6 +32,18 @@
       },
       useWebSocket: {
         value: true
+      },
+      storeMessages: {
+        value: true
+      },
+      enableMissionControl: {
+        value: false
+      },
+      inspectMessages: {
+        value: false
+      },
+      chatbotId: {
+        value: ''
       }
     },
     oneditprepare: function() {
@@ -47,8 +59,40 @@
             $('.form-warning').show();
             $('.form-warning .bot-name').html('"' + node.botname + '"');
           }
+          // hide mission control options if not enabled
+          if (!response.missionControl) {
+            $('.form-row-not-mission-control').show();
+            $('.form-row-mission-control').hide();
+            $('#node-config-input-enableMissionControl')
+              .prop('disabled', true)
+              .prop('checked', false);
+          }
         });
-
+      // enable or disable mission control
+      $('#node-config-input-enableMissionControl')
+        .change(function() {
+          if ($(this).is(':checked')) {
+            $('.form-row-not-mission-control').hide();
+            $('.form-row-mission-control').show();
+          } else {
+            $('.form-row-not-mission-control').show();
+            $('.form-row-mission-control').hide();
+          }
+        });
+      // if enable mission control, set a random chatbot id if empty
+      $('#node-config-input-enableMissionControl')
+        .change(function() {
+          if ($(this).is(':checked')) {
+            const chatbotId = $('#node-config-input-chatbotId').val();
+            if (chatbotId == null || chatbotId === '') {
+              $.ajax({ url: '/mc/chatbotIdGenerator' })
+                .then(res => {
+                  $('#node-config-input-chatbotId').val(res);
+                });
+            }
+          }
+        });
+      // handle web-sockets
       $('#node-config-input-useWebSocket')
         .click(function() {
           const checked = $(this).is(':checked');
@@ -88,6 +132,9 @@
     <input type="text" id="node-config-input-botname">
   </div>
   <div class="form-editable">
+    <div class="redbot-separator">
+      <div>Slack settings</div>
+    </div>
     <div class="form-row">
       <label for="node-config-input-signingSecret">Signing Secret</label>
       <input type="text" id="node-config-input-signingSecret">
@@ -124,33 +171,79 @@
         server and not in the same Express instance of Node-RED.
       </div>
     </div>
+    <div class="redbot-separator">
+      <div>RedBot settings</div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-debug">Debug</label>
+      <input type="checkbox" value="true" class="redbot-checkbox" id="node-config-input-debug">
+      <span class="redbot-form-hint">
+        Show debug information on send/receive
+      </span>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-enableMissionControl" class="redbot-label">Use Mission Control</label>
+      <input type="checkbox" value="true" class="redbot-checkbox" id="node-config-input-enableMissionControl">
+      <span class="redbot-form-hint">
+        Enable Mission Control, see <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Mission-Control" target="_blank">documentation here</a>
+      </span>
+    </div>
+    <div class="form-row form-row-mission-control">
+      <div class="redbot-form-hint">
+        Mission Control uses the built-in <b>SQLite context provider</b>.
+      </div>
+    </div>
+    </div>
+    <div class="form-row form-row-not-mission-control">
+      <label for="node-input-bot">Context</label>
+      <input type="text" id="node-config-input-store" placeholder="Select storage for chat context">
+      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+        Select the chat context provider to use with this bot, if none is selected then non-persistent "memory" will be used.<br>
+        To extend <strong>RedBot</strong> with a new chat context provider see <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Creating-a-Chat-Context-Provider" target="_blank">this tutorial</a>.
+      </div>
+    </div>
+    <div class="form-row form-row-mission-control">
+      <label for="node-config-input-chatbotId" class="redbot-label">Chatbot ID</label>
+      <input type="text" id="node-config-input-chatbotId" placeholder="Enter a chatbot ID">
+      <span class="redbot-form-hint">
+        Specify a chatbot ID if you're running multiple chatbots on this Node-RED instance (it's just a string of your choice). Leave it blank if you're just running a single chatbot.
+      </span>
+    </div>
+    <div class="form-row form-row-mission-control">
+      <label class="redbot-label" for="node-config-input-storeMessages">Store messages</label>
+      <input type="checkbox" value="true" class="redbot-checkbox" id="node-config-input-storeMessages">
+      <span class="redbot-form-hint">
+        Store inbound and outbound messages in Mission Control
+      </span>
+    </div>
+    <div class="form-row form-row-mission-control">
+      <label for="node-config-input-inspectMessages" class="redbot-label">Inspect messages</label>
+      <input type="checkbox" value="true" class="redbot-checkbox" id="node-config-input-inspectMessages">
+      <span class="redbot-form-hint">
+        Inspect messages in real time in Mission Control
+      </span>
+    </div>
+    <div class="redbot-separator">
+      <div>
+        Legacy settings
+      </div>
+      <span class="redbot-form-hint">
+        These settings are for retrocompatibility, should only be used in legacy bots. Use <b>Mission Control</b>
+        to control user access or to log messages
+      </span>
+    </div>
     <div class="form-row">
       <label for="node-config-input-usernames">Users</label>
       <input type="text" id="node-config-input-usernames">
-      <div class="redbot-form-hint">
+      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
         Comma separated list of userId authorized to use the chatBot
       </div>
     </div>
     <div class="form-row">
       <label for="node-config-input-log">Log file</label>
       <input type="text" id="node-config-input-log">
-      <div class="redbot-form-hint">
+      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
         Store inbound and outbound messages to file
-      </div>
-    </div>
-    <div class="form-row">
-      <label for="node-input-bot">Context</label>
-      <input type="text" id="node-config-input-store" placeholder="Select storage for chat context">
-      <div class="redbot-form-hint">
-        Select the chat context provider to use with this bot, if none is selected then non-persistent "memory" will be used.<br>
-        To extend <strong>RedBot</strong> with a new chat context provider see <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Creating-a-Chat-Context-Provider" target="_blank">this tutorial</a>.
-      </div>
-    </div>
-    <div class="form-row">
-      <label for="node-config-input-debug">Debug</label>
-      <input type="checkbox" value="true" id="node-config-input-debug">
-      <div class="redbot-form-hint">
-        Show debug information on send/receive
       </div>
     </div>
   </div>

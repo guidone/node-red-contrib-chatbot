@@ -1,0 +1,35 @@
+.ui-survey-editor-multiple-answer {
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-content: center;
+  align-items: center;
+
+  .placeholder {
+    flex: 0 0 36px;
+    border-radius: 6px;
+    display: inline-block;
+    background-color: #F4FDCE;
+    border: 1px solid #BCE747;
+    width: 36px;
+    height: 36px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 36px;
+    font-weight: bold;
+    margin-right: 10px;
+  }
+
+  .answer {
+    flex: 1 0;
+  }
+
+  .controls {
+    flex: 0 0 auto;
+    text-align: left;
+    margin-left: 5px;
+  }
+
+}

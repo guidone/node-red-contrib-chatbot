@@ -38,14 +38,14 @@ module.exports = function(RED) {
   });
 
   // add an endpoint to get a list of context providers
-  RED.httpNode.get('/redbot/globals', function(req, res) {
+  RED.httpNode.get('/redbot/globals', async function(req, res) {
     const keys = globalContextHelper.keys();
     const result = {};
     // get all configurations in the global settings
     ChatPlatform.getPlatforms().forEach(platform => result[platform.id] = globalContextHelper.get(platform.id));
     // list of master nodes in the flow
     keys.forEach(key => {
-      if (!key.startsWith('chatbot_info_')) {
+      if (!key.startsWith('chatbot_info_') && !key.startsWith('nlp_')) {
         result[key] = globalContextHelper.get(key);
       }
     });
@@ -61,6 +61,9 @@ module.exports = function(RED) {
     result.params = ChatPlatform.getParams();
     // add port
     result.uiPort = RED.settings.uiPort;
+    // if mc is installed
+    const mcSettings = RED.settings.RedBot || {};
+    result.missionControl = mcSettings.enableMissionControl || process.env.REDBOT_ENABLE_MISSION_CONTROL === 'true';
     res.send(result);
   });
 

@@ -1,14 +1,16 @@
 const _ = require('underscore');
 const moment = require('moment');
-const ViberServer = require('../lib/platforms/viber');
 const { ContextProviders, ChatExpress } = require('chat-platform');
-const utils = require('../lib/helpers/utils');
 const clc = require('cli-color');
-const lcd = require('../lib/helpers/lcd');
 const prettyjson = require('prettyjson');
+
+const ViberServer = require('../lib/platforms/viber');
+const utils = require('../lib/helpers/utils');
+const lcd = require('../lib/helpers/lcd');
 const validators = require('../lib/helpers/validators');
 const RegisterType = require('../lib/node-installer');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
+const GetEnvironment = require('../lib/helpers/get-environment');
 
 const when = utils.when;
 const warn = clc.yellow;
@@ -18,6 +20,7 @@ const green = clc.green;
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
+  const getEnvironment = GetEnvironment(RED);
 
   // register Slack server
   if (RED.redbot == null) {
@@ -32,9 +35,10 @@ module.exports = function(RED) {
 
   function ViberBotNode(n) {
     RED.nodes.createNode(this, n);
-    var node = this;
     globalContextHelper.init(this.context().global);
-    var environment = this.context().global.environment === 'production' ? 'production' : 'development';
+
+    var node = this;
+    var environment = getEnvironment();
     var isUsed = utils.isUsed(RED, node.id);
     var startNode = utils.isUsedInEnvironment(RED, node.id, environment);
     var viberConfigs = globalContextHelper.get('viber') || {};
@@ -42,7 +46,7 @@ module.exports = function(RED) {
     this.botname = n.botname;
     this.store = n.store;
     this.log = n.log;
-    this.usernames = n.usernames != null ? n.usernames.split(',') : [];  
+    this.usernames = n.usernames != null ? n.usernames.split(',') : [];
     this.webHook = n.webHook;
     this.debug = n.debug;
 
@@ -177,12 +181,11 @@ module.exports = function(RED) {
   });
 
   function ViberInNode(config) {
-
     RED.nodes.createNode(this, config);
-    var node = this;
     globalContextHelper.init(this.context().global);
-    var global = this.context().global;
-    var environment = global.environment === 'production' ? 'production' : 'development';
+
+    var node = this;
+    var environment = getEnvironment();
     var nodeGlobalKey = null;
 
     this.bot = config.bot;
@@ -239,10 +242,10 @@ module.exports = function(RED) {
 
   function ViberOutNode(config) {
     RED.nodes.createNode(this, config);
-    var node = this;
     globalContextHelper.init(this.context().global);
-    var global = this.context().global;
-    var environment = global.environment === 'production' ? 'production' : 'development';
+
+    var node = this;
+    var environment = getEnvironment();
 
     this.bot = config.bot;
     this.botProduction = config.botProduction;

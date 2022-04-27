@@ -1,0 +1,25 @@
+.ui-confidence {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-content: stretch;
+  align-items: center;
+
+  .slider {
+    flex: 1 0 auto;
+  }
+
+  .value {
+    flex: 0 0;
+    white-space: nowrap;
+    margin-left: 20px;
+    margin-right: 20px;
+
+    .number {
+      font-size: 20px;
+      font-weight: bold;
+    }
+  }
+
+}

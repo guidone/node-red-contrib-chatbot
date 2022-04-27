@@ -1,6 +1,6 @@
 const TelegramServer = require('../lib/platforms/telegram');
 const RegisterType = require('../lib/node-installer');
-const { GenericOutNode, GenericInNode, GenericBotNode } = require('../lib/sender-factory');
+const { GenericOutNode, GenericInNode, GenericBotNode } = require('../lib/sender-factory/index');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
@@ -22,6 +22,7 @@ module.exports = function(RED) {
           webHook: botConfiguration.webHook,
           skipMediaFiles: botConfiguration.skipMediaFiles,
           connectMode: botConfiguration.connectMode,
+          chatbotId: botConfiguration.chatbotId,
           RED: RED
         });
       },
@@ -36,7 +37,11 @@ module.exports = function(RED) {
         debug: config.debug,
         webHook: config.webHook,
         skipMediaFiles: config.skipMediaFiles,
-        connectMode: config.connectMode
+        connectMode: config.connectMode,
+        storeMessages: config.storeMessages,
+        enableMissionControl: config.enableMissionControl,
+        inspectMessages: config.inspectMessages,
+        chatbotId: config.chatbotId
       })
     ),
     {

@@ -1,0 +1,19 @@
+.ui-custom-table {
+
+  .header {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: stretch;
+    align-items: flex-start;
+    margin-bottom: 10px;
+
+    .filters {
+      flex: 1 0 auto;
+    }
+    .toolbar {
+      flex: 0 0 auto;
+    }
+  }
+}

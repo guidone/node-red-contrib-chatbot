@@ -1,0 +1,54 @@
+.content-upload-image {
+  margin-bottom: 20px;
+
+  .preview {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: stretch;
+    align-items: flex-start;
+    min-height: 200px;
+    padding-top: 15px;
+
+    .thumb {
+      flex: 0 0 auto;
+      margin-right: 20px;;
+    }
+
+    .meta {
+      flex: 1 0;
+      .name {
+        font-weight: bold;
+        font-size: 16px;
+      }
+      .ui-small-tag {
+        text-transform: uppercase;
+      }
+      .size {
+        .value, .symbol {
+          font-size: 13px;
+        }
+        .symbol {
+          font-weight: bold;
+        }
+        .size-container {
+          display: inline-block;
+          line-height: 19px;
+          vertical-align: middle;
+        }
+      }
+      .dimensions {
+        .symbol {
+          color: #999999;
+        }
+      }
+      .buttons {
+        margin-top: 15px;
+      }
+
+
+
+    }
+  }
+}

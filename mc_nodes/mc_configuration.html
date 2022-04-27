@@ -1,0 +1,49 @@
+<script type="text/javascript">
+  RED.nodes.registerType('mc-configuration', {
+    category: 'Mission Control',
+    color: '#6699CC',
+    defaults: {
+      namespace: {
+        value: ''
+      },
+      chatbotId: {
+        value: ''
+      },
+      debug: {
+        value: false
+      }
+    },
+    inputs: 0,
+    outputs: 1,
+    paletteLabel: 'MC Configuration',
+    icon: 'chatbot-command.png',
+    label: function() {
+      return 'MC Configuration' + (this.namespace !== null && this.namespace !== '' ? ' (' + this.namespace + ')' : '');
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="mc-configuration">
+  <div class="form-row">
+    <label for="node-input-namespace"><i class="icon-tag"></i> Namespace</label>
+    <input type="text" id="node-input-namespace" placeholder="Namespace">
+  </div>
+  <div class="form-row">
+    <label for="node-input-namespace">chatbotId</label>
+    <input type="text" id="node-input-chatbotId" placeholder="chatbotId">
+    <span class="redbot-form-hint">
+      Use the same chatbotId specified in the Receiver node configuration, or just leave black if there are not multiple
+      chatbots.
+    </span>
+  </div>
+  <div class="form-row">
+    <label for="node-input-debug">Debug</label>
+    <input type="checkbox" value="true" id="node-input-debug">
+    <span class="redbot-form-hint">
+      Show debug information on this configuration settings
+    </span>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="mc-configuration">
+</script>

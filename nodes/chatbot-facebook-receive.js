@@ -1,7 +1,7 @@
 const FacebookServer = require('../lib/platforms/facebook/facebook');
 const RegisterType = require('../lib/node-installer');
 
-const { GenericOutNode, GenericInNode, GenericBotNode } = require('../lib/sender-factory');
+const { GenericOutNode, GenericInNode, GenericBotNode } = require('../lib/sender-factory/index');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
@@ -22,6 +22,7 @@ module.exports = function(RED) {
           debug: botConfiguration.debug,
           multiWebHook: botConfiguration.multiWebHook,
           profileFields: botConfiguration.profileFields,
+          chatbotId: botConfiguration.chatbotId,
           RED: RED
         });
       },
@@ -33,7 +34,11 @@ module.exports = function(RED) {
         logfile: config.log,
         profileFields: config.profileFields,
         debug: config.debug,
-        multiWebHook: config.multiWebHook
+        multiWebHook: config.multiWebHook,
+        storeMessages: config.storeMessages,
+        enableMissionControl: config.enableMissionControl,
+        inspectMessages: config.inspectMessages,
+        chatbotId: config.chatbotId
       })
     ),
     {

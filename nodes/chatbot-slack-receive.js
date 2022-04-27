@@ -1,7 +1,7 @@
 
 const SlackServer = require('../lib/platforms/slack/index');
 const RegisterType = require('../lib/node-installer');
-const { GenericOutNode, GenericInNode, GenericBotNode } = require('../lib/sender-factory');
+const { GenericOutNode, GenericInNode, GenericBotNode } = require('../lib/sender-factory/index');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
@@ -23,6 +23,7 @@ module.exports = function(RED) {
           logfile: botConfiguration.logfile,
           debug: botConfiguration.debug,
           useWebSocket: botConfiguration.useWebSocket,
+          chatbotId: botConfiguration.chatbotId,
           RED: RED
         });
       },
@@ -38,7 +39,11 @@ module.exports = function(RED) {
         serverPort: config.serverPort,
         debug: config.debug,
         useWebSocket: config.useWebSocket,
-        logfile: config.log
+        logfile: config.log,
+        storeMessages: config.storeMessages,
+        enableMissionControl: config.enableMissionControl,
+        inspectMessages: config.inspectMessages,
+        chatbotId: config.chatbotId
       })
     ),
     {

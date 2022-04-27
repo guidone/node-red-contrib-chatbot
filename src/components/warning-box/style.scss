@@ -1,0 +1,18 @@
+.ui-warning-box {
+  padding: 20px 20%;
+  display: flex;
+
+  .text {
+    margin-left: 15px;
+
+    b {
+      font-size: 20px;
+      color: #666666;
+    }
+
+    .description {
+      margin-top: 10px;
+      font-size: 13px;
+    }
+  }
+}

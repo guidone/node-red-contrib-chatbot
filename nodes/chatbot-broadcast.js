@@ -1,18 +1,21 @@
 const _ = require('underscore');
+
 const utils = require('../lib/helpers/utils');
 const RegisterType = require('../lib/node-installer');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
+const GetEnvironment = require('../lib/helpers/get-environment');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
+  const getEnvironment = GetEnvironment(RED);
 
   function ChatBotBroadcast(config) {
     RED.nodes.createNode(this, config);
-    var node = this;
     globalContextHelper.init(this.context().global);
-    var global = this.context().global;
-    var environment = global.environment === 'production' ? 'production' : 'development';
+
+    var node = this;
+    var environment = getEnvironment();
 
     this.command = config.command;
     this.broadcastId = config.broadcastId;

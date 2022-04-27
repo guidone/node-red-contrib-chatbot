@@ -1,0 +1,14 @@
+FROM node:15.14.0
+
+WORKDIR /tmp
+
+COPY package.json /tmp/
+
+RUN npm install --also=dev
+
+COPY bin /tmp/bin
+COPY lib /tmp/lib
+
+EXPOSE 8080
+
+CMD ["npm","run","start-webpack"]

@@ -1,16 +1,17 @@
 const _ = require('underscore');
 const moment = require('moment');
-const RouteeServer = require('../lib/platforms/routee/index');
 const { ContextProviders, ChatExpress } = require('chat-platform');
-const utils = require('../lib/helpers/utils');
-const clc = require('cli-color');
-const lcd = require('../lib/helpers/lcd');
 const prettyjson = require('prettyjson');
+const clc = require('cli-color');
+
+const RouteeServer = require('../lib/platforms/routee/index');
+const GetEnvironment = require('../lib/helpers/get-environment');
+const utils = require('../lib/helpers/utils');
+const lcd = require('../lib/helpers/lcd');
 const validators = require('../lib/helpers/validators');
 const RegisterType = require('../lib/node-installer');
 const { when } = require('../lib/helpers/utils');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
-
 
 const warn = clc.yellow;
 const green = clc.green;
@@ -19,6 +20,7 @@ const green = clc.green;
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
+  const getEnvironment = GetEnvironment(RED);
 
   // register Slack server
   if (RED.redbot == null) {
@@ -34,9 +36,10 @@ module.exports = function(RED) {
 
   function RouteeBotNode(n) {
     RED.nodes.createNode(this, n);
-    var node = this;
     globalContextHelper.init(this.context().global);
-    var environment = this.context().global.environment === 'production' ? 'production' : 'development';
+
+    var node = this;
+    var environment = getEnvironment();
     var isUsed = utils.isUsed(RED, node.id);
     var startNode = utils.isUsedInEnvironment(RED, node.id, environment);
     var routeeConfigs = globalContextHelper.get('routee') || {};
@@ -67,7 +70,7 @@ module.exports = function(RED) {
     var contextStorageNode = RED.nodes.getNode(this.store);
     // build the configuration object
     var botConfiguration = {
-      authorizedUsernames: node.usernames,  
+      authorizedUsernames: node.usernames,
       appSecret: node.credentials != null && node.credentials.appSecret != null ? node.credentials.appSecret.trim() : null,
       appId: node.appId,
       fromNumber: node.fromNumber,
@@ -118,11 +121,11 @@ module.exports = function(RED) {
         botConfiguration.contextProvider,
         { ...botConfiguration.contextParams, id: this.store }
       );
-      // try to start the servers      
+      // try to start the servers
       try {
         node.contextProvider.start();
         node.chat = RouteeServer.createServer({
-          authorizedUsernames: botConfiguration.authorizedUsernames,          
+          authorizedUsernames: botConfiguration.authorizedUsernames,
           appSecret: botConfiguration.appSecret,
           appId: botConfiguration.appId,
           fromNumber: botConfiguration.fromNumber,
@@ -185,12 +188,11 @@ module.exports = function(RED) {
   });
 
   function RouteeInNode(config) {
-
     RED.nodes.createNode(this, config);
-    var node = this;
     globalContextHelper.init(this.context().global);
-    var global = this.context().global;
-    var environment = global.environment === 'production' ? 'production' : 'development';
+
+    var node = this;
+    var environment = getEnvironment();
     var nodeGlobalKey = null;
 
     this.bot = config.bot;
@@ -247,10 +249,10 @@ module.exports = function(RED) {
 
   function RouteeOutNode(config) {
     RED.nodes.createNode(this, config);
-    var node = this;
     globalContextHelper.init(this.context().global);
-    var global = this.context().global;
-    var environment = global.environment === 'production' ? 'production' : 'development';
+
+    var node = this;
+    var environment = getEnvironment();
 
     this.bot = config.bot;
     this.botProduction = config.botProduction;

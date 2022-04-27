@@ -1,0 +1,33 @@
+<script type="text/javascript">
+  RED.nodes.registerType('mc-user-payload', {
+    category: 'Mission Control',
+    color: '#6699CC',
+    defaults: {
+      name: {
+        value: ''
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'MC User Payload',
+    icon: 'chatbot-command.png',
+    label: function() {        
+      return 'MC User Payload' + (this.name !== null && this.name !== '' ? ' (' + this.name + ')' : '');
+    }
+    
+  });
+</script>
+
+<script type="text/x-red" data-template-name="mc-user-payload">
+  <div class="form-row">
+    <label for="node-input-topic"><i class="icon-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  
+</script>
+
+<script type="text/x-red" data-help-name="mc-user-payload">
+</script>
+  
+  
+  

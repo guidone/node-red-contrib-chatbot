@@ -1,0 +1,90 @@
+<script type="text/javascript">
+  RED.nodes.registerType('mc-graphql', {
+    category: 'Mission Control',
+    color: '#6699CC',
+    defaults: {
+      name: {
+        value: ''
+      },
+      query: {
+        value: ''
+      },
+      debug: {
+        value: false
+      },
+      noerr: {
+        value: 0,
+        required: true,
+        validate: function(v) {
+          return ((!v) || (v === 0)) ? true : false;
+        }
+      }
+    },
+    inputs: 1,
+    outputs: 3,
+    paletteLabel: 'MC GraphQL',
+    outputLabels: ['Query result', 'Empty response', 'Error'],
+    icon: 'chatbot-command.png',
+    label: function() {
+      return 'MC GraphQL' + (this.name !== null && this.name !== '' ? ' (' + this.name + ')' : '');
+    },
+    oneditprepare: function() {
+      var _this = this;
+      this.editor = RED.editor.createEditor({
+        id: 'node-input-func-editor',
+        //mode: 'ace/mode/javascript',
+        value: $('#node-input-query').val(),
+        globals: {
+          node: true,
+          msg:true,
+          context:true,
+          RED: true,
+          util: true,
+          flow: true,
+          global: true,
+          console: true,
+          Buffer: true,
+          setTimeout: true,
+          clearTimeout: true,
+          setInterval: true,
+          clearInterval: true
+        }
+      });
+    },
+    oneditsave: function() {
+      var annot = this.editor.getSession().getAnnotations();
+      this.noerr = 0;
+      $('#node-input-noerr').val(0);
+      for (var k=0; k < annot.length; k++) {
+        if (annot[k].type === 'error') {
+          $('#node-input-noerr').val(annot.length);
+          this.noerr = annot.length;
+        }
+      }
+      $('#node-input-query').val(this.editor.getValue());
+      this.editor.destroy();
+      delete this.editor;
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="mc-graphql">
+  <div class="form-row">
+    <label for="node-input-topic"><i class="icon-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row">
+    <input type="hidden" id="node-input-query" autofocus="autofocus">
+    <div style="height: 250px; min-height:150px;margin-top: 25px;" class="node-text-editor" id="node-input-func-editor" ></div>
+  </div>
+  <div class="form-row">
+    <label for="node-input-debug">Debug</label>
+    <input type="checkbox" value="true" id="node-input-debug">
+    <span class="redbot-form-hint">
+      Show debug information on the GraphQL query
+    </span>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="mc-graphql">
+</script>

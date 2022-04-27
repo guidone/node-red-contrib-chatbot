@@ -1,19 +1,33 @@
 {
-    "globals": {
-        "Promise": true,
-        "it": true,
-        "describe": true
-    },
-    "env": {
-        "node": true,
-        "es6": true
-    },
-    "extends": "eslint:recommended",
-    "rules": {
-        "quotes": ["error", "single"],
-        "no-useless-escape": 0
-    },
-    "parserOptions":{
-        "ecmaVersion": 2018
-    }
+  "globals": {
+    "Promise": true,
+    "it": true,
+    "describe": true,
+    "bootstrap": true
+  },
+  "env": {
+    "node": true,
+    "es6": true,
+    "browser": true
+  },
+  "plugins": [
+    "react",
+    "react-hooks"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended"
+  ],
+  "rules": {
+    "quotes": [
+      "error",
+      "single"
+    ],
+    "no-useless-escape": 0
+  },
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "parser": "babel-eslint"
 }

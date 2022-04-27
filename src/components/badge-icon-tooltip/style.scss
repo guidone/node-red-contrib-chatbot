@@ -1,0 +1,29 @@
+.ui-badge-icon-tooltip {
+  display: inline-block;
+  background-color: #C9C9C9;
+  padding: 0px 5px;
+  border-radius: 2px;
+  line-height: 17px;
+  margin-top: 3px;
+  margin-right: 3px;
+  height: 18px;
+
+  i {
+    font-size: 11px;
+  }
+
+  .text {
+    display: inline;
+    margin-left: 3px;
+    font-size: 12px;
+  }
+
+  &.orange {
+    background-color: #FFB049;
+    color: #000000;
+  }
+  &.red {
+    background-color: #DB2323;
+    color: #ffffff;
+  }
+}

@@ -1,0 +1,29 @@
+.ui-survey-editor {
+
+  .question-detail {
+    order: 0;
+    flex: 1 0 auto;
+    align-self: auto;
+    padding-left: 10px;
+
+    .title {
+      margin-top: 15px;
+    }
+
+    .rs-btn-toolbar {
+      margin-top: 15px;
+    }
+
+    .buttons {
+      float: right;
+      .rs-btn-toolbar {
+        margin-top: 0px;
+      }
+    }
+
+    .configuration {
+      margin-top: 25px;
+    }
+
+  }
+}
