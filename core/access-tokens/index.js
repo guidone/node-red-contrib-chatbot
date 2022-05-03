@@ -122,7 +122,7 @@ plug(
   {
     permission: 'access-tokens',
     name: 'Manage access tokens',
-    description: `Add, remove and manage access tokens for GraphQL and authenticated calls`,
+    description: 'Add, remove and manage access tokens for GraphQL and authenticated calls',
     group: 'General'
   }
 );

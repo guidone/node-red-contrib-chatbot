@@ -1,5 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { Modal, Button, Form, FormGroup, ControlLabel, FormControl, FlexboxGrid, HelpBlock, Nav } from 'rsuite';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { Modal, Button, Form, FormGroup, ControlLabel, FormControl, FlexboxGrid, Nav } from 'rsuite';
 
 import JSONEditor from '../../../src/components/json-editor';
 import Permissions from '../../../src/components/permissions';
@@ -161,7 +163,6 @@ const ModalAdmin = ({ admin, onCancel = () => {}, onSubmit = () => {}, disabled 
         <Button
           appearance="primary"
           disabled={disabled || !isChanged}
-          appearance="primary"
           onClick={() => {
             if (!form.current.check()) {
               return;
@@ -174,6 +175,18 @@ const ModalAdmin = ({ admin, onCancel = () => {}, onSubmit = () => {}, disabled 
       </Modal.Footer>
     </Modal>
   );
+};
+
+const TypeAdmin = PropTypes.shape({
+  id: PropTypes.number,
+  payload: PropTypes.object
+});
+
+ModalAdmin.propTypes = {
+  admin: TypeAdmin,
+  disabled: PropTypes.bool,
+  onSubmit: PropTypes.func,
+  onCancel: PropTypes.func
 };
 
 export default ModalAdmin;

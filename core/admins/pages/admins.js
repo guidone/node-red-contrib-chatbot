@@ -10,7 +10,6 @@ import SmartDate from '../../../src/components/smart-date';
 import CustomTable from '../../../src/components/table';
 import { Input } from '../../../src/components/table-filters';
 import confirm from '../../../src/components/confirm';
-import useMCContext from '../../../src/hooks/mc-context';
 
 import '../styles/admins.scss';
 import useAdmins from '../hooks/admins';
@@ -50,7 +49,6 @@ query (
 
 const Admins = () => {
   const table = useRef();
-  const { state } = useMCContext();
   const [ admin, setAdmin ] = useState(null);
   const { saving, error,  deleteAdmin, editAdmin, createAdmin } = useAdmins();
 
@@ -64,7 +62,6 @@ const Admins = () => {
           disabled={saving}
           onCancel={() => setAdmin(null)}
           onSubmit={async admin => {
-            console.log('mando---', admin)
             if (admin.id != null) {
               await editAdmin({ variables: { id: admin.id, admin }});
             } else {

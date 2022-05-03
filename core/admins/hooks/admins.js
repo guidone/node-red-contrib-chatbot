@@ -1,6 +1,5 @@
-import { useState } from 'react';
 import gql from 'graphql-tag';
-import { useQuery, useMutation } from 'react-apollo';
+import { useMutation } from 'react-apollo';
 
 import withoutParams from '../../../src/helpers/without-params';
 
@@ -58,7 +57,7 @@ export default ({ onCompleted = () => {} } = {}) => {
   ] = useMutation(EDIT_ADMIN, { onCompleted });
 
   return {
-    saving: mutationLoading || mutationLoading || mutationCreateLoading,
+    saving: mutationLoading || mutationLoading || mutationCreateLoading || editLoading,
     error: mutationError || editError || mutationCreateError,
     deleteAdmin,
     createAdmin,

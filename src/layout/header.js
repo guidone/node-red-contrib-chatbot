@@ -12,7 +12,6 @@ import useCookie from 'react-use-cookie';
 
 import AppContext from '../common/app-context';
 import useCurrentUser from '../hooks/current-user';
-import useLocalStorage from '../hooks/use-local-storage';
 
 import ChatbotsSelector from './chatbots-selector';
 
@@ -72,7 +71,7 @@ query($chatbotId: String) {
 
 const AppHeader = () => {
   const [, setCookieChatbotId] = useCookie('chatbotId', '');
-  const [, setChatbotId] = useLocalStorage('chatbotId', undefined);
+  //const [, setChatbotId] = useLocalStorage('chatbotId', undefined);
   const client = useApolloClient();
   const { post } = useFetch('/mc/logout');
   const { user } = useCurrentUser();
@@ -110,7 +109,7 @@ const AppHeader = () => {
                 if (result.data?.chatbot != null) {
                   dispatch({ type: 'selectChatbot', chatbot: result.data.chatbot });
                   setCookieChatbotId(chatbotId);
-                  setChatbotId(chatbotId);
+                  //setChatbotId(chatbotId);
                 } else {
                   Notification.error({
                     placement: 'topStart',
@@ -159,7 +158,10 @@ const AppHeader = () => {
                 <Avatar src={user.avatar || gravatar.url(user.email)} circle>{initials(user)}</Avatar>)}
             >
               <Dropdown.Item><b>{extendedName(user)}</b></Dropdown.Item>
-              <Dropdown.Item onSelect={() => window.location = '/'}>Node-RED</Dropdown.Item>
+              <Dropdown.Item
+                target="_blank"
+                href="/"
+                >Node-RED</Dropdown.Item>
               <Dropdown.Item divider />
               <Dropdown.Item
                 onSelect={async () => {

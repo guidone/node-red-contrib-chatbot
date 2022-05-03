@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { FormGroup, ControlLabel, DatePicker } from 'rsuite';
 
 import { CopyAndPasteButton } from '../../../src/components';
@@ -35,6 +36,13 @@ const TokenEditor = ({ formValue, onChange }) => {
       </FormGroup>
     </div>
   );
+};
+TokenEditor.propTypes = {
+  formValue: PropTypes.shape({
+    token: PropTypes.string,
+    expire_at: PropTypes.object
+  }),
+  onChange: PropTypes.func
 };
 
 export default TokenEditor;

@@ -11,6 +11,7 @@ import {
   Route
 } from 'react-router-dom';
 import { CodePlug, plug, useCodePlug } from 'code-plug';
+import useCookie from 'react-use-cookie';
 
 import sameArray from './helpers/same-array';
 import { useNodeRedSocket } from './hooks/socket';
@@ -111,14 +112,14 @@ window.define = function(requires, factory) {
 import * as globalReact from 'react';
 import * as globalPropTypes from 'prop-types';
 import * as globalCodePlug from 'code-plug';
-import * as globalLodash from 'lodash';
+import _, * as globalLodash from 'lodash';
 import * as globalRsuite from 'rsuite';
 import * as globalUseHttp from 'use-http';
 import * as globalGraphQLTag from 'graphql-tag';
 import * as globalReactApollo from 'react-apollo';
 import { useNodeRedSocket as globalUseNodeRedSocket } from './hooks/socket';
 const globalUseSocket = { useNodeRedSocket: globalUseNodeRedSocket };
-import useLocalStorage from './hooks/use-local-storage';
+
 
 window.globalLibs.react = globalReact;
 window.globalLibs['prop-types'] = globalPropTypes;
@@ -142,7 +143,14 @@ query {
     id,
     chatbotId,
     name,
-    description
+    description,
+    guid,
+    plugins {
+      id,
+      plugin,
+      version,
+      filename
+    }
   }
 }`;
 
@@ -231,7 +239,7 @@ RouterContainer.propTypes = {
 };
 
 const AppRouter = ({ codePlug, bootstrap }) => {
-  const [chatbotId] = useLocalStorage('chatbotId', undefined);
+  const [chatbotId, setCookieChatbotId] = useCookie('chatbotId', '');
   const client = useClient(bootstrap.settings);
 
   const { platforms, eventTypes, messageTypes, activeChatbots, loading, chatbots } = usePrefetchedData(
@@ -241,6 +249,14 @@ const AppRouter = ({ codePlug, bootstrap }) => {
         dispatch({ type: 'setActiveChatbots', activeChatbots });
         dispatch({ type: 'setEventTypes', eventTypes });
         dispatch({ type: 'setMessageTypes', messageTypes });
+        // preselect first available bot
+        if (_.isEmpty(chatbotId)) {
+          const bots = chatbots.filter(({ chatbotId }) => !_.isEmpty(chatbotId));
+          if (!_.isEmpty(bots)) {
+            dispatch({ type: 'selectChatbot', chatbot: bots[0] });
+            setCookieChatbotId(bots[0].chatbotId);
+          }
+        }
       }
     });
 

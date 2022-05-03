@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 // Hook
 export default function useLocalStorage(key, initialValue) {
@@ -12,6 +12,7 @@ export default function useLocalStorage(key, initialValue) {
       return item ? JSON.parse(item) : initialValue;
     } catch (error) {
       // If error also return initialValue
+      // eslint-disable-next-line no-console
       console.log(error);
       return initialValue;
     }
@@ -29,6 +30,7 @@ export default function useLocalStorage(key, initialValue) {
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
     } catch (error) {
       // A more advanced implementation would handle the error case
+      // eslint-disable-next-line no-console
       console.log(error);
     }
   };
