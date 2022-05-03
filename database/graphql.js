@@ -16,7 +16,6 @@ const { Directus } = require('@directus/sdk', {
 
 const { when, hash } = require('../lib/utils');
 const translateWhere = require('../src/helpers/translate-where');
-const { RED_BOT_SALT } = require('../src/env');
 
 const directus = new Directus('https://dashboard.red-bot.io');
 const Op = Sequelize.Op;
@@ -1596,7 +1595,7 @@ module.exports = ({
           },
           async resolve(root, { id, admin }) {
             if (!_.isEmpty(admin.password)) {
-              admin.password = hash(admin.password, { salt: RED_BOT_SALT });
+              admin.password = hash(admin.password, { salt: mcSettings.salt });
             }
             await Admin.update(admin, { where: { id } })
             return await Admin.findOne({ where: { id } });
@@ -1610,7 +1609,7 @@ module.exports = ({
           },
           resolve: function(root, { admin }) {
             if (!_.isEmpty(admin.password)) {
-              admin.password = hash(admin.password, { salt: RED_BOT_SALT });
+              admin.password = hash(admin.password, { salt: mcSettings.salt });
             }
             return Admin.create(admin);
           }

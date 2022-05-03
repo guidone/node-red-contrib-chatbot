@@ -1,19 +1,9 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { SelectPicker, Icon } from 'rsuite';
 import _ from 'lodash';
 
 import useCurrentUser from '../hooks/current-user';
-
 import SmallTag from '../components/small-tag';
-
-const renderValue = (value, item) => {
-  return (
-    <span>
-      <Icon icon="commenting" style={{ color: '#999999', marginRight: '6px' }}/>
-      {item?.label}
-    </span>
-  );
-};
 
 const ChatbotsSelector = ({ chatbots, value, onChange }) => {
   const { user } = useCurrentUser();
@@ -29,6 +19,26 @@ const ChatbotsSelector = ({ chatbots, value, onChange }) => {
     [user, chatbots]
   );
 
+  const renderValue = useCallback(
+    (value, item) => {
+      if (_.isEmpty(value) || listedChatbots.find(bot => bot.value === value) == null) {
+        return (
+          <span>
+            Select a chatbot
+          </span>
+        )
+      } else {
+        return (
+          <span>
+            <Icon icon="commenting" style={{ color: '#999999', marginRight: '6px' }}/>
+            {item?.label}
+          </span>
+        );
+      }
+    },
+    [listedChatbots]
+  );
+
   if (listedChatbots.length > 0) {
     return (
       <SelectPicker
@@ -37,6 +47,7 @@ const ChatbotsSelector = ({ chatbots, value, onChange }) => {
         data={listedChatbots}
         appearance="subtle"
         placeholder="Select chatbot"
+        placement="bottomEnd"
         cleanable={false}
         searchable={false}
         menuStyle={{ zIndex: 100000000 }}

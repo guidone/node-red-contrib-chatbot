@@ -79,7 +79,7 @@ const AppHeader = () => {
   const { state, dispatch } = useContext(AppContext);
   const history = useHistory();
   const { permissionQuery } = useCurrentUser();
-  const { props } = useCodePlug('menu', permissionQuery);
+  const { props: menu } = useCodePlug('menu', permissionQuery);
   const { needRestart } = state;
 
   return (
@@ -88,9 +88,9 @@ const AppHeader = () => {
         <Navbar.Body>
           <Nav>
             <Nav.Item renderItem={() => <Link className="rs-nav-item-content" to="/">Home</Link>} />
-            {props
+            {menu
               .sort(sortBy)
-              .map(({ label, onClick = () => {}, url, id }) => {
+              .map(({ label, url, id }) => {
                 return (
                   <Nav.Item
                     key={id}

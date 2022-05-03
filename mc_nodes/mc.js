@@ -17,10 +17,7 @@ const uploadFromBuffer = require('../lib/helpers/upload-from-buffer');
 const chatbotIdGenerator = require('../lib/utils/chatbot-id-generator');
 const GetEnvironment = require('../lib/helpers/get-environment');
 
-const {
-  RED_BOT_SALT,
-  REDBOT_ENABLE_MISSION_CONTROL
-} = require('../src/env');
+const { REDBOT_ENABLE_MISSION_CONTROL } = require('../src/env');
 
 let initialized = false;
 const Events = new events.EventEmitter();
@@ -88,6 +85,14 @@ async function bootstrap(server, app, log, redSettings, RED) {
   }
   console.log(lcd.timestamp() + '  ' + lcd.green('front end environment: ') + lcd.grey(frontendEnvironment));
 
+  // get salt
+  mcSettings.salt = !_.isEmpty(redSettings.credentialSecret) ? redSettings.credentialSecret : 'redbot-salt';
+  if (mcSettings.salt == 'redbot-salt') {
+    console.log(lcd.timestamp() + '  ' + lcd.green('salt: ') + lcd.grey('default'));
+  } else {
+    console.log(lcd.timestamp() + '  ' + lcd.green('salt: ') + lcd.grey('****'));
+  }
+
   // get the database path
   if (!_.isEmpty(process.env.REDBOT_DB_PATH)) {
     mcSettings.dbPath = path.join(process.env.REDBOT_DB_PATH, 'mission-control.sqlite');
@@ -97,7 +102,10 @@ async function bootstrap(server, app, log, redSettings, RED) {
     mcSettings.dbPath = mcSettings.dbPath.replace(/\/$/, '') + '/mission-control.sqlite';
   }
   console.log(lcd.timestamp() + '  ' + lcd.green('dbPath: ') + lcd.grey(mcSettings.dbPath));
-  const { passportMiddlewares, passport } = require('../lib/authentication/index')({ dbPath: mcSettings.dbPath });
+  const { passportMiddlewares, passport } = require('../lib/authentication/index')({
+    dbPath: mcSettings.dbPath,
+    salt: mcSettings.salt
+  });
 
   // get plugin path
   if (mcSettings.pluginsPath == null && !fs.existsSync(mcSettings.pluginsPath)) {
@@ -132,13 +140,6 @@ async function bootstrap(server, app, log, redSettings, RED) {
   // get port
   mcSettings.port = redSettings.uiPort;
   console.log(lcd.timestamp() + '  ' + lcd.green('port: ') + lcd.grey(mcSettings.port));
-
-  // get salt
-  if (RED_BOT_SALT == 'redbot-salt') {
-    console.log(lcd.timestamp() + '  ' + lcd.green('salt: ') + lcd.grey('default'));
-  } else {
-    console.log(lcd.timestamp() + '  ' + lcd.green('salt: ') + lcd.grey('****'));
-  }
 
   // get google maps key
   if (mcSettings.googleMapsKey != null) {
@@ -179,7 +180,7 @@ Some **formatting** is _allowed_!`
   }
 
   app.use(session({
-    secret: RED_BOT_SALT,
+    secret: mcSettings.salt,
     resave: true,
     saveUninitialized: false
   }));
@@ -268,6 +269,8 @@ Some **formatting** is _allowed_!`
   app.get(
     '/mc/login',
     async (_req, res) => {
+      const admins = await Admin.findAll();
+      const isDefaultUser = admins.length === 1 && _.isEmpty(admins[0].password);
       fs.readFile(`${__dirname}/../src/login.html`, (err, data) => {
         const template = data.toString();
         const assets = frontendEnvironment === 'development' || frontendEnvironment === 'plugin' ?
@@ -275,6 +278,7 @@ Some **formatting** is _allowed_!`
         const bootstrap = {
           settings: {
             ...mcSettings,
+            isDefaultUser,
             environment: frontendEnvironment
           }
         };

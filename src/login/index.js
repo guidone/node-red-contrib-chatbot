@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Fragment } from 'react';
 
 import {
   Content,
@@ -46,6 +46,18 @@ const LoginPanel = () => {
       setLoading(false);
     }
   }
+  const header = (
+    <Fragment>
+      <h3>Mission Control</h3>
+      <div className="login-hint">User your credentials to log in the chatbot admin panel</div>
+      {bootstrap?.settings?.isDefaultUser && (
+        <div className="info-message">
+          Mission Control default user is <em>&quot;admin&quot;</em> with password <em>&quot;admin&quot;</em>.
+          Please change password after login.
+        </div>
+      )}
+    </Fragment>
+  );
 
   return (
     <div className='container-login'>
@@ -54,12 +66,7 @@ const LoginPanel = () => {
           <FlexboxGrid justify="center">
             <FlexboxGrid.Item colspan={8} className="login-panel">
               <div className="logo"><LogoFull /></div>
-              <Panel header={
-                <>
-                  <h3>Mission Control</h3>
-                  <div className="login-hint">User your credentials to log in the chatbot admin panel</div>
-                </>
-              } bordered>
+              <Panel header={header} bordered>
                 <Form fluid formValue={formValue} onChange={formValue => setFormValue(formValue)}>
                   <FormGroup>
                     <InputGroup inside>
