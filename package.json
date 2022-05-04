@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-chatbot",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "description": "REDBot a Chat bot for a full featured chat bot for Telegram, Facebook Messenger and Slack. Almost no coding skills required",
   "scripts": {
     "start": "node-red",
