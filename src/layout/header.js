@@ -71,7 +71,6 @@ query($chatbotId: String) {
 
 const AppHeader = () => {
   const [, setCookieChatbotId] = useCookie('chatbotId', '');
-  //const [, setChatbotId] = useLocalStorage('chatbotId', undefined);
   const client = useApolloClient();
   const { post } = useFetch('/mc/logout');
   const { user } = useCurrentUser();
