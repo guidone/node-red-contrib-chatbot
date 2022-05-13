@@ -3,6 +3,7 @@ var marked = require('marked');
 var clc = require('cli-color');
 var _ = require('underscore');
 var fs = require('fs');
+const { node } = require('../lib/helpers/lcd');
 var green = clc.greenBright;
 var white = clc.white;
 var grey = clc.blackBright;
@@ -13,6 +14,7 @@ var tasks = new Promise(function(resolve) {
 });
 
 var mappings = {
+  'Push-and-Pop-Message-node.md': ['chatbot-pop-message.html', 'chatbot-push-message.html'],
   'Generic-Template-node.md': 'chatbot-generic-template.html',
   'Quick-Replies-node.md': 'chatbot-quick-replies.html',
   'Messenger-Menu-node.md': 'chatbot-messenger-menu.html',
@@ -75,8 +77,7 @@ var mappings = {
   'NLPjs-Intent.md': 'chatbot-nlp-intent.html|chatbot-nlpjs-intent',
   'NLPjs-Save.md': 'chatbot-nlp-save.html|chatbot-nlpjs-save',
   'NLPjs-Load.md': 'chatbot-nlp-load.html|chatbot-nlpjs-load',
-  'NLPjs-Process.md': 'chatbot-nlp.html|chatbot-nlpjs',
-  'Pop-Message-node.md': 'chatbot-pop-message.html'
+  'NLPjs-Process.md': 'chatbot-nlp.html|chatbot-nlpjs'
 };
 
 function collectImages(html) {
@@ -121,8 +122,10 @@ function fetchImagesBase64(images) {
   _(images).map(function(image) {
     chain = chain.then(
       function() {
+        // eslint-disable-next-line no-console
         console.log('    fetching ' + white(image.url));
         return fetchImageBase64(image.url).then(function(base64) {
+          // eslint-disable-next-line no-console
           console.log(green('    fetched ') + Math.floor(base64.length / 1024) + white('kb'));
           image.base64 = base64;
         });
@@ -138,82 +141,86 @@ function fetchImagesBase64(images) {
 
 console.log(orange('Generating inline documentation...'));
 
-_(mappings).map(function(nodeFile, markdownFile) {
+_(mappings).map(function(nodeFiles, markdownFile) {
 
-  tasks = tasks.then(function() {
+  nodeFiles = Array.isArray(nodeFiles) ? nodeFiles : [nodeFiles];
 
-    return new Promise(function(resolve, reject) {
+  nodeFiles.forEach(nodeFile => {
 
-      var nodeName = null;
-      if (nodeFile.indexOf('|') !== -1) {
-        nodeName = nodeFile.split('|')[1];
-        nodeFile = nodeFile.split('|')[0];
-      } else {
-        nodeName = nodeFile.replace('.html', '');
-      }
-      console.log('- ' + grey(markdownFile) + ' (' + nodeName + ')');
+    tasks = tasks.then(function() {
+      return new Promise(function(resolve, reject) {
+        var nodeName = null;
+        if (nodeFile.indexOf('|') !== -1) {
+          nodeName = nodeFile.split('|')[1];
+          nodeFile = nodeFile.split('|')[0];
+        } else {
+          nodeName = nodeFile.replace('.html', '');
+        }
+        console.log('- ' + grey(markdownFile) + ' (' + nodeName + ')');
 
-      var markdownSource = fs.readFileSync(__dirname + '/../wiki/' + markdownFile, 'utf8');
-      var htmlSource = marked(markdownSource);
-      try {
-        var nodeSource = fs.readFileSync(__dirname + '/../nodes/' + nodeFile, 'utf8');
-      } catch(e) {
-        reject(e);
-      }
+        var markdownSource = fs.readFileSync(__dirname + '/../wiki/' + markdownFile, 'utf8');
+        var htmlSource = marked(markdownSource);
+        try {
+          var nodeSource = fs.readFileSync(__dirname + '/../nodes/' + nodeFile, 'utf8');
+        } catch(e) {
+          reject(e);
+        }
 
-      // reformat tables with dl, dt, dd, Node-RED standard
-      // table always 3 cell: name of field, type, description
-      htmlSource = htmlSource.replace(/<table>/g, '<dl class="message-properties">');
-      htmlSource = htmlSource.replace(/<\/table>/g, '</dl>');
-      htmlSource = htmlSource.replace(/<thead>[\s\S]*?<\/thead>/g, '');
-      htmlSource = htmlSource.replace(/<tbody>/g, '');
-      htmlSource = htmlSource.replace(/<\/tbody>/g, '');
-      var matches = htmlSource.match(/<tr>([\s\S]*?)<\/tr>/g);
-      _(matches).each(function(row) {
-        var cells = row.match(/<td>([\s\S]*?)<\/td>/g);
-        cells = _(cells).map(function(cell) {
-          return cell.replace('<td>', '').replace('</td>', '');
+        // reformat tables with dl, dt, dd, Node-RED standard
+        // table always 3 cell: name of field, type, description
+        htmlSource = htmlSource.replace(/<table>/g, '<dl class="message-properties">');
+        htmlSource = htmlSource.replace(/<\/table>/g, '</dl>');
+        htmlSource = htmlSource.replace(/<thead>[\s\S]*?<\/thead>/g, '');
+        htmlSource = htmlSource.replace(/<tbody>/g, '');
+        htmlSource = htmlSource.replace(/<\/tbody>/g, '');
+        var matches = htmlSource.match(/<tr>([\s\S]*?)<\/tr>/g);
+        _(matches).each(function(row) {
+          var cells = row.match(/<td>([\s\S]*?)<\/td>/g);
+          cells = _(cells).map(function(cell) {
+            return cell.replace('<td>', '').replace('</td>', '');
+          });
+          var cellName = cells[0];
+          var cellType = cells.length >= 3 ? cells[1] : null;
+          var cellDescription = cells.length >= 3 ? cells[2] : cells[1];
+          htmlSource = htmlSource.replace(row,
+            '<dt>' + cellName +
+            (cellType != null ? '<span class="property-type">' + cellType +'</span>' : '') +
+            '<dd>' + cellDescription + '</dd>'
+          );
         });
-        var cellName = cells[0];
-        var cellType = cells.length >= 3 ? cells[1] : null;
-        var cellDescription = cells.length >= 3 ? cells[2] : cells[1];
-        htmlSource = htmlSource.replace(row,
-          '<dt>' + cellName +
-          (cellType != null ? '<span class="property-type">' + cellType +'</span>' : '') +
-          '<dd>' + cellDescription + '</dd>'
-        );
+
+        // get all images and transform them into base64 (GitHub will deny images in iframe)
+        var images = collectImages(htmlSource);
+
+        fetchImagesBase64(images)
+          .then(
+            function(images64) {
+
+              // now replace all fetched images in base64
+              _(images64).each(function(image) {
+                htmlSource = htmlSource.replace(image.html, '<img src="' + image.base64 + '">');
+              });
+
+              // replace "$" or will mess up with the regular expression
+              htmlSource = htmlSource.replace(/\$/g, '&#36;');
+
+              // replace inline documentation
+              var newDoc = '<script type="text\/x-red" data-help-name="' + nodeName + '">' + htmlSource + '</script>';
+              var regexp = new RegExp('<script type=\"text\/x-red\" data-help-name=\"' + nodeName + '\">[\\s\\S]*?<\/script>', 'g');
+              nodeSource = nodeSource.replace(regexp, newDoc);
+
+              fs.writeFileSync(__dirname + '/../nodes/' + nodeFile, nodeSource, 'utf8');
+              // finally resolve
+              resolve();
+            },
+            function(error) {
+              reject(error);
+            }
+          );
       });
-
-      // get all images and transform them into base64 (GitHub will deny images in iframe)
-      var images = collectImages(htmlSource);
-
-      fetchImagesBase64(images)
-        .then(
-          function(images64) {
-
-            // now replace all fetched images in base64
-            _(images64).each(function(image) {
-              htmlSource = htmlSource.replace(image.html, '<img src="' + image.base64 + '">');
-            });
-
-            // replace "$" or will mess up with the regular expression
-            htmlSource = htmlSource.replace(/\$/g, '&#36;');
-
-            // replace inline documentation
-            var newDoc = '<script type="text\/x-red" data-help-name="' + nodeName + '">' + htmlSource + '</script>';
-            var regexp = new RegExp('<script type=\"text\/x-red\" data-help-name=\"' + nodeName + '\">[\\s\\S]*?<\/script>', 'g');
-            nodeSource = nodeSource.replace(regexp, newDoc);
-
-            fs.writeFileSync(__dirname + '/../nodes/' + nodeFile, nodeSource, 'utf8');
-            // finally resolve
-            resolve();
-          },
-          function(error) {
-            reject(error);
-          }
-        );
     });
-  });
+
+  })
 
 });
 
