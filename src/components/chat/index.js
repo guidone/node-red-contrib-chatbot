@@ -47,6 +47,8 @@ const ChatWindow = ({ children, width = '100%', style }) => {
 
 import Showdown from 'showdown';
 
+import { TypeSimulatorMessage } from './types';
+
 const MessageFrame = ({ children, ...props }) => {
   const { message, inbound } = props;
   return (
@@ -54,7 +56,7 @@ const MessageFrame = ({ children, ...props }) => {
       <Metadata>
         {inbound && (
           <Fragment>
-            <MessageDate date={message.createdAt}/>
+            <MessageDate date={message.ts}/>
             &nbsp;
             <MessageUser>{message.username}</MessageUser>
             &nbsp;
@@ -66,13 +68,17 @@ const MessageFrame = ({ children, ...props }) => {
             <UserStatus />
             &nbsp;
             <MessageUser>{message.username}</MessageUser>
-            <MessageDate date={message.createdAt}/>
+            <MessageDate date={message.ts}/>
           </Fragment>
         )}
       </Metadata>
       {children}
     </Message>
   );
+};
+MessageFrame.propTypes = {
+  message: TypeSimulatorMessage,
+  inbound: PropTypes.bool
 };
 
 
@@ -91,12 +97,8 @@ const MessageText = props => {
   );
 };
 MessageText.propTypes = {
-  message: PropTypes.shape({
-    content: PropTypes.string,
-    userId: PropTypes.string,
-    username: PropTypes.string,
-    ts: PropTypes.momentPropTypes
-  })
+  message: TypeSimulatorMessage,
+  markdown: PropTypes.bool
 };
 
 
@@ -126,6 +128,9 @@ class MessagePhoto extends React.Component {
       </Content>
     );
   }
+}
+MessagePhoto.propTypes = {
+  message: TypeSimulatorMessage
 };
 
 

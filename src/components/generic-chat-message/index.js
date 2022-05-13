@@ -1,15 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import {
-  Message,
-  Messages,
-  Content,
-  Metadata,
-  ChatWindow,
-  MessageComposer,
-  MessageDate,
-  MessageUser,
-  UserStatus,
   MessageFrame,
   MessageText,
   MessageButtons,
@@ -20,54 +12,74 @@ import {
 
 
 
-const GenericMessage = ({ message = {}, onClick = () => {} }) => {
+const GenericMessage = ({
+  message = {},
+  onClick = () => {},
+  useFrame = true
+}) => {
   // if array messages must be grouped
   if (_.isArray(message)) {
     return (
       <MessageGroup messages={message} onClick={onClick} />
     );
   }
-
+  let inner;
+  let className;
   switch (message.type) {
     case 'message':
-      return (
-        <MessageFrame message={message} inbound={message.inbound}>
-          <MessageText
-            message={message}
-            inbound={message.inbound}
-            markdown={message.params != null && message.params.parseMode === 'Markdown'}
-          />
-        </MessageFrame>
+      inner = (
+        <MessageText
+          message={message}
+          inbound={message.inbound}
+          markdown={message.params != null && message.params.parseMode === 'Markdown'}
+        />
       );
+      break;
     case 'photo':
-      return (
-        <MessageFrame message={message} inbound={message.inbound} className="ui-chat-message-photo">
-          <MessagePhoto message={message} inbound={message.inbound} />
-        </MessageFrame>
+      className = 'ui-chat-message-photo';
+      inner = (
+        <MessagePhoto message={message} inbound={message.inbound} />
       );
+      break;
     case 'inline-buttons':
-      return (
-        <MessageFrame message={message} inbound={message.inbound}>
-          <MessageButtons
-            message={message}
-            inbound={message.inbound}
-            onClick={onClick}
-          />
-        </MessageFrame>
+      inner = (
+        <MessageButtons
+          message={message}
+          inbound={message.inbound}
+          onClick={onClick}
+        />
       );
+      break;
     case 'quick-replies':
-      return (
-        <MessageFrame message={message} inbound={message.inbound}>
-          <MessageQuickReplies
-            message={message}
-            inbound={message.inbound}
-            onClick={onClick}
-          />
-        </MessageFrame>
+      inner = (
+        <MessageQuickReplies
+          message={message}
+          inbound={message.inbound}
+          onClick={onClick}
+        />
       );
+      break;
     default:
-      return <div>Unsupported message type</div>;
+      inner = (
+        <MessageText
+          message={{ ...message, content: `Unsupported message type "${message.type}"` }}
+          inbound={message.inbound}
+        />
+      );
+      break;
+  }
+
+  if (useFrame) {
+    return (
+      <MessageFrame message={message} inbound={message.inbound} className={className}>{inner}</MessageFrame>
+    )
+  } else {
+    return inner;
   }
 };
+GenericMessage.propTypes = {
+  useFrame: PropTypes.bool
+};
+
 
 export default GenericMessage;

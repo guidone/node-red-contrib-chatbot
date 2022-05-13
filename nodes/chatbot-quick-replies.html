@@ -37,7 +37,6 @@
       node.buttons = [];
       var idx;
       for(idx = 0; idx < buttons.length; idx++) {
-        console.log('adding', $(buttons[idx]).RB_getButtonData())
         node.buttons.push($(buttons[idx]).RB_getButtonData());
       }
     },
@@ -109,7 +108,7 @@
 <li><strong>phone</strong>: allows the user to share his phone number</li>
 </ul>
 <p>The text message can be passed through the payload by the upstream node:</p>
-<pre><code class="language-javascript">return { 
+<pre><code class="language-javascript">return {
   ...msg,
   message: &#39;Select one&#39;,
   buttons: [

@@ -26,6 +26,7 @@ import SmartDate from './smart-date';
 import Button from './button';
 
 import { useNodeRedSocket } from '../hooks/socket';
+import useMCContext from '../hooks/mc-context';
 
 // Define the global scope to store the components shared with plugins
 if (window.globalLibs == null) {
@@ -58,7 +59,8 @@ window.globalLibs.Components = {
   CopyAndPasteButton,
   SmartDate,
   Button,
-  useNodeRedSocket
+  useNodeRedSocket,
+  useMCContext
 };
 
 export {
@@ -88,5 +90,6 @@ export {
   CopyAndPasteButton,
   SmartDate,
   Button,
-  useNodeRedSocket
+  useNodeRedSocket,
+  useMCContext
 };

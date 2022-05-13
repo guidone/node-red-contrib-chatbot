@@ -24,7 +24,7 @@ const Content = ({
   if (!_.isEmpty(text)) {
     return (
       <div
-        className={classNames("ui-chat-content message", { 'first-of-group': firstOfGroup, [position]: true })}
+        className={classNames('ui-chat-content message', { 'first-of-group': firstOfGroup, [position]: true })}
         dangerouslySetInnerHTML={{
           __html: text.replace(/\n/g, '<br/>')
         }}
@@ -32,7 +32,7 @@ const Content = ({
     );
   }
   return (
-    <div className={classNames("ui-chat-content message", { 'first-of-group': firstOfGroup, [position]: true })}>{children}</div>
+    <div className={classNames('ui-chat-content message', { 'first-of-group': firstOfGroup, [position]: true })}>{children}</div>
   );
 };
 Content.propTypes = {

@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 
 import { Message, Content, Metadata, MessageDate, MessageUser, UserStatus } from './generic';
 
+import GenericMessage from '../../generic-chat-message';
+
 const MessageGroup = ({ messages, ...props }) => {
   if (_.isEmpty(messages)) {
     return;
@@ -22,18 +24,40 @@ const MessageGroup = ({ messages, ...props }) => {
         } else if (idx === (messages.length - 1)) {
           position = 'last';
         }
+
+        // TODO add onClick
+        // TODO extract the position property
+
+
+
+        return (
+          <GenericMessage
+            key={message.messageId}
+            message={message}
+            useFrame={false}
+          />
+        );
+
+        /*
         switch (message.type) {
           case 'message':
             return (
               <Content key={message.messageId} position={position} text={message.content} />
             );
-          /*case 'photo':
+          case 'photo':
             return <MessagePhoto message={message} inbound={message.inbound} />;
           case 'inline-buttons':
-            return <MessageButtons message={message} inbound={message.inbound} />; */
+            return <MessageButtons message={message} inbound={message.inbound} />;
           default:
-            return <div>Unsupported message type</div>;
-        }
+            return (
+              <Content
+                key={message.messageId}
+                position={position}
+                text={`Unsupported message type "${message.type}"`}
+              />
+            );
+
+        }*/
 
       })}
     </Message>

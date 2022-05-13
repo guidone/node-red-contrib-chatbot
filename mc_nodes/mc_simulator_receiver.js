@@ -1,35 +1,74 @@
 const _ = require('lodash');
 const { when, isCommand } = require('../lib/utils')
 
+const GlobalContextHelper = require('../lib/helpers/global-context-helper');
+const GetEnvironment = require('../lib/helpers/get-environment');
+
 module.exports = function(RED) {
 
-  const { Events, sendMessage } = require('./mc')(RED);
+  const { Events } = require('./mc')(RED);
+  const sendMessage = (topic, payload) => {
+    RED.comms.publish('redbot', { topic, payload });
+  }
+  const getEnvironment = GetEnvironment(RED);
+
+
+  // TODO move to helpers
+  const isConfigurationForEnvironment = (nodeId, environemt) => {
+    let result = false;
+    RED.nodes.eachNode(n => {
+      if ((environemt === 'development' && n.bot === nodeId) ||
+      (environemt === 'production' && n.botProduction === nodeId)) {
+        result = true;
+      }
+    });
+    return result;
+  };
+
+  const getConfigurationNode = chatbotId => {
+    let serverNode;
+    const environment = getEnvironment();
+    RED.nodes.eachNode(n => {
+      if (n.type.startsWith('chatbot-') &&
+        n.type.endsWith('-node') &&
+        n.chatbotId === chatbotId &&
+        isConfigurationForEnvironment(n.id, environment)
+      ) {
+        serverNode = RED.nodes.getNode(n.id);
+        }
+    });
+    return serverNode;
+  }
 
   function MissionControlSimulatorReceiver(config) {
     RED.nodes.createNode(this, config);
     const node = this;
+    const globalContextHelper = GlobalContextHelper(RED);
     this.topic = config.topic;
 
-    const global = this.context().global;
-    nodeGlobalKey = 'simulator_master';
+    globalContextHelper.init(this.context().global);
+
+
+    const nodeGlobalKey = 'simulator_master';
     let isMaster = false;
     console.log('Starting simulator receiver ', node.id)
-    if (global.get(nodeGlobalKey) == null) {
+    if (globalContextHelper.get(nodeGlobalKey) == null) {
       isMaster = true;
-      global.set(nodeGlobalKey, node.id);
-      console.log('   ->   is master ', node.id)
+      globalContextHelper.set(nodeGlobalKey, node.id);
     }
 
 
 
     const handler = async (topic, message) => {
       if (topic === 'simulator') {
+        console.log('receiving simulator', message)
 
-        const serverNode = RED.nodes.getNode(message.nodeId);
+        // TODO capire come creare utente finto
 
-
+        // get the configuration node from the chatbotId
+        let serverNode = getConfigurationNode(message.chatbotId);
         if (serverNode == null || serverNode.chat == null) {
-          node.error(`Unable to find a RedBot chat node with id ${message.nodeId}`);
+          node.error(`Unable to find a RedBot chat bot with id ${message.chatbotId}`);
           return;
         }
 
@@ -44,9 +83,12 @@ module.exports = function(RED) {
         const firstName = message.firstName;
         const lastName = message.lastName;
         const messageId = _.uniqueId('msg_');
-        const msg = await chatServer.createMessage(chatId, userId, messageId, {});
-        const context = msg.chat();
 
+        console.log('creating messgae for userId', userId)
+        const msg = await chatServer.createMessage(null, userId, messageId, {});
+
+        const context = msg.chat();
+        console.log('got chat context')
         msg.payload = {
           ..._.omit(message.payload, 'simulatorOptions'),
           chatId,

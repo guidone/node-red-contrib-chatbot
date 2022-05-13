@@ -49,7 +49,7 @@ module.exports = function(RED) {
 
       let platformNode;
       const nodeInstance = getNode(botNode);
-      console.log('nodeInstance', nodeInstance)
+
       if (nodeInstance != null) {
         platformNode = nodeInstance.chat;
       } else {

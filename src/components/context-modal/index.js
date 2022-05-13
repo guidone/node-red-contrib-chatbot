@@ -66,7 +66,7 @@ const ContextModal = ({ user, onSubmit = () => {}, onCancel = () => {} }) => {
             hover="ban"
           >
             Context is not available for this user.<br />
-            This happens if the chatbot uses a Memory or Plain File context provider or the SQLite or PostGre proivders are
+            This happens if the chatbot uses a Memory or Plain File context provider or the SQLite proivders are
             running on a different database of Mission Control
           </WarningBox>
         )}

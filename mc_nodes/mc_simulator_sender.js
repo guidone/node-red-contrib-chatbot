@@ -5,7 +5,14 @@ const { when } = require('../lib/utils');
 
 module.exports = function(RED) {
 
-  const { Events, sendMessage } = require('./mc')(RED);
+  const { Events/*, sendMessage*/ } = require('./mc')(RED);
+
+
+  const sendMessage = (topic, payload) => {
+    console.log('sending back', payload)
+    RED.comms.publish('redbot', { topic, payload });
+  }
+
 
   function MissionControlSimulatorSender(config) {
     RED.nodes.createNode(this, config);
