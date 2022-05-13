@@ -3,8 +3,8 @@ const assert = require('chai').assert;
 const RED = require('../lib/red-stub')();
 const PopBlock = require('../nodes/chatbot-pop-message');
 
-describe('Chat message node node', () => {
-  it('set the entity payload', async () => {
+describe('Chat pop node', () => {
+  it('pop payload', async () => {
     const msg = RED.createRawMessage({
       previous: {
         type: 'message',

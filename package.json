@@ -84,7 +84,8 @@
       "chatbot-nlp-entity": "./nodes/chatbot-nlp-entity.js",
       "chatbot-nlp-save": "./nodes/chatbot-nlp-save.js",
       "chatbot-nlp-load": "./nodes/chatbot-nlp-load.js",
-      "chatbot-pop-message": "./nodes/chatbot-pop-message.js"
+      "chatbot-pop-message": "./nodes/chatbot-pop-message.js",
+      "chatbot-push-message": "./nodes/chatbot-push-message.js"
     }
   },
   "maintainers": [
