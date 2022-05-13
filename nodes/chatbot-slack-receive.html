@@ -268,8 +268,8 @@ token_rotation_enabled: false
 <li>Un-check <em>Use WebSocket</em></li>
 <li>In order to support <em>Slack Commands</em>, use as <em>Request URL</em> the same callback (i.e. <a href="https://123456.ngrok.io/slack/events">https://123456.ngrok.io/slack/events</a>, be sure to replace the url got in <em>step 1</em>)</li>
 </ol>
-<p><code>Slack Receiver</code> and <code>Slack Sender</code> have a double bot configuration for <em>development</em> and <em>production</em>. By default is used the <em>development</em> configuration. To use <em>production</em> configuration, edit <strong>Node-RED</strong> settings file (<em>settings.js</em>) and set the <em>environment</em> global variable to <em>&quot;production&quot;</em>. See [[here|Deploying-RedBot]] for more details.</p>
-<p><strong>RedBot</strong> also supports <strong>Slack</strong> events, in the chatbot use the [[Rules node|Rules-node]] to control the flow based on incoming events (the payload of the event will be in <code>msg.payload</code>) and use the [[Support table node|Support-table]] to see the list of supported events.</p>
+<p><code>Slack Receiver</code> and <code>Slack Sender</code> have a double bot configuration for <em>development</em> and <em>production</em>. By default is used the <em>development</em> configuration. To use <em>production</em> configuration, edit <strong>Node-RED</strong> settings file (<em>settings.js</em>) and set the <em>environment</em> global variable to <em>&quot;production&quot;</em>. See <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Deploying-RedBot" target="_blank">here</a> for more details.</p>
+<p><strong>RedBot</strong> also supports <strong>Slack</strong> events, in the chatbot use the <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Rules-node" target="_blank">Rules node</a> to control the flow based on incoming events (the payload of the event will be in <code>msg.payload</code>) and use the <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Support-table" target="_blank">Support table node</a> to see the list of supported events.</p>
 </script>
 
 <script type="text/javascript">

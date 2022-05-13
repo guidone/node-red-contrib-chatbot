@@ -110,7 +110,7 @@ Values in the chat context are meant to be persisted over the time and different
 They can be accessed by javascript <code>msg.chat().get(&#39;chatId&#39;)</code> or in templates <code>{{chatId}}</code> for retro-compatibility purposes, by they really don&#39;t belong to the chat context.</p>
 <h4 id="flow-keys">Flow keys</h4>
 <p>Some keys are pre-populated by <strong>RedBot</strong>: <em>firstName</em>, <em>lastName</em>, <em>language</em>, <em>authorized</em>, <em>pending</em>. These are specific to the flow and the used platform and can be modified or deleted by the <code>msg.chat().*</code> methods.
-Not all the chat platforms provide such informations and/or may be different  (unless a <strong>Mission Control</strong> [[MC Store|MC-Store]] node is used to reconcile the data): for example a user can have the Telegram client in the Italian language and the Messenger client in English language.
+Not all the chat platforms provide such informations and/or may be different  (unless a <strong>Mission Control</strong> <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/MC-Store" target="_blank">MC Store</a> node is used to reconcile the data): for example a user can have the Telegram client in the Italian language and the Messenger client in English language.
 The <code>{{message}}</code> key is the current inbound message (from the user)  and the <code>{{messageId}}</code> is the platform-dependent unique id (generally used to edit/delete already sent messages)</p>
 <h4 id="global-keys">Global keys</h4>
 <p>It&#39;s possibile to access variables in the <strong>Node-RED</strong>&#39;s global context using the handlebars-like notation, for example <code>{{global.my_global_variable}}</code></p>

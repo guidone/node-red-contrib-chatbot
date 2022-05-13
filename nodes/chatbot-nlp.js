@@ -34,7 +34,7 @@ module.exports = function(RED) {
       if (isCommand(msg)) {
         send({
           ...msg,
-          previous: msg.payload, // store previous msg, use POP to retrieve
+          previous: { ...msg.payload }, // store previous msg, use POP to retrieve
         });
         done();
         return;
