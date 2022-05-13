@@ -204,6 +204,19 @@ _(mappings).map(function(nodeFiles, markdownFile) {
               // replace "$" or will mess up with the regular expression
               htmlSource = htmlSource.replace(/\$/g, '&#36;');
 
+              // replace links to wiki
+              const wikiLinks = htmlSource.match(/\[\[([a-zA-Z\- ])+\|([a-zA-Z\- ])+\]\]/gm);
+              (wikiLinks || []).forEach(wikiLink => {
+                const [label, wikiName] = wikiLink
+                  .replace('[[', '')
+                  .replace(']]', '')
+                  .split('|');
+                htmlSource = htmlSource.replace(
+                  wikiLink,
+                  `<a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/${wikiName}" target="_blank">${label}</a>`
+                );
+              });
+
               // replace inline documentation
               var newDoc = '<script type="text\/x-red" data-help-name="' + nodeName + '">' + htmlSource + '</script>';
               var regexp = new RegExp('<script type=\"text\/x-red\" data-help-name=\"' + nodeName + '\">[\\s\\S]*?<\/script>', 'g');

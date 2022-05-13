@@ -161,7 +161,7 @@
 
 <script type="text/x-red" data-help-name="chatbot-universal-receive"><p>The <code>Universal Connector node</code> allows to connect the the <strong>RedBot</strong> ecosystem any kind of messaging service (like email, an SMS gateway, a testing stub, etc). It&#39;s an advanced component, a good kwowledge of <strong>JavaScript</strong> and <em>Promises</em> is required in order to use it.</p>
 <p>Unlike other receiver nodes the <code>Universal Connector node</code> has an input pin, this is where the external service will send the payload in order to be translated and injected in the <strong>RedBot</strong> flow.
-The <code>Universal Connector node</code> takes care of providing the chat context, the <em>pass thru</em> and <em>track</em> features, the <em>production</em>/<em>development</em> configuration, etc; while the implementation detail about <strong>how</strong> the incoming message is implemented is left to the user and must be implemented with an [[Extend node|Extend-node]].</p>
+The <code>Universal Connector node</code> takes care of providing the chat context, the <em>pass thru</em> and <em>track</em> features, the <em>production</em>/<em>development</em> configuration, etc; while the implementation detail about <strong>how</strong> the incoming message is implemented is left to the user and must be implemented with an <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Extend-node" target="_blank">Extend node</a>.</p>
 <p>In order to properly <em>translate</em> an incoming message the implementation in the <code>Universal Connector node</code> must:</p>
 <ol>
 <li>Extract a <strong>chatId</strong> from the payload: it&#39;s a unique identifier of the conversation in the connected platform (for example the mobile number for a SMS gateway, the email for an email system, etc)</li>
@@ -171,7 +171,7 @@ it also should (but is not mandatory)</li>
 <li>Extract the <em>timestamp</em> of the message</li>
 <li>Extract a <em>messageId</em> to properly reference inbound and outbound messages in the external service timeline</li>
 </ol>
-<p>Like explained in [[Extend node|Extend-node]] a connector handles inbound messages with a chain of middlewares: chunck of codes executed sequentially in order to accomplish steps 1 to 3. In order to keep the code simple and maintanable is a good practice to let middleware takes care of detecting and translating one kind of message in each middleware, as soon as a message has been <em>resolved</em> (means that a message <em>type</em> is assigned to the incoming message), the rest of middlewares chain is skipped and the message is injected in the <strong>RedBot</strong>&#39;s flow.</p>
+<p>Like explained in <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Extend-node" target="_blank">Extend node</a> a connector handles inbound messages with a chain of middlewares: chunck of codes executed sequentially in order to accomplish steps 1 to 3. In order to keep the code simple and maintanable is a good practice to let middleware takes care of detecting and translating one kind of message in each middleware, as soon as a message has been <em>resolved</em> (means that a message <em>type</em> is assigned to the incoming message), the rest of middlewares chain is skipped and the message is injected in the <strong>RedBot</strong>&#39;s flow.</p>
 <p>For example suppose that a SMS gateway calls the <strong>Node-RED</strong> instance webhook with this payload</p>
 <pre><code class="lang-javascript">{
   sms: {
@@ -246,7 +246,7 @@ node.chat.out(&#39;message&#39;, message =&gt; {
 <li><strong>Pass through</strong> option: it will forward the <strong>RedBot message</strong> to the output pin. The Red message is the object that passes through the RedBot&#39;s nodes, it contains helpers and data like <em>originalMessage</em>, <em>.api()</em>, <em>.chat()</em>. The main purpose of this is to send multiple messages to the user in a specific order.
 If the <strong>Pass through</strong> option is not checked the output pin is still present and it&#39;s used to forward the final result of the chain of promises of an output middleware (stripped out of all helpers and data like <em>originalMessage</em>, <em>.api()</em>, <em>.chat()</em>). In the example above it&#39;s used to forward to a downstream node the result of the call to an external custom API.</li>
 </ul>
-<p>For a list of all methods available in the <em>msg.chat</em> object see the [[Extend node|Extend-node]].</p>
+<p>For a list of all methods available in the <em>msg.chat</em> object see the <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Extend-node" target="_blank">Extend node</a>.</p>
 </script>
 
 <script type="text/javascript">

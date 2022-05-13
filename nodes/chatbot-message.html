@@ -142,7 +142,7 @@
 </code></pre>
 <p>can be used in the text message in this way</p>
 <pre><code>Your order of {{payload.total}} will be shipped to {{payload.shipping.address}}, {{payload.shipping.city}}
-</code></pre><p>For more information read the [[chat context section|Chat-Context]].</p>
+</code></pre><p>For more information read the <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Chat-Context" target="_blank">chat context section</a>.</p>
 <p>It&#39;s possible to specify more content versions for the same message, one will we randomly chosen with an even distribution.</p>
 <p>If a <em>language</em> is specified in the drop down menu, then the message will be added only if the specified language matches the one in the chat context. Most of the platform provide the user language, this value is stored in the chat context when the user starts a conversation.
 In order to support multiple languages in a chatbot, just chain different <code>Message node</code> with different languages, the ones that don&#39;t match the user language will be skipped.</p>
