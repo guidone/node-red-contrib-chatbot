@@ -1,16 +1,13 @@
-import React, { useState, useEffect, useRef, Fragment } from 'react';
-import momentPropTypes from 'react-moment-proptypes';
-import classNames from 'classnames';
+import React, { useEffect, useRef, Fragment } from 'react';
 import _ from 'lodash';
-import moment from 'moment';
 import PropTypes from 'prop-types';
-import { IconButton, Icon } from 'rsuite';
+import Showdown from 'showdown';
 
-import './chat.scss';
+import { typeMessage } from '../../types';
 
-import { Message, Content, Metadata, MessageDate, MessageUser, UserStatus } from './views/generic';
+import { Message, Content, PhotoContent, Metadata, MessageDate, MessageUser, UserStatus } from './views/generic';
 import MessageComposer from './views/message-composer';
-import MessageGroup from './views/message-group';
+import './chat.scss';
 
 const Messages = ({ children }) => {
   const messagesEndRef = useRef(null);
@@ -27,27 +24,28 @@ const Messages = ({ children }) => {
     </div>
   );
 };
-
-
-
+Messages.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ])
+};
 
 const ChatWindow = ({ children, width = '100%', style }) => {
-
   return (
     <div className="ui-chat-window chat" style={{ width: _.isNumber(width) ? `${width}px` : width, ...style }}>{children}</div>
   );
+};
+ChatWindow.propTypes = {
+  width: PropTypes.string,
+  style: PropTypes.object,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ])
+};
 
-}
 
-
-
-
-
-
-
-import Showdown from 'showdown';
-
-import { TypeSimulatorMessage } from './types';
 
 const MessageFrame = ({ children, ...props }) => {
   const { message, inbound } = props;
@@ -77,14 +75,16 @@ const MessageFrame = ({ children, ...props }) => {
   );
 };
 MessageFrame.propTypes = {
-  message: TypeSimulatorMessage,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]),
+  message: typeMessage,
   inbound: PropTypes.bool
 };
 
-
-
 const MessageText = props => {
-  const { message, markdown = false } = props;
+  const { message, markdown = false, position, beak } = props;
 
   let html = message.content;
   if (markdown) {
@@ -93,12 +93,14 @@ const MessageText = props => {
   }
 
   return (
-    <Content text={html}/>
+    <Content text={html} position={position} beak={beak}/>
   );
 };
 MessageText.propTypes = {
-  message: TypeSimulatorMessage,
-  markdown: PropTypes.bool
+  message: typeMessage,
+  markdown: PropTypes.bool,
+  position: PropTypes.oneOf(['first', 'middle', 'last']),
+  beak: PropTypes.bool
 };
 
 
@@ -115,22 +117,21 @@ class MessagePhoto extends React.Component {
   // use func and state
   // inbound msg too
   render() {
-    const { message } = this.props;
-
+    const { message, position, beak } = this.props;
     const arrayBufferView = new Uint8Array(message.content.data);
     const blob = new Blob([arrayBufferView], { type: 'image/jpeg' });
     const urlCreator = window.URL || window.webkitURL;
     const imageUrl = urlCreator.createObjectURL(blob);
 
     return (
-      <Content>
-        <img src={imageUrl}/>
-      </Content>
+      <PhotoContent position={position} beak={beak} url={imageUrl} />
     );
   }
 }
 MessagePhoto.propTypes = {
-  message: TypeSimulatorMessage
+  message: typeMessage,
+  position: PropTypes.oneOf(['first', 'middle', 'last']),
+  beak: PropTypes.bool
 };
 
 
@@ -150,7 +151,6 @@ export {
   MessageComposer,
   MessageDate,
   MessageUser,
-  MessageGroup,
   UserStatus,
   MessageText,
   MessageButtons,

@@ -2,11 +2,12 @@ import React from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 
-import { Message, Content, Metadata, MessageDate, MessageUser, UserStatus } from './generic';
+// TODO componentize
+import { Message, Content, Metadata, MessageDate, MessageUser, UserStatus } from '../chat/views/generic';
 
-import GenericMessage from '../../generic-chat-message';
+import GenericMessage from '../generic-chat-message';
 
-const MessageGroup = ({ messages, ...props }) => {
+const GenericMessageGroup = ({ messages, ...props }) => {
   if (_.isEmpty(messages)) {
     return;
   }
@@ -26,44 +27,21 @@ const MessageGroup = ({ messages, ...props }) => {
         }
 
         // TODO add onClick
-        // TODO extract the position property
-
-
 
         return (
           <GenericMessage
             key={message.messageId}
             message={message}
             useFrame={false}
+            beak={position === 'first'}
+            position={position}
           />
         );
-
-        /*
-        switch (message.type) {
-          case 'message':
-            return (
-              <Content key={message.messageId} position={position} text={message.content} />
-            );
-          case 'photo':
-            return <MessagePhoto message={message} inbound={message.inbound} />;
-          case 'inline-buttons':
-            return <MessageButtons message={message} inbound={message.inbound} />;
-          default:
-            return (
-              <Content
-                key={message.messageId}
-                position={position}
-                text={`Unsupported message type "${message.type}"`}
-              />
-            );
-
-        }*/
-
       })}
     </Message>
   );
 };
-MessageGroup.propTypes = {
+GenericMessageGroup.propTypes = {
   messages: PropTypes.arrayOf(
     PropTypes.shape({
       content: PropTypes.string,
@@ -74,4 +52,4 @@ MessageGroup.propTypes = {
   )
 };
 
-export default MessageGroup;
+export default GenericMessageGroup;

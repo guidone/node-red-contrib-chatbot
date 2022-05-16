@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import _ from 'lodash';
 import moment from 'moment';
-import { IconButton, Icon } from 'rsuite';
+import momentPropTypes from 'react-moment-proptypes';
+import { Icon } from 'rsuite';
 
 
 const Message = ({ children, inbound = true, className }) => {
@@ -12,19 +13,26 @@ const Message = ({ children, inbound = true, className }) => {
       {children}
     </li>
   );
-
+};
+Message.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]).isRequired,
+  inbound: PropTypes.bool,
+  className: PropTypes.string
 };
 
 const Content = ({
   children,
-  firstOfGroup = false,
+  beak = false,
   position,
   text = null
 }) => {
   if (!_.isEmpty(text)) {
     return (
       <div
-        className={classNames('ui-chat-content message', { 'first-of-group': firstOfGroup, [position]: true })}
+        className={classNames('ui-chat-content message', { beak, [position]: true })}
         dangerouslySetInnerHTML={{
           __html: text.replace(/\n/g, '<br/>')
         }}
@@ -32,12 +40,38 @@ const Content = ({
     );
   }
   return (
-    <div className={classNames('ui-chat-content message', { 'first-of-group': firstOfGroup, [position]: true })}>{children}</div>
+    <div className={classNames('ui-chat-content message', { beak, [position]: true })}>{children}</div>
   );
 };
 Content.propTypes = {
   text: PropTypes.string,
-  position: PropTypes.oneOf(['first',  'middle', 'last'])
+  beak: PropTypes.bool,
+  position: PropTypes.oneOf(['first', 'middle', 'last']),
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ])
+};
+
+/**
+ * PhotoContent
+ * Generic frame for a photo url
+ */
+const PhotoContent = ({
+  url,
+  beak = false,
+  position
+}) => {
+  return (
+    <div className={classNames('ui-chat-photo-content', { beak, [position]: true })}>
+      <img src={url} style={{ width: '100%' }}/>
+    </div>
+  );
+};
+PhotoContent.propTypes = {
+  url: PropTypes.string,
+  beak: PropTypes.bool,
+  position: PropTypes.oneOf(['first', 'middle', 'last'])
 };
 
 const Metadata = ({ children }) => {
@@ -46,10 +80,15 @@ const Metadata = ({ children }) => {
       {children}
     </div>
   );
-}
+};
+Metadata.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]).isRequired
+};
 
 const MessageDate = ({ children, date }) => {
-
   return (
     <span className="ui-chat-message-date">
       {moment.isMoment(date) && date.format('HH:mm')}
@@ -58,18 +97,34 @@ const MessageDate = ({ children, date }) => {
     </span>
   );
 }
+MessageDate.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]),
+  date: PropTypes.oneOfType([momentPropTypes, PropTypes.func])
+};
 
 const MessageUser = ({ children }) => {
   return (
     <div className="ui-chat-message-user">{children}</div>
   );
+};
+MessageUser.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]).isRequired,
 }
 
 const UserStatus = ({ online = true }) => {
   return (
     <Icon icon="circle" className={classNames('ui-chat-status', { online, offline: !online })} />
   )
-}
+};
+UserStatus.propTypes = {
+  online: PropTypes.bool
+};
 
 const Buttons = ({ children, layout = 'quick-replies' }) => {
   return (
@@ -86,14 +141,25 @@ const Buttons = ({ children, layout = 'quick-replies' }) => {
     </div>
   );
 };
+Buttons.propTypes = {
+  layout: PropTypes.oneOf(['quick-replies', 'inline', 'card']),
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ])
+};
 
-const Button = ({ value, onClick = () => {}, children }) => {
-
+const Button = ({ onClick = () => {}, children }) => {
   return (
     <div className="ui-chat-button" onClick={onClick}>{children}</div>
   );
-
+};
+Button.propTypes = {
+  onClick: PropTypes.func,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ])
 };
 
-
-export { Message, Content, Metadata, MessageDate, MessageUser, UserStatus, Button, Buttons };
+export { Message, Content, Metadata, MessageDate, MessageUser, UserStatus, Button, Buttons, PhotoContent };

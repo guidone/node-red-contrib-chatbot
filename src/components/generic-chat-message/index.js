@@ -1,26 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 
 import {
   MessageFrame,
   MessageText,
   MessageButtons,
   MessagePhoto,
-  MessageGroup,
   MessageQuickReplies
 } from '../chat';
-
+import GenericMessageGroup from '../generic-message-group';
+import { typeMessage } from '../../types';
 
 
 const GenericMessage = ({
   message = {},
   onClick = () => {},
-  useFrame = true
+  useFrame = true,
+  beak = true,
+  position
 }) => {
   // if array messages must be grouped
   if (_.isArray(message)) {
     return (
-      <MessageGroup messages={message} onClick={onClick} />
+      <GenericMessageGroup messages={message} onClick={onClick} />
     );
   }
   let inner;
@@ -31,6 +34,8 @@ const GenericMessage = ({
         <MessageText
           message={message}
           inbound={message.inbound}
+          beak={beak}
+          position={position}
           markdown={message.params != null && message.params.parseMode === 'Markdown'}
         />
       );
@@ -38,7 +43,11 @@ const GenericMessage = ({
     case 'photo':
       className = 'ui-chat-message-photo';
       inner = (
-        <MessagePhoto message={message} inbound={message.inbound} />
+        <MessagePhoto
+          beak={beak}
+          position={position}
+          message={message}
+          inbound={message.inbound} />
       );
       break;
     case 'inline-buttons':
@@ -46,6 +55,8 @@ const GenericMessage = ({
         <MessageButtons
           message={message}
           inbound={message.inbound}
+          beak={beak}
+          position={position}
           onClick={onClick}
         />
       );
@@ -55,6 +66,8 @@ const GenericMessage = ({
         <MessageQuickReplies
           message={message}
           inbound={message.inbound}
+          beak={beak}
+          position={position}
           onClick={onClick}
         />
       );
@@ -64,6 +77,8 @@ const GenericMessage = ({
         <MessageText
           message={{ ...message, content: `Unsupported message type "${message.type}"` }}
           inbound={message.inbound}
+          position={position}
+          beak={beak}
         />
       );
       break;
@@ -78,8 +93,11 @@ const GenericMessage = ({
   }
 };
 GenericMessage.propTypes = {
-  useFrame: PropTypes.bool
+  useFrame: PropTypes.bool,
+  position: PropTypes.oneOf(['first', 'middle', 'last']),
+  beak: PropTypes.bool,
+  message: typeMessage,
+  onClick: PropTypes.func
 };
-
 
 export default GenericMessage;

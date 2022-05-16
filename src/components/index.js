@@ -24,6 +24,8 @@ import Breadcrumbs from './breadcrumbs';
 import CopyAndPasteButton from './copy-and-paste';
 import SmartDate from './smart-date';
 import Button from './button';
+import GenericMessage from './generic-chat-message';
+import GenericMessageGroup from './generic-message-group';
 
 import { useNodeRedSocket } from '../hooks/socket';
 import useMCContext from '../hooks/mc-context';
@@ -60,7 +62,9 @@ window.globalLibs.Components = {
   SmartDate,
   Button,
   useNodeRedSocket,
-  useMCContext
+  useMCContext,
+  GenericMessage,
+  GenericMessageGroup
 };
 
 export {
@@ -91,5 +95,7 @@ export {
   SmartDate,
   Button,
   useNodeRedSocket,
-  useMCContext
+  useMCContext,
+  GenericMessage,
+  GenericMessageGroup
 };

@@ -229,21 +229,23 @@ $gray: #92959E;
   width: 90%;
   position: relative;
 
-  &:after {
-    bottom: 100%;
-    left: 7%;
-    border: solid transparent;
-    content: " ";
-    height: 0;
-    width: 0;
-    position: absolute;
-    pointer-events: none;
-    border-bottom-color: $green;
-    border-width: 10px;
-    margin-left: -10px;
+  &.beak {
+    &:after {
+      bottom: 100%;
+      left: 7%;
+      border: solid transparent;
+      content: " ";
+      height: 0;
+      width: 0;
+      position: absolute;
+      pointer-events: none;
+      border-bottom-color: $green;
+      border-width: 10px;
+      margin-left: -10px;
+    }
   }
 
-  &.first-of-group, &.first {
+  &.first {
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
     margin-bottom: 3px;
@@ -265,6 +267,38 @@ $gray: #92959E;
     }
   }
 }
+
+.ui-chat-photo-content {
+  @extend .ui-chat-content;
+
+  padding: 0px;
+  img {
+    width: 100%;
+    border-radius: 7px;
+    border: 3px solid $green;
+  }
+
+  &.first {
+    img {
+      border-bottom-left-radius: 0px;
+      border-bottom-right-radius: 0px;
+    }
+  }
+
+  &.middle {
+    img {
+      border-radius: 0px;
+    }
+  }
+
+  &.last {
+    img {
+      border-top-left-radius: 0px;
+      border-top-right-radius: 0px;
+    }
+  }
+}
+
 
 .ui-chat-metadata {
   margin-bottom: 15px;
@@ -289,6 +323,8 @@ $gray: #92959E;
   }
 
 }
+
+
 
 .ui-chat-message-photo {
   .ui-chat-content {

@@ -1,17 +1,23 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import _ from 'lodash';
-import moment from 'moment';
-import { IconButton, Icon } from 'rsuite';
 
-import { Message, Content, Metadata, MessageDate, MessageUser, UserStatus, Button, Buttons } from './generic';
+import { typeMessage } from '../../../types';
 
-const MessageButtons = ({ message, onClick = () => {}, ...props }) => {
+import { Content, Button, Buttons } from './generic';
+
+const MessageButtons = ({
+  message,
+  onClick = () => {},
+  position,
+  beak
+}) => {
+
+  // TODO how to show position
+  console.log('position', position);
 
   return (
     <Fragment>
-      <Content position="first">
+      <Content position="first" beak={beak}>
         {message.content}
       </Content>
       {message.buttons != null && message.buttons.length !== 0 && (
@@ -33,15 +39,10 @@ const MessageButtons = ({ message, onClick = () => {}, ...props }) => {
 };
 MessageButtons.propTypes = {
   onClick: PropTypes.func,
+  position: PropTypes.oneOf(['first', 'middle', 'last']),
+  beak: PropTypes.bool,
   //layout: PropTypes.oneOf(['quick-replies', 'inline',  'card']),
-  message: PropTypes.shape({
-    username: PropTypes.string,
-    content: PropTypes.string,
-    buttons: PropTypes.arrayOf(PropTypes.shape({
-      label: PropTypes.string,
-      value: PropTypes.string
-    }))
-  })
+  message: typeMessage,
 };
 
 export default MessageButtons;
