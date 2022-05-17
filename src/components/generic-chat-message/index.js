@@ -96,7 +96,10 @@ GenericMessage.propTypes = {
   useFrame: PropTypes.bool,
   position: PropTypes.oneOf(['first', 'middle', 'last']),
   beak: PropTypes.bool,
-  message: typeMessage,
+  message: PropTypes.oneOfType([
+    typeMessage,
+    PropTypes.arrayOf(typeMessage)
+  ]),
   onClick: PropTypes.func
 };
 

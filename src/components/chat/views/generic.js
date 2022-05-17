@@ -77,7 +77,7 @@ MessageDate.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
   ]),
-  date: PropTypes.oneOfType([momentPropTypes, PropTypes.func])
+  date: PropTypes.oneOfType([momentPropTypes.momentObj, PropTypes.func])
 };
 
 const MessageUser = ({ children }) => {

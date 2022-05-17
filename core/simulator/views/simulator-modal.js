@@ -16,8 +16,6 @@ const SimulatorParamsModal = ({
 }) => {
   const [formValue, setFormValue] = useState(params);
 
-  console.log('dentro', formValue)
-
   return (
     <Modal
       backdrop
@@ -70,7 +68,7 @@ const SimulatorParamsModal = ({
                 activeChatbots={activeChatbots}
                 name="nodeId"
                 block
-                size="sm"
+                size="md"
                 cleanable={false}
               />
             </FormGroup>

@@ -1,11 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import momentPropTypes from 'react-moment-proptypes';
-import classNames from 'classnames';
+import React, { useState } from 'react';
 import _ from 'lodash';
-import moment from 'moment';
 import PropTypes from 'prop-types';
 import { IconButton, Icon } from 'rsuite';
-
 
 const MessageComposer = ({ onSend = () => {}, onClear = () => {} }) => {
   const [message, setMessage] = useState('');

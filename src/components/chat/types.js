@@ -3,7 +3,7 @@ import momentPropTypes from 'react-moment-proptypes';
 
 const TypeSimulatorMessage = PropTypes.shape({
   username: PropTypes.string,
-  ts: momentPropTypes,
+  ts: momentPropTypes.momentObj,
   content: PropTypes.string,
   userId: PropTypes.string
 });

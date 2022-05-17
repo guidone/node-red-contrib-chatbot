@@ -32,8 +32,10 @@ module.exports = function(RED) {
         // get the configuration node from the chatbotId
         let serverNode = getConfigurationNode(message.chatbotId);
         if (serverNode == null || serverNode.chat == null) {
-          node.error(`Unable to find a RedBot chat bot with id ${message.chatbotId}`);
-          // TODO send an error back to the simulator UI
+          node.error(`Unable to find a RedBot chat bot with id "${message.chatbotId}"`);
+          sendMessage('simulator_error', {
+            message: `Unable to find a RedBot chat bot with id "${message.chatbotId}"`
+          });
           return;
         }
 

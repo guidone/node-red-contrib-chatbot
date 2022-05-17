@@ -2,10 +2,10 @@ import React from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 
-// TODO componentize
-import { Message, Content, Metadata, MessageDate, MessageUser, UserStatus } from '../chat/views/generic';
+import { Message, Metadata, MessageDate, MessageUser, UserStatus } from '../chat/views/generic';
 
 import GenericMessage from '../generic-chat-message';
+import { typeMessage } from '../../types';
 
 const GenericMessageGroup = ({ messages, ...props }) => {
   if (_.isEmpty(messages)) {
@@ -42,14 +42,7 @@ const GenericMessageGroup = ({ messages, ...props }) => {
   );
 };
 GenericMessageGroup.propTypes = {
-  messages: PropTypes.arrayOf(
-    PropTypes.shape({
-      content: PropTypes.string,
-      userId: PropTypes.string,
-      username: PropTypes.string,
-      ts: PropTypes.momentPropTypes
-    })
-  )
+  messages: PropTypes.arrayOf(typeMessage)
 };
 
 export default GenericMessageGroup;

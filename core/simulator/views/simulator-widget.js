@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
+import { Notification } from 'rsuite';
 
 import Panel from '../../../src/components/grid-panel';
 
@@ -18,11 +19,19 @@ import PanelMenu from '../views/panel-menu';
 import SimulatorContext from '../context';
 
 const SimulatorWidgetInner = ({ activeChatbots, chatbotId }) => {
-  const { state: { simulator }, dispatch, sendMessage } = useSimulator({ activeChatbots, chatbotId });
+  const { state: { simulator }, dispatch, sendMessage } = useSimulator({
+    activeChatbots,
+    chatbotId,
+    onError: error => {
+      Notification.error({
+        placement: 'topStart',
+        title: 'Error',
+        description: error.message
+      });
+    }
+  });
   const { messages, transport, nodeId, language, user: impersonatedUser } = simulator;
   const loading = activeChatbots == null;
-
-  console.log('simulator', simulator)
 
   const clickHandler = (obj) => {
     if (_.isObject(obj) && (obj.type === 'postback' || obj.type === 'quick-reply')) {
@@ -32,8 +41,6 @@ const SimulatorWidgetInner = ({ activeChatbots, chatbotId }) => {
   }
 
   useEffect(() => {
-    console.log('initial setup');
-
     // TODO check a valid chatbot id exists or set the default one
 
     return () => {

@@ -220,7 +220,7 @@
     "react-dom": "^16.12.0",
     "react-grid-layout": "^0.17.1",
     "react-json-view": "^1.19.1",
-    "react-moment-proptypes": "^1.7.0",
+    "react-moment-proptypes": "1.8.1",
     "react-router-dom": "^5.1.2",
     "react-sortable-hoc": "^1.11.0",
     "react-textarea-autosize": "^7.1.2",

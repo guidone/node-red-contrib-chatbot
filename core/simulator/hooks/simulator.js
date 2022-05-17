@@ -3,7 +3,11 @@ import _ from 'lodash';
 import { useNodeRedSocket } from '../../../src/hooks/socket';
 import useReducer from '../../../src/hooks/use-reducer';
 
-const useSimulator = ({ activeChatbots, chatbotId }) => {
+const useSimulator = ({
+  activeChatbots,
+  chatbotId,
+  onError = () => {}
+}) => {
 
   const { state, dispatch } = useReducer({
     simulator: {
@@ -20,6 +24,8 @@ const useSimulator = ({ activeChatbots, chatbotId }) => {
     onReceive: (topic, payload) => {
       if (topic === 'simulator') {
         dispatch({ type: 'message', payload, topic });
+      } else if (topic === 'simulator_error') {
+        onError(payload);
       }
     }
   });
