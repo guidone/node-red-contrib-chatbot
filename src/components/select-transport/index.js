@@ -1,18 +1,19 @@
-import React, { useState } from 'react'
+import React, { Fragment } from 'react'
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { SelectPicker } from 'rsuite';
 
 import useMCContext from '../../hooks/mc-context';
 import Transport from '../../../src/components/transport';
+import { typeActiveChatbot  } from '../../types';
 
 const TransportValue = (value, item) => (
   <div className="picker-item-transport">
     {item != null && (
-      <>
+      <Fragment>
         <Transport transport={item.transport}/>
         &nbsp;<b>{item.name}</b>
-      </>
+      </Fragment>
     )}
     {item == null && <span>Select transport</span>}
   </div>
@@ -26,8 +27,9 @@ const MenuItem = (label, item) => (
   </div>
 );
 
-const SelectTransport = ({ transports, ...props }) => {
-  const { state: { activeChatbots } } = useMCContext();
+const SelectTransport = ({ transports, activeChatbots, ...props }) => {
+  const { state } = useMCContext();
+  const bots = !_.isEmpty(activeChatbots) ? activeChatbots : state.activeChatbots;
 
   return (
     <SelectPicker
@@ -36,7 +38,7 @@ const SelectTransport = ({ transports, ...props }) => {
       renderMenuItem={MenuItem}
       searchable={false}
       cleanable={false}
-      data={activeChatbots
+      data={bots
         .filter(chatbot => _.isEmpty(transports) || transports.includes(chatbot.transport))
         .map(chatbot => ({ value: chatbot.nodeId, label: chatbot.transport, ...chatbot }))
       }
@@ -47,7 +49,8 @@ SelectTransport.propTypes = {
   // limit chatbot to a list of transports
   transports: PropTypes.arrayOf(PropTypes.string),
   value: PropTypes.string,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  activeChatbots: PropTypes.arrayOf(typeActiveChatbot)
 };
 
 export default SelectTransport;

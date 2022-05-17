@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 
 import { typeMessage } from '../../../types';
 
-import { Content, Button, Buttons } from './generic';
+import Content from './content';
+import { Button, Buttons } from './generic';
 
 const MessageButtons = ({
   message,

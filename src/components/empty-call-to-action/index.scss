@@ -1,0 +1,19 @@
+.ui-empty-call-to-action {
+  margin: 20px;
+  text-align: center;
+  display: flex;
+  height: 100%;
+
+  .panel {
+    width: 100%;
+    align-self: center;
+  }
+
+  .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  .description {
+    color: #777777;
+  }
+}

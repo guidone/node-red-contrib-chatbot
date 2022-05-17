@@ -11121,10 +11121,10 @@
   dependencies:
     "object-visit" "^1.0.0"
 
-"marked@*", "marked@^0.3.6":
-  "integrity" "sha512-3emDbXi5/Jnv8Pff4GdrBxJhpQA2xzq/IzHGjsVvGZs7QK0wx1mg7rRy5UmP1T/Dt1RsWL8ikxIM3cHHGF/UJg=="
-  "resolved" "https://registry.npmjs.org/marked/-/marked-0.3.14.tgz"
-  "version" "0.3.14"
+"marked@*", "marked@4.0.16":
+  "integrity" "sha512-wahonIQ5Jnyatt2fn8KqF/nIqZM8mh3oRu2+l5EANGMhu6RFjiSG52QNE2eWzFMI94HqYSgN184NurgNG6CztA=="
+  "resolved" "https://registry.npmjs.org/marked/-/marked-4.0.16.tgz"
+  "version" "4.0.16"
 
 "md5.js@^1.3.4":
   "integrity" "sha512-xitP+WxNPcTTOgnTJcrhM0xvdPepipPSf3I8EIpGKeFLjt3PlJLIDG3u8EX53ZIubkb+5U2+3rELYpEhHhzdkg=="

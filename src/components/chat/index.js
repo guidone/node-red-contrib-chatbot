@@ -5,7 +5,8 @@ import Showdown from 'showdown';
 
 import { typeMessage } from '../../types';
 
-import { Message, Content, PhotoContent, Metadata, MessageDate, MessageUser, UserStatus } from './views/generic';
+import { Message, PhotoContent, Metadata, MessageDate, MessageUser, UserStatus } from './views/generic';
+import Content from './views/content';
 import MessageComposer from './views/message-composer';
 import './chat.scss';
 

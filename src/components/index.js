@@ -26,6 +26,9 @@ import SmartDate from './smart-date';
 import Button from './button';
 import GenericMessage from './generic-chat-message';
 import GenericMessageGroup from './generic-message-group';
+import EmptyCallToAction from './empty-call-to-action';
+import Language from './language';
+import LanguagePicker from './language-picker';
 
 import { useNodeRedSocket } from '../hooks/socket';
 import useMCContext from '../hooks/mc-context';
@@ -64,7 +67,10 @@ window.globalLibs.Components = {
   useNodeRedSocket,
   useMCContext,
   GenericMessage,
-  GenericMessageGroup
+  GenericMessageGroup,
+  EmptyCallToAction,
+  Language,
+  LanguagePicker
 };
 
 export {
@@ -97,5 +103,8 @@ export {
   useNodeRedSocket,
   useMCContext,
   GenericMessage,
-  GenericMessageGroup
+  GenericMessageGroup,
+  EmptyCallToAction,
+  Language,
+  LanguagePicker
 };
