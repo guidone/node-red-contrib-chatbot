@@ -28,6 +28,9 @@ module.exports = function(RED) {
     }
 
     const handler = async (topic, message) => {
+
+      console.log('receiving from botId', message.chatbotId)
+
       if (topic === 'simulator') {
         // get the configuration node from the chatbotId
         let serverNode = getConfigurationNode(message.chatbotId);

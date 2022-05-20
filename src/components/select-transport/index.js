@@ -39,6 +39,7 @@ const SelectTransport = ({ transports, activeChatbots, ...props }) => {
       searchable={false}
       cleanable={false}
       data={bots
+        .filter(bot => bot.chatbotId === state.chatbotId)
         .filter(chatbot => _.isEmpty(transports) || transports.includes(chatbot.transport))
         .map(chatbot => ({ value: chatbot.nodeId, label: chatbot.transport, ...chatbot }))
       }

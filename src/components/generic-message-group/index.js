@@ -7,7 +7,7 @@ import { Message, Metadata, MessageDate, MessageUser, UserStatus } from '../chat
 import GenericMessage from '../generic-chat-message';
 import { typeMessage } from '../../types';
 
-const GenericMessageGroup = ({ messages, ...props }) => {
+const GenericMessageGroup = ({ messages, onClick, ...props }) => {
   if (_.isEmpty(messages)) {
     return;
   }
@@ -26,8 +26,6 @@ const GenericMessageGroup = ({ messages, ...props }) => {
           position = 'last';
         }
 
-        // TODO add onClick
-
         return (
           <GenericMessage
             key={message.messageId}
@@ -35,6 +33,7 @@ const GenericMessageGroup = ({ messages, ...props }) => {
             useFrame={false}
             beak={position === 'first'}
             position={position}
+            onClick={onClick}
           />
         );
       })}
@@ -42,7 +41,8 @@ const GenericMessageGroup = ({ messages, ...props }) => {
   );
 };
 GenericMessageGroup.propTypes = {
-  messages: PropTypes.arrayOf(typeMessage)
+  messages: PropTypes.arrayOf(typeMessage),
+  onClick: PropTypes.func
 };
 
 export default GenericMessageGroup;

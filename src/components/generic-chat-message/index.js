@@ -23,7 +23,10 @@ const GenericMessage = ({
   // if array messages must be grouped
   if (_.isArray(message)) {
     return (
-      <GenericMessageGroup messages={message} onClick={onClick} />
+      <GenericMessageGroup
+        messages={message}
+        onClick={onClick}
+      />
     );
   }
   let inner;

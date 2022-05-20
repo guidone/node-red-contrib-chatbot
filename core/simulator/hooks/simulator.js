@@ -34,10 +34,9 @@ const useSimulator = ({
     state,
     dispatch,
     sendMessage: (text, { echo = true } = {}) => {
-      const { transport, nodeId, language, user: impersonatedUser } = state.simulator;
+      const { transport, language, user: impersonatedUser } = state.simulator;
       sendMessage('simulator', {
         transport,
-        nodeId, // remove this
         chatbotId,
         language,
         userId: impersonatedUser != null ? impersonatedUser.userId : 'simulator',

@@ -5,21 +5,15 @@ const { when } = require('../lib/utils');
 
 module.exports = function(RED) {
 
-  const { Events/*, sendMessage*/ } = require('./mc')(RED);
-
-
   const sendMessage = (topic, payload) => {
-    console.log('sending back', payload)
     RED.comms.publish('redbot', { topic, payload });
   }
-
 
   function MissionControlSimulatorSender(config) {
     RED.nodes.createNode(this, config);
     const node = this;
     this.track = config.track;
     this.passThrough = config.passThrough;
-
 
     // relay message
     const handleConversation = function(msg) {
@@ -45,15 +39,12 @@ module.exports = function(RED) {
       }
       // check if this node has some wirings in the follow up pin, in that case
       // the next message should be redirected here
-      console.log('is tracking', node.track)
       if (context != null && node.track && !_.isEmpty(node.wires[0])) {
-        console.log('storing track node', node.id)
         await when(context.set({
           simulator_currentConversationNode: node.id,
           simulator_currentConversationNode_at: moment()
         }));
       }
-
 
       if (_.isArray(msg.payload)) {
         const payload = msg.payload.map(payload => ({ ...payload, messageId: _.uniqueId('msg_') }));

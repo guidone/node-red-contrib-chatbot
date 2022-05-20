@@ -65,7 +65,6 @@ const SimulatorParamsModal = ({
               <ControlLabel>Transport</ControlLabel>
               <FormControl
                 accepter={SelectTransport}
-                activeChatbots={activeChatbots}
                 name="nodeId"
                 block
                 size="md"

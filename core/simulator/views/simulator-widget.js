@@ -38,16 +38,30 @@ const SimulatorWidgetInner = ({ activeChatbots, chatbotId }) => {
       // don't show on simulator the value sent by the button
       sendMessage(obj.value, { echo: false });
     }
-  }
+  };
+
+  console.log('actual ',simulator)
 
   useEffect(() => {
-    // TODO check a valid chatbot id exists or set the default one
+
 
     return () => {
       // clear message list if chatbotId changes
       dispatch({ type: 'clear', transport });
     }
   }, [chatbotId])
+
+  useEffect(() => {
+    // TODO check a valid chatbot id exists or set the default one
+
+    return () => {
+      console.log('defaulting after change ', !_.isEmpty(activeChatbots) ? activeChatbots[0] : null)
+      dispatch({
+        type: 'chatBot',
+        chatBot: !_.isEmpty(activeChatbots) ? activeChatbots[0] : null
+      });
+    }
+  }, [activeChatbots])
 
   return (
     <Panel
@@ -108,21 +122,21 @@ const SimulatorWidget = () => {
   const { activeChatbots, chatbotId, user } = state;
   const bots = activeChatbots.filter(bot => bot.chatbotId === chatbotId);
 
+  const noAvailableBots = _.isEmpty(bots);
 
-
-  if (!_.isEmpty(bots)) {
+  if (noAvailableBots) {
+    return (
+      <EmptyCallToAction
+        title="No active bot"
+        description={`No active bots for this chatbotId "${chatbotId}"`}
+      />
+    );
+  } else {
     return (
       <SimulatorWidgetInner
         user={user}
         chatbotId={chatbotId}
         activeChatbots={bots}
-      />
-    );
-  } else {
-    return (
-      <EmptyCallToAction
-        title="No active bot"
-        description={`No active bots for this chatbotId "${chatbotId}"`}
       />
     );
   }
