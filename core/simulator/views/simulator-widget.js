@@ -101,26 +101,22 @@ SimulatorWidgetInner.propTypes = {
 
 const SimulatorWidget = () => {
   const { state } = useMCContext();
-  const { activeChatbots, chatbotId, user } = state;
+  const { activeChatbots, chatbotId, user, simulatorChatbotIds } = state;
   const bots = activeChatbots.filter(bot => bot.chatbotId === chatbotId);
 
-  const noAvailableBots = _.isEmpty(bots);
-
-  // TODO here should check for active simulators with chabot id
-
-  if (noAvailableBots) {
-    return (
-      <EmptyCallToAction
-        title="No active bot"
-        description={`No active bots for this chatbotId "${chatbotId}"`}
-      />
-    );
-  } else {
+  if (simulatorChatbotIds.includes(chatbotId)) {
     return (
       <SimulatorWidgetInner
         user={user}
         chatbotId={chatbotId}
         activeChatbots={bots}
+      />
+    );
+  } else {
+    return (
+      <EmptyCallToAction
+        title="Missing simulator"
+        description={`There is not simulator node for chatbotId "${chatbotId}"`}
       />
     );
   }

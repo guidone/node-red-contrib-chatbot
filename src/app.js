@@ -54,6 +54,11 @@ plug('reducers', (state, action) => {
       ...state,
       messageTypes: action.messageTypes
     };
+  } else if (action.type === 'setSimulatorChatbotIds') {
+    return {
+      ...state,
+      simulatorChatbotIds: action.simulatorChatbotIds
+    };
   }
 
   return state;
@@ -186,7 +191,8 @@ const usePrefetchedData = (client, { onComplete = () => {} }) => {
           messageTypes: response.messageTypes,
           activeChatbots: response.activeChatbots,
           loading,
-          chatbots
+          chatbots,
+          simulatorChatbotIds: response.simulatorChatbotIds
         });
       });
   }, []);
@@ -204,6 +210,7 @@ const RouterContainer = ({bootstrap, codePlug, dispatch }) => {
         const response = await fetch('/redbot/globals');
         const globals = await response.json();
         dispatch({ type: 'setActiveChatbots', activeChatbots: globals.activeChatbots });
+        dispatch({ type: 'setSimulatorChatbotIds', simulatorChatbotIds: globals.simulatorChatbotIds });
       }
     }
   })
@@ -244,11 +251,12 @@ const AppRouter = ({ codePlug, bootstrap }) => {
 
   const { platforms, eventTypes, messageTypes, activeChatbots, loading, chatbots } = usePrefetchedData(
     client, {
-      onComplete: ({ chatbots, activeChatbots, eventTypes, messageTypes }) => {
+      onComplete: ({ chatbots, activeChatbots, eventTypes, messageTypes, simulatorChatbotIds }) => {
         dispatch({ type: 'setChatbots',  chatbots });
         dispatch({ type: 'setActiveChatbots', activeChatbots });
         dispatch({ type: 'setEventTypes', eventTypes });
         dispatch({ type: 'setMessageTypes', messageTypes });
+        dispatch({ type: 'setSimulatorChatbotIds', simulatorChatbotIds });
         // preselect first available bot
         if (_.isEmpty(chatbotId)) {
           const bots = chatbots.filter(({ chatbotId }) => !_.isEmpty(chatbotId));

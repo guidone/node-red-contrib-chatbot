@@ -49,6 +49,13 @@ module.exports = function(RED) {
         result[key] = globalContextHelper.get(key);
       }
     });
+    // get all chatbotIds used in simulator
+    result.simulatorChatbotIds = [];
+    RED.nodes.eachNode(n => {
+      if (n.type === 'mc-simulator-receiver' && !result.simulatorChatbotIds.includes(n.chatbotId)) {
+        result.simulatorChatbotIds.push(n.chatbotId);
+      }
+    });
     // get a list of running chatbots in the flow
     result.activeChatbots = keys
       .filter(key => key.startsWith('chatbot_info_'))
