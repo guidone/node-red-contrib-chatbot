@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Notification } from 'rsuite';
@@ -30,7 +30,7 @@ const SimulatorWidgetInner = ({ activeChatbots, chatbotId }) => {
       });
     }
   });
-  const { messages, transport, nodeId, language, user: impersonatedUser } = simulator;
+  const { messages, transport, /*nodeId,*/ language, user: impersonatedUser } = simulator;
   const loading = activeChatbots == null;
 
   const clickHandler = (obj) => {
@@ -40,28 +40,13 @@ const SimulatorWidgetInner = ({ activeChatbots, chatbotId }) => {
     }
   };
 
-  console.log('actual ',simulator)
-
+  /*
   useEffect(() => {
-
-
     return () => {
       // clear message list if chatbotId changes
       dispatch({ type: 'clear', transport });
     }
-  }, [chatbotId])
-
-  useEffect(() => {
-    // TODO check a valid chatbot id exists or set the default one
-
-    return () => {
-      console.log('defaulting after change ', !_.isEmpty(activeChatbots) ? activeChatbots[0] : null)
-      dispatch({
-        type: 'chatBot',
-        chatBot: !_.isEmpty(activeChatbots) ? activeChatbots[0] : null
-      });
-    }
-  }, [activeChatbots])
+  }, [chatbotId])*/
 
   return (
     <Panel
@@ -70,10 +55,7 @@ const SimulatorWidgetInner = ({ activeChatbots, chatbotId }) => {
       menu={!loading && <PanelMenu
         user={impersonatedUser}
         language={language}
-        nodeId={nodeId}
-        transport={transport}
         dispatch={dispatch}
-        activeChatbots={activeChatbots}
         onChange={chatBot => dispatch({ type: 'chatBot', chatBot })}
       />}
     >
@@ -81,7 +63,7 @@ const SimulatorWidgetInner = ({ activeChatbots, chatbotId }) => {
         <SimulatorContext.Provider value={simulator}>
         <ChatWindow>
           <Messages>
-            {messages[transport] != null && messages[transport].map(message => {
+            {messages[chatbotId] != null && messages[chatbotId].map(message => {
               if (_.isArray(message)) {
                 // multiple messages are always inbound
                 return (
@@ -123,6 +105,8 @@ const SimulatorWidget = () => {
   const bots = activeChatbots.filter(bot => bot.chatbotId === chatbotId);
 
   const noAvailableBots = _.isEmpty(bots);
+
+  // TODO here should check for active simulators with chabot id
 
   if (noAvailableBots) {
     return (

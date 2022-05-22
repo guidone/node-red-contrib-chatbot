@@ -16,7 +16,7 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
     const node = this;
     const globalContextHelper = GlobalContextHelper(RED);
-    this.topic = config.topic;
+    this.chatbotId = config.chatbotId;
 
     globalContextHelper.init(this.context().global);
 
@@ -29,9 +29,8 @@ module.exports = function(RED) {
 
     const handler = async (topic, message) => {
 
-      console.log('receiving from botId', message.chatbotId)
-
-      if (topic === 'simulator') {
+      // only process simulator messages coming from the right chatbotId
+      if (topic === 'simulator' && message != null && message.chatbotId === node.chatbotId) {
         // get the configuration node from the chatbotId
         let serverNode = getConfigurationNode(message.chatbotId);
         if (serverNode == null || serverNode.chat == null) {

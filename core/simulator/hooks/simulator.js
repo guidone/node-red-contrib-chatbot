@@ -1,10 +1,10 @@
-import _ from 'lodash';
+//import _ from 'lodash';
 
 import { useNodeRedSocket } from '../../../src/hooks/socket';
 import useReducer from '../../../src/hooks/use-reducer';
 
 const useSimulator = ({
-  activeChatbots,
+  /*activeChatbots,*/
   chatbotId,
   onError = () => {}
 }) => {
@@ -12,8 +12,8 @@ const useSimulator = ({
   const { state, dispatch } = useReducer({
     simulator: {
       messages: {},
-      transport: !_.isEmpty(activeChatbots) ? activeChatbots[0].transport : null,
-      nodeId: !_.isEmpty(activeChatbots) ? activeChatbots[0].nodeId : null,
+      //transport: !_.isEmpty(activeChatbots) ? activeChatbots[0].transport : null,
+      //nodeId: !_.isEmpty(activeChatbots) ? activeChatbots[0].nodeId : null,
       globals: null,
       language: 'en',
       user: null
@@ -23,7 +23,7 @@ const useSimulator = ({
   const { sendMessage } = useNodeRedSocket({
     onReceive: (topic, payload) => {
       if (topic === 'simulator') {
-        dispatch({ type: 'message', payload, topic });
+        dispatch({ type: 'message', payload, topic, chatbotId });
       } else if (topic === 'simulator_error') {
         onError(payload);
       }
@@ -34,9 +34,9 @@ const useSimulator = ({
     state,
     dispatch,
     sendMessage: (text, { echo = true } = {}) => {
-      const { transport, language, user: impersonatedUser } = state.simulator;
+      const { /*transport,*/ language, user: impersonatedUser } = state.simulator;
       sendMessage('simulator', {
-        transport,
+        //transport,
         chatbotId,
         language,
         userId: impersonatedUser != null ? impersonatedUser.userId : 'simulator',

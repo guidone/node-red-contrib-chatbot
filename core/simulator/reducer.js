@@ -12,7 +12,7 @@ const handleMessages = (state, action) => {
       return state;
     }
 
-    const current = _.isArray(state.simulator.messages[payload.transport]) ? state.simulator  .messages[payload.transport] : [];
+    const current = _.isArray(state.simulator.messages[action.chatbotId]) ? state.simulator.messages[action.chatbotId] : [];
 
     let toAdd;
     if (!_.isArray(payload.payload)) {
@@ -24,7 +24,7 @@ const handleMessages = (state, action) => {
     const messages = {
       ...state.messages,
       // multiple messages can be enqueued
-      [payload.transport]: [
+      [action.chatbotId]: [
         ...current,
         toAdd
       ]
@@ -43,7 +43,7 @@ const handleMessages = (state, action) => {
         ...state.simulator,
         messages: {
           ...state.messages,
-          [action.transport]: []
+          [action.chatbotId]: []
         }
       }
     };
@@ -62,8 +62,8 @@ const handleMessages = (state, action) => {
       ...state,
       simulator: {
         ...state.simulator,
-        transport: params.chatBot.transport,
-        nodeId: params.chatBot.nodeId,
+        //transport: params.chatBot.transport,
+        //nodeId: params.chatBot.nodeId,
         language: params.language,
         user: params.user
       }

@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types';
 import { FlexboxGrid, Modal, Button, FormGroup, ControlLabel, Form, FormControl } from 'rsuite';
 
-import { SelectTransport, UserAutocomplete, LanguagePicker } from '../../../src/components';
-import { typeActiveChatbot, typeUser } from '../../../src/types';
+import { /*SelectTransport,*/ UserAutocomplete, LanguagePicker } from '../../../src/components';
+import { /*typeActiveChatbot,*/ typeUser } from '../../../src/types';
 
 // TODO default user in user autocomplete
 
@@ -11,8 +11,7 @@ const SimulatorParamsModal = ({
   params,
   onCancel = () => {},
   onSubmit = () => {},
-  disabled = false,
-  activeChatbots
+  disabled = false
 }) => {
   const [formValue, setFormValue] = useState(params);
 
@@ -61,16 +60,7 @@ const SimulatorParamsModal = ({
           </FormGroup>
           </FlexboxGrid.Item>
           <FlexboxGrid.Item colspan={11}>
-            <FormGroup>
-              <ControlLabel>Transport</ControlLabel>
-              <FormControl
-                accepter={SelectTransport}
-                name="nodeId"
-                block
-                size="md"
-                cleanable={false}
-              />
-            </FormGroup>
+            &nbsp;
           </FlexboxGrid.Item>
         </FlexboxGrid>
         </Form>
@@ -82,10 +72,7 @@ const SimulatorParamsModal = ({
         <Button
           appearance="primary"
           disabled={disabled}
-          onClick={() => onSubmit({
-            ...formValue,
-            chatBot: activeChatbots.find(chatbot => chatbot.nodeId === formValue.nodeId)
-          })}
+          onClick={() => onSubmit(formValue)}
         >
           Save configuration
         </Button>
@@ -101,8 +88,7 @@ SimulatorParamsModal.propTypes = {
   }),
   disabled: PropTypes.bool,
   onCancel: PropTypes.func,
-  onSubmit: PropTypes.func,
-  activeChatbots: PropTypes.arrayOf(typeActiveChatbot)
+  onSubmit: PropTypes.func
 };
 
 export default SimulatorParamsModal;

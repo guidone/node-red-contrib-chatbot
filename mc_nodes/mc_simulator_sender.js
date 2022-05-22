@@ -14,6 +14,7 @@ module.exports = function(RED) {
     const node = this;
     this.track = config.track;
     this.passThrough = config.passThrough;
+    this.chatbotId = config.chatbotId;
 
     // relay message
     const handleConversation = function(msg) {
@@ -32,8 +33,8 @@ module.exports = function(RED) {
       done = done || function(error) { node.error.call(node, error, msg) };
 
       const context = msg.chat();
-      // skip messages not from the simulator
-      if (!msg.originalMessage.simulator) {
+      // skip messages not from the simulator and from the right chatbotId
+      if (!msg.originalMessage.simulator && msg.originalMessage.chatbotId !== node.chatbotId) {
         done();
         return;
       }
