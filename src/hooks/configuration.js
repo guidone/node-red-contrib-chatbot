@@ -67,8 +67,8 @@ const useConfiguration = ({
     saving: mutationLoading,
     error: error || mutationError || parsingError,
     data: configurationValue,
-    update: configuration => {
-      updateConfiguration({
+    update: async configuration => {
+      await updateConfiguration({
         variables: {
           configuration: {
             namespace,

@@ -7,7 +7,6 @@ import withState from '../wrappers/with-state';
 import useConfiguration from '../hooks/configuration';
 import { useCodePlug } from 'code-plug';
 import useCurrentUser from '../hooks/current-user';
-import useMCContext from '..//hooks/mc-context';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -40,11 +39,13 @@ plug('reducers', (state, action) => {
 
 const HomePage = ({ count, dispatch, user }) => {
   const { permissionQuery } = useCurrentUser();
-  const { state } = useMCContext();
+  //const { state } = useMCContext();
   const { items } = useCodePlug('widgets', permissionQuery);
-  const { loading, saving, error, data, update } = useConfiguration({
+  const { loading, data, saving, update } = useConfiguration({
     namespace: 'dashboard',
-    onCompleted: () => Notification.success({ title: 'Configuration', description: 'Configuration saved successful' })
+    onCompleted: () => {
+      Notification.success({ title: 'Configuration', description: 'Configuration saved successful' });
+    }
   });
   const [isLoaded, setIsLoaded] = useState(false);
   useEffect(() => {
@@ -58,7 +59,6 @@ const HomePage = ({ count, dispatch, user }) => {
     );
   }
 
-
   return (
     <div className="mc-home">
       <ResponsiveReactGridLayout
@@ -70,21 +70,23 @@ const HomePage = ({ count, dispatch, user }) => {
         margin={[20, 20]}
         layouts={data}
         onLayoutChange={(layout, layouts) => {
-          isLoaded && update(layouts);
+          // avoid multiple calling
+          isLoaded && !saving && update(layouts);
         }}
+
       >
-        {items.map(({ view: View, props }) => {
-          const { x, y, h, w, isResizable, minW, maxW } = props;
+        {items.map(({ view: View, props: widgetProps }) => {
+          const { x, y, h, w, isResizable, minW, maxW } = widgetProps;
           return (
-            <div key={props.id} data-grid={{x, y, w, h, isResizable, minW, maxW }}>
-              <View {...props}/>
+            <div key={widgetProps.id} data-grid={{x, y, w, h, isResizable, minW, maxW }}>
+              <View {...widgetProps}/>
             </div>
           );
         })}
       </ResponsiveReactGridLayout>
     </div>
   );
+};
 
-}
-
+// TODO remove this
 export default withState(HomePage, ['count']);
