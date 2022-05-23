@@ -5,14 +5,10 @@ import { Notification } from 'rsuite';
 
 import Panel from '../../../src/components/grid-panel';
 
-// TODO port to externalized componetns
-import {
-  Messages,
-  ChatWindow,
-  MessageComposer
-} from '../../../src/components/chat';
-import { GenericMessage as Message, EmptyCallToAction, useMCContext } from '../../../src/components';
+import { GenericMessage as Message, EmptyCallToAction, useMCContext, Chat } from '../../../src/components';
 import { typeActiveChatbot } from '../../../src/types';
+
+const { Messages, ChatWindow, MessageComposer } = Chat;
 
 import useSimulator from '../hooks/simulator';
 import PanelMenu from '../views/panel-menu';

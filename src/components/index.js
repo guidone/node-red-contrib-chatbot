@@ -29,6 +29,7 @@ import GenericMessageGroup from './generic-message-group';
 import EmptyCallToAction from './empty-call-to-action';
 import Language from './language';
 import LanguagePicker from './language-picker';
+import * as Chat from './chat';
 
 import { useNodeRedSocket } from '../hooks/socket';
 import useMCContext from '../hooks/mc-context';
@@ -70,7 +71,8 @@ window.globalLibs.Components = {
   GenericMessageGroup,
   EmptyCallToAction,
   Language,
-  LanguagePicker
+  LanguagePicker,
+  Chat
 };
 
 export {
@@ -106,5 +108,6 @@ export {
   GenericMessageGroup,
   EmptyCallToAction,
   Language,
-  LanguagePicker
+  LanguagePicker,
+  Chat
 };
