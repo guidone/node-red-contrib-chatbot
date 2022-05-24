@@ -1,5 +1,5 @@
 import React from 'react';
-import marked from 'marked';
+import { marked } from 'marked';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
@@ -15,7 +15,7 @@ const Content = ({
       <div
         className={classNames('ui-chat-content message', { beak, [position]: true })}
         dangerouslySetInnerHTML={{
-          __html: marked(text.replace(/\n/g, '<br/>'))
+          __html: marked.parse(text.replace(/\n/g, '<br/>'))
         }}
       />
     );
