@@ -34,7 +34,7 @@
         value: false
       },
       inspectMessages: {
-        value: false
+        value: true
       },
       chatbotId: {
         value: ''
@@ -240,7 +240,7 @@
   </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-facebook-node"><p><strong>Facebook</strong> API talks to <strong>Red-Bot</strong> via a https callback (a self signed certificate is not enough). 
+<script type="text/x-red" data-help-name="chatbot-facebook-node"><p><strong>Facebook</strong> API talks to <strong>Red-Bot</strong> via a https callback (a self signed certificate is not enough).
 We&#39;ll use <a href="https://ngrok.com/">ngrok</a> to create a https tunnel for our local <strong>Node-RED</strong> instance. Install it, then open a shell window and run</p>
 <pre><code>ngrok http 127.0.0.1:1880
 </code></pre>

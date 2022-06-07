@@ -6,6 +6,7 @@ const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
+  const isMissionControlEnabled = require('../lib/helpers/is-mc-enabled')(RED);
 
   function ChatBotContextStore(config) {
     RED.nodes.createNode(this, config);
@@ -69,8 +70,7 @@ module.exports = function(RED) {
     // add port
     result.uiPort = RED.settings.uiPort;
     // if mc is installed
-    const mcSettings = RED.settings.RedBot || {};
-    result.missionControl = mcSettings.enableMissionControl || process.env.REDBOT_ENABLE_MISSION_CONTROL === 'true';
+    result.missionControl = isMissionControlEnabled();
     res.send(result);
   });
 

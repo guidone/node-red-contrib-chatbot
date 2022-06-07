@@ -40,7 +40,7 @@
         value: false
       },
       inspectMessages: {
-        value: false
+        value: true
       },
       chatbotId: {
         value: ''
@@ -310,7 +310,7 @@ settings:
 </ol>
 <h2 id="with-web-hooks">With Web Hooks</h2>
 <ol>
-<li><strong>Slack</strong> API talks to <strong>Red-Bot</strong> via a https callback (a self signed certificate is not enough). 
+<li><strong>Slack</strong> API talks to <strong>Red-Bot</strong> via a https callback (a self signed certificate is not enough).
 We&#39;ll use <a href="https://ngrok.com/">ngrok</a> to create a https tunnel for our local <strong>Node-RED</strong> instance. Install it, then open a shell window and run</li>
 </ol>
 <pre><code>ngrok http 3001
