@@ -1,3 +1,4 @@
+* **0.19.20** Fix waiting acknowledgement in Slack API 
 * **0.19.19** Fix .keys() error in Rules node, added Push and Pop message nodes
 * **0.19.18** Added skipMediaFiles for Telegram bot, fixed default valut in `Params node`
 * **0.19.16** Fixed tokens not encrypted in Telegram, fixed reply in threads for Slack, added support for markdown in Slack
