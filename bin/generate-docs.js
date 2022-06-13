@@ -3,7 +3,7 @@ var marked = require('marked');
 var clc = require('cli-color');
 var _ = require('underscore');
 var fs = require('fs');
-const { node } = require('../lib/helpers/lcd');
+
 var green = clc.greenBright;
 var white = clc.white;
 var grey = clc.blackBright;
@@ -103,7 +103,7 @@ function collectImages(html) {
 }
 
 function fetchImageBase64(url) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function(resolve) {
     // convert url to github raw
     url = url.replace('github.com', 'raw.githubusercontent.com');
     url = url.replace('/blob/', '/');
@@ -139,6 +139,7 @@ function fetchImagesBase64(images) {
 }
 
 
+// eslint-disable-next-line no-console
 console.log(orange('Generating inline documentation...'));
 
 _(mappings).map(function(nodeFiles, markdownFile) {
@@ -156,10 +157,11 @@ _(mappings).map(function(nodeFiles, markdownFile) {
         } else {
           nodeName = nodeFile.replace('.html', '');
         }
+        // eslint-disable-next-line no-console
         console.log('- ' + grey(markdownFile) + ' (' + nodeName + ')');
 
         var markdownSource = fs.readFileSync(__dirname + '/../wiki/' + markdownFile, 'utf8');
-        var htmlSource = marked(markdownSource);
+        var htmlSource = marked.parse(markdownSource);
         try {
           var nodeSource = fs.readFileSync(__dirname + '/../nodes/' + nodeFile, 'utf8');
         } catch(e) {
@@ -240,9 +242,11 @@ _(mappings).map(function(nodeFiles, markdownFile) {
 
 tasks.then(
   function() {
+    // eslint-disable-next-line no-console
     console.log('Writing changelog ' + grey(__dirname + '/../CHANGELOG.md'));
     var changelog = fs.readFileSync(__dirname + '/../wiki/Changelog.md', 'utf8');
     fs.writeFileSync(__dirname + '/../CHANGELOG.md', changelog, 'utf8');
+    // eslint-disable-next-line no-console
     console.log(green('All done.'));
   },
   function() {
