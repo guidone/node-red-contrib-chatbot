@@ -14,6 +14,7 @@ var tasks = new Promise(function(resolve) {
 });
 
 var mappings = {
+  'Slack-blocks-node.md': 'chatbot-slack-blocks.html',
   'Push-and-Pop-Message-node.md': ['chatbot-pop-message.html', 'chatbot-push-message.html'],
   'Generic-Template-node.md': 'chatbot-generic-template.html',
   'Quick-Replies-node.md': 'chatbot-quick-replies.html',
@@ -70,7 +71,6 @@ var mappings = {
   'Alexa-Speech-node.md': 'chatbot-alexa-speech.html',
   'Alexa-Directive-node.md': 'chatbot-alexa-directive.html',
   'Universal-Connector-node.md': 'chatbot-universal-receive.html|chatbot-universal-receive',
-  'Slack-blocks-node.md': 'chatbot-slack-blocks.html',
   'Params-node.md': 'chatbot-params.html',
   'NLPjs-Train.md': 'chatbot-nlp-train.html|chatbot-nlpjs-train',
   'NLPjs-Entity.md': 'chatbot-nlp-entity.html|chatbot-nlpjs-entity',
@@ -191,6 +191,19 @@ _(mappings).map(function(nodeFiles, markdownFile) {
           );
         });
 
+        // replace links to wiki
+        const wikiLinks = htmlSource.match(/\[\[([a-zA-Z\- ])+\|([a-zA-Z\- ])+\]\]/gm);
+        (wikiLinks || []).forEach(wikiLink => {
+          const [label, wikiName] = wikiLink
+            .replace('[[', '')
+            .replace(']]', '')
+            .split('|');
+          htmlSource = htmlSource.replace(
+            wikiLink,
+            `<a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/${wikiName}" target="_blank">${label}</a>`
+          );
+        });
+
         // get all images and transform them into base64 (GitHub will deny images in iframe)
         var images = collectImages(htmlSource);
 
@@ -206,18 +219,7 @@ _(mappings).map(function(nodeFiles, markdownFile) {
               // replace "$" or will mess up with the regular expression
               htmlSource = htmlSource.replace(/\$/g, '&#36;');
 
-              // replace links to wiki
-              const wikiLinks = htmlSource.match(/\[\[([a-zA-Z\- ])+\|([a-zA-Z\- ])+\]\]/gm);
-              (wikiLinks || []).forEach(wikiLink => {
-                const [label, wikiName] = wikiLink
-                  .replace('[[', '')
-                  .replace(']]', '')
-                  .split('|');
-                htmlSource = htmlSource.replace(
-                  wikiLink,
-                  `<a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/${wikiName}" target="_blank">${label}</a>`
-                );
-              });
+
 
               // replace inline documentation
               var newDoc = '<script type="text\/x-red" data-help-name="' + nodeName + '">' + htmlSource + '</script>';
