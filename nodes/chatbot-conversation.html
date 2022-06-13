@@ -199,13 +199,13 @@
 <p>The <code>chatId</code> is needed to initiate the conversation (you can grab the <em>chatId</em> from the logs or a debug node),
 the <code>chatId</code> is a unique identifier for a user in a specific platform (i.e. in <em>Telegram</em> looks like <em>1234567746</em>, in <em>Slack</em> <em>H0394KHM70C</em>, etc).</p>
 <p>The parameters <code>chatId</code> and <code>transport</code> can be passed through the payload by the upstream node (if the transport and the bot configuration are already configured):</p>
-<pre><code class="lang-javascript">msg.payload = {
+<pre><code class="language-javascript">msg.payload = {
   chatId: &#39;42&#39;
 };
 return msg;
 </code></pre>
 <p>A conversation can be initiated also with the <code>userId</code>, which is a unique identifier for user in <strong>RedBot</strong> across different platforms. There&#39;s a one-to-many relation between the <code>userId</code> and the <code>chatId</code> (the same user can have different <em>chatIds</em> for for example for <em>Telegram</em> and <em>Slack</em>). It&#39;s possible to inspect these relations in <strong>Mission Control</strong>.</p>
-<pre><code class="lang-javascript">msg.payload = {
+<pre><code class="language-javascript">msg.payload = {
   userId: &#39;43&#39;,
   botNode: &#39;34566789&#39;
 };
@@ -215,11 +215,9 @@ return msg;
 <p>Available parameters for the <code>msg.payload</code></p>
 <dl class="message-properties">
 
-
 <dt>chatId<span class="property-type">string</span><dd>The <em>chatId</em> the message will be delivered to. The <em>chatId</em> is the unique identifier for a user in a specific platform</dd>
 <dt>userId<span class="property-type">string</span><dd>The RedBot user the message will be delivered to</dd>
 <dt>botNode<span class="property-type">string</span><dd>The Node-RED node id of the bot configuration</dd>
-
 </dl>
 </script>
 

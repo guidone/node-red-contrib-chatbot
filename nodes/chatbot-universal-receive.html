@@ -173,7 +173,7 @@ it also should (but is not mandatory)</li>
 </ol>
 <p>Like explained in <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Extend-node" target="_blank">Extend node</a> a connector handles inbound messages with a chain of middlewares: chunck of codes executed sequentially in order to accomplish steps 1 to 3. In order to keep the code simple and maintanable is a good practice to let middleware takes care of detecting and translating one kind of message in each middleware, as soon as a message has been <em>resolved</em> (means that a message <em>type</em> is assigned to the incoming message), the rest of middlewares chain is skipped and the message is injected in the <strong>RedBot</strong>&#39;s flow.</p>
 <p>For example suppose that a SMS gateway calls the <strong>Node-RED</strong> instance webhook with this payload</p>
-<pre><code class="lang-javascript">{
+<pre><code class="language-javascript">{
   sms: {
     from: &#39;+39347123456&#39;,
     to: &#39;+39338654321&#39;,
@@ -185,7 +185,7 @@ it also should (but is not mandatory)</li>
 </code></pre>
 <p>The <em>from</em> key is a good candidate for the <em>chatId</em> while the content of the message is in the <em>text</em> key.
 the code in the <code>Extend node</code> to handle this</p>
-<pre><code class="lang-javascript">// initial stage of the process, here the message is still not enriched with all the helpers and
+<pre><code class="language-javascript">// initial stage of the process, here the message is still not enriched with all the helpers and
 // variables of a RedBot message like .api(), .chat(), chatId, etc
 node.chat.onChatId(message =&gt; message.sms.from);
 node.chat.onMessageId(message =&gt; message.sms.id);
@@ -204,7 +204,7 @@ node.chat.in(message =&gt; {
 A <em>neutral message</em> is a regular <strong>RedBot</strong> message (the messages that flow out of a receiver node) except the type and content key are left blank: is up to the developer to fill in this keys using the information contained in <em>originalMessage</em>, all values needed to build a <em>neutral message</em> (<em>chatId</em>, <em>messageId</em>, <em>timestamp</em>, <em>language</em>) are extracted using callbacks.
 If the callback in <code>.onChatId()</code> fails to extract the <em>chatId</em> then an exception is raised and the message will never go through the middlewares.</p>
 <p>In the example above there is additional information in the payload, it&#39;s a good practise to use the chat context for storing this information, for example</p>
-<pre><code class="lang-javascript">node.chat.onChatId(payload =&gt; payload.sms.from);
+<pre><code class="language-javascript">node.chat.onChatId(payload =&gt; payload.sms.from);
 node.chat.onMessageId(payload =&gt; payload.sms.id);
 node.chat.in(message =&gt; {
   const chat = message.chat();
@@ -226,7 +226,7 @@ node.chat.in(message =&gt; {
 <p>If none of the middlewares in the inbound chain is able to infer a message type and fill in the <em>type</em> and <em>content</em> of the neutral message, then the message is discarded (enable the <em>debug</em> option in the receiver configuration to log the discarded messages in the system console).</p>
 <p>The <code>Universal sender node</code> has always an output pin used for following up the conversation or to chain multiple messages to be sent in a specific order.
 In the example above the code to send a SMS message to a custom API</p>
-<pre><code class="lang-javascript">// this middleware handles the message of type &#39;message&#39;
+<pre><code class="language-javascript">// this middleware handles the message of type &#39;message&#39;
 node.chat.out(&#39;message&#39;, message =&gt; {
   return request(&#39;https://my.api/send&#39;, data: { 
     text: message.payload.content,

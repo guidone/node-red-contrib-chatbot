@@ -43,11 +43,11 @@
 
 <script type="text/x-red" data-help-name="chatbot-audio"><p>The <code>Audio node</code> sends an audio to the chatbot from a local file or from a URL or from a Buffer passed by an upstream node (the simplest way to use it to chain with to <code>File node</code> or a <code>Http node</code>).</p>
 <p>To programmatically send an audio with a <code>Function node</code></p>
-<pre><code class="lang-javascript">msg.payload.document = &#39;/my-file.mp3&#39;;
+<pre><code class="language-javascript">msg.payload.document = &#39;/my-file.mp3&#39;;
 return msg;
 </code></pre>
 <p>Or using a <code>Buffer</code>:</p>
-<pre><code class="lang-javascript">msg.payload.document = new Buffer(&lt;my-mp3-buffer&gt;);
+<pre><code class="language-javascript">msg.payload.document = new Buffer(&lt;my-mp3-buffer&gt;);
 msg.payload.filename = &#39;my-file.pdf&#39;;
 return msg;
 </code></pre>
@@ -55,10 +55,8 @@ return msg;
 <p>Available parameters for the <code>msg.payload</code></p>
 <dl class="message-properties">
 
-
 <dt>audio<span class="property-type">string or buffer</span><dd>The audio string could be a path for a local file or a URL (context variables can be used)</dd>
 <dt>caption<span class="property-type">string</span><dd>Caption of the audio. Only for Telegram, Slack and Viber</dd>
-
 </dl>
 <p><img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram">
 <img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook">

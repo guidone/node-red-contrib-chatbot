@@ -100,12 +100,14 @@
 
 + hello bot
 - Hello, human!
-</code></pre><p>It&#39;s also able to parse the sentence and store data to the chat context</p>
+</code></pre>
+<p>It&#39;s also able to parse the sentence and store data to the chat context</p>
 <pre><code>! version = 2.0
 
 + my name is guido
 - &amp;lt;set name=&amp;lt;star&amp;gt;&amp;gt;ok, I&#39;ll remember your name as &amp;lt;get name&amp;gt;
-</code></pre><p><strong>RiveScript</strong> can get/set variables in the chat context.</p>
+</code></pre>
+<p><strong>RiveScript</strong> can get/set variables in the chat context.</p>
 <p>You can use the chat context variable <em>topic</em> to scope some <strong>RiveScript</strong> triggers into specific subjects</p>
 <pre><code>! version = 2.0
 
@@ -113,18 +115,17 @@
   + *
   + hello!
 &lt; topic
-</code></pre><p>In this case the trigger <em>&quot;*&quot;</em> will be executed only if the topic is _name_ok_
+</code></pre>
+<p>In this case the trigger <em>&quot;*&quot;</em> will be executed only if the topic is <em>name_ok</em>
 (it&#39;s possible to set the intent using a <code>Context node</code> or in <strong>RiveScript</strong> with
 <code>{topic=new_topic}</code>). Note that <strong>RiveScript</strong>&#39;s <em>topic</em> and <strong>RedBot</strong>&#39;s <em>intent</em> are the same thing.</p>
 <p>Read a <strong>RiveScript</strong> tutorial <a href="https://www.rivescript.com/docs/tutorial">tutorial here</a></p>
 <p>Available parameters for the <code>msg.payload</code></p>
 <dl class="message-properties">
 
-
 <dt>script<span class="property-type">string</span><dd>The Rivescript script</dd>
 <dt>scriptFile<span class="property-type">string</span><dd>Absolute path of Rivescript file</dd>
 <dt>debug<span class="property-type">boolean</span><dd>Show debug information</dd>
-
 </dl>
 </script>
 

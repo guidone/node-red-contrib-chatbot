@@ -131,8 +131,9 @@
 </script>
 <script type="text/x-red" data-help-name="chatbot-message"><p>Used to send a plain text message to the chatbot&#39;s user, a handlebars-like syntax can be used to insert values from the chat context, for example:</p>
 <pre><code>Hi {{firstName}}, your check is {{total}} euros
-</code></pre><p>Some chat context keys are automatically populated  (like <code>{{firstName}}</code>, <code>{{lastName}}</code>, <code>{{language}}</code>, etc - if the platform provides them) , other keys are system specific and are read-only (like <code>{{userId}}</code>, <code>{{chatId}}</code> and <code>{{transport}}</code>), some other keys depends on the current flow, like <code>{{payload}}</code>, for example if the upstream node sends a payload like</p>
-<pre><code class="lang-javascript">{
+</code></pre>
+<p>Some chat context keys are automatically populated  (like <code>{{firstName}}</code>, <code>{{lastName}}</code>, <code>{{language}}</code>, etc - if the platform provides them) , other keys are system specific and are read-only (like <code>{{userId}}</code>, <code>{{chatId}}</code> and <code>{{transport}}</code>), some other keys depends on the current flow, like <code>{{payload}}</code>, for example if the upstream node sends a payload like</p>
+<pre><code class="language-javascript">{
   total: 42,
   shipping: {
     address: &#39;Nowhere street,
@@ -142,7 +143,8 @@
 </code></pre>
 <p>can be used in the text message in this way</p>
 <pre><code>Your order of {{payload.total}} will be shipped to {{payload.shipping.address}}, {{payload.shipping.city}}
-</code></pre><p>For more information read the <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Chat-Context" target="_blank">chat context section</a>.</p>
+</code></pre>
+<p>For more information read the <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Chat-Context" target="_blank">chat context section</a>.</p>
 <p>It&#39;s possible to specify more content versions for the same message, one will we randomly chosen with an even distribution.</p>
 <p>If a <em>language</em> is specified in the drop down menu, then the message will be added only if the specified language matches the one in the chat context. Most of the platform provide the user language, this value is stored in the chat context when the user starts a conversation.
 In order to support multiple languages in a chatbot, just chain different <code>Message node</code> with different languages, the ones that don&#39;t match the user language will be skipped.</p>
@@ -151,19 +153,19 @@ In order to support multiple languages in a chatbot, just chain different <code>
 <p>The text message can be passed through the payload by the upstream node:</p>
 <pre><code>msg.message = &#39;I am a message&#39;;
 return msg;
-</code></pre><p>or for multiple versions of the message</p>
+</code></pre>
+<p>or for multiple versions of the message</p>
 <pre><code>msg.message = [
   &#39;First version of the message&#39;,
   &#39;Second version of the message&#39;
 ];
 return msg;
-</code></pre><p>Available parameters for the <code>msg.payload</code></p>
+</code></pre>
+<p>Available parameters for the <code>msg.payload</code></p>
 <dl class="message-properties">
-
 
 <dt>message<span class="property-type">string / array of [string]</span><dd>String or array of strings to send. If array, a random one will be chosen</dd>
 <dt>language<span class="property-type">string</span><dd>Language of the message</dd>
 <dt>fallback<span class="property-type">string</span><dd>Fallback message to use in case of a message broadcast containing tokens like {{first_name}} or {{last_name}} and the bot doesn&#39;t have privileges to access profile info. <em>Facebook</em></dd>
-
 </dl>
 </script>

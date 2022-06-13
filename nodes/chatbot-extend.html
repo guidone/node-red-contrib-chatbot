@@ -108,7 +108,7 @@
 <script type="text/x-red" data-help-name="chatbot-extend"><p>At the heart of <strong>RedBot</strong> there&#39;s <em>chat-platform.js</em>, a library to translate messages from different platform (<strong>Telegram</strong>, <strong>Slack</strong>, <strong>Facebook Messenger</strong>, etc) to common payloads in order to be used inside <strong>Node-RED</strong>.
 In this way a text message containing <em>&quot;Hello world!&quot;</em> from <strong>Facebook</strong> or <strong>Telegram</strong> will be translated into the same payload by the receiver nodes and injected into the flow, the answer to this message (<em>&quot;Hello to you!&quot;</em>) will be then translated and sent back to the platform using the appropriate API call.</p>
 <p>The <em>chat-platform.js</em> it&#39;s a kind of framework to build connectors for different platforms, it provides basic functionalities (like handling the chat context, etc) while the implementation details for the specific platform is delegated to chunck of codes called <em>middlewares</em>. It&#39;s very similar to <strong>Express.js</strong> in it&#39;s philosophy, a middleware is something like this</p>
-<pre><code class="lang-javascript">node.chat.in(message =&gt; {
+<pre><code class="language-javascript">node.chat.in(message =&gt; {
   return new Promise((resolve, reject) =&gt; {
     if (message.type === &#39;my-type&#39;) {
       // do something
@@ -121,7 +121,7 @@ In this way a text message containing <em>&quot;Hello world!&quot;</em> from <st
 <p>The implementation of chat connector with <em>chat-platform.js</em> consists in two chains of middlewares, one for inbound messages and one for outbound messages, that are executed sequentially when a message is received <strong>from</strong> the chat platform and when a message is to be sent <strong>to</strong> the chat platform.</p>
 <p>Each middleware generally takes care of one type of message. Keeping up with all chat platform&#39;s API is hard, for this reason keeping the code small, modular and maintable is vital.
 For example a middleware that handles incoming photo message could be something like this:</p>
-<pre><code class="lang-javascript">node.chat.in(message =&gt; {
+<pre><code class="language-javascript">node.chat.in(message =&gt; {
   return new Promise((resolve, reject) =&gt; {
     if (message.originalMessage.type === &#39;picture&#39; &amp;&amp; message.originalMessage.url != null) {
       fetch(message.originalMessage.url)
@@ -150,11 +150,11 @@ In case the middleware decides to handle the message, it has to</p>
 <p>In case a middleware has handled a message (it has changed the type with <code>message.payload.type = &#39;a-type&#39;;</code>), the rest of the inbound chain of middlewares will be skipped since the incoming message has been already <em>resolved</em>.
 In case of fatal error, like a broken link, a proper error must be raised with <code>reject(my_error)</code>: the error will be shown in the system console and the <strong>Node-RED</strong> debug panel, so it should be verbose enough to understand want went wrong.</p>
 <p>In case the <code>Extend node</code> is used to add a custom message type (like in the first example), it&#39;s reccomended to register the message type with</p>
-<pre><code class="lang-javascript">node.chat.registerMessageType(&#39;my-type&#39;, &#39;My Type&#39;);
+<pre><code class="language-javascript">node.chat.registerMessageType(&#39;my-type&#39;, &#39;My Type&#39;);
 </code></pre>
 <p>in this way the new message type will appear in the drop down menu of the <code>Rules node</code>.</p>
 <p>In a very similar way works the outbound chain: in order to extend the chat platform to support a new message type for example <em>bitcoin</em>:</p>
-<pre><code class="lang-javascript">node.chat.out(&#39;bitcoin&#39;, message =&gt; {
+<pre><code class="language-javascript">node.chat.out(&#39;bitcoin&#39;, message =&gt; {
   return new Promise((resolve, reject) =&gt; {
     fetch(`http://transfer-bitcoin.ahah/to/&#36;{message.payload.chatId}`, { amount: message.payload.content })
         .then(
@@ -171,7 +171,7 @@ In case of fatal error, like a broken link, a proper error must be raised with <
 </ol>
 <p>The value of <code>message.payload.chatId</code> is filled by <em>chat-platform.js</em> and it&#39;s a unique identifier of the user in the chat platform (it could be a string or a number, depends on the chat platform implementation), <code>message.payload.content</code> is the content of the message (in this example the amount of bitcoin).</p>
 <p>The <em>message</em> variable is the <strong>Node-RED</strong> object that runs through the flow, so for example it&#39;s possible to access the chat context in the same way as in <code>Function node</code>:</p>
-<pre><code class="lang-javascript">node.chat.out(message =&gt; {
+<pre><code class="language-javascript">node.chat.out(message =&gt; {
   var chat = message.chat();
   return new Promise((resolve, reject) =&gt; {
     chat.set(&#39;lastMessageSent&#39;, (new Date).toString())
@@ -184,7 +184,6 @@ In case of fatal error, like a broken link, a proper error must be raised with <
 <p>These are the method available to add middlewares and extend the chat platform:</p>
 <dl class="message-properties">
 
-
 <dt>node.chat.use(func)<dd>The middleware will be execute for inbound and outbound messages, before any middleware registered with <code>.in()</code> and <code>.out()</code></dd>
 <dt>node.chat.in(func)<dd>The middleware will be execute for inbound, after all middlewares registered with <code>.use()</code></dd>
 <dt>node.chat.out(func)<dd>The middleware will be execute for all outbounds messages, after all middlewares registered with <code>.use()</code></dd>
@@ -193,12 +192,11 @@ In case of fatal error, like a broken link, a proper error must be raised with <
 <dt>node.chat.registerMessageType(type[, label])<dd>Register the a message type in order to be available in the drop-down of the <code>Rules node</code></dd>
 <dt>node.chat.registerPlatform(name[, label])<dd>Register a messaging platform, use the <code>Support Table node</code> to show platforms/available message types</dd>
 <dt>node.chat.onChatId(func)<dd>Callback to extract the <em>chatId</em> in a <code>Universal Connector node</code>. The passed function takes the incoming payload as a paramenter and should return a string (a unique identifier of the conversation)</dd>
-<dt>node.chat.onTimestamp(func)<dd>Callback to extract the _ts_ (timestamp) in a <code>Universal Connector node</code>. The passed function takes the incoming payload as a paramenter and should return a moment.js value (the date and time of the message), leave blank to get the current date and time</dd>
+<dt>node.chat.onTimestamp(func)<dd>Callback to extract the <em>ts</em> (timestamp) in a <code>Universal Connector node</code>. The passed function takes the incoming payload as a paramenter and should return a moment.js value (the date and time of the message), leave blank to get the current date and time</dd>
 <dt>node.chat.onUserId(func)<dd>Callback to extract the <em>userId</em> in a <code>Universal Connector node</code>. The passed function takes the incoming payload as a paramenter and should return a string (a unique identifier of the user)</dd>
 <dt>node.chat.onMessageId(func)<dd>Callback to extract the <em>messageId</em> in a <code>Universal Connector node</code>. The passed function takes the incoming payload as a paramenter and should return a string (a unique identifier of the incoming message)</dd>
 <dt>node.chat.onStart(func)<dd>Callback when the node is initialized, must return a promise.</dd>
 <dt>node.chat.onStop(func)<dd>Callback when <strong>Node-RED</strong> is shut down, must return a promise</dd>
-
 </dl>
 <p>This node is available for all platforms</p>
 </script>

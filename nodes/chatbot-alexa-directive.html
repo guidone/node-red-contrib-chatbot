@@ -71,16 +71,14 @@
 <p>Types of directive</p>
 <dl class="message-properties">
 
-
 <dt>endSession<dd>Terminate the dialog with just a simple confirmation sound</dd>
 <dt>Dialog.Delegate<dd>Let <strong>Alexa</strong> decide the next step in a multi-turn dialog (depends on the bot Model)</dd>
 <dt>Dialog.ElicitSlot<dd>Instruct <strong>Alexa</strong> to ask the user for a required slot of the intent, need to be chained with a <code>Alexa Speech node</code></dd>
 <dt>Dialog.ConfirmSlot<dd>Instruct <strong>Alexa</strong> to ask the user to confirm a previuosly selected slot of the intent, need to be chained with a <code>Alexa Speech node</code></dd>
 <dt>Dialog.ConfirmIntent<dd>Instruct <strong>Alexa</strong> to ask the user to confirm a intent, need to be chained with a <code>Alexa Speech node</code></dd>
-
 </dl>
 <p>In order to create a directive programmatically in a upstream Function node:</p>
-<pre><code class="lang-javascript">msg.payload = {
+<pre><code class="language-javascript">msg.payload = {
   directiveType: &#39;Dialog.ConfirmSlot&#39;,
   slot: &#39;my-slot&#39;
 };
@@ -89,10 +87,8 @@ return msg;
 <p>Available parameters for the <code>msg.payload</code></p>
 <dl class="message-properties">
 
-
 <dt>directiveType<span class="property-type">string</span><dd>Type of directive. One of <em>endSession</em>, <em>Dialog.Delegate</em>, <em>Dialog.ElicitSlot</em>, <em>Dialog.ConfirmSlot</em>, <em>Dialog.ConfirmIntent</em></dd>
 <dt>slot<span class="property-type">string</span><dd>The slot to confirm or elicit</dd>
-
 </dl>
 <p><img src="https://img.shields.io/badge/platform-Alexa-blue.svg?colorB=23cbfd" alt="Alexa"></p>
 </script>

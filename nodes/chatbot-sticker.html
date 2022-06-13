@@ -33,16 +33,16 @@
 <p>In order to get the id of a sticker, use <a href="https://telegram.me/GetStickerIdBot">GetStickerIdBot</a></p>
 <p>To use this node programmatically, just connect the input to the output of a <code>File node</code> or send the file name or URL from a upstream <code>Function node</code></p>
 <pre><code>msg.payload = &#39;/my_dir/my_file.webp&#39;
-</code></pre><p>or</p>
+</code></pre>
+<p>or</p>
 <pre><code>msg.payload = {
   sticker: &#39;http://www.my_host.com/my_dir/my_file.webp&#39;
 }
-</code></pre><p>Available parameters for the <code>msg.payload</code></p>
+</code></pre>
+<p>Available parameters for the <code>msg.payload</code></p>
 <dl class="message-properties">
 
-
 <dt>sticker<span class="property-type">string or buffer</span><dd>The sticker string could be the sticker id, the path for a local file or a URL</dd>
-
 </dl>
 <p><img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram"></p>
 </script>
