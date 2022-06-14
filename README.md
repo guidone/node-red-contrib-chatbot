@@ -1,13 +1,17 @@
-![RedBot](https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/logo/RedBot_logo_small.png)
 
-:heavy_exclamation_mark: **New!** Try the new [RedBot forum](https://redbot.discourse.group/)
+<p align="center">
+  <img src="https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/logo/redbot-logo.svg">
+  <br/>
+  :heavy_exclamation_mark: <strong>New!</strong> Try the new <a href="https://redbot.discourse.group/" target="_blank">RedBot forum</a>
+</p>
+<br />
 
 With **RedBot** you can visually build a full featured chat bot for **Telegram**, **Facebook Messenger**, **Viber**, **Twilio** and **Slack** with Node-RED. ~~Almost~~ no coding skills required.
+
 
 ![Release](https://img.shields.io/npm/v/node-red-contrib-chatbot.svg)
 ![npm](https://img.shields.io/npm/dm/node-red-contrib-chatbot.svg)
 [![RedBot Forum](https://img.shields.io/badge/Forum-RedBot-orange)](https://redbot.discourse.group/)
-
 
 > Node-RED is a tool for wiring together hardware devices, APIs and online services in new and interesting ways.
 
