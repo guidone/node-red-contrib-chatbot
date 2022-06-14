@@ -36,7 +36,7 @@
     "nodes": {
       "chatbot-redbot": "./nodes/chatbot-redbot.js",
       "redbot-config": "./redbot.config.js",
-      "mc_base": "mc_nodes/mc_base.js",
+      "mc_base": "./nodes/mc_base.js",
       "chatbot-telegram-receive": "./nodes/chatbot-telegram-receive.js",
       "chatbot-universal-receive": "./nodes/chatbot-universal-receive.js",
       "chatbot-slack-receive": "./nodes/chatbot-slack-receive.js",
@@ -100,14 +100,14 @@
       "chatbot-nlp-load": "./nodes/chatbot-nlp-load.js",
       "chatbot-pop-message": "./nodes/chatbot-pop-message.js",
       "chatbot-push-message": "./nodes/chatbot-push-message.js",
-      "mc_input": "mc_nodes/mc_input.js",
-      "mc_output": "mc_nodes/mc_output.js",
-      "mc-configuration": "mc_nodes/mc_configuration.js",
-      "mc-graphql": "mc_nodes/mc_graphql.js",
-      "mc-content": "mc_nodes/mc_content.js",
-      "mc-simulator-receiver": "mc_nodes/mc_simulator_receiver.js",
-      "mc-simulator-sender": "mc_nodes/mc_simulator_sender.js",
-      "mc-user-payload": "mc_nodes/mc_user_payload.js"
+      "mc_input": "./nodes/mc_input.js",
+      "mc_output": "./nodes/mc_output.js",
+      "mc-configuration": "./nodes/mc_configuration.js",
+      "mc-graphql": "./nodes/mc-graphql.js",
+      "mc-content": "./nodes/mc_content.js",
+      "mc-simulator-receiver": "./nodes/mc_simulator_receiver.js",
+      "mc-simulator-sender": "./nodes/mc_simulator_sender.js",
+      "mc-user-payload": "./nodes/mc_user_payload.js"
     }
   },
   "maintainers": [
@@ -135,7 +135,7 @@
     "apollo-server-express": "^2.15.0",
     "body-parser": "^1.19.0",
     "botbuilder": "^4.7.1",
-    "chat-platform": "2.1.0",
+    "chat-platform": "2.1.1",
     "cli-color": "^1.4.0",
     "cli-table": "^0.3.1",
     "cloudinary": "^1.27.1",
