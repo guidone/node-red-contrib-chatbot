@@ -1,6 +1,8 @@
 // jest.config.js
 module.exports = {
   verbose: true,
-  testURL: 'http://localhost',
+  testEnvironmentOptions: {
+    url: 'http://localhost',
+  },
   testEnvironment: 'node'
 };
