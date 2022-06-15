@@ -320,6 +320,11 @@ module.exports = [
     nodeType: 'chatbot-nlpjs'
   },
   {
+    markdownFile: 'Mission-Control-User-Payload.md',
+    nodeFile: 'mc-user-payload.html',
+    nodeType: 'mc-user-payload'
+  },
+  {
     markdownFile: 'Pop-Message-node.md',
     nodeFile: 'chatbot-pop-message.html',
     nodeType: 'chatbot-pop-message'

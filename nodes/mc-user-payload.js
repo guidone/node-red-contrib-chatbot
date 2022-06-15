@@ -88,6 +88,7 @@ module.exports = function(RED) {
           lcd.dump(errors, `GraphQL Error (id: ${node.id})`);
         } else {
           lcd.dump('Unknown GraphQL error', `GraphQL Error (id: ${node.id})`);
+          // eslint-disable-next-line no-console
           console.log(error);
         }
         done(error);
