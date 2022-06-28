@@ -3,15 +3,14 @@
   <img src="https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/logo/redbot-logo.svg">
   <br/>
   :heavy_exclamation_mark: <strong>New!</strong> Try the new <a href="https://redbot.discourse.group/" target="_blank">RedBot forum</a>
+  <br />
 </p>
+  <p align="center"><a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/7b55ded1cc8c5f0f120d24efa9b63a2af6e182b01a3205c675676debe9021910/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f762f6e6f64652d7265642d636f6e747269622d63686174626f742e737667"><img src="https://camo.githubusercontent.com/7b55ded1cc8c5f0f120d24efa9b63a2af6e182b01a3205c675676debe9021910/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f762f6e6f64652d7265642d636f6e747269622d63686174626f742e737667" alt="Release" data-canonical-src="https://img.shields.io/npm/v/node-red-contrib-chatbot.svg" style="max-width: 100%;"></a>
+<a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/0a0eea53878861bf9655046c32079772ece8512daaa2a7571ac4149a79bc70d5/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f646d2f6e6f64652d7265642d636f6e747269622d63686174626f742e737667"><img src="https://camo.githubusercontent.com/0a0eea53878861bf9655046c32079772ece8512daaa2a7571ac4149a79bc70d5/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f646d2f6e6f64652d7265642d636f6e747269622d63686174626f742e737667" alt="npm" data-canonical-src="https://img.shields.io/npm/dm/node-red-contrib-chatbot.svg" style="max-width: 100%;"></a>
+<a href="https://redbot.discourse.group/" rel="nofollow"><img src="https://camo.githubusercontent.com/761ee21c0df85699bf7ce436206eb7d403d7109b014e8ab859a03597e19169af/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f466f72756d2d526564426f742d6f72616e6765" alt="RedBot Forum" data-canonical-src="https://img.shields.io/badge/Forum-RedBot-orange" style="max-width: 100%;"></a></p>
 <br />
 
 With **RedBot** you can visually build a full featured chat bot for **Telegram**, **Facebook Messenger**, **Viber**, **Twilio** and **Slack** with Node-RED. ~~Almost~~ no coding skills required.
-
-
-![Release](https://img.shields.io/npm/v/node-red-contrib-chatbot.svg)
-![npm](https://img.shields.io/npm/dm/node-red-contrib-chatbot.svg)
-[![RedBot Forum](https://img.shields.io/badge/Forum-RedBot-orange)](https://redbot.discourse.group/)
 
 > Node-RED is a tool for wiring together hardware devices, APIs and online services in new and interesting ways.
 
