@@ -1,8 +1,8 @@
 import React from 'react';
-import SimpleMDE from 'simplemde';
+import * as EasyMDE from 'easymde';
 import PropTypes from 'prop-types';
 
-import '../../../node_modules/simplemde/dist/simplemde.min.css';
+import 'easymde/dist/easymde.min.css';
 import './style.scss';
 
 class MarkdownEditor extends React.Component {
@@ -10,7 +10,7 @@ class MarkdownEditor extends React.Component {
   componentDidMount() {
     const { value, onChange } = this.props;
 
-    this.simplemde = new SimpleMDE({ 
+    this.simplemde = new EasyMDE({
       element: this.textarea,
       initialValue: value,
       spellChecker: false
@@ -20,7 +20,7 @@ class MarkdownEditor extends React.Component {
 
   componentWillUnmount() {
     this.simplemde.toTextArea();
-    this.simplemde = null;  
+    this.simplemde = null;
   }
 
   render() {
@@ -31,6 +31,7 @@ class MarkdownEditor extends React.Component {
     );
   }
 }
+
 MarkdownEditor.propTypes = {
   value: PropTypes.string,
   onChange: PropTypes.func

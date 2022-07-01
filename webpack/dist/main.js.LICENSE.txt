@@ -17,7 +17,7 @@ object-assign
 */
 
 /*!
- * clipboard.js v2.0.10
+ * clipboard.js v2.0.11
  * https://clipboardjs.com/
  *
  * Licensed MIT © Zeno Rocha
@@ -42,6 +42,8 @@ MERCHANTABLITY OR NON-INFRINGEMENT.
 See the Apache Version 2.0 License for specific language governing permissions
 and limitations under the License.
 ***************************************************************************** */
+
+/*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */
 
 /*! showdown v 1.9.1 - 02-11-2019 */
 
