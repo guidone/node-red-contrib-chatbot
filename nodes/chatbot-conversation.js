@@ -47,18 +47,19 @@ module.exports = function(RED) {
         botNode = msg.payload.botNode;
       }
 
-      let platformNode;
-      const nodeInstance = getNode(botNode);
 
-      if (nodeInstance != null) {
-        platformNode = nodeInstance.chat;
-      } else {
-        done('Invalid botNode');
-        return;
-      }
       // check userId or chatId
       if (isEmpty(chatId) && isEmpty(userId)) {
         done('Both userId and chatId empty, cannot start a conversation');
+        return;
+      }
+      // check bot node
+      let platformNode;
+      const nodeInstance = getNode(botNode);
+      if (nodeInstance != null) {
+        platformNode = nodeInstance.chat;
+      } else {
+        done('chatId was correctly specified but without a valid chatbot configuration');
         return;
       }
 

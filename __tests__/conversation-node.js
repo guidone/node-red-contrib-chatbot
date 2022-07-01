@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const assert = require('chai').assert;
 const RED = require('../lib/red-stub')();
 const ConversationBlock = require('../nodes/chatbot-conversation');
@@ -84,7 +83,7 @@ describe('Chat conversation node', () => {
         () => {},
         () => {
           assert.isNull(RED.node.message());
-          assert.equal(RED.node.error(), 'Both chatId and userId are empty');
+          assert.equal(RED.node.error(), 'Both userId and chatId empty, cannot start a conversation');
         }
       );
   });
@@ -111,8 +110,5 @@ describe('Chat conversation node', () => {
         }
       );
   });
-
-
-
 
 });
