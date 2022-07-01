@@ -65,32 +65,67 @@
 <script type="text/x-red" data-help-name="chatbot-alexa-directive"><p><em>Directives</em> are the way to instruct the <strong>Alexa</strong> devices how to behave in some situation, for example in a <a href="https://developer.amazon.com/docs/custom-skills/dialog-interface-reference.html">multi-turn dialog</a>.</p>
 <p>The most used directives are:</p>
 <ul>
-<li><em>EndSession</em> to terminate a session (for example to complete a dialog without giving any response to the user except a confirmation sound) or </li>
-<li><em>Dialog.Delegate</em> to delegate to <strong>Alexa</strong> how to handle a multi-turn dialog with the user</li>
+<li><p><em>EndSession</em> to terminate a session (for example to complete a dialog without giving any response to the user except a confirmation sound) or</p>
+</li>
+<li><p><em>Dialog.Delegate</em> to delegate to <strong>Alexa</strong> how to handle a multi-turn dialog with the user</p>
+</li>
 </ul>
 <p>Types of directive</p>
-<dl class="message-properties">
-
-<dt>endSession<dd>Terminate the dialog with just a simple confirmation sound</dd>
-<dt>Dialog.Delegate<dd>Let <strong>Alexa</strong> decide the next step in a multi-turn dialog (depends on the bot Model)</dd>
-<dt>Dialog.ElicitSlot<dd>Instruct <strong>Alexa</strong> to ask the user for a required slot of the intent, need to be chained with a <code>Alexa Speech node</code></dd>
-<dt>Dialog.ConfirmSlot<dd>Instruct <strong>Alexa</strong> to ask the user to confirm a previuosly selected slot of the intent, need to be chained with a <code>Alexa Speech node</code></dd>
-<dt>Dialog.ConfirmIntent<dd>Instruct <strong>Alexa</strong> to ask the user to confirm a intent, need to be chained with a <code>Alexa Speech node</code></dd>
-</dl>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>endSession</td>
+<td>Terminate the dialog with just a simple confirmation sound</td>
+</tr>
+<tr>
+<td>Dialog.Delegate</td>
+<td>Let <strong>Alexa</strong> decide the next step in a multi-turn dialog (depends on the bot Model)</td>
+</tr>
+<tr>
+<td>Dialog.ElicitSlot</td>
+<td>Instruct <strong>Alexa</strong> to ask the user for a required slot of the intent, need to be chained with a <code>Alexa Speech node</code></td>
+</tr>
+<tr>
+<td>Dialog.ConfirmSlot</td>
+<td>Instruct <strong>Alexa</strong> to ask the user to confirm a previuosly selected slot of the intent, need to be chained with a <code>Alexa Speech node</code></td>
+</tr>
+<tr>
+<td>Dialog.ConfirmIntent</td>
+<td>Instruct <strong>Alexa</strong> to ask the user to confirm a intent, need to be chained with a <code>Alexa Speech node</code></td>
+</tr>
+</tbody></table>
 <p>In order to create a directive programmatically in a upstream Function node:</p>
 <pre><code class="language-javascript">msg.payload = {
-  directiveType: &#39;Dialog.ConfirmSlot&#39;,
+  directiveType: &#39;Dialog.ConfirmSlot&#39;,  
   slot: &#39;my-slot&#39;
 };
 return msg;
 </code></pre>
 <p>Available parameters for the <code>msg.payload</code></p>
-<dl class="message-properties">
-
-<dt>directiveType<span class="property-type">string</span><dd>Type of directive. One of <em>endSession</em>, <em>Dialog.Delegate</em>, <em>Dialog.ElicitSlot</em>, <em>Dialog.ConfirmSlot</em>, <em>Dialog.ConfirmIntent</em></dd>
-<dt>slot<span class="property-type">string</span><dd>The slot to confirm or elicit</dd>
-</dl>
-<p><img src="https://img.shields.io/badge/platform-Alexa-blue.svg?colorB=23cbfd" alt="Alexa"></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>directiveType</td>
+<td>string</td>
+<td>Type of directive. One of <em>endSession</em>, <em>Dialog.Delegate</em>, <em>Dialog.ElicitSlot</em>, <em>Dialog.ConfirmSlot</em>, <em>Dialog.ConfirmIntent</em></td>
+</tr>
+<tr>
+<td>slot</td>
+<td>string</td>
+<td>The slot to confirm or elicit</td>
+</tr>
+</tbody></table>
 </script>
 
 

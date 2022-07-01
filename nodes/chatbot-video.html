@@ -60,15 +60,26 @@ return msg;
 msg.payload.filename = &#39;my-video.mp3&#39;;
 return msg;
 </code></pre>
-<p>In case the upstream node pass through a <code>Buffer</code>, the node tries to extract a proper file name (visible to user in the chat client) using the payload of the upstream <code>File node</code> or the name of the node itself. </p>
-<dl class="message-properties">
-
-<dt>video<span class="property-type">string or buffer</span><dd>The video string could be a path for a local file or a URL (context variables can be used)</dd>
-<dt>caption<span class="property-type">string</span><dd>Caption of the video. Only for Telegram, Slack and Viber</dd>
-</dl>
-<p><img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook">
-<img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram">
-<img src="https://img.shields.io/badge/platform-Slack-green.svg" alt="Slack"></p>
+<p>In case the upstream node pass through a <code>Buffer</code>, the node tries to extract a proper file name (visible to user in the chat client) using the payload of the upstream <code>File node</code> or the name of the node itself.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>video</td>
+<td>string or buffer</td>
+<td>The video string could be a path for a local file or a URL (context variables can be used)</td>
+</tr>
+<tr>
+<td>caption</td>
+<td>string</td>
+<td>Caption of the video. Only for Telegram, Slack and Viber</td>
+</tr>
+</tbody></table>
 </script>
 
 

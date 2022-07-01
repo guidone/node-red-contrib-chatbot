@@ -132,13 +132,15 @@
 </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-generic-template"><p><strong>This node is deprecated, use <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Messenger-Template-node" target="_blank">Messenger Template Node</a> instead</strong></p>
+<script type="text/x-red" data-help-name="chatbot-generic-template"><blockquote>
+<p>❗ <strong>This node is deprecated, use</strong> <a href="https://www.notion.so/ac7d5049cbf64389a2ef6e7fe7f1c392"><strong>Messenger Template node</strong></a>  <strong>instead</strong></p>
+</blockquote>
 <p>Generic Template is a small card with few lines of text, an optional image and buttons.</p>
 <p>Two or more generic templates can be combined together in a carousel by simply chaining <code>Generic Template node</code> (to maximum of 10). Each template can have a maximum of 3 buttons, <code>title</code> and <code>subtitle</code> are limited to 80 chars.</p>
-<p>Each template can have up to 3 buttons, see <code>Buttons node</code> for a complete list of available buttons (only <code>quick-reply</code> and <code>location</code> are not available here). </p>
+<p>Each template can have up to 3 buttons, see <code>Buttons node</code> for a complete list of available buttons (only <code>quick-reply</code> and <code>location</code> are not available here).</p>
 <p>Each <code>Generic Template node</code> has also a <em>default action</em> which acts like a <code>url</code> button. The first button of type <code>url</code> in the <em>buttons</em> section will be used as default action of the item.</p>
 <p>In order to create a generic template in a upstream <code>Function node</code></p>
-<pre><code>msg.payload = {
+<pre><code class="language-javascript">msg.payload = {
   title: &#39;my title&#39;,
   subtitle: &#39;I am a sub title&#39;,
   imageUrl: &#39;http://image.server.com/cover.png&#39;,
@@ -154,7 +156,7 @@
 }
 </code></pre>
 <p>or in order to pass a collection of elements for the carousel</p>
-<pre><code>msg.payload = {
+<pre><code class="language-javascript">msg.payload = {
   sharable: true,
   aspectRatio: &#39;horizontal&#39;,
   elements: [
@@ -182,19 +184,52 @@
         }
       ]
     }
-  ]      
+  ]
 }
 </code></pre>
 <p>Available parameters for the <code>msg.payload</code></p>
-<dl class="message-properties">
-
-<dt>title<span class="property-type">string</span><dd>Title of the list element</dd>
-<dt>subtitle<span class="property-type">string</span><dd>Sub title of the list element</dd>
-<dt>imageUrl<span class="property-type">string</span><dd>Url of the image element</dd>
-<dt>buttons<span class="property-type">array of [button]</span><dd>Array of buttons, see <code>Buttons node</code> for more details</dd>
-<dt>sharable<span class="property-type">boolean</span><dd>The list can be shared</dd>
-<dt>aspectRatio<span class="property-type">string</span><dd>Aspect ratio of the image. Valid values: <em>horizontal</em>, <em>square</em></dd>
-<dt>elements<span class="property-type">array of [element]</span><dd>An array of elements for the carousel (here are the elements created by the previous chained <code>Generic Template node</code></dd>
-</dl>
-<p><img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook"></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>title</td>
+<td>string</td>
+<td>Title of the list element</td>
+</tr>
+<tr>
+<td>subtitle</td>
+<td>string</td>
+<td>Sub title of the list element</td>
+</tr>
+<tr>
+<td>imageUrl</td>
+<td>string</td>
+<td>Url of the image element</td>
+</tr>
+<tr>
+<td>buttons</td>
+<td>array of [button]</td>
+<td>Array of buttons, see <code>Buttons node</code> for more details</td>
+</tr>
+<tr>
+<td>sharable</td>
+<td>boolean</td>
+<td>The list can be shared</td>
+</tr>
+<tr>
+<td>aspectRatio</td>
+<td>string</td>
+<td>Aspect ratio of the image. Valid values: <em>horizontal</em>, <em>square</em></td>
+</tr>
+<tr>
+<td>elements</td>
+<td>array of [element]</td>
+<td>An array of elements for the carousel (here are the elements created by the previous chained <code>Generic Template node</code></td>
+</tr>
+</tbody></table>
 </script>

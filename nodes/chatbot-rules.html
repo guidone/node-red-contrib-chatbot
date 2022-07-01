@@ -472,11 +472,11 @@
   </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-rules"><p>Rules node is a multi-output node that allows to control the flow of the chatbot based on simple rules (for example <em>&quot;The topic is myTopic&quot;</em>, <em>&quot;The context variable myVar is not defined&quot;</em>). This node replace the <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Topic-node" target="_blank">Topic node</a> that will deprecated soon.</p>
+<script type="text/x-red" data-help-name="chatbot-rules"><p><code>Rules node</code> is a multi-output node that allows to control the flow of the chatbot based on simple rules (for example <em>“The topic is myTopic”</em>, <em>“The context variable myVar is not defined”</em>). This node replace the <a href="https://www.notion.so/55036bad043447fd97b58f2a9e7365dd">Topic node</a>  that will deprecated soon.</p>
 <p>The first rule that matches trigger the redirect of the incoming message to the related output and stops the chain of rules.</p>
 <p>This node is useful to create loops in the flow, for example to keep asking some questions to the user until a list of needed information (context variables) are filled.</p>
 <p>Rules can be created programmatically by an upstream <code>Function node</code> passing array of rules in the message payload:</p>
-<pre><code>msg.payload = [
+<pre><code class="language-javascript">msg.payload = [
   {
     type: &#39;hasNotVariable&#39;,
     variable: &#39;my_variable&#39;
@@ -488,24 +488,68 @@
 return msg;
 </code></pre>
 <p>Available parameters for the <code>msg.payload</code></p>
-<dl class="message-properties">
-
-<dt>rules<span class="property-type">array of [rule]</span><dd>The list of rules</dd>
-</dl>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>rules</td>
+<td>array of [rule]</td>
+<td>The list of rules</td>
+</tr>
+</tbody></table>
 <p>The <code>[rule]</code> object</p>
-<dl class="message-properties">
-
-<dt>type<span class="property-type">string</span><dd>Type of rule: <em>inbound</em>, <em>outbound</em>, <em>isTopicEmpty</em>, <em>catchAll</em>, <em>isNotTopic</em>, <em>isTopic</em>, <em>hasNotVariable</em>, <em>hasVariable</em>, <em>isVariable</em>, <em>command</em>, <em>messageType</em>, <em>notMessageType</em>, <em>transport</em>, <em>anyCommand</em>, <em>environment</em></dd>
-<dt>environment<span class="property-type">string</span><dd>Match the environment type, can be <em>production</em> or <em>development</em>. Required for type <em>environment</em></dd>
-<dt>transport<span class="property-type">string</span><dd>Match the transport type, can be <em>facebook</em>, <em>telegram</em>, <em>slack</em> or <em>smooch</em>. Required for type <em>transport</em></dd>
-<dt>topic<span class="property-type">string</span><dd>Match the rule if the flow topic matches/doesn&#39;t match the specified topic. Required for  <em>isNotTopic</em> and <em>isTopic</em></dd>
-<dt>variable<span class="property-type">string</span><dd>Match the rule if the context variable is defined/not defined. Required for <em>hasVariable</em>, <em>hasNotVariable</em> or <em>isVariable</em></dd>
-<dt>value<span class="property-type">string</span><dd>Match the rule the value of a variable. Required for <em>isVariable</em></dd>
-<dt>command<span class="property-type">string</span><dd>Match the input command. Required for <em>command</em></dd>
-<dt>messageType<span class="property-type">string</span><dd>Match the message type, if any. Required for <em>messageType</em>, <em>notMessageType</em>. Can be: <em>message</em>, <em>command</em>, <em>audio</em>, <em>buttons</em>, <em>contact</em>, <em>document</em>, <em>dialog</em>, <em>inline-buttons</em>, <em>inline-query</em>, <em>location</em>, <em>photo</em>, <em>request</em>, <em>response</em>, <em>video</em></dd>
-</dl>
-<p><img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram">
-<img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook">
-<img src="https://img.shields.io/badge/platform-Slack-green.svg" alt="Slack">
-<img src="https://img.shields.io/badge/platform-Smooch-orange.svg" alt="Smooch"></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>type</td>
+<td>string</td>
+<td>Type of rule: <em>inbound</em>, <em>outbound</em>, <em>isTopicEmpty</em>, <em>catchAll</em>, <em>isNotTopic</em>, <em>isTopic</em>, <em>hasNotVariable</em>, <em>hasVariable</em>, <em>isVariable</em>, <em>command</em>, <em>messageType</em>, <em>notMessageType</em>, <em>transport</em>, <em>anyCommand</em>, <em>environment</em></td>
+</tr>
+<tr>
+<td>environment</td>
+<td>string</td>
+<td>Match the environment type, can be <em>production</em> or <em>development</em>. Required for type <em>environment</em></td>
+</tr>
+<tr>
+<td>transport</td>
+<td>string</td>
+<td>Match the transport type, can be <em>facebook</em>, <em>telegram</em>, <em>slack</em> or <em>smooch</em>. Required for type <em>transport</em></td>
+</tr>
+<tr>
+<td>topic</td>
+<td>string</td>
+<td>Match the rule if the flow topic matches/doesn’t match the specified topic. Required for <em>isNotTopic</em> and <em>isTopic</em></td>
+</tr>
+<tr>
+<td>variable</td>
+<td>string</td>
+<td>Match the rule if the context variable is defined/not defined. Required for <em>hasVariable</em>, <em>hasNotVariable</em> or <em>isVariable</em></td>
+</tr>
+<tr>
+<td>value</td>
+<td>string</td>
+<td>Match the rule the value of a variable. Required for <em>isVariable</em></td>
+</tr>
+<tr>
+<td>command</td>
+<td>string</td>
+<td>Match the input command. Required for <em>command</em></td>
+</tr>
+<tr>
+<td>messageType</td>
+<td>string</td>
+<td>Match the message type, if any. Required for <em>messageType</em>, <em>notMessageType</em>. Can be: <em>message</em>, <em>command</em>, <em>audio</em>, <em>buttons</em>, <em>contact</em>, <em>document</em>, <em>dialog</em>, <em>inline-buttons</em>, <em>inline-query</em>, <em>location</em>, <em>photo</em>, <em>request</em>, <em>response</em>, <em>video</em></td>
+</tr>
+</tbody></table>
 </script>

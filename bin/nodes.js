@@ -55,24 +55,9 @@ module.exports = [
     nodeType: 'chatbot-conversation'
   },
   {
-    notionUrl: 'https://www.notion.so/redbot/Command-node-6acf1245a1334fcc9adcde88b27464ff',
-    nodeFile: 'chatbot-command.html',
-    nodeType: 'chatbot-command'
-  },
-  {
     notionUrl: 'https://www.notion.so/redbot/Analytics-node-58dbe17dd23144c6b3ec939a23676b27',
     nodeFile: 'chatbot-analytics.html',
     nodeType: 'chatbot-analytics'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/Transport-node-1d6e3a1d63184639a8d14d77c8cfe353',
-    nodeFile: 'chatbot-transport.html',
-    nodeType: 'chatbot-transport'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/Topic-node-55036bad043447fd97b58f2a9e7365dd',
-    nodeFile: 'chatbot-topic.html',
-    nodeType: 'chatbot-topic'
   },
   {
     notionUrl: 'https://www.notion.so/redbot/Debug-node-d768699fac104d0580f14268afa1e53f',

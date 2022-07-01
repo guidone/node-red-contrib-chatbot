@@ -1,57 +1,25 @@
 /* eslint-disable no-console */
-const request = require('request').defaults({ encoding: null });
 const marked = require('marked');
 const clc = require('cli-color');
-const _ = require('underscore');
 const fs = require('fs');
-
-
-
+const { Client } = require('@notionhq/client')
+const { NotionToMarkdown } = require('notion-to-md');
 
 const green = clc.greenBright;
-const white = clc.white;
+//const white = clc.white;
 const grey = clc.blackBright;
 const orange = clc.xterm(214);
 
 const nodeDefinitions = require('./nodes');
 
-
-
-
-
-
-
-const { Client } = require('@notionhq/client')
-const { NotionToMarkdown } = require('notion-to-md');
+const notionAuthToken = fs.readFileSync(`${__dirname}/../.env-notion`);
 
 // Initializing a client
-const notion = new Client({
-  auth: '',
-})
-
-
-// https://www.notion.so/red-bot/Alexa-Card-node-fc89c43d79324c8da2f251e26f638246
-// https://www.notion.so/red-bot/Alexa-Card-node-fc89c43d79324c8da2f251e26f638246
-
-//(async () => {
-  /*.then(fottiti => console.log(fottiti));*/
-//})();
-
-// TODO conversion from url
-
-//const NotionPageToHtml = require('notion-page-to-html');
-//const nodes = require('./nodes');
-
+const notion = new Client({ auth: notionAuthToken });
 const n2m = new NotionToMarkdown({ notionClient: notion });
-
-/*
-  NotionPageToHtml: doesn't support table, faulty with code blocks
-
-*/
 
 const extractNotionId = url => {
   const matched = url.match(/\-([a-z0-9]{32,32})$/);
-
   if (matched != null) {
     let notionId = String(matched[1]);
 
@@ -63,12 +31,9 @@ const extractNotionId = url => {
   }
 };
 
-
 const getPage = async function(url) {
-
   // parse url
   const notionId = extractNotionId(url);
-
 
   // TODO check if valid
   const mdblocks = await n2m.pageToMarkdown(notionId);
@@ -78,9 +43,6 @@ const getPage = async function(url) {
 
   return html;
 };
-
-
-
 
 const runner = async function() {
 
