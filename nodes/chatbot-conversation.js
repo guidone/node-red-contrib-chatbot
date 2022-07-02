@@ -1,5 +1,4 @@
 const _ = require('underscore');
-const { UniversalPlatform, ContextProviders } = require('chat-platform');
 
 const RegisterType = require('../lib/node-installer');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');

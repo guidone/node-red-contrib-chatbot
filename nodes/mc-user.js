@@ -2,7 +2,6 @@ const _ = require('lodash');
 const gql = require('graphql-tag');
 
 const Client = require('../database/client');
-const lcd = require('../lib/lcd/index');
 
 const {
   getTransport,
