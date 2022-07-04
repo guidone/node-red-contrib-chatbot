@@ -3,6 +3,8 @@ const _ = require('lodash');
 const DatabaseSchema = require('../database/index');
 const lcd = require('../lib/lcd/index');
 
+const { extractValue } = require('../lib/helpers/utils');
+
 const compactObject = obj => {
   return Object.entries(obj)
     .reduce((accumulator, current) => {
@@ -50,36 +52,98 @@ module.exports = function(RED) {
     this.namespace = config.namespace;
     this.debug = config.debug;
     this.chatbotId = config.chatbotId;
+    this.loadOnStartup = config.loadOnStartup;
 
     const databaseSchema = DatabaseSchema();
     const { Configuration } = databaseSchema;
 
-    Configuration.findOne({ where: compactObject({
-      namespace: node.namespace,
-       chatbotId: !_.isEmpty(node.chatbotId) ? node.chatbotId : undefined
-    })}).then(response => {
-      if (response == null || _.isEmpty(response.payload)) {
-        // eslint-disable-next-line no-console
-        console.log(`Configuration for ${node.namespace} not found`);
-        return;
-      }
-      let configuration;
-      try {
-        configuration = JSON.parse(response.payload);
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.log('Invalid configuration payload')
-      }
+    async function getConfigurationPayload(namespace, chatbotId) {
+      return new Promise(function(resolve, reject) {
+        Configuration.findOne({ where: compactObject({ namespace, chatbotId})})
+          .then(
+            response => {
+              if (response == null || _.isEmpty(response.payload)) {
+                // eslint-disable-next-line no-console
+                console.log(`Configuration for ${node.namespace} not found`);
+                return;
+              }
+              let configuration;
+              try {
+                configuration = JSON.parse(response.payload);
+              } catch (e) {
+                // eslint-disable-next-line no-console
+                console.log('Invalid configuration payload')
+              }
 
-      const payload = _.omit(configuration, 'namespace');
+              const payload = _.omit(configuration, 'namespace');
+              resolve(payload);
+            },
+            reject
+          );
+      });
+    }
+
+    if (node.loadOnStartup) {
+      getConfigurationPayload(node.namespace, !_.isEmpty(node.chatbotId) ? node.chatbotId : undefined)
+        .then(payload => {
+          if (node.debug) {
+            // eslint-disable-next-line no-console
+            console.log(lcd.green('Initial configuration received') + ' (' + lcd.grey(this.namespace) +')');
+            // eslint-disable-next-line no-console
+            console.log(lcd.prettify(_.omit(payload, 'translations'), { indent: 2 }));
+          }
+          saveConfiguration(payload, this.context().global, node.namespace);
+          node.send({ payload });
+        });
+      /*Configuration.findOne({ where: compactObject({
+        namespace: node.namespace,
+        chatbotId: !_.isEmpty(node.chatbotId) ? node.chatbotId : undefined
+      })}).then(response => {
+        if (response == null || _.isEmpty(response.payload)) {
+          // eslint-disable-next-line no-console
+          console.log(`Configuration for ${node.namespace} not found`);
+          return;
+        }
+        let configuration;
+        try {
+          configuration = JSON.parse(response.payload);
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.log('Invalid configuration payload')
+        }
+
+        const payload = _.omit(configuration, 'namespace');
+        if (node.debug) {
+          // eslint-disable-next-line no-console
+          console.log(lcd.green('Initial configuration received') + ' (' + lcd.grey(this.namespace) +')');
+          // eslint-disable-next-line no-console
+          console.log(lcd.prettify(_.omit(payload, 'translations'), { indent: 2 }));
+        }
+        saveConfiguration(payload, this.context().global, node.namespace);
+        node.send({ payload });
+      });*/
+    }
+
+    this.on('input', async function(msg, send, done) {
+      // send/done compatibility for node-red < 1.0
+      send = send || function() { node.send.apply(node, arguments) };
+      done = done || function(error) { node.error.call(node, error, msg) };
+
+      let chatbotId = extractValue('string', 'chatbotId', node, msg, false, true, true, true);
+
+      const payload = await getConfigurationPayload(node.namespace, !_.isEmpty(chatbotId) ? chatbotId : undefined)
+
       if (node.debug) {
         // eslint-disable-next-line no-console
-        console.log(lcd.green('Initial configuration received') + ' (' + lcd.grey(this.namespace) +')');
+        console.log(lcd.green('Loading configuration') + ' ('
+          + lcd.grey(this.namespace) + '/' + (!_.isEmpty(chatbotId) ? lcd.grey(chatbotId) : lcd.grey('no-chatbot'))
+          + ')');
         // eslint-disable-next-line no-console
         console.log(lcd.prettify(_.omit(payload, 'translations'), { indent: 2 }));
       }
       saveConfiguration(payload, this.context().global, node.namespace);
       node.send({ payload });
+      done();
     });
 
     // handle changes of configuration from MC

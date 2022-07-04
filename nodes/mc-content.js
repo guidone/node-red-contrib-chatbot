@@ -86,8 +86,8 @@ module.exports = function(RED) {
       const template = MessageTemplate(msg, node);
 
       let query = extractValue(['string', 'number', 'array'], 'query', node, msg, false, true);
-      const language = extractValue('string', 'language', node, msg, false);
-      const failbackLanguage = extractValue('string', 'failbackLanguage', node, msg, false);
+      const language = extractValue('string', 'language', node, msg, false, true);
+      const failbackLanguage = extractValue('string', 'failbackLanguage', node, msg, false, true);
 
       // if query (from the UI) is comma separated, then convert to array, trim it and try to convert
       if (isVariable(query)) {
@@ -110,6 +110,7 @@ module.exports = function(RED) {
       let usingId = false;
       let usingIds = false;
       let usingSlugs = false;
+      let usingSlug = false;
       let slugs, ids;
       if (_.isArray(query) && query.every(item => _.isString(item))) {
         slugs = query;
@@ -127,6 +128,7 @@ module.exports = function(RED) {
         usingId = true;
       } else if (_.isString(query) && !_.isEmpty(query)) {
         variables = { slug: query, limit: LIMIT };
+        usingSlug = true;
       } else {
         done('Invalid or empty slug/id, unable to retrieve content with this query: ' + (query != null ? query.toString() : 'null'));
         return;
@@ -151,6 +153,11 @@ module.exports = function(RED) {
             { language, contextLanguage, failbackLanguage }
           ));
           content = _.compact(filteredContents);
+        } else if (usingSlug) {
+          content = contents.find(content => content.language === language);
+          if (content == null) {
+            content = contents.find(content => content.language === failbackLanguage);
+          }
         } else if (usingId) {
           // if using id, then just get the first
           content = !_.isEmpty(contents) ? contents[0] : null;

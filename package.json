@@ -9,9 +9,7 @@
     "ngrok": "ngrok http 127.0.0.1:1880",
     "localtunnel": "lt --port 1880",
     "lint": "eslint ./nodes/*.js ./lib",
-    "pull-wiki": "git clone https://github.com/guidone/node-red-contrib-chatbot.wiki.git ./wiki",
-    "commit-wiki": "git add . && git commit -m \"docs\"",
-    "build-docs": "git clone https://github.com/guidone/node-red-contrib-chatbot.wiki.git ./wiki && node ./bin/generate-docs && rm -rf ./wiki",
+    "build-docs": "node ./bin/import-from-notion",
     "docker-build": "docker build . -t guidone/redbot",
     "docker-publish": "docker push guidone/redbot",
     "clean": "rm -rf ./wiki",
@@ -24,9 +22,8 @@
     "plugin": "node bin/build.js",
     "build": "cross-env NODE_OPTIONS=--max_old_space_size=8192 webpack --config webpack/webpack.prod.js && node ./bin/import-from-notion && echo \"Build complete!\"",
     "build-plugin": "webpack --config webpack/webpack.plugin.js",
-    "build-docker": "docker buildx build --platform linux/amd64,linux/arm64 -t guidone/redbot:latest . --push",
-    "start-mc-dev": "DEV=dev node-red",
-    "start-mc-plugin": "DEV=plugin node-red"
+    "build-docker-assets": "docker build -f ./Dockerfile-webpack -t redbot-assets .",
+    "build-docker": "docker buildx build --platform linux/amd64,linux/arm64 -t guidone/redbot:latest . --push"
   },
   "repository": {
     "type": "git",
@@ -138,7 +135,6 @@
     "cloudinary": "^1.27.1",
     "compromise": "10.7.1",
     "dialogflow": "^1.2.0",
-    "easymde": "^2.16.1",
     "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-hooks": "^4.4.0",
     "express": "^4.17.1",
@@ -205,6 +201,7 @@
     "cross-env": "^7.0.2",
     "css-loader": "^3.3.1",
     "eslint": "^4.12.1",
+    "easymde": "^2.16.1",
     "file-loader": "^5.0.2",
     "filesize": "^6.1.0",
     "google-map-react": "^1.1.7",

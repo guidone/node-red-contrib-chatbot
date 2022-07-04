@@ -11,6 +11,12 @@
       },
       debug: {
         value: false
+      },
+      loadOnStartup: {
+        value: true
+      },
+      inputs: {
+        value: 0
       }
     },
     inputs: 0,
@@ -19,6 +25,18 @@
     icon: 'chatbot-command.png',
     label: function() {
       return 'MC Configuration' + (this.namespace !== null && this.namespace !== '' ? ' (' + this.namespace + ')' : '');
+    },
+    oneditsave: function() {
+      var loadOnStartup = $('#node-input-loadOnStartup').is(':checked');
+      this.inputs = loadOnStartup ? 0 : 1;
+    },
+    oneditprepare: function() {
+      const node = this;
+      $('#node-input-loadOnStartup')
+        .change(function() {
+          var value = $(this).is(':checked');
+          node.inputs = value ? 0 : 1;
+        });
     }
   });
 </script>
@@ -34,6 +52,13 @@
     <span class="redbot-form-hint">
       Use the same chatbotId specified in the Receiver node configuration, or just leave black if there are not multiple
       chatbots.
+    </span>
+  </div>
+  <div class="form-row">
+    <label for="node-input-loadOnStartup">Load on startup</label>
+    <input type="checkbox" value="true" id="node-input-loadOnStartup">
+    <span class="redbot-form-hint">
+      Load the configuration when the flows start. Uncheck this to programmatically specify some parameters.
     </span>
   </div>
   <div class="form-row">

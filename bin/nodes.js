@@ -1,5 +1,10 @@
 module.exports = [
   {
+    nodeFile: 'mc-configuration.html',
+    nodeType: 'mc-configuration',
+    notionUrl: 'https://www.notion.so/redbot/MC-Configuration-node-585cd33e293c40478a47635246742a27'
+  },
+  {
     nodeFile: 'chatbot-alexa-card.html',
     nodeType: 'chatbot-alexa-card',
     notionUrl: 'https://redbot.notion.site/Alexa-Card-node-fc89c43d79324c8da2f251e26f638246'
