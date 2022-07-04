@@ -24,7 +24,7 @@
     "plugin": "node bin/build.js",
     "build": "cross-env NODE_OPTIONS=--max_old_space_size=8192 webpack --config webpack/webpack.prod.js && node ./bin/import-from-notion && echo \"Build complete!\"",
     "build-plugin": "webpack --config webpack/webpack.plugin.js",
-    "build-docker": "docker build . -t guidone/redbot",
+    "build-docker": "docker buildx build --platform linux/amd64,linux/arm64 -t guidone/redbot:latest . --push",
     "start-mc-dev": "DEV=dev node-red",
     "start-mc-plugin": "DEV=plugin node-red"
   },

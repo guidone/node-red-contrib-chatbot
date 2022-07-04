@@ -12,6 +12,11 @@ const orange = clc.xterm(214);
 
 const nodeDefinitions = require('./nodes');
 
+if (!fs.existsSync(`${__dirname}/../.env-notion`)) {
+  console.log('Missing notion token, skipping');
+  process.exit();
+}
+
 const notionAuthToken = fs.readFileSync(`${__dirname}/../.env-notion`);
 
 // Initializing a client
