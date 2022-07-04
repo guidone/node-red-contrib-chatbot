@@ -71,7 +71,7 @@
 </code></pre>
 <p>and can be sent to any other parser nodes like other messages.</p>
 <p>At some point of the flow it might be useful to route the incoming message on a different path based on the type, for example in order to handle the inline query differently, here is where the <code>Switch node</code> might be useful</p>
-<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/4b30a036-7b2d-4e71-9650-1fce62605977/example-switch.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220704%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220704T135641Z&X-Amz-Expires=3600&X-Amz-Signature=8e02ba95cbc3ed6b713c78a754e45f3e4139dfae861845a66f531ad9fc6f4186&X-Amz-SignedHeaders=host&x-id=GetObject" alt="Switch node example"></p>
+<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/4b30a036-7b2d-4e71-9650-1fce62605977/example-switch.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220704%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220704T184517Z&X-Amz-Expires=3600&X-Amz-Signature=77820ab4bd7278cd2179ff7629dd5b0b10d1f8cfd8455577ba6f3df381186d15&X-Amz-SignedHeaders=host&x-id=GetObject" alt="Switch node example"></p>
 <p>After a inline query is received, use a <code>Function node</code> to prepare the payload to send to a <code>Inline Query Results node</code> and then to a <code>Telegram Sender node</code>.</p>
 <p>The <code>Function node</code></p>
 <pre><code class="language-javascript">msg.payload = [
