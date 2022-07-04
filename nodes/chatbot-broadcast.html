@@ -125,7 +125,7 @@
 <script type="text/x-red" data-help-name="chatbot-broadcast"><p>The <code>Broadcast node</code> allows sending a message to all users that have an open conversation with the Facebook Messenger chatbot .</p>
 <p>Only few message types are allowed: <code>message</code>, <code>generic-template</code>, <code>list-template</code> and <code>inline-buttons</code>.</p>
 <p>A message must be <em>stored</em> before it can be broadcasted</p>
-<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/32b7b355-281a-409c-b985-c0683a3dfec4/example-broadcast-1.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220701%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220701T134504Z&X-Amz-Expires=3600&X-Amz-Signature=06236e587538c98a846abd0989062bde25b68442755027eed6d3be73ec35797c&X-Amz-SignedHeaders=host&x-id=GetObject" alt="Broadcast Text Message"></p>
+<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/32b7b355-281a-409c-b985-c0683a3dfec4/example-broadcast-1.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220704%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220704T135706Z&X-Amz-Expires=3600&X-Amz-Signature=9f569a2ca982c46bc64f14c815518968c8a969b7cc4a4e043a24fd4e8c81e819&X-Amz-SignedHeaders=host&x-id=GetObject" alt="Broadcast Text Message"></p>
 <p>In this example a simple to broadcast a text message: the <code>Broadcast node</code> store the message and returns a <code>broadcast</code> type message that will actually sent by the <a href="https://www.notion.so/cfee3d0ae8164faaa542374e0b449769">Telegram Sender Node</a> . A <a href="https://www.notion.so/1d90a6e8dfc448d6865c88358c459de2">Conversation node</a>  is required in order at the beginning of the flow (in that case the <em>chatId</em> is left blank).</p>
 <p>In the text messages tokens can be used</p>
 <pre><code class="language-plain">Hello {{first_name}} {{last_name}}!
@@ -140,7 +140,7 @@
 };
 </code></pre>
 <p>A <code>broadcast</code> message (which is basically a message stored on Facebook Messenger server ready to be sent) can also be scheduled</p>
-<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/a87ce32b-0caf-4546-8b40-a015d4b07ff7/example-broadcast-2.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220701%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220701T134504Z&X-Amz-Expires=3600&X-Amz-Signature=91393fa283bc00963091f348c2c3856f3791a75c1dbdf60b5c9b02b6eeb31925&X-Amz-SignedHeaders=host&x-id=GetObject" alt=""></p>
+<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/a87ce32b-0caf-4546-8b40-a015d4b07ff7/example-broadcast-2.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220704%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220704T135706Z&X-Amz-Expires=3600&X-Amz-Signature=92cdaa55b44d634cc0a3a5800a6093016ce1305ecc3b4c5d6dd550eb4e5efcf3&X-Amz-SignedHeaders=host&x-id=GetObject" alt=""></p>
 <p>Given the <em>broadcastId</em> it’s also possible to cancel or get the status of a scheduled message.</p>
 <p>Available parameters for the <code>msg.payload</code></p>
 <table>
