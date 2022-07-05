@@ -13,6 +13,10 @@ module.exports = function(RED) {
     this.bot = config.bot;
     this.items = config.items;
 
+    const validCommands = items => {
+      return _.isArray(items) && !_.isEmpty(items) && items.every(item => _.isObject(item) && !_.isEmpty(item.command));
+    };
+
     this.on('input', async function(msg, send, done) {
       // send/done compatibility for node-red < 1.0
       done = done || function(error) { node.error.call(node, error, msg) };
@@ -28,9 +32,12 @@ module.exports = function(RED) {
       }
       const { connector } = currentBot.chat.getOptions();
       // get items
-      const items = node.items;
-      const validItems = Array.isArray(items) && items.every(item => _.isObject(item) && !_.isEmpty(item.command))
-      if (!validItems) {
+      let items;
+      if (validCommands(node.items)) {
+        items = node.items;
+      } else if (validCommands(msg.commands)) {
+        items = msg.commands;
+      } else {
         done('Invalid commands, "command" parameter is required');
         return;
       }
