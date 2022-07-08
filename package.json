@@ -93,6 +93,7 @@
       "chatbot-nlp-load": "./nodes/chatbot-nlp-load.js",
       "chatbot-pop-message": "./nodes/chatbot-pop-message.js",
       "chatbot-push-message": "./nodes/chatbot-push-message.js",
+      "chatbot-google-analytics": "./nodes/chatbot-google-analytics.js",
       "mc-graphql": "./nodes/mc-graphql.js",
       "mc-content": "./nodes/mc-content.js",
       "mc-simulator-receiver": "./nodes/mc-simulator-receiver.js",
