@@ -16,8 +16,8 @@ services:
         source: ${REDBOT_DIR}/nodes
         target: /usr/src/node-red/node_modules/node-red-contrib-chatbot/nodes
       - type: bind
-        source: ${REDBOT_DIR}/mc_plugins
-        target: /usr/src/node-red/node_modules/node-red-contrib-chatbot/mc_plugins
+        source: ${REDBOT_DIR}/package.json
+        target: /usr/src/node-red/node_modules/node-red-contrib-chatbot/package.json
       - type: bind
         source: ${REDBOT_DIR}/lib
         target: /usr/src/node-red/node_modules/node-red-contrib-chatbot/lib
