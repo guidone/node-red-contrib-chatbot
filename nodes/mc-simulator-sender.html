@@ -1,0 +1,72 @@
+<script type="text/javascript">
+  RED.nodes.registerType('mc-simulator-sender', {
+    category: 'Mission Control',
+    color: '#6699CC',
+    defaults: {
+      track: {
+        value: false
+      },
+      passThrough: {
+        value: false
+      },
+      chatbotId: {
+        value: '',
+        required: false
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'Simulator Out',
+    icon: 'chatbot-command.png',
+    label: function() {
+      return 'Simulator Out';
+    },
+    oneditprepare: function() {
+      var node = this;
+      var nodeRedUrl = $.RedBot.getNodeRedUrl();
+
+      // fetch available context providers
+      $.get(nodeRedUrl + 'redbot/globals')
+        .done(function(response) {
+          var chatbotIds = [];
+          response.activeChatbots.forEach(bot => {
+            if (!chatbotIds.includes[bot.chatbotId]) {
+              chatbotIds.push(bot.chatbotId);
+            }
+          })
+          chatbotIds.forEach(chatbotId => {
+            $('#node-input-chatbotId')
+              .append('<option value="' + chatbotId + '">' + chatbotId + '</option>');
+          });
+        });
+    },
+    oneditsave: function() {
+      var track = $('#node-input-track').is(':checked');
+      var passThrough = $('#node-input-passThrough').is(':checked');
+      this.outputs = track || passThrough ? 1 : 0;
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="mc-simulator-sender">
+  <div class="form-row">
+    <label for="node-input-command" style="width:150px;">ChatbotId</label>
+    <select id="node-input-chatbotId" placeholder="Select chatbotId">
+    </select>
+  </div>
+  <div class="form-row" style="margin-top:25px;">
+    <label for="node-input-track" style="margin-bottom:0px;">Track</label>
+    <input type="checkbox" value="true" id="node-input-track" style="margin-top:0px;">
+    <div class="redbot-form-hint">
+    Track response of the user for this message: any further answer will be redirect to the output pin.
+    </div>
+    <label for="node-input-track" style="margin-bottom:0px;margin-top:15px;">Pass Through</label>
+    <input type="checkbox" value="true" id="node-input-passThrough" style="margin-top:0px;">
+    <div class="redbot-form-hint">
+    Forward the message to the output pin after sending (useful to chain messages and keep the right order)
+    </div>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="mc-simulator-sender">
+</script>

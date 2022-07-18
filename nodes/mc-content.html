@@ -1,0 +1,116 @@
+<script type="text/javascript">
+  RED.nodes.registerType('mc-content', {
+    category: 'Mission Control',
+    color: '#6699CC',
+    defaults: {
+      query: {
+        value: ''
+      },
+      language: {
+        value: ''
+      },
+      failbackLanguage: {
+        value: 'en'
+      },
+      chain: {
+        value: false
+      }
+    },
+    inputs: 1,
+    outputs: 2,
+    paletteLabel: 'MC Content',
+    outputLabels: ['Query result', 'Empty response'],
+    icon: 'chatbot-command.png',
+    label: function() {
+      return 'MC Content' + (this.query != null && this.query !== '' ? ' (' + this.query + ')' : '');
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="mc-content">
+  <div class="form-row">
+    <label for="node-input-query">Get by id(s) or slug(s)</label>
+    <input type="text" id="node-input-query" placeholder="">
+  </div>
+  <div class="form-row form-row-language">
+    <label for="node-input-language">Language</label>
+    <select id="node-input-language">
+      <option value="">Use chat context language</option>
+      <option value="ar">Arabic</option>
+      <option value="bn">Bengali</option>
+      <option value="ca">Catalan</option>
+      <option value="cs">Czech</option>
+      <option value="da">Danish</option>
+      <option value="de">German</option>
+      <option value="el">Greek</option>
+      <option value="en">English</option>
+      <option value="es">Spanish</option>
+      <option value="eu">Basque</option>
+      <option value="fa">Persian</option>
+      <option value="fi">Finnish</option>
+      <option value="fr">French</option>
+      <option value="ga">Irish</option>
+      <option value="gl">Galician</option>
+      <option value="hi">Hindi</option>
+      <option value="hu">Hungarian</option>
+      <option value="hy">Armenian</option>
+      <option value="it">Italian</option>
+      <option value="ja">Japanese</option>
+      <option value="nl">Dutch</option>
+      <option value="no">Norwegian</option>
+      <option value="pt">Portuguese</option>
+      <option value="ro">Romanian</option>
+      <option value="ru">Russian</option>
+      <option value="sl">Slovenian</option>
+      <option value="sv">Swedish</option>
+      <option value="ta">Tamil</option>
+      <option value="th">Thai</option>
+      <option value="tl">Tagalog</option>
+      <option value="tr">Turkish</option>
+      <option value="uk">Ukrainian</option>
+      <option value="zh">Chinese</option>
+    </select>
+  </div>
+  <div class="form-row form-row-language">
+    <label for="node-input-language">Failback Language</label>
+    <select id="node-input-failbackLanguage">
+      <option value="">Not defined</option>
+      <option value="ar">Arabic</option>
+      <option value="bn">Bengali</option>
+      <option value="ca">Catalan</option>
+      <option value="cs">Czech</option>
+      <option value="da">Danish</option>
+      <option value="de">German</option>
+      <option value="el">Greek</option>
+      <option value="en">English</option>
+      <option value="es">Spanish</option>
+      <option value="eu">Basque</option>
+      <option value="fa">Persian</option>
+      <option value="fi">Finnish</option>
+      <option value="fr">French</option>
+      <option value="ga">Irish</option>
+      <option value="gl">Galician</option>
+      <option value="hi">Hindi</option>
+      <option value="hu">Hungarian</option>
+      <option value="hy">Armenian</option>
+      <option value="it">Italian</option>
+      <option value="ja">Japanese</option>
+      <option value="nl">Dutch</option>
+      <option value="no">Norwegian</option>
+      <option value="pt">Portuguese</option>
+      <option value="ro">Romanian</option>
+      <option value="ru">Russian</option>
+      <option value="sl">Slovenian</option>
+      <option value="sv">Swedish</option>
+      <option value="ta">Tamil</option>
+      <option value="th">Thai</option>
+      <option value="tl">Tagalog</option>
+      <option value="tr">Turkish</option>
+      <option value="uk">Ukrainian</option>
+      <option value="zh">Chinese</option>
+    </select>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="mc-content">
+</script>

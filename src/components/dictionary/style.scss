@@ -1,0 +1,62 @@
+.ui-dictionary {
+  margin-top: 10px;  
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-content: stretch;
+  align-items: stretch;
+  
+.dictionary-item {
+  display: block;
+  padding: 3px 3px 3px 5px;
+  border-bottom: 1px solid #eeeeee;
+  border-left: 1px solid #eeeeee;
+
+  &:first-child {
+    border-top: 1px solid #eeeeee;
+  }
+
+  .name {
+    font-size: 13px;
+    font-weight: bold;
+    color: #333333;
+  }
+  .description {
+    color: #999999;
+    font-size: 12px;
+  }
+
+  &:hover, &.active {
+    text-decoration: none;
+    background-color: #3E73D8;
+    border-bottom: 1px solid #2A55B5;
+    border-left: 1px solid #3E73D8;
+    color: #ffffff;
+    .name {
+      color: #ffffff;
+    }
+    .description {
+      color: #eeeeee;
+    }
+  }
+}
+
+
+.labels {
+    order: 0;
+    flex: 0 0 250px;
+    align-self: auto;
+    border-right: 1px solid #dddddd;
+    }
+
+.translations {
+  order: 0;
+  flex: 1 0 auto;
+  align-self: auto;
+  padding-left: 10px;
+  margin-top: -10px;
+  }
+
+
+}

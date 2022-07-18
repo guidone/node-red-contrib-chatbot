@@ -1,0 +1,133 @@
+.ui-survey-editor {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-content: stretch;
+  align-items: stretch;
+
+
+
+
+
+
+
+
+
+.questions {
+    order: 0;
+    flex: 0 0 250px;
+    align-self: auto;
+    border: 1px solid #dddddd;
+    }
+
+
+
+
+}
+
+.rs-list-item {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.ui-survey-question {
+  display: block;
+  height: 80px;
+  //padding: 3px 3px 3px 5px;
+  border-bottom: 1px solid #eeeeee;
+  //border-left: 1px solid #eeeeee;
+  background-color: #ffffff;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-content: stretch;
+  align-items: center;
+
+  .icons {
+    display: inline-block;
+    float: right;
+  }
+
+  .grippy {
+    content: '....';
+    width: 14px;
+    overflow: hidden;
+    height: 80px;
+    display: inline-block;
+    overflow: hidden;
+    line-height: 5px;
+    padding: 3px 4px;
+    cursor: move;
+    vertical-align: middle;
+    margin-top: -.7em;
+    margin-right: .3em;
+    font-size: 12px;
+    font-family: sans-serif;
+    letter-spacing: 2px;
+    color: #cccccc;
+    text-shadow: 1px 0 1px #cccccc;
+  }
+  .grippy::after {
+    content: '.. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..';
+  }
+
+
+  .grippy {
+    flex: 0 0 14px;
+    height: 75px;
+  }
+
+  .indent {
+    flex: 0 0 4px;
+    height: 80px;
+    background-color: #efefef;
+  }
+
+
+  .content {
+    flex: 1 0;
+    height: 80px;
+  }
+
+
+  .title {
+    font-size: 13px;
+    color: #444444;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 17px;
+  }
+  .description {
+    color: #999999;
+    font-size: 12px;
+  }
+
+  &:hover {
+    text-decoration: none;
+    background-color: #eeeeee;
+
+  }
+
+  .selection-bar {
+    width: 4px;
+    height: 80px;
+  }
+
+  &.active {
+    .selection-bar {
+      background-color: orange;
+    }
+  }
+
+  &.sorting {
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+  }
+}

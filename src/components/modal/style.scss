@@ -1,0 +1,20 @@
+.ui-modal-wrapper {
+
+  &.right {
+    .rs-modal-footer {
+      text-align: right;
+    }
+  }
+
+  &.center {
+    .rs-modal-footer {
+      text-align: center;
+    }
+  }
+
+  &.left {
+    .rs-modal-footer {
+      text-align: left;
+    }
+  }
+}

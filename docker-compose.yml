@@ -1,0 +1,57 @@
+version: '3.3'
+services:
+  redbot:
+    container_name: 'redbot'
+    image: 'guidone/redbot'
+    ports:
+      - '1880:1880'
+    environment:
+      REDBOT_ENABLE_MISSION_CONTROL: 'true'
+      NODE_RED_ENABLE_PROJECTS: ${NODE_RED_ENABLE_PROJECTS}
+      NODE_RED_ENABLE_TOURS: 'false'
+      REDBOT_DEVELOPMENT_MODE: ${REDBOT_DEVELOPMENT_MODE}
+      REDBOT_ENVIRONMENT: ${ENVIRONMENT}
+    volumes:
+      - type: bind
+        source: ${REDBOT_DIR}/nodes
+        target: /usr/src/node-red/node_modules/node-red-contrib-chatbot/nodes
+      - type: bind
+        source: ${REDBOT_DIR}/package.json
+        target: /usr/src/node-red/node_modules/node-red-contrib-chatbot/package.json
+      - type: bind
+        source: ${REDBOT_DIR}/lib
+        target: /usr/src/node-red/node_modules/node-red-contrib-chatbot/lib
+      - type: bind
+        source: ${REDBOT_DIR}/bin
+        target: /usr/src/node-red/node_modules/node-red-contrib-chatbot/bin
+      - type: bind
+        source: ${REDBOT_DIR}/database
+        target: /usr/src/node-red/node_modules/node-red-contrib-chatbot/database
+      - type: bind
+        source: ${REDBOT_DIR}/src
+        target: /usr/src/node-red/node_modules/node-red-contrib-chatbot/src
+      - type: bind
+        source: ${DATA_DIR}
+        target: /data
+  redbot-assets:
+    container_name: 'redbot-assets'
+    build:
+      dockerfile: Dockerfile-webpack
+      context: .
+    ports:
+      - '8080:8080'
+    environment:
+      REDBOT_DEVELOPMENT_PLUGINS: ${REDBOT_DEVELOPMENT_PLUGINS}
+    volumes:
+      - type: bind
+        source: ${REDBOT_DIR}/src
+        target: /tmp/src
+      - type: bind
+        source: ${REDBOT_DIR}/webpack
+        target: /tmp/webpack
+      - type: bind
+        source: ${REDBOT_DIR}/core
+        target: /tmp/core
+      - type: bind
+        source: ${REDBOT_DIR}/mc_plugins
+        target: /tmp/mc_plugins

@@ -89,6 +89,7 @@ module.exports = function(RED) {
         }
       }
       // skip if language is not detected
+
       if (_.isEmpty(language)) {
         done('Unable to detect content language, skipping');
         return;

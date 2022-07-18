@@ -1,0 +1,49 @@
+<script type="text/javascript">
+  RED.nodes.registerType('mc-simulator-receiver', {
+    category: 'Mission Control',
+    color: '#6699CC',
+    defaults: {
+      chatbotId: {
+        value: '',
+        required: false
+      }
+    },
+    oneditprepare: function() {
+      var node = this;
+      var nodeRedUrl = $.RedBot.getNodeRedUrl();
+
+      // fetch available context providers
+      $.get(nodeRedUrl + 'redbot/globals')
+        .done(function(response) {
+          var chatbotIds = [];
+          response.activeChatbots.forEach(bot => {
+            if (!chatbotIds.includes[bot.chatbotId]) {
+              chatbotIds.push(bot.chatbotId);
+            }
+          })
+          chatbotIds.forEach(chatbotId => {
+            $('#node-input-chatbotId')
+              .append('<option value="' + chatbotId + '">' + chatbotId + '</option>');
+          });
+        });
+    },
+    inputs: 0,
+    outputs: 1,
+    paletteLabel: 'MC Simulator In',
+    icon: 'chatbot-command.png',
+    label: function() {
+      return 'Simulator In';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="mc-simulator-receiver">
+  <div class="form-row">
+    <label for="node-input-command" style="width:150px;">ChatbotId</label>
+    <select id="node-input-chatbotId" placeholder="Select chatbotId">
+    </select>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="mc-simulator-receiver">
+</script>

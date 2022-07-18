@@ -1,0 +1,52 @@
+<script type="text/javascript">
+  RED.nodes.registerType('mc-output', {
+    category: 'Mission Control',
+    color: '#6699CC',
+    defaults: {
+      name: {
+        value: ''
+      },
+      topic: {
+        value: ''
+      },
+      payload: {
+        value: ''
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'MC Output',
+    icon: 'chatbot-command.png',
+    label: function() {        
+      return 'MC output' + (this.topic !== null && this.topic !== '' ? ' (' + this.topic + ')' : '');
+    },
+    oneditprepare: function() {
+      var widget = $('#node-input-payload');
+      widget.typedInput({
+        'default': 'json',
+        types: ['json']
+      });
+      widget.typedInput('value', this.payload);
+    },
+    oneditsave: function() {
+      this.payload = $('#node-input-payload').typedInput('value');
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="mc-output">
+  <div class="form-row">
+    <label for="node-input-topic"><i class="icon-tag"></i> Topic</label>
+    <input type="text" id="node-input-topic" placeholder="Topic">
+  </div>
+  <div class="form-row">
+    <label for="node-input-topic"></i> Payload</label>
+    <input type="text" id="node-input-payload">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="mc-output">
+</script>
+  
+  
+  

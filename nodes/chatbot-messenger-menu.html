@@ -112,96 +112,148 @@
 
 <script type="text/x-red" data-help-name="chatbot-messenger-menu"><p>This node will set the persistent menu next to the editable area in Facebook Messenger, there two kind of options:</p>
 <ul>
-<li><strong>URL</strong>: it opens a specific url. In the mobile version it&#39;s possible to specify the size of the browser window.
-Also supports <a href="https://developers.facebook.com/docs/messenger-platform/webview">Messenger Extensions</a></li>
-<li><strong>Postback</strong>: sends the text defined in <em>value</em> field to the chat (as a text message)</li>
+<li><p><strong>URL</strong>: it opens a specific url. In the mobile version it’s possible to specify the size of the browser window. Also supports <a href="https://developers.facebook.com/docs/messenger-platform/webview">Messenger Extensions</a></p>
+</li>
+<li><p><strong>Postback</strong>: sends the text defined in <em>value</em> field to the chat (as a text message)</p>
+</li>
 </ul>
-<p>It also allows the disable the text area (user will interact only with menu with the chatbot) or to delete a previous menu. <strong>On desktop, remember to reload the chat window in order to see the menu changes</strong>. </p>
+<p>It also allows the disable the text area (user will interact only with menu with the chatbot) or to delete a previous menu. <strong>On desktop, remember to reload the chat window in order to see the menu changes</strong>.</p>
 <p>The menu items can be passed through the payload by the upstream node:</p>
-<pre><code class="language-javascript">msg.payload = [
-  {
-    type: &#39;url&#39;,
-    label: &#39;JavaScript Jedi&#39;,
-    url: &#39;http://javascript-jedi.com&#39;,
-    webview_height_ratio: &#39;full&#39; // tall|full|compact
-  },
-  {
-    type: &#39;postback&#39;,
-    label: &#39;Help&#39;,
-    value: &#39;/help&#39;
-  }
+<pre><code class="language-javascript">msg.payload = [  
+    {    
+        type: &#39;url&#39;,    
+        label: &#39;JavaScript Jedi&#39;,    
+        url: &#39;http://javascript-jedi.com&#39;,    
+        webview_height_ratio: &#39;full&#39; // tall|full|compact  
+    },  
+    {    
+        type: &#39;postback&#39;,    
+        label: &#39;Help&#39;,    
+        value: &#39;/help&#39;  
+    }
 ];
 return msg;
 </code></pre>
 <p>otherwise all parameters can be passed by the upstream node</p>
 <pre><code class="language-javascript">msg.payload = {
-  composerInputDisabled: true,
-  command: &#39;set&#39;,
-  items: [
-    {
-      type: &#39;url&#39;,
-      label: &#39;JavaScript Jedi&#39;,
-      url: &#39;http://javascript-jedi.com&#39;,
-      webview_height_ratio: &#39;full&#39; // tall|full|compact
-    },
-    {
-      type: &#39;postback&#39;,
-      label: &#39;Help&#39;,
-      value: &#39;/help&#39;
-    }
-  ]
+    composerInputDisabled: true,  
+    command: &#39;set&#39;,  
+    items: [    
+        { 
+            type: &#39;url&#39;,      
+            label: &#39;JavaScript Jedi&#39;,      
+            url: &#39;http://javascript-jedi.com&#39;,      
+            webview_height_ratio: &#39;full&#39; // tall|full|compact    
+        },    
+        {      
+            type: &#39;postback&#39;,      
+            label: &#39;Help&#39;,      
+            value: &#39;/help&#39;    
+        }  
+    ]
 };
 return msg;
 </code></pre>
-<p>A maximum 3 menu items are allowed. If more items are needed, it&#39;s possible to create nested menus via <code>Function node</code>:</p>
-<pre><code class="language-javascript">msg.payload = {
-  composerInputDisabled: true,
-  command: &#39;set&#39;,
-  items: [ 
-    {
-      type: &#39;url&#39;,
-      label: &#39;JavaScript Jedi&#39;,
-      url: &#39;http://javascript-jedi.com&#39;,
-      webview_height_ratio: &#39;full&#39; // tall|full|compact
-    },
-    { 
-      label: &#39;Sub Menu&#39;, 
-      items: [
-        {
-          type: &#39;postback&#39;,
-          label: &#39;Postback 1&#39;,
-          value: &#39;postback1&#39;
-        },
-        {
-          type: &#39;postback&#39;,
-          label: &#39;Postback 2&#39;,
-          value: &#39;postback2&#39;
-        }
-      ]
-    }
-  ]
+<p>A maximum 3 menu items are allowed. If more items are needed, it’s possible to create nested menus via <code>Function node</code>:</p>
+<pre><code class="language-javascript">msg.payload = {  
+    composerInputDisabled: true,  
+    command: &#39;set&#39;,  
+    items: [    
+        {      
+            type: &#39;url&#39;,      
+            label: &#39;JavaScript Jedi&#39;,      
+            url: &#39;http://javascript-jedi.com&#39;,      
+            webview_height_ratio: &#39;full&#39; // tall|full|compact    
+        },   
+        {      
+            label: &#39;Sub Menu&#39;,      
+            items: [        
+                {          
+                    type: &#39;postback&#39;,          
+                    label: &#39;Postback 1&#39;,          
+                    value: &#39;postback1&#39;        
+                },        
+                {          
+                    type: &#39;postback&#39;,          
+                    label: &#39;Postback 2&#39;,          
+                    value: &#39;postback2&#39;        
+                }      
+            ]    
+        }  
+    ]
 };
 return msg;
 </code></pre>
 <p>Available parameters for the <code>msg.payload</code></p>
-<dl class="message-properties">
-
-<dt>composerInputDisabled<span class="property-type">boolean</span><dd>Disable text input, user will interact only with menu</dd>
-<dt>command<span class="property-type">string</span><dd>Set or delete menu. Valid values: <em>set</em>, <em>delete</em></dd>
-<dt>items<span class="property-type">array of [item]</span><dd>Items of the menu</dd>
-</dl>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>composerInputDisabled</td>
+<td>boolean</td>
+<td>Disable text input, user will interact only with menu</td>
+</tr>
+<tr>
+<td>command</td>
+<td>string</td>
+<td>Set or delete menu. Valid values: <em>set</em>, <em>delete</em></td>
+</tr>
+<tr>
+<td>items</td>
+<td>array of [item]</td>
+<td>Items of the menu</td>
+</tr>
+</tbody></table>
 <p>The <code>[item]</code> object</p>
-<dl class="message-properties">
-
-<dt>type<span class="property-type">string</span><dd>Type of button: <em>url</em>, <em>postback</em></dd>
-<dt>label<span class="property-type">string</span><dd>Label of the button</dd>
-<dt>value<span class="property-type">string</span><dd>Value returned as payload in <code>postback</code> buttons</dd>
-<dt>url<span class="property-type">string</span><dd>Url to redirect to for <code>url</code> buttons or authentication URL for <code>login</code> buttons</dd>
-<dt>messengerExtensions<span class="property-type">boolean</span><dd>Include Messenger Extensions for <code>url</code> buttons</dd>
-<dt>webViewHeightRatio<span class="property-type">string</span><dd>Aspect ratio of the webview in Facebook Messenger for <code>url buttons</code>. Valid values: <em>tall</em>, <em>compact</em>, <em>full</em></dd>
-<dt>items<span class="property-type">array of [item]</span><dd>Nested menu items</dd>
-</dl>
-<p><img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook"></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>type</td>
+<td>string</td>
+<td>Type of button: <em>url</em>, <em>postback</em></td>
+</tr>
+<tr>
+<td>label</td>
+<td>string</td>
+<td>Label of the button</td>
+</tr>
+<tr>
+<td>value</td>
+<td>string</td>
+<td>Value returned as payload in <code>postback</code> buttons</td>
+</tr>
+<tr>
+<td>url</td>
+<td>string</td>
+<td>Url to redirect to for <code>url</code> buttons or authentication URL for <code>login</code> buttons</td>
+</tr>
+<tr>
+<td>messengerExtensions</td>
+<td>boolean</td>
+<td>Include Messenger Extensions for <code>url</code> buttons</td>
+</tr>
+<tr>
+<td>webViewHeightRatio</td>
+<td>string</td>
+<td>Aspect ratio of the webview in Facebook Messenger for <code>url buttons</code>. Valid values: <em>tall</em>, <em>compact</em>, <em>full</em></td>
+</tr>
+<tr>
+<td>items</td>
+<td>array of [item]</td>
+<td>Nested menu items</td>
+</tr>
+</tbody></table>
 </script>
 
 

@@ -1,0 +1,95 @@
+<script type="text/javascript">
+  RED.nodes.registerType('mc-configuration', {
+    category: 'Mission Control',
+    color: '#6699CC',
+    defaults: {
+      namespace: {
+        value: ''
+      },
+      chatbotId: {
+        value: ''
+      },
+      debug: {
+        value: false
+      },
+      loadOnStartup: {
+        value: true
+      },
+      inputs: {
+        value: 0
+      }
+    },
+    inputs: 0,
+    outputs: 1,
+    paletteLabel: 'MC Configuration',
+    icon: 'chatbot-command.png',
+    label: function() {
+      return 'MC Configuration' + (this.namespace !== null && this.namespace !== '' ? ' (' + this.namespace + ')' : '');
+    },
+    oneditsave: function() {
+      var loadOnStartup = $('#node-input-loadOnStartup').is(':checked');
+      this.inputs = loadOnStartup ? 0 : 1;
+    },
+    oneditprepare: function() {
+      const node = this;
+      $('#node-input-loadOnStartup')
+        .change(function() {
+          var value = $(this).is(':checked');
+          node.inputs = value ? 0 : 1;
+        });
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="mc-configuration">
+  <div class="form-row">
+    <label for="node-input-namespace"><i class="icon-tag"></i> Namespace</label>
+    <input type="text" id="node-input-namespace" placeholder="Namespace">
+  </div>
+  <div class="form-row">
+    <label for="node-input-namespace">chatbotId</label>
+    <input type="text" id="node-input-chatbotId" placeholder="chatbotId">
+    <span class="redbot-form-hint">
+      Use the same chatbotId specified in the Receiver node configuration, or just leave black if there are not multiple
+      chatbots.
+    </span>
+  </div>
+  <div class="form-row">
+    <label for="node-input-loadOnStartup">Load on startup</label>
+    <input type="checkbox" value="true" id="node-input-loadOnStartup">
+    <span class="redbot-form-hint">
+      Load the configuration when the flows start. Uncheck this to programmatically specify some parameters.
+    </span>
+  </div>
+  <div class="form-row">
+    <label for="node-input-debug">Debug</label>
+    <input type="checkbox" value="true" id="node-input-debug">
+    <span class="redbot-form-hint">
+      Show debug information on this configuration settings
+    </span>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="mc-configuration"><p>The configuration node is used to receive in <strong>NodeRED</strong> configuration data defined in the <strong>Mission Control</strong> dashboard.</p>
+<p>Warning! To correctly use this node it might be necessary to develop a specific plugin for <strong>Mission Control</strong>. </p>
+<p>A configuration is an custom payload related to a plugin and it’s identified by a <em>“namespace”</em>. For example a plugin for answering about the opening hours of a shop could have a configuration panel to define the timetable, in that case the namespace could be “opening-hours”.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>chatbotId</td>
+<td>string</td>
+<td>The chatbotId of the configuration</td>
+</tr>
+<tr>
+<td>namespace</td>
+<td>string</td>
+<td>The namespace of the configuration</td>
+</tr>
+</tbody></table>
+</script>

@@ -1,0 +1,83 @@
+.ui-schema-form {
+
+  .error-msg {
+    color: #ff3932;
+
+  }
+  .rs-input.whit-error {
+    border-color: #ff3932;
+  }
+
+  .title {
+    font-weight: bold;
+    margin-bottom: 8px;
+    width: 100%;
+
+    &.title-0 {
+      font-size: 22px;
+    }
+
+    &.title-1 {
+      font-size: 19px;
+    }
+
+    &.title-2 {
+      font-size: 16px;
+    }
+  }
+
+  .rs-form {
+    margin-bottom: 15px;
+
+    .rs-form-group:not(:last-child) {
+      margin-bottom: 12px;
+    }
+
+    input:read-only {
+      background-color: #eeeeee;
+    }
+
+    &.horizontal-2x {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-content: flex-start;
+      align-items: flex-start;
+
+      .rs-form-group:nth-child(odd) {
+        flex: 0 0 47%;
+        margin-left: 3%;
+      }
+      .rs-form-group:nth-child(even) {
+        flex: 0 0 47%;
+        margin-right: 3%;
+      }
+    }
+
+    &.horizontal-3x {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-content: flex-start;
+      align-items: flex-start;
+
+      .rs-form-group:nth-child(3n+0) {
+        flex: 0 0 30%;
+        margin-left: 5%;
+      }
+      .rs-form-group:nth-child(3n+1) {
+        flex: 0 0 30%;
+        margin-left: 5%;
+      }
+      .rs-form-group:nth-child(3n+2) {
+        flex: 0 0 30%;
+        margin-left: 0px;
+      }
+
+    }
+
+  }
+
+}

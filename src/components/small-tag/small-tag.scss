@@ -1,0 +1,11 @@
+.ui-small-tag {
+  padding: 1px 4px 1px 4px;
+  font-size: 11px;
+  border-radius: 3px;
+  color: #ffffff;
+  font-weight: normal !important;
+
+  &.capitalize {
+    text-transform: capitalize;
+  }
+}

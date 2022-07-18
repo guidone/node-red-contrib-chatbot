@@ -1,0 +1,38 @@
+.widget-message-log {
+  .rs-flex-box-grid-item.ellipsis {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .cell-chat-id {
+    font-style: italic;
+    line-height: 25px;
+    font-size: 13px;
+  }
+
+  .cell-date {
+    font-size: 12px;
+    line-height: 24px;
+    color: #666666;
+  }
+
+  .cell-content {
+    line-height: 25px;
+
+    .file-size {
+      font-size: 12px;
+      color: #999999;
+    }
+  }
+
+  .rs-list {
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+
+    .rs-list-item:first-child {
+      box-shadow: none !important;
+      -webkit-box-shadow: none !important;
+    } 
+  }
+}

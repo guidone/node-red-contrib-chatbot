@@ -1,0 +1,123 @@
+.ui-collection-editor {
+  width: 100%;
+
+  .empty {
+    height: 80px;
+    color: #888888;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+
+    .rs-btn {
+      margin-top: 10px;
+    }
+  }
+
+
+  .buttons {
+    text-align: right;
+    margin-top: 10px;
+  }
+
+  .ui-spin-button {
+    margin-left: 7px;
+    height: 36px;
+    display: inline-block;
+
+    .top {
+      button {
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+      }
+      i {
+        margin-top: -1px;
+      }
+    }
+
+    .bottom {
+      button {
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;
+      }
+    }
+
+    .top, .bottom {
+      width: 18px;
+      height: 18px;
+    }
+
+    .rs-btn-icon {
+      height: 18px !important;
+      width: 18px !important;
+      padding: 0 !important;
+      line-height: 18px !important;
+      vertical-align: middle !important;
+      margin: -5px 0px 0px 0px !important;
+      i {
+        line-height: 18px !important;
+        vertical-align: middle !important;
+        height: 18px !important;
+        width: 18px !important;
+        font-size: 16px !important;
+        padding: 0 !important;
+      }
+    }
+
+  }
+
+
+
+  &.disabled {
+    .item {
+      .button {
+        opacity: .5;
+      }
+    }
+  }
+}
+
+.ui-collection-item {
+  background-color: #ffffff;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-content: flex-start;
+  align-items: flex-start;
+
+  .handle {
+    flex: 0 0 20px
+  }
+
+  .control-buttons {
+    flex: 0 0 auto;
+    margin-left: 10px;
+
+    .rs-icon-close {
+      padding: 8px 0px;
+      width: 36px;
+      height: 36px;
+    }
+  }
+
+  .form {
+    flex: 1 0;
+  }
+
+  .rs-btn-icon {
+    height: 36px;
+    width: 36px;
+    i {
+      height: 36px;
+      width: 36px;
+      padding: 8px 0;
+    }
+  }
+
+
+}

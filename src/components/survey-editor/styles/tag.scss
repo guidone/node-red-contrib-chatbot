@@ -1,0 +1,19 @@
+.question-tag {
+  display: inline-block;
+  background-color: #333333;
+  color: white;
+  font-size: 12px;
+  border-radius: 2px;
+  padding: 1px 3px;
+  line-height: 12px;
+
+  &.large {
+    font-weight: bold;
+    border-radius: 3px;
+    height: 35px;
+    line-height: 35px;
+    vertical-align: middle;
+    padding: 0px 6px;
+    font-size: 22px;
+  }
+}

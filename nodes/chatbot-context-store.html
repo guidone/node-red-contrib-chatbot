@@ -71,116 +71,41 @@
 </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-context-store"><p><strong>Node-RED</strong> has two variable context <em>global</em> and <em>flow</em>, the first is available everywhere in the app, the second just in the executed flow.</p>
-<p><strong>RedBot</strong> introduces the <em>chat</em> context where is possible to store information related to the specific user. The <code>Receiver node</code> store here some default information like <em>chatId</em>, <em>username</em>, <em>authorized</em>, <em>firstName</em>, <em>lastName</em>, etc. but it&#39;s possible to store any kind of information.</p>
-<p>Two chat context providers are available</p>
-<ul>
-<li><strong>Memory</strong> <em>(default)</em>: it&#39;s a very fast and volatile storage, means that when the server is restarted all the stored data is lost. It&#39; the default one (good for experimenting) and all the methods are synchronous</li>
-<li><strong>Plain file</strong>: it stores data in a plain <em>json</em> file, all the methods are asynchronous.</li>
-<li><strong>SQLite</strong>: it stores context in a local **.sqlite* file</li>
-</ul>
-<p>To get the chat context in a <code>Function node</code> (using the <strong>Memory</strong> context provider): </p>
-<pre><code class="language-javascript">const chat = msg.chat();
-console.log(chat.get(&#39;authorized&#39;)); // is the user authorized
-console.log(chat.get(&#39;username&#39;)); // guidone72
-chat.set(&#39;my_stuff&#39;, &#39;remember that&#39;);
-</code></pre>
-<p>The same with <strong>Plain file</strong> on <strong>SQLite</strong>context provider</p>
-<pre><code class="language-javascript">const chat = msg.chat();
-chat.get(&#39;authorized&#39;)
-  .then(authorized =&gt; {
-    console.log(authorized); // is the user authorized
-    node.send(msg);
-  });
-</code></pre>
-<p>since it&#39;s asynchronous all methods return a <em>Promise</em>. It&#39;s also possibile to combine multiple calls</p>
-<pre><code class="language-javascript">const chat = msg.chat();
-chat.get(&#39;authorized&#39;, &#39;username&#39;)
-  .then(variables =&gt; {
-    console.log(variables.authorized); // is the user authorized
-    console.log(variables.username); // guidone72
-    return chat.set(&#39;my_stuff&#39;, &#39;remember that&#39;);
-  })
-  .then(() =&gt; node.send(msg) });  // pass thru when the chat.set is over
-</code></pre>
-<h3 id="context-keys">Context keys</h3>
-<h4 id="platform-keys">Platform keys</h4>
-<p>Platform keys are pre-populated by <strong>RedBot</strong>: <em>chatId</em> (a unique identifier for a user in a specific platform), <em>userId</em> (a unique identifier of a user through different platforms) and <em>transport</em>. 
-Values in the chat context are meant to be persisted over the time and different platforms, for this reason these keys are read-only and cannot be modified.
-They can be accessed by javascript <code>msg.chat().get(&#39;chatId&#39;)</code> or in templates <code>{{chatId}}</code> for retro-compatibility purposes, by they really don&#39;t belong to the chat context.</p>
-<h4 id="flow-keys">Flow keys</h4>
-<p>Some keys are pre-populated by <strong>RedBot</strong>: <em>firstName</em>, <em>lastName</em>, <em>language</em>, <em>authorized</em>, <em>pending</em>. These are specific to the flow and the used platform and can be modified or deleted by the <code>msg.chat().*</code> methods.
-Not all the chat platforms provide such informations and/or may be different  (unless a <strong>Mission Control</strong> <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/MC-Store" target="_blank">MC Store</a> node is used to reconcile the data): for example a user can have the Telegram client in the Italian language and the Messenger client in English language.
-The <code>{{message}}</code> key is the current inbound message (from the user)  and the <code>{{messageId}}</code> is the platform-dependent unique id (generally used to edit/delete already sent messages)</p>
-<h4 id="global-keys">Global keys</h4>
-<p>It&#39;s possibile to access variables in the <strong>Node-RED</strong>&#39;s global context using the handlebars-like notation, for example <code>{{global.my_global_variable}}</code></p>
-<h4 id="payload">Payload</h4>
-<p>Some nodes (like [[MC GraphQL||MC-GraphQL]]) return data on the <code>msg.payload</code> key of the inbound message. Such value can be used in the handlebars-like notation, for example a payload of an inbound messag </p>
-<pre><code class="language-javascript">{
-  total: 42,
-  shipping: {
-    address: &#39;Nowhere street,
-    city: &#39;Milan&#39;
-  }
-}
-</code></pre>
-<p>can be used the configuration panel of any <strong>RedBot</strong> nodes using the dot notation, for example:</p>
-<pre><code>Your order of {{payload.total}} will be shipped to {{payload.shipping.address}}, {{payload.shipping.city}}
-</code></pre>
-<h4 id="user-defined-keys">User defined keys</h4>
-<p>The chat context can store any kind of data (string, numbers, objects, etc), for example</p>
-<pre><code class="language-javascript">const chat = msg.chat();
-Promise.resolve(chat.set({
-  my_var: &#39;Guido&#39;,
-  another_var: {
-    subkey: 42
-  }
-)).then(() =&gt; node.send(msg));
-</code></pre>
-<p>can be used in the <code>Message node</code></p>
-<pre><code>My name {{my_var}} and the answer to the universe and everything {{another_var.subkey}}
-</code></pre>
-<h3 id="chat-context-methods">Chat context methods</h3>
-<p>All context providers support these methods:</p>
-<dl class="message-properties">
-
-<dt>.get(key)<span class="property-type">any</span><dd>Return the value of the key</dd>
-<dt>.get(key1, key2, ...keyN)<span class="property-type">object</span><dd>Return an hash with the values of the requested keys { key1: ..., key2: ... }</dd>
-<dt>.set(key, value)<span class="property-type">context</span><dd>Set the value of the key</dd>
-<dt>.set({key1: ..., key2: ...})<span class="property-type">context</span><dd>Set multiple key values</dd>
-<dt>.remove(key)<span class="property-type">context</span><dd>Remove value for the key</dd>
-<dt>.remove(key1, key2, ...keyN)<span class="property-type">context</span><dd>Remove multiple keys</dd>
-<dt>.clear()<span class="property-type">context</span><dd>Clear all the chat context</dd>
-<dt>.dump()<span class="property-type">context</span><dd>Dump in console the chat context</dd>
-<dt>.all()<span class="property-type">context</span><dd>Get all keys/values</dd>
-</dl>
-<p><strong>Plain file</strong> and  <strong>SQLite</strong> context always returns a <em>JavaScript Promise</em>, while the <strong>Memory</strong> context has just synchronous methods. 
-In the examples it&#39;s used the <strong>Memory</strong> context for readability purpose, it&#39;s even easier to debug since it&#39;s cleared at  every restart. In order to use both contexts in the same code, just wrap the calls in <code>Promise.resolve(...)</code> for example:</p>
-<pre><code class="language-javascript">const chat = msg.chat();
-// doesn&#39;t matter if chat context is Memory or an asynch one
-Promise.resolve(chat.get(&#39;my_var&#39;))
-  .then(myVar =&gt; {
-    // do something
-  });
-</code></pre>
-<h3 id="template-variables">Template Variables</h3>
-<p>Some most of the nodes like <code>Message node</code> evaluates the specified text with a very simple template system (Handlebars-like syntax).
-For example to say hello to the user</p>
-<pre><code>Hi, {{firstName}}!
-</code></pre>
-<p>There are some predefined variables in each chat context</p>
-<dl class="message-properties">
-
-<dt>chatId<span class="property-type">string</span><dd>yes</dd>
-<dt>userId<span class="property-type">string</span><dd>yes</dd>
-<dt>messageId<span class="property-type">string</span><dd>no</dd>
-<dt>firstName<span class="property-type"></span><dd>no</dd>
-<dt>lastName<span class="property-type"></span><dd>no</dd>
-<dt>authorized<span class="property-type">boolean</span><dd>no</dd>
-<dt>transport<span class="property-type">string</span><dd>yes</dd>
-<dt>message<span class="property-type">string</span><dd>no</dd>
-<dt>language<span class="property-type">string</span><dd>no</dd>
-<dt>pending<span class="property-type">boolean</span><dd>no</dd>
-</dl>
+<script type="text/x-red" data-help-name="chatbot-context-store"><p>Get, set or delete an element in the chat context.</p>
+<p>The chat context is a volatile namespace for variables related to the current chat user, some variables are predefined (like <em>firstName</em>, <em>lastName</em>, <em>topic</em>, <em>chatId</em>, etc).</p>
+<p>Typically this node is used to manually set the <em>topic</em> of the user before or after entering a <a href="https://www.notion.so/db8481a702b6491093f7ea53d765129e">Rivescript node</a>  or to store the extracted variables of an <a href="https://www.notion.so/b4bd4f8db5d243d487430d073c35992b">Intent payload</a> .</p>
+<p>For example, nodes like <a href="https://www.notion.so/84b9ea66d20743fd9cf45d3de5f17693">Dialogflow node</a>  can extract the <em>intent</em> from a sentences along with some variables (numbers, dates, etc). Chaining a <a href="https://www.notion.so/24a646bff58b4edfb249f1d27384230f">Context node</a>  stores these vars in the chat context</p>
+<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/d13e4586-3e43-4549-aad8-d7139cab26dc/context-example-1.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220704%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220704T184533Z&X-Amz-Expires=3600&X-Amz-Signature=73c4b8113dad86ed0e17e23f9fdac1da7701f125dd07c71aa50d832fce487f33&X-Amz-SignedHeaders=host&x-id=GetObject" alt="Store Intent vars"></p>
+<p>Available parameters for the <code>msg.payload</code></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>command</td>
+<td>string</td>
+<td>Operation to do on the context: <em>get</em>, <em>set</em>, <em>delete</em>, <em>intent</em></td>
+</tr>
+<tr>
+<td>fieldType</td>
+<td>string</td>
+<td>Type of field to set. Required for command: <em>set</em>. Can be: <em>str</em>, <em>num</em>, <em>bol</em>, <em>json</em>.</td>
+</tr>
+<tr>
+<td>fieldValue</td>
+<td>string</td>
+<td>The value to be set. Required for command: <em>set</em></td>
+</tr>
+<tr>
+<td>fieldName</td>
+<td>string</td>
+<td>The name of the chat context variable. Required for command: <em>set</em>, <em>get</em>, <em>delete</em></td>
+</tr>
+</tbody></table>
+<p>This node is available for all platforms.</p>
 </script>
 

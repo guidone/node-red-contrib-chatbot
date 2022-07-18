@@ -1,0 +1,47 @@
+.page-user-record {
+
+  .user-record-form {
+    margin-top: 15px;
+  }
+
+  .user-record-header {
+    display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+      align-content: flex-start;
+      align-items: flex-start;
+
+      .title {
+        flex: 1 0;
+      }
+
+      .user {
+        flex: 0 0 25%;
+        border-left: 1px solid #cccccc;
+        padding-left: 15px;
+
+        .name {
+          font-weight: bold;
+          font-size: 20px;
+        }
+      }
+  }
+
+  .user-record-buttons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: flex-start;
+    align-items: flex-start;
+    margin-top: 30px;
+
+    .left {
+      flex: 1 0;
+    }
+    .right {
+      float: 0 0 auto;
+    }
+  }
+}

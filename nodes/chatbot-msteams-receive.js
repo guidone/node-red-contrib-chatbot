@@ -1,14 +1,17 @@
 const _ = require('underscore');
 const moment = require('moment');
-const MicrosoftTeamsServer = require('../lib/platforms/microsoft-teams/index');
 const { ContextProviders, ChatExpress } = require('chat-platform');
-const utils = require('../lib/helpers/utils');
 const clc = require('cli-color');
-const lcd = require('../lib/helpers/lcd');
 const prettyjson = require('prettyjson');
+
+const MicrosoftTeamsServer = require('../lib/platforms/microsoft-teams/index');
+const utils = require('../lib/helpers/utils');
+const lcd = require('../lib/helpers/lcd');
 const validators = require('../lib/helpers/validators');
 const RegisterType = require('../lib/node-installer');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
+const GetEnvironment = require('../lib/helpers/get-environment');
+
 
 const when = utils.when;
 const warn = clc.yellow;
@@ -18,14 +21,15 @@ const green = clc.green;
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
-  
+  const getEnvironment = GetEnvironment(RED);
   var contextProviders = ContextProviders(RED);
 
   function MicrosoftTeamsBotNode(n) {
     RED.nodes.createNode(this, n);
-    var node = this;
     globalContextHelper.init(this.context().global);
-    var environment = this.context().global.environment === 'production' ? 'production' : 'development';
+
+    var node = this;
+    var environment = getEnvironment();
     var isUsed = utils.isUsed(RED, node.id);
     var startNode = utils.isUsedInEnvironment(RED, node.id, environment);
     var msteamsConfigs = globalContextHelper.get('msteams') || {};
@@ -108,7 +112,7 @@ module.exports = function(RED) {
         node.chat = MicrosoftTeamsServer.createServer({
           authorizedUsernames: botConfiguration.authorizedUsernames,
           appId: botConfiguration.appId,
-          appPassword: botConfiguration.appPassword,          
+          appPassword: botConfiguration.appPassword,
           contextProvider: node.contextProvider,
           logfile: botConfiguration.logfile,
           debug: botConfiguration.debug,
@@ -169,12 +173,11 @@ module.exports = function(RED) {
   });
 
   function MicrosoftTeamsInNode(config) {
-
     RED.nodes.createNode(this, config);
-    var node = this;
     globalContextHelper.init(this.context().global);
-    var global = this.context().global;
-    var environment = global.environment === 'production' ? 'production' : 'development';
+
+    var node = this;
+    var environment = getEnvironment();
     var nodeGlobalKey = null;
 
     this.bot = config.bot;
@@ -233,10 +236,10 @@ module.exports = function(RED) {
 
   function MicrosoftTeamsOutNode(config) {
     RED.nodes.createNode(this, config);
-    var node = this;
     globalContextHelper.init(this.context().global);
-    var global = this.context().global;
-    var environment = global.environment === 'production' ? 'production' : 'development';
+
+    var node = this;
+    var environment = getEnvironment();
 
     this.bot = config.bot;
     this.botProduction = config.botProduction;

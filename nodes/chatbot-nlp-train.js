@@ -72,10 +72,11 @@ module.exports = function(RED) {
                 // eslint-disable-next-line no-console
                 console.log(
                   '  Entity: ' + lcd.white(name) + ' [' + language.toUpperCase() + '] '
-                  + lcd.green(entity.name) + ` (${entity.aliases.join(',')})`
+                  + lcd.green(entity.name)
+                  + _.isArray(entity.aliases) && !_.isEmpty(entity.aliases) ? ` (${entity.aliases.join(',')})` : ''
                 );
               }
-              manager.addNamedEntityText(name, entity.name, [language], !_.isEmpty(entity.aliases) ? entity.aliases : null);
+              manager.addNamedEntityText(name, entity.name, [language], !_.isEmpty(entity.aliases) ? [entity.name, ...entity.aliases] : [entity.name]);
             });
           });
         });

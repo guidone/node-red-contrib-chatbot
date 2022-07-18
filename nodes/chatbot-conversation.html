@@ -22,7 +22,7 @@
       $('#node-input-chatId').attr('disabled', false);
       $('.form-row-chatId').removeClass('hidden');
       $('.form-row-userId').addClass('hidden');
-      $('#node-input-transport').attr('disabled', false);
+      //$('#node-input-transport').attr('disabled', false);
     }
 
     function enableUserId() {
@@ -30,12 +30,12 @@
       $('input[type="radio"][value="chatId"]').attr('checked', false);
       $('#node-input-chatId').val('').attr('disabled', true);
       $('#node-input-userId').attr('disabled', false);
-      $('#node-input-transport').val(null);
-      $('#node-input-botDevelopment').val(null).attr('disabled', true);
-      $('#node-input-botProduction').val(null).attr('disabled', true);
+      //$('#node-input-transport').val(null);
+      //$('#node-input-botDevelopment').val(null).attr('disabled', true);
+      //$('#node-input-botProduction').val(null).attr('disabled', true);
       $('.form-row-chatId').addClass('hidden');
       $('.form-row-userId').removeClass('hidden');
-      $('#node-input-transport').attr('disabled', true);
+      //$('#node-input-transport').attr('disabled', true);
     }
 
     function buildConfigSelector() {
@@ -108,11 +108,6 @@
         },
         transport: {
           value: ''
-        },
-        store: {
-          value: '',
-          type: 'chatbot-context-store',
-          required: false
         }
       },
       inputs: 1,
@@ -142,83 +137,96 @@
 </script>
 
 <script type="text/x-red" data-template-name="chatbot-conversation">
-<div class="form-row">
-  <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-  <input type="text" id="node-input-name" placeholder="Name">
-</div>
-<div class="form-row">
-  <input type="radio" name="conversation-type" value="chatId" style="margin-top:-4px;margin-right:6px;width:inherit;">
-  <span class="label-radio">ChatId</span>
-  <input type="text" id="node-input-chatId" placeholder="Chat id" style="width:150px;">
-</div>
-<div class="form-row" style="padding-left:20px>
-  <div class="redbot-form-hint">
-    The <code>chatId</code> is needed to initiate the conversation (you can grab the chatId from the logs or a debug node),
-    the <code>chatId</code> is unique per user across the different platforms.
+  <div style="width:550px">
+  <div class="form-row">
+    <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
   </div>
-</div>
-<div class="form-row form-row-chatId" style="padding-left:20px">
-  <label for="node-input-transport">Transport</label>
-  <select id="node-input-transport">
-    <option value="">Select transport</option>
-  </select>
-</div>
-<div class="form-row form-row-chatId" style="padding-left:124px;">
-  <div>Bot Configuration for <span class="redbot-environment">development</span></div>
-  <select id="node-input-botDevelopment">
-    <option value="">Select configuration</option>
-  </select>
-</div>
-<div class="form-row form-row-chatId" style="padding-left:124px">
-  <div>Bot Configuration for <span class="redbot-environment">production</span></div>
-  <select id="node-input-botProduction">
-    <option value="">Select configuration</option>
-  </select>
-</div>
-<div class="form-row form-row-chatId" style="padding-left:20px">
-  &nbsp;
-</div>
-<div class="form-row">
-  <input type="radio" name="conversation-type" value="userId" style="margin-top:-4px;margin-right:6px;width:inherit;">
-  <span class="label-radio">UserId</span>
-  <input type="text" id="node-input-userId" placeholder="User id" style="width:150px;">
-</div>
-<div class="form-row" style="padding-left:20px>
-  <div class="redbot-form-hint">
-    The <code>userId</code> is a unique indentifier for a user in a multi-transport chatbot. It's possible to initiate
-    a conversation with just the <code>userId</code> (if the resolver <em>chatId-userId</em> is defined in the <code>Extend node</code>).
+  <div class="form-row form-row-chatId">
+    <label for="node-input-transport">Transport</label>
+    <select id="node-input-transport">
+      <option value="">Select transport</option>
+    </select>
   </div>
-</div>
-<div class="form-row form-row-userId" style="padding-left:20px;">
-  <label for="node-input-bot">Context</label>
-  <input type="text" id="node-input-store" placeholder="Select storage for chat context">
-</div>
+  <div class="form-row form-row-chatId" style="padding-left:104px;">
+    <div>Bot Configuration for <span class="redbot-environment">development</span></div>
+    <select id="node-input-botDevelopment">
+      <option value="">Select configuration</option>
+    </select>
+  </div>
+  <div class="form-row form-row-chatId" style="padding-left:104px">
+    <div>Bot Configuration for <span class="redbot-environment">production</span></div>
+    <select id="node-input-botProduction">
+      <option value="">Select configuration</option>
+    </select>
+  </div>
+  <br />
+  <div class="form-row">
+    <input type="radio" name="conversation-type" value="chatId" style="margin-top:-4px;margin-right:6px;width:inherit;">
+    <span class="label-radio">ChatId</span>
+    <input type="text" id="node-input-chatId" placeholder="Chat id" style="width:150px;">
+  </div>
+  <div class="form-row" style="padding-left:20px>
+    <div class="redbot-form-hint">
+      The <code>chatId</code> is needed to initiate the conversation (you can grab the <code>chatId</code> from the logs or a debug node),
+      the <code>chatId</code> is the unique identifier for a user within a platform.
+    </div>
+  </div>
+  <div class="form-row">
+    <input type="radio" name="conversation-type" value="userId" style="margin-top:-4px;margin-right:6px;width:inherit;">
+    <span class="label-radio">UserId</span>
+    <input type="text" id="node-input-userId" placeholder="User id" style="width:150px;">
+  </div>
+  <div class="form-row" style="padding-left:20px>
+    <div class="redbot-form-hint">
+      The <code>userId</code> is a unique id for a user in <b>RedBot</b> and identifies the same user across
+      different platforms.<br />
+      It's possible to start a conversation with a <code>userId</code> on a specific platform if a proper <code>chatId</code>
+      exists for it.
+    </div>
+  </div>
+  </div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-conversation"><p>Start a chat bot conversation, for example to initiate a conversation (sending a message) to a user in response of a <strong>Node Red</strong> event, chain this node to a <code>Message node</code> (or <code>Image node</code>, <code>Location node</code>, etc)</p>
-<p>The <code>chatId</code> is needed to initiate the conversation (you can grab the <em>chatId</em> from the logs or a debug node),
-the <code>chatId</code> is a unique identifier for a user in a specific platform (i.e. in <em>Telegram</em> looks like <em>1234567746</em>, in <em>Slack</em> <em>H0394KHM70C</em>, etc).</p>
+<p>The <code>chatId</code> is needed to initiate the conversation (you can grab the <em>chatId</em> from the logs or a debug node), the <code>chatId</code> is a unique identifier for a user in a specific platform (i.e. in <em>Telegram</em> looks like <em>1234567746</em>, in <em>Slack</em> <em>H0394KHM70C</em>, etc).</p>
 <p>The parameters <code>chatId</code> and <code>transport</code> can be passed through the payload by the upstream node (if the transport and the bot configuration are already configured):</p>
-<pre><code class="language-javascript">msg.payload = {
-  chatId: &#39;42&#39;
+<pre><code class="language-javascript">msg.payload = {  
+    chatId: &#39;42&#39;
 };
 return msg;
 </code></pre>
-<p>A conversation can be initiated also with the <code>userId</code>, which is a unique identifier for user in <strong>RedBot</strong> across different platforms. There&#39;s a one-to-many relation between the <code>userId</code> and the <code>chatId</code> (the same user can have different <em>chatIds</em> for for example for <em>Telegram</em> and <em>Slack</em>). It&#39;s possible to inspect these relations in <strong>Mission Control</strong>.</p>
-<pre><code class="language-javascript">msg.payload = {
-  userId: &#39;43&#39;,
-  botNode: &#39;34566789&#39;
+<p>A conversation can be initiated also with the <code>userId</code>, which is a unique identifier for user in <strong>RedBot</strong> across different platforms. There’s a one-to-many relation between the <code>userId</code> and the <code>chatId</code> (the same user can have different <em>chatIds</em> for for example for <em>Telegram</em> and <em>Slack</em>). It’s possible to inspect these relations in <strong>Mission Control</strong>.</p>
+<pre><code class="language-javascript">msg.payload = {  
+    userId: &#39;43&#39;,  
+    botNode: &#39;34566789&#39;
 };
 return msg;
 </code></pre>
 <p>The <code>botNode</code> is the Node-RED configuration node for the bot. The get the id go in the <em>Info</em> panel in Node-RED, the pick the right node in the <em>Global Configuration Nodes</em>, the related id is on the panel below.</p>
 <p>Available parameters for the <code>msg.payload</code></p>
-<dl class="message-properties">
-
-<dt>chatId<span class="property-type">string</span><dd>The <em>chatId</em> the message will be delivered to. The <em>chatId</em> is the unique identifier for a user in a specific platform</dd>
-<dt>userId<span class="property-type">string</span><dd>The RedBot user the message will be delivered to</dd>
-<dt>botNode<span class="property-type">string</span><dd>The Node-RED node id of the bot configuration</dd>
-</dl>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>chatId</td>
+<td>string</td>
+<td>The <em>chatId</em> the message will be delivered to. The <em>chatId</em> is the unique identifier for a user in a specific platform</td>
+</tr>
+<tr>
+<td>userId</td>
+<td>string</td>
+<td>The RedBot user the message will be delivered to</td>
+</tr>
+<tr>
+<td>botNode</td>
+<td>string</td>
+<td>The Node-RED node id of the bot configuration</td>
+</tr>
+</tbody></table>
 </script>
-
-

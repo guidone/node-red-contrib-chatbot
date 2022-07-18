@@ -1,0 +1,40 @@
+.ui-chat-ids-manager {
+  .chat-id-item {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: flex-start;
+    align-items: center;
+    .transport {
+      flex: 0 0 auto;
+      min-width: 70px;
+    }
+    .icon {
+      flex: 0 0 auto;
+      margin-left: 10px;
+      .rs-icon {
+        color: #ff6633;
+      }
+    }
+    .chat-id {
+      flex: 0 0 auto;
+      margin-left: 10px;
+      background-color: #eeeeee;
+      border: 1px solid #cccccc;
+      padding: 3px 4px 1px 4px;
+      border-radius: 2px;
+      font-size: 13px;
+    }
+    .buttons {
+      margin-left: 10px;
+      flex: 0 0;
+    }
+  }
+  .empty {
+    min-height: 100px;
+    line-height: 100px;
+    vertical-align: middle;
+    text-align: center;
+  }
+}

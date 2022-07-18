@@ -1,0 +1,55 @@
+<script type="text/javascript">
+  $.RedBot.registerType('chatbot-google-analytics', {
+    category: $.RedBot.config.name,
+    color: '#FFCC66',
+    defaults: {
+      name: {
+        value: ''
+      },
+      measurementId: {
+        value: ''
+      },
+      secretApi: {
+        value: ''
+      },
+      eventName: {
+        value: ''
+      },
+      eventValue: {
+        value: ''
+      }
+    },
+    inputs: 1,
+    outputs: 0,
+    paletteLabel: 'Google Analytics',
+    icon: 'chatbot-listen-lexicon.png',
+    label: function() {
+      return this.name || 'Google Analytics' + (this.eventName != null && this.eventName !== '' ? ' (' + this.eventName + ')' : '');
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-google-analytics">
+  <div class="form-row">
+    <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row">
+    <label for="node-input-measurementId">Measurement ID</label>
+    <input type="text" id="node-input-measurementId" placeholder="Google Analytics Measurement ID">
+  </div>
+  <div class="form-row">
+    <label for="node-input-secretApi">Secret API Key</label>
+    <input type="text" id="node-input-secretApi" placeholder="Google Analytics Secret API">
+  </div>
+  <div class="form-row">
+    <label for="node-input-eventName">Event name</label>
+    <input type="text" id="node-input-eventName" placeholder="Event name">
+  </div>
+  <div class="form-row">
+    <label for="node-input-eventValue">Event value</label>
+    <input type="text" id="node-input-eventValue" placeholder="Event value">
+  </div>
+
+</script>
+<script type="text/x-red" data-help-name="chatbot-google-analytics"></script>

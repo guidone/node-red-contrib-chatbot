@@ -1,0 +1,24 @@
+.page-message-logs {
+  .cell-inbound {
+    .rs-icon {
+      font-size: 20px;
+    }
+    &.inbound {
+      color: #86BB71;
+    }
+    &.outbound {
+      color: #94C2ED;
+    }
+  }
+
+  .cell-type-id {
+    color: #999999;
+    font-size: 13px;
+  }
+}
+
+.modal-preview-message {
+  .ui-chat-window {
+    margin-bottom: 20px;
+  }
+}

@@ -37,7 +37,6 @@
       node.buttons = [];
       var idx;
       for(idx = 0; idx < buttons.length; idx++) {
-        console.log('adding', $(buttons[idx]).RB_getButtonData())
         node.buttons.push($(buttons[idx]).RB_getButtonData());
       }
     },
@@ -104,32 +103,70 @@
 <p>After the user taps one, they are dismissed, which prevents the scenario where users could tap on buttons attached to old messages in a conversation.</p>
 <p>Only three types of buttons can be specified here: </p>
 <ul>
-<li><strong>quick-reply</strong>: very similar to <code>postback</code> (see <code>Buttons node</code> for more details), has a <em>label</em> and <em>value</em> (which is the text sent back to the chat when the button is pressed). The button can also have an icon with specified by the <em>url</em> field</li>
-<li><strong>email</strong>: allows the user to share his email</li>
-<li><strong>phone</strong>: allows the user to share his phone number</li>
+<li><p><strong>quick-reply</strong>: very similar to <code>postback</code> (see <code>Buttons node</code> for more details), has a <em>label</em> and <em>value</em> (which is the text sent back to the chat when the button is pressed). The button can also have an icon with specified by the <em>url</em> field</p>
+</li>
+<li><p><strong>email</strong>: allows the user to share his email </p>
+</li>
+<li><p><strong>phone</strong>: allows the user to share his phone number</p>
+</li>
 </ul>
 <p>The text message can be passed through the payload by the upstream node:</p>
-<pre><code class="language-javascript">return { 
+<pre><code class="language-javascript">return {  
   ...msg,
-  message: &#39;Select one&#39;,
-  buttons: [
-    { type: &#39;quick-reply&#39;, label: &#39;Test 1&#39;, value: &#39;test1&#39; },
-    { type: &#39;quick-reply&#39;, label: &#39;Test 2&#39;, value: &#39;test2&#39; }
-  ]
- ;
+  message: &#39;Select one&#39;,  
+  buttons: [    
+        { type: &#39;quick-reply&#39;, label: &#39;Test 1&#39;, value: &#39;test1&#39; },    
+    { type: &#39;quick-reply&#39;, label: &#39;Test 2&#39;, value: &#39;test2&#39; }  
+];
 </code></pre>
 <p>Available parameters for the <code>msg.payload</code></p>
-<dl class="message-properties">
-
-<dt>message<span class="property-type">string</span><dd>The text above the quick replies</dd>
-<dt>buttons<span class="property-type">[buttons]</span><dd>The quick-reply button</dd>
-</dl>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>message</td>
+<td>string</td>
+<td>The text above the quick replies</td>
+</tr>
+<tr>
+<td>buttons</td>
+<td>[buttons]</td>
+<td>The quick-reply button</td>
+</tr>
+</tbody></table>
 <p>The <code>button</code> object</p>
-<dl class="message-properties">
-
-<dt>type<span class="property-type">string</span><dd>Type of quick reply button: <em>quick-reply</em>, <em>email</em>, <em>phone</em></dd>
-<dt>label<span class="property-type">string</span><dd>The label of the button (only for <em>quick-reply</em>)</dd>
-<dt>value<span class="property-type">string</span><dd>The value returned when clicked (only for <em>quick-reply</em>)</dd>
-<dt>image_url<span class="property-type">string</span><dd>The image for the button (only for <em>quick-reply</em>)</dd>
-</dl>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>type</td>
+<td>string</td>
+<td>Type of quick reply button: <em>quick-reply</em>, <em>email</em>, <em>phone</em></td>
+</tr>
+<tr>
+<td>label</td>
+<td>string</td>
+<td>The label of the button (only for <em>quick-reply</em>)</td>
+</tr>
+<tr>
+<td>value</td>
+<td>string</td>
+<td>The value returned when clicked (only for <em>quick-reply</em>)</td>
+</tr>
+<tr>
+<td>image_url</td>
+<td>string</td>
+<td>The image for the button (only for <em>quick-reply</em>)</td>
+</tr>
+</tbody></table>
 </script>

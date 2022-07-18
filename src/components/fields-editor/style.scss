@@ -1,0 +1,97 @@
+.ui-fields-editor {
+
+  .empty {
+    min-height: 150px;
+    text-align: center;
+    vertical-align: middle;
+
+    .label {
+      margin-top: 20px;
+    }
+
+    .available-fields {
+      margin-bottom: 5px;
+      font-size: 13px;
+      color: #999999;
+    }
+
+    .schema {
+      margin-left: 30px;
+      margin-right: 30px;
+      margin-top: 10px;
+
+      .key-tag {
+        display: inline-block;
+        margin-right: 10px;
+      }
+    }
+  }
+
+  .key-tag {
+
+    i {
+      margin-left: 5px;
+      color: #999999;
+    }
+    &.disabled {
+      opacity: 0.5;
+      a {
+        cursor: default;
+      }
+    }
+    .rs-tag {
+      padding: 0px 6px;
+      border-radius: 4px;
+    }
+    .rs-icon {
+      font-size: 12px;
+    }
+  }
+
+  .fields-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: stretch;
+
+    .fields {
+      flex: 1 0;
+    }
+
+    .available-keys {
+      flex: 0 0 150px;
+      margin-left: 20px;
+      padding-left: 10px;
+
+      .available-fields {
+        font-size: 13px;
+        margin-bottom: 10px;
+      }
+      .no-predefined-fields {
+        font-size: 12px;
+        color: #999999;
+      }
+      .key-tag {
+        margin-bottom: 5px;
+      }
+    }
+  }
+
+  .input-with-info {
+    .rs-input-group-addon {
+      padding-right: 7px;
+      padding-left: 5px;
+      .rs-icon {
+        color: #999999;
+        font-size: 12px;
+      }
+    }
+  }
+
+  .field-editor {
+    .rs-input-group {
+      width: auto;
+    }
+  }
+}

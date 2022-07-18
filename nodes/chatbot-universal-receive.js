@@ -1,13 +1,16 @@
 const _ = require('underscore');
 const moment = require('moment');
 const { UniversalPlatform: UniversalServer, ContextProviders, ChatExpress } = require('chat-platform');
-const utils = require('../lib/helpers/utils');
 const clc = require('cli-color');
-const lcd = require('../lib/helpers/lcd');
 const prettyjson = require('prettyjson');
+
+const utils = require('../lib/helpers/utils');
+const lcd = require('../lib/helpers/lcd');
 const validators = require('../lib/helpers/validators');
 const RegisterType = require('../lib/node-installer');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
+const GetEnvironment = require('../lib/helpers/get-environment');
+
 
 const when = utils.when;
 const warn = clc.yellow;
@@ -17,6 +20,7 @@ const green = clc.green;
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
+  const getEnvironment = GetEnvironment(RED);
 
   // register Slack server
   if (RED.redbot == null) {
@@ -31,9 +35,10 @@ module.exports = function(RED) {
 
   function UniversalBotNode(n) {
     RED.nodes.createNode(this, n);
-    var node = this;
     globalContextHelper.init(this.context().global);
-    var environment = this.context().global.environment === 'production' ? 'production' : 'development';
+
+    var node = this;
+    var environment = getEnvironment();
     var isUsed = utils.isUsed(RED, node.id);
     var startNode = utils.isUsedInEnvironment(RED, node.id, environment);
     var universalConfigs = globalContextHelper.get('universal') || {};
@@ -54,11 +59,11 @@ module.exports = function(RED) {
     // exit if the node is not meant to be started in this environment
     if (!startNode) {
       // eslint-disable-next-line no-console
-      console.log(warn('Universal Connector Bot ' + this.botname + ' will NOT be launched, environment is ' + environment));
+      console.log(lcd.timestamp() + warn('Universal Connector Bot ' + this.botname + ' will NOT be launched, environment is ' + environment));
       return;
     }
     // eslint-disable-next-line no-console
-    console.log(green('Universal Connector Bot ' + this.botname + ' will be launched, environment is ' + environment));
+    console.log(green(lcd.timestamp() + 'Universal Connector Bot ' + this.botname + ' will be launched, environment is ' + environment));
     // get the context storage node
     var contextStorageNode = RED.nodes.getNode(this.store);
     // parse JSON config
@@ -190,12 +195,11 @@ module.exports = function(RED) {
   });
 
   function UniversalInNode(config) {
-
     RED.nodes.createNode(this, config);
-    var node = this;
     globalContextHelper.init(this.context().global);
-    var global = this.context().global;
-    var environment = global.environment === 'production' ? 'production' : 'development';
+
+    var node = this;
+    var environment = getEnvironment();
     var nodeGlobalKey = null;
 
     this.bot = config.bot;
@@ -258,10 +262,10 @@ module.exports = function(RED) {
 
   function UniversalOutNode(config) {
     RED.nodes.createNode(this, config);
-    var node = this;
     globalContextHelper.init(this.context().global);
-    var global = this.context().global;
-    var environment = global.environment === 'production' ? 'production' : 'development';
+
+    var node = this;
+    var environment = getEnvironment();
 
     this.bot = config.bot;
     this.botProduction = config.botProduction;

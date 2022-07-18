@@ -1,0 +1,321 @@
+<script type="text/javascript">
+  RED.nodes.registerType('mc-graphql', {
+    category: 'Mission Control',
+    color: '#6699CC',
+    defaults: {
+      name: {
+        value: ''
+      },
+      query: {
+        value: ''
+      },
+      debug: {
+        value: false
+      },
+      noerr: {
+        value: 0,
+        required: true,
+        validate: function(v) {
+          return ((!v) || (v === 0)) ? true : false;
+        }
+      }
+    },
+    inputs: 1,
+    outputs: 3,
+    paletteLabel: 'MC GraphQL',
+    outputLabels: ['Query result', 'Empty response', 'Error'],
+    icon: 'chatbot-command.png',
+    label: function() {
+      return 'MC GraphQL' + (this.name !== null && this.name !== '' ? ' (' + this.name + ')' : '');
+    },
+    oneditprepare: function() {
+      var _this = this;
+      this.editor = RED.editor.createEditor({
+        id: 'node-input-func-editor',
+        //mode: 'ace/mode/javascript',
+        value: $('#node-input-query').val(),
+        globals: {
+          node: true,
+          msg:true,
+          context:true,
+          RED: true,
+          util: true,
+          flow: true,
+          global: true,
+          console: true,
+          Buffer: true,
+          setTimeout: true,
+          clearTimeout: true,
+          setInterval: true,
+          clearInterval: true
+        }
+      });
+    },
+    oneditsave: function() {
+      var annot = this.editor.getSession().getAnnotations();
+      this.noerr = 0;
+      $('#node-input-noerr').val(0);
+      for (var k=0; k < annot.length; k++) {
+        if (annot[k].type === 'error') {
+          $('#node-input-noerr').val(annot.length);
+          this.noerr = annot.length;
+        }
+      }
+      $('#node-input-query').val(this.editor.getValue());
+      this.editor.destroy();
+      delete this.editor;
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="mc-graphql">
+  <div class="form-row">
+    <label for="node-input-topic"><i class="icon-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row">
+    <input type="hidden" id="node-input-query" autofocus="autofocus">
+    <div style="height: 250px; min-height:150px;margin-top: 25px;" class="node-text-editor" id="node-input-func-editor" ></div>
+  </div>
+  <div class="form-row">
+    <label for="node-input-debug">Debug</label>
+    <input type="checkbox" value="true" id="node-input-debug">
+    <span class="redbot-form-hint">
+      Show debug information on the GraphQL query
+    </span>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="mc-graphql"><p>With the <code>MC GraphQL node</code> it’s possible to query the database entity Mission Control is based on.</p>
+<p>The endpoint is <code>http://localhost:1880/graphql</code> and with a <a href="https://altair.sirmuel.design/">GraphQL client</a> it’s possible to explore queries and mutations.</p>
+<p>There are several entities</p>
+<table>
+<thead>
+<tr>
+<th>Entity</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>contents</td>
+<td>A generic blog-post like table (i.e. title, body, date, category) with unlimited types custom fields and a generic JSON payload</td>
+</tr>
+<tr>
+<td>users</td>
+<td>Chatbot users with all all contact details filled automatically and with a generic JSON payload and chat context</td>
+</tr>
+<tr>
+<td>admins</td>
+<td>Mission Control administrators with role based permissions</td>
+</tr>
+<tr>
+<td>messages</td>
+<td>Message store</td>
+</tr>
+<tr>
+<td>records</td>
+<td>General records related to user (i.e. an invoice, an order)</td>
+</tr>
+</tbody></table>
+<p>For example, to fetch the latest context from namespace “content” (including custom fields)</p>
+<pre><code class="language-graphql">query {
+  contents(
+    limit: 1,
+    order: &quot;reverse:createdAt&quot;,
+    namespace: &quot;content&quot;
+  ) {
+    id,
+    title,
+    body,
+    createdAt,
+    fields {
+      name,
+      value
+    }
+  }
+}
+</code></pre>
+<h2 id="creating-a-token">Creating a token</h2>
+<p>In order to access and explore the GraphQL server with clients like <a href="https://altair.sirmuel.design/">Altair</a> is necessary to create an access token and use it with basic authentication</p>
+<ul>
+<li><p>Go to Mission Control ➡️ Configuration ➡️ Access token and create an access token</p>
+</li>
+<li><p>Copy the access token</p>
+</li>
+<li><p>Open the <em>“Headers”</em> section in Altair client (left toolbar) and create and header named <em>“Authorization”</em> with value <em>“Bearer”</em></p>
+</li>
+</ul>
+<h2 id="content-entity">Content entity</h2>
+<p><strong>Contents</strong> is a blog-post-like table with some fields like title, body, language, category and some custom multi-purpose fields (like custom fields and JSON payload) that can be used in multiple situations.</p>
+<p><img src="https://raw.githubusercontent.com/guidone/node-red-contrib-chatbot/master/docs/images/content.gif" alt=""></p>
+<p>Contents section in MissionControl</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>number</td>
+<td>Unique id for the content</td>
+</tr>
+<tr>
+<td>title</td>
+<td>string</td>
+<td>The title of the content</td>
+</tr>
+<tr>
+<td>language</td>
+<td>string</td>
+<td>Language of the content (ISO)</td>
+</tr>
+<tr>
+<td>namespace</td>
+<td>string</td>
+<td>A string defining the namespace this content belongs to. Default is “content” and can be anything, only contents with namespace “content” will be listed in the content post section. In order to show different namespaces a dedicated plugin is required.</td>
+</tr>
+<tr>
+<td>body</td>
+<td>string</td>
+<td>The body of the content</td>
+</tr>
+<tr>
+<td>id</td>
+<td>number</td>
+<td>Unique id for the content</td>
+</tr>
+<tr>
+<td>slug</td>
+<td>string</td>
+<td>It’s the unique identifier for this content, a kind of external and readable primary key. Can be used, for example, for multi language support</td>
+</tr>
+<tr>
+<td>payload</td>
+<td>string / json</td>
+<td>A generic JSON payload, can contain anything</td>
+</tr>
+<tr>
+<td>chatbotId</td>
+<td>string</td>
+<td>The unique identifier of the chatbot this content belongs to. By default the <code>MC Content node</code> only searches for contents within the same chatbot (Mission Control can handle multiple bots)</td>
+</tr>
+<tr>
+<td>cratedAt</td>
+<td>date</td>
+<td>Creation date</td>
+</tr>
+<tr>
+<td>modifiedAt</td>
+<td>date</td>
+<td>Modification date</td>
+</tr>
+<tr>
+<td>categoryId</td>
+<td>number</td>
+<td>Id of the category</td>
+</tr>
+</tbody></table>
+<p>The <code>namespace</code> field is used to create multiple sections re-using the content components and table, only contents with the namespace “content” will be shown in the Content ➡️ Posts section, to handle multiple namespace a dedicated plugin is required (i.e. the Access tokens section is storing the token in the <code>payload</code> field of a content with <code>namespace</code> set to <em>tokens</em>, the plugin is defined in <em>/core/access_token.js</em>.</p>
+<p>The <code>slug</code> field is using to create and reference a content with a user-defined primary key (and not an incremental value for the <code>id</code> field). Possible use cases:</p>
+<ul>
+<li><p>create a <em>“Terms of Conditions”</em> content and assign it the slug <em>“toc”</em>. The this <em>“toc”</em> reference can be used in a <code>MC Content node</code> to fetch the content and show it in a message for a user. If a new version of the <em>“Terms of Conditions”</em> is required, it’s possible to create a new content for it and then assign the slug <em>“toc”</em> only when it’s ready.</p>
+</li>
+<li><p>handle multi-language contents: contents with the same <code>slug</code> are basically the same entity written in different languages. If a slug is specified in <code>MC Content node</code> it tries to fetch the content given the slug and language of the current user (see the <code>MC Content node</code> for more details)</p>
+</li>
+</ul>
+<h2 id="users">Users</h2>
+<p>Here are stored the chatbot users. When Mission Control is enabled for a specific chatbot and the Store Messages is enabled, the user is automatically created when a message is received, it includes some basic information (if available in the specific platform).</p>
+<p><img src="https://raw.githubusercontent.com/guidone/node-red-contrib-chatbot/master/docs/images/user.gif" alt=""></p>
+<p>Users section in MissionControl</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>number</td>
+<td>Unique id for the content</td>
+</tr>
+<tr>
+<td>userId</td>
+<td>string</td>
+<td>The unique identifier of the user within the chatbot. A user can interact with the bot with multiple platforms (<em>chatId</em>), the <em>chatId</em> is the unique identifier for a user in a specific platform. A user can interact with the same chatbot with multiple platforms, there’s a one-to-many relation between the <em>userId</em> and <em>chatId</em>. Generally it defaults to the <em>chatId</em> of the first platform the user interacts with</td>
+</tr>
+<tr>
+<td>context</td>
+<td>json</td>
+<td>The chat context of the user</td>
+</tr>
+<tr>
+<td>email</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>first_name</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>last_name</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>username</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>language</td>
+<td>string</td>
+<td>Language of the user (ISO)</td>
+</tr>
+<tr>
+<td>payload</td>
+<td>string / json</td>
+<td>A generic JSON payload, can contain anything</td>
+</tr>
+<tr>
+<td>chatbotId</td>
+<td>string</td>
+<td>The unique identifier of the chatbot this user belongs to</td>
+</tr>
+<tr>
+<td>chatIds</td>
+<td>[ChatId]</td>
+<td>List of chatIds / platforms pairs. The <em>chatId</em> is the unique identifier for a user in a specific platform. A user can interact with the same chatbot with multiple platforms, there’s a one-to-many relation between the <em>userId</em> and <em>chatId</em></td>
+</tr>
+<tr>
+<td>messages</td>
+<td>[Message]</td>
+<td>Messages sent and received by the user</td>
+</tr>
+<tr>
+<td>records</td>
+<td><a href="about:blank#records">Records</a></td>
+<td>Generic records related to the user</td>
+</tr>
+<tr>
+<td>createdAt</td>
+<td>date</td>
+<td>Creation date</td>
+</tr>
+<tr>
+<td>updatedAt</td>
+<td>date</td>
+<td>Modify date</td>
+</tr>
+</tbody></table>
+<h2 id="messages">Messages</h2>
+<p>tbd</p>
+<h2 id="records">Records</h2>
+<p>tbd</p>
+</script>

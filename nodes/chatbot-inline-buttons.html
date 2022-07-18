@@ -734,22 +734,30 @@
 </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-inline-buttons"><p>Available buttons:</p>
+<script type="text/x-red" data-help-name="chatbot-inline-buttons"><p>Available buttons: </p>
 <ul>
-<li><strong>URL</strong>: Open a URL inside the client. Button feedbacks are available for Telegram and Messenger extensions in Facebook <em>[Telegram, Facebook, Viber]</em></li>
-<li><strong>Postback</strong>: Allow the user to send a predefined message, the message will no be shown in the chat history. Button feedbacks are available for Telegram and Messenger extensions in Facebook <em>[Telegram, Facebook, Smooch, Viber]</em></li>
-<li><strong>Phone call</strong>: Starts a phone call on mobile. <em>[Facebook]</em></li>
-<li><strong>Log In</strong>: Starts the account linking flow. <em>[Facebook]</em></li>
-<li><strong>Log Out</strong>: Starts the account unlinking flow. <em>[Facebook]</em></li>
-<li><strong>New row</strong>: Telegram supports buttons layout with multiple row, this element just starts a new one. <em>[Telegram, Viber]</em></li>
+<li><p><strong>URL</strong>: Open a URL inside the client. Button feedbacks are available for Telegram and Messenger extensions in Facebook <em>[Telegram, Facebook, Viber]</em></p>
+</li>
+<li><p><strong>Postback</strong>: Allow the user to send a predefined message, the message will no be shown in the chat history. Button feedbacks are available for Telegram and Messenger extensions in Facebook <em>[Telegram, Facebook, Smooch, Viber]</em></p>
+</li>
+<li><p><strong>Phone call</strong>: Starts a phone call on mobile. <em>[Facebook]</em></p>
+</li>
+<li><p><strong>Log In</strong>: Starts the account linking flow. <em>[Facebook]</em></p>
+</li>
+<li><p><strong>Log Out</strong>: Starts the account unlinking flow. <em>[Facebook]</em></p>
+</li>
+<li><p><strong>New row</strong>: Telegram supports buttons layout with multiple row, this element just starts a new one. <em>[Telegram, Viber]</em></p>
+</li>
 </ul>
-<p>Platform exceptions</p>
+<p>Platform exceptions: </p>
 <ul>
-<li><strong>Telegram</strong> supports a visual feedback, visible in the client, when a <code>Postback</code> or <code>URL</code> buttons is pressed</li>
-<li><strong>Facebook</strong> supports some extra parameters in the <code>URL</code> button, like the size of the web view and  <a href="https://developers.facebook.com/docs/messenger-platform/webview">messenger extensions</a> and a maximum od three buttons.</li>
+<li><p><strong>Telegram</strong> supports a visual feedback, visible in the client, when a <code>Postback</code> or <code>URL</code> buttons is pressed</p>
+</li>
+<li><p><strong>Facebook</strong> supports some extra parameters in the <code>URL</code> button, like the size of the web view and <a href="https://developers.facebook.com/docs/messenger-platform/webview">messenger extensions</a> and a maximum od three buttons.</p>
+</li>
 </ul>
 <p>Buttons can be created programmatically by an upstream <code>Function node</code> passing array of buttons in the message payload:</p>
-<pre><code>msg.payload = [
+<pre><code class="language-javascript">msg.payload = [
   {
     type: &#39;url&#39;,
     url: &#39;http://javascript-jedi.com&#39;,
@@ -767,7 +775,7 @@
 return msg;
 </code></pre>
 <p>Another way is to specify each config option as keys of an object in the message payload:</p>
-<pre><code>msg.payload = {
+<pre><code class="language-javascript">msg.payload = {
   message: &#39;This is a message above the buttons&#39;,
   buttons: [
     {
@@ -788,30 +796,85 @@ return msg;
 return msg;
 </code></pre>
 <p>Available parameters for the <code>msg.payload</code></p>
-<dl class="message-properties">
-
-<dt>message<span class="property-type">string</span><dd>The message text above the buttons</dd>
-<dt>buttons<span class="property-type">array of [button]</span><dd>The list of inline buttons</dd>
-</dl>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>message</td>
+<td>string</td>
+<td>The message text above the buttons</td>
+</tr>
+<tr>
+<td>buttons</td>
+<td>array of [button]</td>
+<td>The list of inline buttons</td>
+</tr>
+</tbody></table>
 <p>The <code>[button]</code> object</p>
-<dl class="message-properties">
-
-<dt>type<span class="property-type">string</span><dd>Type of button: <em>url</em>, <em>postback</em>, <em>quick-reply</em>, <em>location</em>, <em>call</em>, <em>share</em>, <em>login</em>, <em>logout</em>, <em>newline</em></dd>
-<dt>label<span class="property-type">string</span><dd>Label of the button</dd>
-<dt>value<span class="property-type">string</span><dd>Value returned as payload in <code>postback</code> buttons</dd>
-<dt>url<span class="property-type">string</span><dd>Url to redirect to for <code>url</code> buttons or authentication URL for <code>login</code> buttons</dd>
-<dt>number<span class="property-type">string</span><dd>Phone number to call for <code>call</code> buttons</dd>
-<dt>messengerExtensions<span class="property-type">boolean</span><dd>Include Messenger Extensions for <code>url</code> buttons</dd>
-<dt>answer<span class="property-type">string</span><dd>The feedback shown on Telegram client for <code>url</code> and <code>postback</code> buttons</dd>
-<dt>alert<span class="property-type">boolean</span><dd>Show the feedback as alert on Telegram client for <code>url</code> and <code>postback</code> buttons</dd>
-<dt>style<span class="property-type">string</span><dd>Style of buttons in Slack: <em>default</em>, <em>primary</em>, <em>danger</em></dd>
-<dt>webViewHeightRatio<span class="property-type">string</span><dd>Aspect ratio of the webview in Facebook Messenger for <code>url buttons</code>. Valid values: <em>tall</em>, <em>compact</em>, <em>full</em></dd>
-</dl>
-<p><img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram">
-<img src="https://img.shields.io/badge/platform-Facebook-blue.svg" alt="Facebook">
-<img src="https://img.shields.io/badge/platform-Slack-green.svg" alt="Slack">
-<img src="https://img.shields.io/badge/platform-Smooch-orange.svg" alt="Smooch">
-<img src="https://img.shields.io/badge/platform-Viber-8079d0.svg" alt="Viber"></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>type</td>
+<td>string</td>
+<td>Type of button: <em>url</em>, <em>postback</em>, <em>quick-reply</em>, <em>location</em>, <em>call</em>, <em>share</em>, <em>login</em>, <em>logout</em>, <em>newline</em></td>
+</tr>
+<tr>
+<td>label</td>
+<td>string</td>
+<td>Label of the button</td>
+</tr>
+<tr>
+<td>value</td>
+<td>string</td>
+<td>Value returned as payload in <code>postback</code> buttons</td>
+</tr>
+<tr>
+<td>url</td>
+<td>string</td>
+<td>Url to redirect to for <code>url</code> buttons or authentication URL for <code>login</code> buttons</td>
+</tr>
+<tr>
+<td>number</td>
+<td>string</td>
+<td>Phone number to call for <code>call</code> buttons</td>
+</tr>
+<tr>
+<td>messengerExtensions</td>
+<td>boolean</td>
+<td>Include Messenger Extensions for <code>url</code> buttons</td>
+</tr>
+<tr>
+<td>answer</td>
+<td>string</td>
+<td>The feedback shown on Telegram client for <code>url</code> and <code>postback</code> buttons</td>
+</tr>
+<tr>
+<td>alert</td>
+<td>boolean</td>
+<td>Show the feedback as alert on Telegram client for <code>url</code> and <code>postback</code> buttons</td>
+</tr>
+<tr>
+<td>style</td>
+<td>string</td>
+<td>Style of buttons in Slack: <em>default</em>, <em>primary</em>, <em>danger</em></td>
+</tr>
+<tr>
+<td>webViewHeightRatio</td>
+<td>string</td>
+<td>Aspect ratio of the webview in Facebook Messenger for <code>url buttons</code>. Valid values: <em>tall</em>, <em>compact</em>, <em>full</em></td>
+</tr>
+</tbody></table>
 </script>
 
 <style>
@@ -1119,6 +1182,25 @@ return msg;
     color: #999999;
     line-height: 14px;
     margin-top: 5px;
+  }
+
+  .redbot-checkbox {
+    width: auto !important;
+    margin: -4px 0px 0px 20px !important;
+  }
+
+  .redbot-separator {
+    margin-bottom: 20px;
+  }
+
+  .redbot-separator :first-child {
+    border-bottom: 1px solid #dddddd;
+    padding: 0px 0px 3px 0px;
+    font-weight: bold;
+  }
+
+  .redbot-label {
+    width: auto !important;
   }
 
   .redbot-environment {

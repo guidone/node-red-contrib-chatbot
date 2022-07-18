@@ -1,0 +1,87 @@
+.ui-permissions {
+
+  .selector {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: stretch;
+    align-items: flex-start;
+
+    .picker {
+      flex: 1 0;
+    }
+    .button {
+      flex: 0 0 auto;
+      margin-left: 15px;
+    }
+  }
+
+  .permissions {
+    margin-top: 10px;
+  }
+
+  .group-name {
+    padding: 5px;
+    font-weight: bold;
+    border-bottom: 1px solid #999999;
+  }
+
+  .permission {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: stretch;
+    align-items: center;
+    padding: 5px;
+    border-bottom: 1px solid #dddddd;
+
+    &:hover {
+      background-color: #eeeeee;
+    }
+
+    .meta {
+      flex: 1 0;
+
+      strong {
+        display: block;
+        color: #336699;
+      }
+      .description {
+        font-size: 13px;
+        color: #888888;
+      }
+    }
+
+    .button {
+      flex: 0 0 auto;
+      margin-left: 15px;
+      margin-bottom: 5px;
+      margin-top: 5px;
+      display: none;
+      margin-right: 5px;
+    }
+
+    &:hover {
+      .button {
+        display: block;
+      }
+    }
+  }
+}
+
+.check-picker-item-permission {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+
+  .name {
+    font-size: 13px;
+  }
+  .description {
+    font-size: 12px;
+    color: #999999;
+    line-height: 12px;
+  }
+}

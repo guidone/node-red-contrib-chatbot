@@ -1,0 +1,155 @@
+.rs-popover {
+  .rs-popover-title {
+    font-weight: bold;
+  }
+  .rs-popover-content {
+    margin-top: 2px !important;
+  }
+}
+
+.fullscreen {
+  div {
+    z-index: 1061;
+  }
+}
+
+.map-marker {
+  &.pointer {
+    cursor: pointer;
+  }
+}
+
+.wrapper-map-marker {
+  position: absolute;
+  transform: translate(-50%, -98%);
+
+
+  &.preload .map-marker {
+    animation: pulse 2s infinite;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.75);
+    text-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+  }
+
+  70% {
+    transform: scale(1);
+    text-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+  }
+
+  100% {
+    transform: scale(0.75);
+    text-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  }
+}
+
+
+.popover-map-marker {
+  min-width: 200px;
+  max-width: 500px;
+  overflow: scroll;
+
+  .text {
+    font-size: 1.1em;
+  }
+  .timestamp {
+    font-size: 0.9em;
+    color: #999;
+  }
+  .btn-delete {
+    color: #575757;
+    &:hover {
+      color: #34c3ff;
+    }
+  }
+}
+
+.drawer-list-points {
+  .rs-drawer-footer {
+    margin: -10px 12px 10px;
+  }
+}
+
+.page-map {
+  height: 100%;
+  width: 100%;
+
+  .rs-tooltip {
+    transform: translate(-50%, -30px);
+    white-space: nowrap;
+    .rs-tooltip-arrow {
+      top: 21px;
+      background-color: #272c36;
+      left: calc(50% - 3px);
+      transform: rotate(45deg);
+    }
+  }
+}
+
+.marker-text {
+  display: inline-block;
+  position: absolute;
+  font-size: 0.6em;
+  height: 1em;
+  line-height: 1em;
+}
+
+.form-configuration-marker {
+  .rs-checkbox {
+    margin-left: -9px;
+  }
+  .rs-flex-box-grid {
+    margin-bottom: 15px;
+  }
+}
+
+.form-configuration-area {
+  .rs-flex-box-grid {
+    margin-bottom: 10px;
+  }
+}
+
+.page-devices {
+  .buttons {
+    padding: 15px 0px;
+    text-align: right;
+  }
+}
+
+
+.page-device {
+
+  .device-name {
+    margin-bottom: 10px;
+    h3 {
+      display: inline-block;
+    }
+    .device-id {
+      color: #999999;
+    }
+  }
+
+  .device-header {
+    .header-group {
+      margin-top: 5px;
+      .header-label {
+        text-align: right;
+        font-weight: bold;
+        padding-right: 10px;
+      }
+      .header-value {
+        color: #666666;
+      }
+    }
+
+  }
+
+  .channels {
+    margin-top: 20px;
+  }
+
+
+}

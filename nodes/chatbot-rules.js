@@ -1,8 +1,10 @@
+const _ = require('underscore');
+
 const utils = require('../lib/helpers/utils');
 const helpers = require('../lib/helpers/regexps');
-const _ = require('underscore');
 const RegisterType = require('../lib/node-installer');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
+const GetEnvironment = require('../lib/helpers/get-environment');
 
 const when = utils.when;
 
@@ -438,16 +440,19 @@ function executeRules(rules, message, global, current) {
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
+  const getEnvironment = GetEnvironment(RED);
 
   function ChatBotRules(config) {
     RED.nodes.createNode(this, config);
-    var node = this;
     globalContextHelper.init(this.context().global);
-    var global = this.context().global;
+    const node = this;
+    const global = {
+      environment: getEnvironment()
+    };
     node.rules = config.rules;
 
     this.on('input', function(msg) {
-      var rules = utils.extractValue('arrayOfObject', 'rules', node, msg, true);
+      const rules = utils.extractValue('arrayOfObject', 'rules', node, msg, true);
       executeRules(rules, msg, global)
         .then(
           function(rule) {

@@ -7,6 +7,7 @@ const clc = require('cli-color');
 const lcd = require('../lib/helpers/lcd');
 const prettyjson = require('prettyjson');
 const validators = require('../lib/helpers/validators');
+const GetEnvironment = require('../lib/helpers/get-environment');
 const RegisterType = require('../lib/node-installer');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
@@ -17,6 +18,7 @@ const green = clc.green;
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
+  const getEnvironment = GetEnvironment(RED);
 
   // register Alexa server
   if (RED.redbot == null) {
@@ -31,9 +33,10 @@ module.exports = function(RED) {
 
   function AlexaBotNode(n) {
     RED.nodes.createNode(this, n);
-    var node = this;
     globalContextHelper.init(this.context().global);
-    var environment = this.context().global.environment === 'production' ? 'production' : 'development';
+
+    var node = this;
+    var environment = getEnvironment();
     var isUsed = utils.isUsed(RED, node.id);
     var startNode = utils.isUsedInEnvironment(RED, node.id, environment);
     var alexaConfigs = globalContextHelper.get('alexa') || {};
@@ -165,12 +168,11 @@ module.exports = function(RED) {
   });
 
   function AlexaInNode(config) {
-
     RED.nodes.createNode(this, config);
-    var node = this;
     globalContextHelper.init(this.context().global);
-    var global = this.context().global;
-    var environment = global.environment === 'production' ? 'production' : 'development';
+
+    var node = this;
+    var environment = getEnvironment();
     var nodeGlobalKey = null;
 
     this.bot = config.bot;
@@ -227,10 +229,10 @@ module.exports = function(RED) {
 
   function AlexaOutNode(config) {
     RED.nodes.createNode(this, config);
-    var node = this;
     globalContextHelper.init(this.context().global);
-    var global = this.context().global;
-    var environment = global.environment === 'production' ? 'production' : 'development';
+
+    var node = this;
+    var environment = getEnvironment();
 
     this.bot = config.bot;
     this.botProduction = config.botProduction;

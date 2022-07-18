@@ -6,6 +6,7 @@ const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
+  const isMissionControlEnabled = require('../lib/helpers/is-mc-enabled')(RED);
 
   function ChatBotContextStore(config) {
     RED.nodes.createNode(this, config);
@@ -38,15 +39,22 @@ module.exports = function(RED) {
   });
 
   // add an endpoint to get a list of context providers
-  RED.httpNode.get('/redbot/globals', function(req, res) {
+  RED.httpNode.get('/redbot/globals', async function(req, res) {
     const keys = globalContextHelper.keys();
     const result = {};
     // get all configurations in the global settings
     ChatPlatform.getPlatforms().forEach(platform => result[platform.id] = globalContextHelper.get(platform.id));
     // list of master nodes in the flow
     keys.forEach(key => {
-      if (!key.startsWith('chatbot_info_')) {
+      if (!key.startsWith('chatbot_info_') && !key.startsWith('nlp_')) {
         result[key] = globalContextHelper.get(key);
+      }
+    });
+    // get all chatbotIds used in simulator
+    result.simulatorChatbotIds = [];
+    RED.nodes.eachNode(n => {
+      if (n.type === 'mc-simulator-receiver' && !result.simulatorChatbotIds.includes(n.chatbotId)) {
+        result.simulatorChatbotIds.push(n.chatbotId);
       }
     });
     // get a list of running chatbots in the flow
@@ -61,6 +69,8 @@ module.exports = function(RED) {
     result.params = ChatPlatform.getParams();
     // add port
     result.uiPort = RED.settings.uiPort;
+    // if mc is installed
+    result.missionControl = isMissionControlEnabled();
     res.send(result);
   });
 

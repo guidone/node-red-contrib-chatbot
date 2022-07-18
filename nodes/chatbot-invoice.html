@@ -248,58 +248,129 @@
 </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-invoice"><p>This node creates an Invoice to trigger a payment in Telegram. To learn more about Telegram payments <a href="https://core.telegram.org/bots/payments">read here</a>.</p>
-<p>In order to start a payment process a <strong>providerToken</strong> is needed: use @BotFather to get a providerToken for a supported payment platform (like Stripe) and set this in the chat bot config <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Telegram-Receiver-node" target="_blank">Telegram Receiver node</a>.</p>
-<p>The <code>payload</code> parameter is a unique identifier for the invoice being processed, tipically is your <em>order-id</em> or <em>cart-id</em> and it will be sent back by Telegram when the payment is completed (not to be confused by <strong>Node-RED</strong>&#39;s <code>message.payload</code>). </p>
-<p>All the elements of the <code>Invoice node</code> supports chat context templating, for example it&#39;s possible to set the title of the invoice to <code>Invoice to {{firstName}} {{lastName}}</code> and the amount of an item to <code>{{currentPrice}}</code> (given that somewhere is defined in the chat context the key <em>currentPrice</em>) and the template tokens will be replaced by the actual values.</p>
-<p>The <em>Flexible order</em> means that the final prices depends on the shipping method choosen by the user. When this happens the chatbot receives a message with type <code>invoice-shipping</code> that should be followed by a response unsing <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Invoice-Shipping-node" target="_blank">Invoice Shipping node</a>. If this doesn&#39;t happen, then the order will not be finalized.</p>
-<p>When the payment is complete, a message type <code>payment</code> is sent to the chatbot with all the information provided by the user (email, phone number, shipping address). At this point the chatbot generally uses the <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Rules-node" target="_blank">Rules node</a> to redirect these type of messages to an appropriate flow that uses the <code>payload</code> attribute to lookup in the database and flag the order as <em>paid</em>.</p>
-<p>The <code>payment</code> message payload:</p>
-<pre><code>{ 
+<script type="text/x-red" data-help-name="chatbot-invoice"><p>This node creates an Invoice to trigger a payment in <strong>Telegram</strong>. To learn more about Telegram payments <a href="https://core.telegram.org/bots/payments">read here</a>.</p>
+<p>In order to start a payment process a <strong>providerToken</strong> is needed: use @BotFather to get a providerToken for a supported payment platform (like Stripe) and set this in the chat bot config <a href="https://www.notion.so/d7159ae828804a8784a639e6cdbdb95d">Telegram Menu node</a> .</p>
+<p>The <code>payload</code> parameter is a unique identifier for the invoice being processed, tipically is your <em>order-id</em> or <em>cart-id</em> and it will be sent back by Telegram when the payment is completed (not to be confused by <strong>Node-RED</strong>’s <code>message.payload</code>).</p>
+<p>All the elements of the <code>Invoice node</code> supports chat context templating, for example it’s possible to set the title of the invoice to <code>Invoice to {{firstName}} {{lastName}}</code> and the amount of an item to <code>{{currentPrice}}</code> (given that somewhere is defined in the chat context the key <em>currentPrice</em>) and the template tokens will be replaced by the actual values.</p>
+<p>The <em>Flexible order</em> means that the final prices depends on the shipping method choosen by the user. When this happens the chatbot receives a message with type <code>invoice-shipping</code> that should be followed by a response unsing <a href="https://www.notion.so/60c4b7025cde40378e87e7c3113907ed">Telegram Invoice Shipping node</a> . If this doesn’t happen, then the order will not be finalized.</p>
+<p>When the payment is complete, a message type <code>payment</code> is sent to the chatbot with all the information provided by the user (email, phone number, shipping address). At this point the chatbot generally uses the <a href="https://www.notion.so/4113636f565d4ff4af08bc61a644206b">Rules node</a>  to redirect these type of messages to an appropriate flow that uses the <code>payload</code> attribute to lookup in the database and flag the order as <em>paid</em>.</p>
+<p>The <code>payment</code> message payload</p>
+<pre><code class="language-javascript">{
   currency: &#39;EUR&#39;,
   total_amount: 1423,
   invoice_payload: &#39;MY_STRING_PAYLOAD&#39;,
   shipping_option_id: &#39;my_shipping_id&#39;,
-  order_info: { 
+  order_info: {
     name: &#39;Guido Bellomo&#39;,
     phone_number: &#39;a-cell-phone-number&#39;,
-    shipping_address: { 
+    shipping_address: {
       country_code: &#39;IT&#39;,
       state: &#39;Mi&#39;,
       city: &#39;Milano&#39;,
       street_line1: &#39;Via Di Qua, 12&#39;,
       street_line2: &#39;&#39;,
-      post_code: &#39;20100&#39; 
-    } 
+      post_code: &#39;20100&#39;
+    }
   },
   telegram_payment_charge_id: &#39;_&#39;,
-  provider_payment_charge_id: &#39;ch_xxxyyyyzzzz&#39; 
-} 
+  provider_payment_charge_id: &#39;ch_xxxyyyyzzzz&#39;
+}
 </code></pre>
 <p>Available parameters for the <code>msg.payload</code></p>
-<dl class="message-properties">
-
-<dt>title<span class="property-type">string</span><dd>The title of the invoice</dd>
-<dt>description<span class="property-type">string</span><dd>The description of the invoice</dd>
-<dt>payload<span class="property-type">string</span><dd>A custom string that identifies the order or the cart in your system, it will be returned when the payment is confirmed</dd>
-<dt>currency<span class="property-type">string</span><dd>Three letters <a href="https://www.wikiwand.com/en/ISO_4217">ISO code</a> for the currency, for example <em>USD</em>, <em>EUR</em>, etc.</dd>
-<dt>needName<span class="property-type">boolean</span><dd>The user&#39;s name is required to complete the payment</dd>
-<dt>needEmail<span class="property-type">boolean</span><dd>The user&#39;s email is required to complete the payment</dd>
-<dt>needPhoneNumber<span class="property-type">boolean</span><dd>The user&#39;s phone number is required to complete the payment</dd>
-<dt>needShippingAddress<span class="property-type">boolean</span><dd>The user&#39;s shipping address is required to complete the payment</dd>
-<dt>isFlexible<span class="property-type">boolean</span><dd>The total amount depends on the shipping method, a message type <code>invoice-shipping</code> will be sent to the chatbot that requires a [[Invoice Shipping node</dd>
-<dt>prices<span class="property-type">array of [price]</span><dd>Items of the invoice</dd>
-<dt>photoUrl<span class="property-type">string</span><dd>Url of the picture for the invoice</dd>
-<dt>photoHeight<span class="property-type">integer</span><dd>Width of the invoice picture. Required with <em>photoUrl</em></dd>
-<dt>photoWidth<span class="property-type">integer</span><dd>Height of the invoice picture. Required with <em>photoUrl</em></dd>
-</dl>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>title</td>
+<td>string</td>
+<td>The title of the invoice</td>
+</tr>
+<tr>
+<td>description</td>
+<td>string</td>
+<td>The description of the invoice</td>
+</tr>
+<tr>
+<td>payload</td>
+<td>string</td>
+<td>A custom string that identifies the order or the cart in your system, it will be returned when the payment is confirmed</td>
+</tr>
+<tr>
+<td>currency</td>
+<td>string</td>
+<td>Three letters <a href="https://www.wikiwand.com/en/ISO_4217">ISO code</a> for the currency, for example <em>USD</em>, <em>EUR</em>, etc.</td>
+</tr>
+<tr>
+<td>needName</td>
+<td>boolean</td>
+<td>The user’s name is required to complete the payment</td>
+</tr>
+<tr>
+<td>needEmail</td>
+<td>boolean</td>
+<td>The user’s email is required to complete the payment</td>
+</tr>
+<tr>
+<td>needPhoneNumber</td>
+<td>boolean</td>
+<td>The user’s phone number is required to complete the payment</td>
+</tr>
+<tr>
+<td>needShippingAddress</td>
+<td>boolean</td>
+<td>The user’s shipping address is required to complete the payment</td>
+</tr>
+<tr>
+<td>isFlexible</td>
+<td>boolean</td>
+<td>The total amount depends on the shipping method, a message type <code>invoice-shipping</code> will be sent to the chatbot that requires a [[Invoice Shipping node</td>
+</tr>
+<tr>
+<td>prices</td>
+<td>array of [price]</td>
+<td>Items of the invoice</td>
+</tr>
+<tr>
+<td>photoUrl</td>
+<td>string</td>
+<td>Url of the picture for the invoice</td>
+</tr>
+<tr>
+<td>photoHeight</td>
+<td>integer</td>
+<td>Width of the invoice picture. Required with <em>photoUrl</em></td>
+</tr>
+<tr>
+<td>photoWidth</td>
+<td>integer</td>
+<td>Height of the invoice picture. Required with <em>photoUrl</em></td>
+</tr>
+</tbody></table>
 <p>The <code>[price]</code> object</p>
-<dl class="message-properties">
-
-<dt>label<span class="property-type">string</span><dd>The description of the invoice item</dd>
-<dt>amount<span class="property-type">number</span><dd>The total amount for this invoice item</dd>
-</dl>
-<p><img src="https://img.shields.io/badge/platform-Telegram-blue.svg?colorB=7cbaea" alt="Telegram"></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>label</td>
+<td>string</td>
+<td>The description of the invoice item</td>
+</tr>
+<tr>
+<td>amount</td>
+<td>number</td>
+<td>The total amount for this invoice item</td>
+</tr>
+</tbody></table>
 </script>
 
 

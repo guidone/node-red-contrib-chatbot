@@ -1,0 +1,34 @@
+<script type="text/javascript">
+  RED.nodes.registerType('mc-input', {
+    category: 'Mission Control',
+    color: '#6699CC',
+    defaults: {
+      name: {
+        value: ''
+      },
+      topic: {
+        value: ''
+      }
+    },
+    inputs: 0,
+    outputs: 1,
+    paletteLabel: 'MC Input',
+    icon: 'chatbot-command.png',
+    label: function() {        
+      return 'MC input' + (this.topic !== null && this.topic !== '' ? ' (' + this.topic + ')' : '');
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="mc-input">
+  <div class="form-row">
+    <label for="node-input-topic"><i class="icon-tag"></i> Topic</label>
+    <input type="text" id="node-input-topic" placeholder="Topic">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="mc-input">
+</script>
+  
+  
+  
