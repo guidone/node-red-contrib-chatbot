@@ -23,7 +23,7 @@
     "build": "cross-env NODE_OPTIONS=--max_old_space_size=8192 webpack --config webpack/webpack.prod.js && node ./bin/import-from-notion && echo \"Build complete!\"",
     "build-plugin": "webpack --config webpack/webpack.plugin.js",
     "build-docker-assets": "docker build -f ./Dockerfile-webpack -t redbot-assets .",
-    "build-docker": "docker buildx build --platform linux/amd64,linux/arm64 -t guidone/redbot:latest . --push"
+    "build-docker": "docker buildx build --platform linux/amd64,linux/arm64 -t guidone/redbot:latest . --push --no-cache  "
   },
   "repository": {
     "type": "git",
