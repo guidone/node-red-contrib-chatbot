@@ -2,7 +2,7 @@
 <p align="center">
   <img src="https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/logo/redbot-logo.svg">
   <br/>
-  :heavy_exclamation_mark: <strong>New!</strong> Try the new <a href="https://redbot.discourse.group/" target="_blank">RedBot forum</a>
+  :heavy_exclamation_mark: <strong>New!</strong> RedBot 1.0 is out, <a href="https://www.javascript-jedi.com/redbot-1-0/" target="_blank">read here</a>
   <br />
 </p>
   <p align="center"><a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/7b55ded1cc8c5f0f120d24efa9b63a2af6e182b01a3205c675676debe9021910/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f762f6e6f64652d7265642d636f6e747269622d63686174626f742e737667"><img src="https://camo.githubusercontent.com/7b55ded1cc8c5f0f120d24efa9b63a2af6e182b01a3205c675676debe9021910/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f762f6e6f64652d7265642d636f6e747269622d63686174626f742e737667" alt="Release" data-canonical-src="https://img.shields.io/npm/v/node-red-contrib-chatbot.svg" style="max-width: 100%;"></a>
