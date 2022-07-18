@@ -84,6 +84,56 @@
   </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-telegram-menu"><p>This node allows to create a persistant shortcuts menu in a Telegram bot. It’s only possible to specify commands (i.e. <code>/my_command</code>) along with a simple description.</p>
+<script type="text/x-red" data-help-name="chatbot-telegram-menu"><p>This node allows to create a persistent shortcuts menu in a Telegram bot. It’s only possible to specify commands (i.e. <code>/my_command</code>) along with a simple description.</p>
 <p>There’s no need to connect this node with a <code>Telegram Receiver node</code> or a <code>Telegram Sender node</code>, its generally connect to a Node-RED <code>Inject node</code> which is configured to fire when the flow starts.</p>
+<p>It’s possible to create the Telegram menu programmatically in an upstream <code>Function node</code></p>
+<pre><code class="language-javascript">return {
+    ...msg,
+  commands: [
+        {
+            command: &#39;/command1&#39;,
+            description: &#39;Command 1&#39;
+        },
+        {
+            command: &#39;/command2&#39;,
+            description: &#39;Command 2&#39;
+        }
+    ]
+};
+</code></pre>
+<p>Available params</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>commands</td>
+<td>[command]</td>
+<td>The list of available commands</td>
+</tr>
+</tbody></table>
+<p>The <code>command</code> entity</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>command</td>
+<td>string</td>
+<td>Telegram command (i.e. <code>/my-command</code>), always start with a <code>/</code></td>
+</tr>
+<tr>
+<td>description</td>
+<td>string</td>
+<td>Description of the command</td>
+</tr>
+</tbody></table>
 </script>
