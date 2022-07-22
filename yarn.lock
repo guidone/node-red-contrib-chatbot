@@ -12117,10 +12117,10 @@
     "stdout-stream" "^1.4.0"
     "true-case-path" "^1.0.2"
 
-"node-telegram-bot-api@^0.56.0":
-  "integrity" "sha512-gKUlH/uUXdSJ++6y1Y16qEThZouecfl4twuPKe6V2BPFDDfom9j2QMlxfslPEjZPH2ZXlA1S/uoRCKtIjzuaLw=="
-  "resolved" "https://registry.npmjs.org/node-telegram-bot-api/-/node-telegram-bot-api-0.56.0.tgz"
-  "version" "0.56.0"
+"node-telegram-bot-api@^0.58.0":
+  "integrity" "sha512-DmP5wBON9stOiunvUw/NvTb1clMYvj+c3NnSqbPZdVd6hNkNRnM97eqPZIH4UsBJ+4n+XFGpU33dCzjqD1sv3A=="
+  "resolved" "https://registry.npmjs.org/node-telegram-bot-api/-/node-telegram-bot-api-0.58.0.tgz"
+  "version" "0.58.0"
   dependencies:
     "array.prototype.findindex" "^2.0.2"
     "bl" "^1.2.3"
