@@ -10,8 +10,6 @@
     "localtunnel": "lt --port 1880",
     "lint": "eslint ./nodes/*.js ./lib",
     "build-docs": "node ./bin/import-from-notion",
-    "docker-build": "docker build . -t guidone/redbot",
-    "docker-publish": "docker push guidone/redbot",
     "clean": "rm -rf ./wiki",
     "version-old": "node ./bin/import-from-notion && git add *.html && git add *.md",
     "start-webpack": "run-s pre-start dev-server",
