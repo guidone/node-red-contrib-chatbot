@@ -25,15 +25,3 @@ plug(
     permission: 'configure'
   }
 );
-
-// register permissions
-plug(
-  'permissions',
-  null,
-  {
-    permission: 'admins',
-    name: 'Manage admins',
-    description: `Add, remove and manage permissions of Mission Control users`,
-    group: 'General'
-  }
-);
