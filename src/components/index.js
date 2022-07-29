@@ -30,6 +30,8 @@ import EmptyCallToAction from './empty-call-to-action';
 import Language from './language';
 import LanguagePicker from './language-picker';
 import * as Chat from './chat';
+import confirm from './confirm';
+import SelectActiveChatbots from './select-active-chatbots';
 
 import { useNodeRedSocket } from '../hooks/socket';
 import useMCContext from '../hooks/mc-context';
@@ -72,7 +74,8 @@ window.globalLibs.Components = {
   EmptyCallToAction,
   Language,
   LanguagePicker,
-  Chat
+  Chat,
+  confirm
 };
 
 export {
@@ -109,5 +112,6 @@ export {
   EmptyCallToAction,
   Language,
   LanguagePicker,
-  Chat
+  Chat,
+  confirm
 };
