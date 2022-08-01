@@ -429,7 +429,12 @@
   };
   $.RedBot.validate.telegram = {};
   $.RedBot.validate.telegram.command = function(params) {
-    return typeof params === 'object' && typeof params.command === 'string' && params.command != null && params.command !== '';
+    return typeof params === 'object'
+      && typeof params.command === 'string'
+      && params.command != null
+      && params.command !== ''
+      && params.description != null
+      && params.description !== '';
   };
   $.RedBot.buttonTypes.findButton = function(type) {
     var button = null;
