@@ -1,11 +1,24 @@
-const _ = require('underscore');
 const assert = require('chai').assert;
-const helpers = require('../lib/helpers/regexps');
 const MessageTemplate = require('../lib/message-template-async');
 const RED = require('../lib/red-stub')();
-const MessageBlock = require('../nodes/chatbot-message');
+const Evaluate = require('../lib/evaluate');
 
 describe('Message template', () => {
+
+  it('should evaluate a string', () => {
+    const evaluate = Evaluate({
+      payload: {
+        chatId: '123456',
+        name: 'Guido'
+      },
+      fullName: 'My fullname is Guido And Something'
+    });
+
+    assert.equal(evaluate('{{payload.chatId}}'), '123456');
+    assert.equal(evaluate('chatId - {{payload.chatId}}'), 'chatId - 123456');
+    assert.equal(evaluate('{{payload.name}} - {{payload.chatId}}'), 'Guido - 123456');
+    assert.equal(evaluate('{{fullName}}'), 'My fullname is Guido And Something');
+  })
 
   it('Leave a string without token intact', () => {
     const msg = RED.createMessage();
@@ -249,7 +262,7 @@ describe('Message template', () => {
     const node = {};
     RED.nodes.createNode(node, {});
     const template = MessageTemplate(msg, node);
-    const result = await template(`Test with statics {{chatId}} {{userId}} {{transport}} {{messageId}}`);
+    const result = await template('Test with statics {{chatId}} {{userId}} {{transport}} {{messageId}}');
     assert.equal(result, 'Test with statics 42 43 telegram 72');
     assert(await template('{{message}}'), 'I am the current message');
   });
@@ -261,10 +274,10 @@ describe('Message template', () => {
     RED.global.set('var_1', 42);
     RED.global.set('var_2', 'global variable');
     const template = MessageTemplate(msg, node);
-    assert.equal(await template(`{{var_1}}`), '42');
-    assert.equal(await template(`{{var_2}}`), 'global variable');
-    assert.equal(await template.evaluate(`{{var_1}}`), '42');
-    assert.equal(await template.evaluate(`{{var_2}}`), 'global variable');
+    assert.equal(await template('{{var_1}}'), '42');
+    assert.equal(await template('{{var_2}}'), 'global variable');
+    assert.equal(await template.evaluate('{{var_1}}'), '42');
+    assert.equal(await template.evaluate('{{var_2}}'), 'global variable');
   });
 
   it('Uses variables from payload context', async () => {
@@ -282,13 +295,13 @@ describe('Message template', () => {
     RED.global.set('var_1', 42);
     RED.global.set('var_2', 'global variable');
     const template = MessageTemplate(msg, node);
-    assert.equal(await template(`{{payload.name}}`), 'guido');
-    assert.equal(await template(`{{payload.complex.key2.key3}}`), 'value3');
-    assert.equal(await template(`{{payload.complex.key1}}`), 'value1');
+    assert.equal(await template('{{payload.name}}'), 'guido');
+    assert.equal(await template('{{payload.complex.key2.key3}}'), 'value3');
+    assert.equal(await template('{{payload.complex.key1}}'), 'value1');
 
     assert.equal(await template.evaluate('{{payload.name}}'), 'guido');
-    assert.equal(await template.evaluate(`{{payload.complex.key2.key3}}`), 'value3');
-    assert.equal(await template.evaluate(`{{payload.complex.key1}}`), 'value1');
+    assert.equal(await template.evaluate('{{payload.complex.key2.key3}}'), 'value3');
+    assert.equal(await template.evaluate('{{payload.complex.key1}}'), 'value1');
   });
 
   it('Uses language tx', async () => {
@@ -315,11 +328,11 @@ describe('Message template', () => {
     });
     await chatContext.set('language', 'en');
     const template = MessageTemplate(msg, node);
-    assert.equal(await template(`{{tx.ns.translate_1}}`), 'hello');
-    assert.equal(await template(`{{tx.ns.translate_2}}`), 'welcome');
+    assert.equal(await template('{{tx.ns.translate_1}}'), 'hello');
+    assert.equal(await template('{{tx.ns.translate_2}}'), 'welcome');
     await chatContext.set('language', 'it');
-    assert.equal(await template(`{{tx.ns.translate_1}}`), 'ciao');
-    assert.equal(await template(`{{tx.ns.translate_2}}`), 'prego');
+    assert.equal(await template('{{tx.ns.translate_1}}'), 'ciao');
+    assert.equal(await template('{{tx.ns.translate_2}}'), 'prego');
   });
 
 });

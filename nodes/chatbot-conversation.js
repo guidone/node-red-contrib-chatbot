@@ -4,6 +4,7 @@ const RegisterType = require('../lib/node-installer');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 const GetEnvironment = require('../lib/helpers/get-environment');
 const GetNode = require('../lib/helpers/get-node');
+const Evaluate = require('../lib/evaluate');
 
 const isEmpty = value => _.isEmpty(value) && !_.isNumber(value);
 
@@ -34,9 +35,11 @@ module.exports = function(RED) {
       // send/done compatibility for node-red < 1.0
       send = send || function() { node.send.apply(node, arguments) };
       done = done || function(error) { node.error.call(node, error, msg) };
+
+      const evaluate = Evaluate(msg);
       // get config
-      const chatId = extractValue('stringOrNumber', 'chatId', node, msg, false);
-      const userId = extractValue('stringOrNumber', 'userId', node, msg, false);
+      let chatId = evaluate(extractValue('stringOrNumber', 'chatId', node, msg, false));
+      let userId = evaluate(extractValue('stringOrNumber', 'userId', node, msg, false));
 
       // get from config, but check also params
       let botNode = getEnvironment() === 'production' ? node.botProduction : node.botDevelopment;
@@ -45,7 +48,6 @@ module.exports = function(RED) {
       } else if (msg != null && msg.payload != null && _.isString(msg.payload.botNode) && !_.isEmpty(msg.payload.botNode)) {
         botNode = msg.payload.botNode;
       }
-
 
       // check userId or chatId
       if (isEmpty(chatId) && isEmpty(userId)) {
