@@ -42,12 +42,12 @@ module.exports = function(RED) {
         return;
       }
       // finally set the commands
-      const result = await connector.setMyCommands(items);
-      if (!result) {
+      try {
+        await connector.setMyCommands(items);
+        done();
+      } catch(e) {
         done('Error setting commands in Telegram bot');
-        return;
       }
-      done();
     });
   }
 
