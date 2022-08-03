@@ -18,6 +18,7 @@
     "dev-server": "webpack-dev-server --open --config webpack/webpack.dev.js",
     "pre-start": "node bin/import.js",
     "plugin": "node bin/build.js",
+    "version": "node bin/update-version.js && git add latest-version.txt && git commit -m \"update version\"",
     "build": "cross-env NODE_OPTIONS=--max_old_space_size=8192 webpack --config webpack/webpack.prod.js && node ./bin/import-from-notion && echo \"Build complete!\"",
     "build-plugin": "webpack --config webpack/webpack.plugin.js",
     "build-docker-assets": "docker build -f ./Dockerfile-webpack -t redbot-assets .",
