@@ -31,7 +31,8 @@ import Language from './language';
 import LanguagePicker from './language-picker';
 import * as Chat from './chat';
 import confirm from './confirm';
-import SelectActiveChatbots from './select-active-chatbots';
+import InputFloat from './input-float';
+//import SelectActiveChatbots from './select-active-chatbots';
 
 import { useNodeRedSocket } from '../hooks/socket';
 import useMCContext from '../hooks/mc-context';
@@ -75,7 +76,8 @@ window.globalLibs.Components = {
   Language,
   LanguagePicker,
   Chat,
-  confirm
+  confirm,
+  InputFloat
 };
 
 export {
@@ -113,5 +115,6 @@ export {
   Language,
   LanguagePicker,
   Chat,
-  confirm
+  confirm,
+  InputFloat
 };

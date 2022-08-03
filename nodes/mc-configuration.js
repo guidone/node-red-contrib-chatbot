@@ -95,33 +95,6 @@ module.exports = function(RED) {
           saveConfiguration(payload, this.context().global, node.namespace);
           node.send({ payload });
         });
-      /*Configuration.findOne({ where: compactObject({
-        namespace: node.namespace,
-        chatbotId: !_.isEmpty(node.chatbotId) ? node.chatbotId : undefined
-      })}).then(response => {
-        if (response == null || _.isEmpty(response.payload)) {
-          // eslint-disable-next-line no-console
-          console.log(`Configuration for ${node.namespace} not found`);
-          return;
-        }
-        let configuration;
-        try {
-          configuration = JSON.parse(response.payload);
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.log('Invalid configuration payload')
-        }
-
-        const payload = _.omit(configuration, 'namespace');
-        if (node.debug) {
-          // eslint-disable-next-line no-console
-          console.log(lcd.green('Initial configuration received') + ' (' + lcd.grey(this.namespace) +')');
-          // eslint-disable-next-line no-console
-          console.log(lcd.prettify(_.omit(payload, 'translations'), { indent: 2 }));
-        }
-        saveConfiguration(payload, this.context().global, node.namespace);
-        node.send({ payload });
-      });*/
     }
 
     this.on('input', async function(msg, send, done) {
@@ -162,6 +135,14 @@ module.exports = function(RED) {
         // skip if different chatbotid
         if (!_.isEmpty(node.chatbotId) && node.chatbotId !== chatbotId) {
           return;
+        }
+        if (node.debug) {
+          // eslint-disable-next-line no-console
+          console.log(lcd.green('Loading configuration') + ' ('
+            + lcd.grey(this.namespace) + '/' + (!_.isEmpty(chatbotId) ? lcd.grey(chatbotId) : lcd.grey('no-chatbot'))
+            + ')');
+          // eslint-disable-next-line no-console
+          console.log(lcd.prettify(_.omit(payload, 'translations'), { indent: 2 }));
         }
         saveConfiguration(rest, this.context().global, node.namespace);
         // pass through

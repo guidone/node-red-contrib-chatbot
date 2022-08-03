@@ -305,7 +305,7 @@ Some **formatting** is _allowed_!`
   app.post(
     '/mc/publish',
     async (req, res) => {
-      if (!_.isEmpty(req.body.topic) && !_.isEmpty(req.body.payload)) {
+      if (!_.isEmpty(req.body.topic)) {
         Events.emit('message', req.body.topic, req.body.payload);
       }
       res.sendStatus(200);
