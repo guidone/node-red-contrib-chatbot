@@ -1,0 +1,64 @@
+<script type="text/javascript">
+  RED.nodes.registerType('mc-queue', {
+    category: 'Mission Control',
+    color: '#6699CC',
+    defaults: {
+      name: {
+        value: ''
+      },
+      mode: {
+        value: 'sequential'
+      },
+      initialState: {
+        value: 'running'
+      },
+      delay: {
+        value: 100
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'MC Queue',
+    icon: 'chatbot-command.png',
+    label: function() {
+      return 'MC Queue';
+    },
+    oneditprepare: function() {
+      $("#node-input-delay" ).spinner({ min:1 });
+      $('#node-input-mode')
+        .change(function() {
+          var value = $(this).val();
+          $('.form-row-delay').toggle(value === 'sequential');
+        });
+      $('.form-row-delay').toggle(this.mode === 'sequential');
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="mc-queue">
+  <div class="form-row">
+    <label for="node-input-name">Name</label>
+    <input type="text" id="node-input-name" placeholder="Queue name">
+  </div>
+  <div class="form-row">
+    <label for="node-input-initialState">Initial state</label>
+    <select id="node-input-initialState" placeholder="Select initial state">
+      <option value="running">Running</option>
+      <option value="paused">Paused</option>
+    </select>
+  </div>
+  <div class="form-row">
+    <label for="node-input-mode">Type</label>
+    <select id="node-input-mode" placeholder="Select Queue mode">
+      <option value="sequential">Sequential</option>
+      <option value="single">Stops after each element</option>
+    </select>
+  </div>
+  <div class="form-row form-row-delay">
+    <label for="node-input-delay">Delay</label>
+    <input type="text" id="node-input-delay" placeholder="Delay" style="text-align:end; width:50px !important">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="mc-queue">
+</script>
