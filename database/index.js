@@ -19,6 +19,13 @@ module.exports = mcSettings => {
     logging
   });
 
+  const sequelizeTasks = new Sequelize('queue', '', '', {
+    host: 'localhost',
+    dialect: 'sqlite',
+    storage: '/Users/guidone/web/my-queue.sqlite',
+    logging
+  });
+
   const Configuration = sequelize.define('configuration', {
     namespace: Sequelize.STRING,
     payload: Sequelize.TEXT,
@@ -247,6 +254,7 @@ module.exports = mcSettings => {
     ChatBot,
     Plugin,
     sequelize,
+    sequelizeTasks,
     mcSettings
   });
 
@@ -267,7 +275,8 @@ module.exports = mcSettings => {
     /*Device,*/
     ChatBot,
     Plugin,
-    sequelize
+    sequelize,
+    sequelizeTasks
   };
 
   return exportCache;

@@ -23,6 +23,7 @@ const CustomTable = ({
   labels,
   filtersSchema = [],
   toolbar,
+  defaultFilters = null,
   onFilters = () => {},
   filterEvaluateParams = ['data'],
   onData = () => {},

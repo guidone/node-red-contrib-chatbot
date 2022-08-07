@@ -1,0 +1,32 @@
+.content-token-payload {
+  padding-bottom: 15px;
+
+  .expire-at {
+    width: 250px;
+  }
+  .token {
+    font-family: monospace;
+  }
+}
+
+.cell-token {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-content: stretch;
+  align-items: flex-start;
+  .token {
+    flex: 0 0 auto;
+    font-family: monospace;
+    overflow: hidden;
+    max-width: calc(100% - 40px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .copy-button {
+    float: 0 0;
+    margin-left: 10px;
+  }
+}

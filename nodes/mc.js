@@ -163,7 +163,7 @@ async function bootstrap(server, app, log, redSettings, RED) {
   }
 
   const databaseSchema = DatabaseSchema(mcSettings)
-  const { graphQLServer, Category, Content, Admin,  ChatBot, Plugin, sequelize } = databaseSchema;
+  const { graphQLServer, Category, Content, Admin,  ChatBot, Plugin, sequelize, sequelizeTasks } = databaseSchema;
 
   // if database doesn't exist, then create it and run sync to create blank tables
   if (!fs.existsSync(mcSettings.dbPath)) {
