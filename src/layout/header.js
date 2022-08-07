@@ -12,6 +12,7 @@ import useCookie from 'react-use-cookie';
 
 import AppContext from '../common/app-context';
 import useCurrentUser from '../hooks/current-user';
+import getRoot from '../helpers/get-root';
 
 import ChatbotsSelector from './chatbots-selector';
 
@@ -72,7 +73,7 @@ query($chatbotId: String) {
 const AppHeader = () => {
   const [, setCookieChatbotId] = useCookie('chatbotId', '');
   const client = useApolloClient();
-  const { post } = useFetch('/mc/logout');
+  const { post } = useFetch(`${getRoot()}/logout`);
   const { user } = useCurrentUser();
   const { state, dispatch } = useContext(AppContext);
   const history = useHistory();

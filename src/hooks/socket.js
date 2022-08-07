@@ -2,6 +2,8 @@ import _ from 'lodash';
 import { useEffect, useReducer } from 'react';
 
 import SocketListener from './lib/socket';
+import getRoot from '../helpers/get-root';
+import getNodeRedRoot from '../helpers/get-node-red-root';
 
 const DEBUG_SOCKET = false;
 let nodeRedSocketListener;
@@ -27,10 +29,11 @@ const useNodeRedSocket = ({
   useEffect(() => {
     if (nodeRedSocketListener == null) {
       const webSocketProtol = window.location.protocol.includes('https') ? 'wss' : 'ws';
+      const wsUrl = `${webSocketProtol}://${window.location.hostname}:${window.location.port}${getNodeRedRoot()}/comms`
       // eslint-disable-next-line no-console
-      console.log(`Created listeing socket ${webSocketProtol}://${window.location.hostname}:${window.location.port}/comms`);
+      console.log(`Created listening socket ${wsUrl}`);
       nodeRedSocketListener = new SocketListener({
-        url: `${webSocketProtol}://${window.location.hostname}:${window.location.port}/comms`,
+        url: wsUrl,
         payloadField: 'data'
       });
     }
@@ -43,7 +46,7 @@ const useNodeRedSocket = ({
     state,
     dispatch,
     sendMessage: async (topic, payload) => {
-      await fetch('/mc/publish', {
+      await fetch(`${getRoot()}/publish`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

@@ -69,6 +69,7 @@ async function bootstrap(server, app, log, redSettings, RED) {
   }
   // get mission control configurations
   console.log(lcd.timestamp() + 'Red Bot Mission Control configuration:');
+  console.log(lcd.timestamp() + '  ' + lcd.green('admin root: ') + lcd.grey(redSettings.httpAdminRoot));
   console.log(lcd.timestamp() + '  ' + lcd.green('backend environment: ') + lcd.grey(GetEnvironment(RED)()));
   // front end evironment
   mcSettings.version = packageJson.version;
@@ -131,7 +132,10 @@ async function bootstrap(server, app, log, redSettings, RED) {
   } else {
     mcSettings.root = mcSettings.root.replace(/\/$/, '');
   }
-  console.log(lcd.timestamp() + '  ' + lcd.green('root: ') + lcd.grey(mcSettings.root));
+  if (!_.isEmpty(redSettings.httpAdminRoot)) {
+    mcSettings.root = redSettings.httpAdminRoot.replace(/\/$/, '') + mcSettings.root;
+  }
+  console.log(lcd.timestamp() + '  ' + lcd.green('MC root: ') + lcd.grey(mcSettings.root));
   // get host
   if (mcSettings.host == null) {
     mcSettings.host = 'localhost';
@@ -187,10 +191,14 @@ Some **formatting** is _allowed_!`
   app.use(passportMiddlewares);
 
   app.post(
-    '/mc/login',
+    `${mcSettings.root}/login`,
+    function(req, res, next) {
+      console.log('allora cristoddio')
+      next();
+    },
     passport.authenticate('local', {
-      successRedirect:'/mc',
-      failureRedirect: '/mc/login'
+      successRedirect: `${mcSettings.root}`,
+      failureRedirect: `${mcSettings.root}/login`
     })
   );
 
@@ -263,11 +271,11 @@ Some **formatting** is _allowed_!`
   app.use(`${mcSettings.root}/plugins`, serveStatic(mcSettings.pluginsPath, {
     'index': false
   }));
-  app.get('/mc/chatbotIdGenerator', (_req, res) => res.send(chatbotIdGenerator()));
+  app.get(`${mcSettings.root}/chatbotIdGenerator`, (_req, res) => res.send(chatbotIdGenerator()));
 
   // serve the login page
   app.get(
-    '/mc/login',
+    `${mcSettings.root}/login`,
     async (_req, res) => {
       const admins = await Admin.findAll();
       const isDefaultUser = admins.length === 1 && _.isEmpty(admins[0].password);
@@ -297,13 +305,13 @@ Some **formatting** is _allowed_!`
     serveStatic(path.join(__dirname, '../webpack/dist'))
   );
 
-  app.post('/mc/logout', function(req, res){
+  app.post(`${mcSettings.root}/logout`, function(req, res){
     req.logout();
     res.redirect('/');
   });
   // relay messages coming from useSocket, unfortunately Node-RED is not listening for them in /comms
   app.post(
-    '/mc/publish',
+    `${mcSettings.root}/publish`,
     async (req, res) => {
       if (!_.isEmpty(req.body.topic)) {
         Events.emit('message', req.body.topic, req.body.payload);

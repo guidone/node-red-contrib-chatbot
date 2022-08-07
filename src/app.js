@@ -14,6 +14,7 @@ import { CodePlug, plug, useCodePlug } from 'code-plug';
 import useCookie from 'react-use-cookie';
 
 import sameArray from './helpers/same-array';
+import getRoot from './helpers/get-root';
 import { useNodeRedSocket } from './hooks/socket';
 
 plug('reducers', (state, action) => {
@@ -217,7 +218,7 @@ const RouterContainer = ({bootstrap, codePlug, dispatch }) => {
   const { items } = useCodePlug('pages', { permission: { '$intersect': bootstrap.user.permissions }})
 
   return (
-    <Router basename="/mc">
+    <Router basename={getRoot()}>
       <div className="mission-control-app">
         <Container className="mc-main-container">
           <Sidebar/>
