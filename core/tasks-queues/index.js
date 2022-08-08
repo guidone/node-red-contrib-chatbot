@@ -1,16 +1,6 @@
-import React from 'react';
 import { plug } from 'code-plug';
 
-import { Content, SmartDate, CopyAndPasteButton } from '../../src/components';
-
 import Queues from './views/queues';
-
-//import TokenEditor from './views/token-editor';
-import moment from 'moment';
-
-
-
-
 import './style.scss';
 
 plug(
@@ -24,8 +14,6 @@ plug(
   }
 );
 
-
-
 plug(
   'sidebar',
   null,
@@ -37,7 +25,6 @@ plug(
     permission: 'queue-tokens'
   }
 );
-
 
 plug(
   'permissions',

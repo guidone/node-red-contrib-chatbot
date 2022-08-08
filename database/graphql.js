@@ -257,7 +257,6 @@ module.exports = ({
           limit: { type: GraphQLInt },
         },
         resolve: async function(root, { offset = 0, limit = 10 }) {
-          console.log('root', root)
           const [tasks] = await sequelizeTasks.query(`
             SELECT * FROM "${root.name}"
             ORDER BY createdAt DESC
@@ -1749,6 +1748,34 @@ module.exports = ({
           }
         },
 
+        deleteTasks: {
+          type: new GraphQLList(GraphQLInt),
+          args: {
+            ids: { type: new GraphQLList(GraphQLInt)},
+            queue: { type: GraphQLString },
+            all: { type: GraphQLBoolean }
+          },
+          resolve: async function(root, { all, ids, queue }) {
+            if (all) {
+              await sequelizeTasks.query(
+                'DELETE FROM :queue;',
+                {
+                  replacements: { queue }
+                }
+              );
+              return [];
+            } else {
+              await sequelizeTasks.query(
+                'DELETE FROM :queue WHERE id IN (:ids);',
+                {
+                  replacements: { ids, queue }
+                }
+              );
+              return ids;
+            }
+          }
+        },
+
         editAdmin: {
           type: adminType,
           args: {
@@ -2161,7 +2188,6 @@ module.exports = ({
           },
           resolve: async function(root, { name }) {
             const [results] = await sequelizeTasks.query('SELECT name FROM sqlite_schema WHERE type=\'table\' ORDER BY name;');
-            console.log('res', results.find(queue => queue.name === name))
             return results.find(queue => queue.name === name);
           }
         },

@@ -22,20 +22,30 @@ mutation($id: Int!, $queue: String!, $task: InputTask!) {
   }
 }`;
 
+const DELETE_TASKS = gql`
+mutation($ids: [Int], $all: Boolean, $queue: String!) {
+  deleteTasks(ids: $ids, all: $all, queue: $queue)
+}`;
+
 export default ({ onCompleted = () => {} } = {}) => {
   const [
     deleteTask,
     { loading: mutationLoading, error: mutationError },
   ] = useMutation(DELETE_TASK, { onCompleted });
   const [
+    deleteTasks,
+    { loading: mutationDeletingTasks, error: mutationErrorDeletingTasks },
+  ] = useMutation(DELETE_TASKS, { onCompleted });
+  const [
     editTask,
     { loading: editLoading, error: editError },
   ] = useMutation(EDIT_ADMIN, { onCompleted });
 
   return {
-    saving: mutationLoading || mutationLoading || editLoading,
-    error: mutationError || editError,
+    saving: mutationLoading || mutationDeletingTasks || editLoading,
+    error: mutationError || editError || mutationErrorDeletingTasks,
     deleteTask,
+    deleteTasks,
     editTask: withoutParams(editTask, ['id', 'updatedAt', 'createdAt', '__typename'])
   };
 };

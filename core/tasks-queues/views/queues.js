@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Table, Icon, ButtonGroup, Button } from 'rsuite';
+import { Table, Icon, ButtonGroup, Button, ButtonToolbar } from 'rsuite';
 import gql from 'graphql-tag';
 import { useLocation } from 'react-router-dom';
 
@@ -24,13 +24,13 @@ function useQuery() {
 
 
 const TASKS = gql`
-query($queue: String!) {
+query($queue: String!, $limit: Int, $offset: Int) {
   counters {
     rows: tasks {
      count(queue: $queue)
     }
   }
-  rows: tasks(queue: $queue) {
+  rows: tasks(queue: $queue, limit: $limit, offset: $offset) {
 		id,
     taskId,
     task,
@@ -40,14 +40,14 @@ query($queue: String!) {
 }
 `;
 
-
 const QueuesTasks = () => {
   const table = useRef();
   const [ task, setTask ] = useState(null);
-  const { saving, error,  deleteTask, editTask } = useTasks();
+  const [ selection, setSelection ] = useState(null);
+  const { saving, error,  deleteTask, deleteTasks, editTask } = useTasks();
   const query = useQuery();
 
-  console.log('la quu queue', query.get('queue'))
+  const disabled = saving;
 
   return (
     <PageContainer className="page-users">
@@ -64,6 +64,9 @@ const QueuesTasks = () => {
             table.current.refetch();
           }}
         />)}
+      <div className="page-description">
+        Description of what is a task
+      </div>
       <CustomTable
         ref={table}
         query={TASKS}
@@ -71,15 +74,59 @@ const QueuesTasks = () => {
         labels={{
           empty: 'The tasks queue is empty'
         }}
-        onFilters={filters => {
-          // TODO remove
-          console.log('received filters', filters)
-        }}
+        selectable={true}
+        onSelect={selection => setSelection(selection)}
         initialSortField="createdAt"
         initialSortDirection="desc"
         toolbar={(
           <div>
-            set toolbar
+            <ButtonToolbar>
+              {selection != null && selection.all && (
+                <Button
+                  appearance="primary"
+                  disabled={disabled}
+                  onClick={async () => {
+                    if (await confirm(
+                      <div>Delete all tasks from queue <b>{query.get('queue')}</b>?</div>,
+                      { okLabel: 'Yes, delete' }
+                    )) {
+                      await deleteTasks({
+                        variables: { all: true, queue: query.get('queue') }
+                      });
+                      table.current.refetch();
+                    }
+                  }}
+                >
+                  Delete all
+                </Button>
+              )}
+              {selection != null && selection.ids.length !== 0 && !selection.all && (
+                <Button
+                  appearance="primary"
+                  disabled={disabled}
+                  onClick={async () => {
+                    if (await confirm(
+                      <div>Delete <b>{selection.ids.length}</b> tasks from queue <b>{query.get('queue')}</b>?</div>,
+                      { okLabel: 'Yes, delete' }
+                    )) {
+                      await deleteTasks({
+                        variables: { ids: selection.ids, queue: query.get('queue') }
+                      });
+                      table.current.refetch();
+                    }
+                  }}
+                >
+                  Delete ({selection.ids.length})
+                </Button>
+              )}
+              <Button
+                appearance="primary"
+                disabled={disabled}
+                onClick={() => table.current.refetch()}
+              >
+              Reload
+            </Button>
+            </ButtonToolbar>
           </div>
         )}
         filtersSchema={[
@@ -103,9 +150,11 @@ const QueuesTasks = () => {
           </Cell>
         </Column>
 
-        <Column width={300} resizable>
+        <Column width={300} flexGrow={1}>
           <HeaderCell>Task Id</HeaderCell>
-          <Cell dataKey="taskId"/>
+          <Cell dataKey="taskId">
+            {({ taskId }) => <span className="cell-task-id">{taskId}</span>}
+          </Cell>
         </Column>
 
         <Column width={80}>
@@ -116,7 +165,6 @@ const QueuesTasks = () => {
                 <Button
                   size="xs"
                   onClick={async () => {
-
                     if (await confirm(
                       <div>Delete task <strong>{task.id}</strong> ?</div>,
                       { okLabel: 'Yes, delete' }

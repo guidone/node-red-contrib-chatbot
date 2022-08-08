@@ -9,6 +9,17 @@
   }
 }
 
+.page-description {
+  padding: 0px 0px 20px 0px;
+}
+
+.cell-task-id {
+  font-family: monospace;
+  background-color: #eeeeee;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
 .cell-token {
   display: flex;
   flex-direction: row;

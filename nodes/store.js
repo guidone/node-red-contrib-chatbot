@@ -1,47 +1,19 @@
 const _ = require('underscore');
 const extend = require('extend');
-var uuid   = require('uuid');
-var util   = require('util');
-
+const uuid   = require('uuid');
 const Sequelize = require('sequelize');
+
 const Op  = Sequelize.Op;
 
-
-
-
-
 function SqlStore(opts) {
-  console.log('initializing sqlite store')
   opts = opts || {};
-  opts.tableName = opts.tableName || 'tasks';
+  opts.tableName = opts.tableName;
   extend(this, opts);
-  const store = this;
-
-
-
-  /*var dialect = opts.dialect || 'sqlite';
-  if (dialect === 'sqlite') {
-    var Adapter = require('./sqlite');
-    this.adapter = new Adapter(opts);
-  } else if (dialect === 'postgres') {
-    var Adapter = require('./postgres');
-    this.adapter = new Adapter(opts);
-  } else if (dialect === 'mysql') {
-    var Adapter = require('./mysql');
-    this.adapter = new Adapter(opts);
-  } else {
-    throw new Error("Unhandled dialect: " + dialect);
-  }
-  this.dialect = dialect;
-  */
 
   this.takeFirstN = takeNextN(true, this);
   this.takeLastN = takeNextN(false, this);
-
-  this.dialect = 'sqlite';
 }
 
-// http://stackoverflow.com/questions/11532550/atomic-update-select-in-postgres
 const takeNextN = function (first, self) {
   return async function (n, cb) {
     try {
