@@ -24,10 +24,14 @@ const LoginPanel = () => {
     password: ''
   })
 
+  const root = window.bootstrap != null
+    && window.bootstrap.settings != null
+    && window.bootstrap.settings.root != null ? window.bootstrap.settings.root : '/mc';
+
   // it's pointless to useCallback
   const loginButton = async () => {
     setLoading(true);
-    const response = await fetch('/mc/login', {
+    const response = await fetch(`${root}/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
