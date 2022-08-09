@@ -11,6 +11,7 @@ import SmartDate from '../../../src/components/smart-date';
 import CustomTable from '../../../src/components/table';
 import { Input } from '../../../src/components/table-filters';
 import confirm from '../../../src/components/confirm';
+import { NodeRedNode } from '../../../src/components/help-elements';
 
 import '../../admins/styles/admins.scss';
 import useTasks from '../hooks/tasks';
@@ -65,7 +66,8 @@ const QueuesTasks = () => {
           }}
         />)}
       <div className="page-description">
-        Description of what is a task
+        <NodeRedNode>MC Queue</NodeRedNode> it&apos;s a node to handle a queue of tasks, persist them and execute sequentially
+        at the desired interval.
       </div>
       <CustomTable
         ref={table}

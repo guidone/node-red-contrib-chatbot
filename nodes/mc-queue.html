@@ -21,7 +21,7 @@
     paletteLabel: 'MC Queue',
     icon: 'chatbot-command.png',
     label: function() {
-      return 'MC Queue';
+      return 'MC Queue' + (this.name != null && this.name !== '' ? ' ('+ this.name +')' : '');
     },
     oneditprepare: function() {
       $("#node-input-delay" ).spinner({ min:1 });
@@ -53,10 +53,17 @@
       <option value="sequential">Sequential</option>
       <option value="single">Stops after each element</option>
     </select>
+    <div class="redbot-form-hint" style="padding-left:100px;padding-bottom:10px;">
+      In a sequential tasks queue, the elements will be extracted from the queue continuosly, while in <em>"Stop after each element"</em>
+      the queue pause itself after each element (send a msg with a key <code style="font-size:10px;">{ next: true }</code> to process the next one).
+    </span>
   </div>
   <div class="form-row form-row-delay">
     <label for="node-input-delay">Delay</label>
-    <input type="text" id="node-input-delay" placeholder="Delay" style="text-align:end; width:50px !important">
+    <input type="text" id="node-input-delay" placeholder="Delay" style="text-align:end; width:50px !important">&nbsp;ms
+    <div class="redbot-form-hint" style="padding-left:100px;padding-bottom:10px;">
+      The delay in ms between each element in the queue (in sequential mode)
+    </div>
   </div>
 </script>
 

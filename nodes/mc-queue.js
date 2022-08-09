@@ -30,7 +30,7 @@ module.exports = function(RED) {
     this.name = config.name;
     this.delay = config.delay;
     this.running = node.initialState === 'running';
-    this.statusMessage = '';
+    this.statusMessage = 'Total: 0';
 
     this.updateStatus = function() {
       node.status({
@@ -45,7 +45,7 @@ module.exports = function(RED) {
       function (input, cb) {
 
         const stats = node.queue.getStats();
-        node.statusMessage = `Total ${stats.total}`;
+        node.statusMessage = `Total: ${stats.total}`;
         node.updateStatus();
 
         // stop if in single mode

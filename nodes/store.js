@@ -31,8 +31,6 @@ const takeNextN = function (first, self) {
       const taskIds = subquery.map(row => row.taskId);
       const lockId = uuid.v4();
 
-      console.log('taskIds', taskIds)
-
       await self.Task.update({
         lock: lockId
       }, {
@@ -45,12 +43,11 @@ const takeNextN = function (first, self) {
 
       cb(null, taskIds.length !== 0 ? lockId : '');
     } catch(e) {
-      console.log('error gettask', e)
       cb(e);
     }
 
-
-    /*var self = this;
+    /* Original:
+    var self = this;
     var subquery = function (fields, n) {
       return self.adapter.knex(self.tableName).select(fields).where('lock', '').orderBy('priority', 'DESC').orderBy('added', first ? 'ASC' : 'DESC').limit(n);
     };
@@ -69,8 +66,7 @@ const takeNextN = function (first, self) {
         cb(null, val);
         return val;
       }).catch(cb);
-      */
-
+    */
   };
 };
 
@@ -105,20 +101,16 @@ SqlStore.prototype.connect = async function (cb) {
 
   // create table if not exist
   await self.Task.sync();
-  // TODO init if table doesn't exist
-
-  self.Task2 = self.Task;
-
   const row = await self.Task.count({
     where: {
       lock: { [Op.eq]: ''}
     }
   });
-  console.log('counting', row)
 
   cb(null, row || 0);
 
-  /*self.adapter.connect(function (err) {
+  /* Original:
+  self.adapter.connect(function (err) {
     if (err) return cb(err);
     var sql = util.format("CREATE TABLE IF NOT EXISTS %s ", self.tableName);
     var dialect = self.dialect;
@@ -177,8 +169,8 @@ SqlStore.prototype.getTask = async function (taskId, cb) {
 
 SqlStore.prototype.deleteTask = async function (taskId, cb) {
   const self = this;
-  //this.adapter.knex(this.tableName).where('id', taskId).del().then(function () { cb(); return taskId; }).catch(cb);
-  console.log('deleteTask')
+  // Original:
+  // this.adapter.knex(this.tableName).where('id', taskId).del().then(function () { cb(); return taskId; }).catch(cb);
   try {
     await self.Task.destroy({
       where: { taskId }
@@ -186,7 +178,6 @@ SqlStore.prototype.deleteTask = async function (taskId, cb) {
   } catch(e) {
     cb(e);
   }
-
 };
 
 SqlStore.prototype.putTask = async function (taskId, task, priority, cb) {
@@ -245,12 +236,10 @@ SqlStore.prototype.getLock = async function (lockId, cb) {
 
 SqlStore.prototype.getRunningTasks = async function (cb) {
   const self = this;
-  console.log('----- get running tasks', this)
   const running = await this.Task.findAll({
     attributes: ['id', 'task', 'taskId', 'lock'],
     where: { lock: { [Op.ne]: '' }}
   });
-
 
   const tasks = {};
   running.forEach(row => {
@@ -277,11 +266,11 @@ SqlStore.prototype.getRunningTasks = async function (cb) {
 
 SqlStore.prototype.releaseLock = async function (lockId, cb) {
   const self = this;
-  //this.adapter.knex(this.tableName).where('lock', lockId).del().then(function () { cb(); return lockId; }).catch(cb);
+  // Original:
+  // this.adapter.knex(this.tableName).where('lock', lockId).del().then(function () { cb(); return lockId; }).catch(cb);
   try {
 
     if (lockId !== '') {
-      console.log('deleting...')
       await self.Task.destroy({
         where: { lock: lockId }
       });
@@ -293,7 +282,6 @@ SqlStore.prototype.releaseLock = async function (lockId, cb) {
 };
 
 SqlStore.prototype.close = function (cb) {
-  //if (this.adapter) return this.adapter.close(cb);
   cb();
 };
 
