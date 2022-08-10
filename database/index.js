@@ -10,7 +10,7 @@ module.exports = mcSettings => {
   if (exportCache != null) {
     return exportCache;
   }
-  const { dbPath } = mcSettings;
+  const { dbPath, dbQueuePath } = mcSettings;
 
   const sequelize = new Sequelize('mission_control', '', '', {
     host: 'localhost',
@@ -22,7 +22,7 @@ module.exports = mcSettings => {
   const sequelizeTasks = new Sequelize('queue', '', '', {
     host: 'localhost',
     dialect: 'sqlite',
-    storage: '/Users/guidone/web/my-queue.sqlite',
+    storage: dbQueuePath,
     logging
   });
 

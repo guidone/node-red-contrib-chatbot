@@ -9,9 +9,13 @@ import PageContainer from '../../../src/components/page-container';
 import Breadcrumbs from '../../../src/components/breadcrumbs';
 import SmartDate from '../../../src/components/smart-date';
 import CustomTable from '../../../src/components/table';
+
+// TODO should be moved to table filters?
+import SelectQueues from '../../../src/components/select-queues';
 import { Input } from '../../../src/components/table-filters';
 import confirm from '../../../src/components/confirm';
 import { NodeRedNode } from '../../../src/components/help-elements';
+
 
 import '../../admins/styles/admins.scss';
 import useTasks from '../hooks/tasks';
@@ -52,7 +56,7 @@ const QueuesTasks = () => {
 
   return (
     <PageContainer className="page-users">
-      <Breadcrumbs pages={['Tasks']}/>
+      <Breadcrumbs pages={['Queues & Tasks']}/>
       {task != null && (
         <ModalTask
           task={task}
@@ -135,7 +139,7 @@ const QueuesTasks = () => {
           {
             name: 'queue',
             label: 'queue',
-            control: Input
+            control: SelectQueues
           }
         ]}
         autoHeight

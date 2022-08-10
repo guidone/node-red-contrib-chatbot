@@ -1,13 +1,34 @@
 const _ = require('underscore');
 const extend = require('extend');
+const fs = require('fs');
 const uuid   = require('uuid');
 const Sequelize = require('sequelize');
 
 const Op  = Sequelize.Op;
 
+const defineQueueTable = (sequelize, name) => {
+  return sequelize.define(
+    name,
+    {
+      taskId: Sequelize.TEXT,
+      lock: Sequelize.TEXT,
+      task: Sequelize.TEXT,
+      priority: Sequelize.NUMBER,
+    },
+    {
+      indexes: [
+        { name: `${name}_taskId`, using: 'BTREE', fields: ['taskId'] },
+        { name: `${name}_lock`, using: 'BTREE', fields: ['lock'] },
+        { name: `${name}_priority`, using: 'BTREE', fields: ['priority', 'id'] }
+      ]
+    }
+  );
+};
+
 function SqlStore(opts) {
   opts = opts || {};
-  opts.tableName = opts.tableName;
+  this.tableName = opts.tableName;
+  this.storage = opts.storage;
   extend(this, opts);
 
   this.takeFirstN = takeNextN(true, this);
@@ -69,35 +90,26 @@ const takeNextN = function (first, self) {
     */
   };
 };
-
 SqlStore.prototype.connect = async function (cb) {
   const self = this;
 
-  // TODO set database file name
+  // create connection
   const sequelize = new Sequelize('queue', '', '', {
     host: 'localhost',
     dialect: 'sqlite',
-    storage: '/Users/guidone/web/my-queue.sqlite',
+    storage: this.storage,
     logging: false
   });
   const name = _.isEmpty(self.tableName) ? 'task' : `tasks-${self.tableName.replace(/[^a-z0-9]/g,'')}`;
 
-  self.Task = sequelize.define(
-    name,
-    {
-      taskId: Sequelize.TEXT,
-      lock: Sequelize.TEXT,
-      task: Sequelize.TEXT,
-      priority: Sequelize.NUMBER,
-    },
-    {
-      indexes: [
-        { name: `${name}_taskId`, using: 'BTREE', fields: ['taskId'] },
-        { name: `${name}_lock`, using: 'BTREE', fields: ['lock'] },
-        { name: `${name}_priority`, using: 'BTREE', fields: ['priority', 'id'] }
-      ]
-    }
-  );
+  self.Task = defineQueueTable(sequelize, name);
+
+  // create file if not exists
+  if (!fs.existsSync(this.storage)) {
+    // create here the default table
+    defineQueueTable(sequelize, 'tasks');
+    await sequelize.sync({ force: true });
+  }
 
   // create table if not exist
   await self.Task.sync();
@@ -196,20 +208,16 @@ SqlStore.prototype.putTask = async function (taskId, task, priority, cb) {
     lock: ''
   });
 
-  console.log('created task', newTask.id)
-
   cb();
 
-
-  //this.adapter.upsert({ id: taskId, task: serializedTask, priority: priority || 1, lock: '' }, cb);
+  // Original:
+  // this.adapter.upsert({ id: taskId, task: serializedTask, priority: priority || 1, lock: '' }, cb);
 };
 
 //SqlStore.prototype.takeFirstN = takeNextN(true);
 //SqlStore.prototype.takeLastN = takeNextN(false);
 
 SqlStore.prototype.getLock = async function (lockId, cb) {
-  const self = this;
-  console.log('chi sono', this, this.Task.findAll)
   try {
     const rows = await this.Task.findAll({
       attributes: ['id', 'taskId', 'task'],
@@ -223,7 +231,8 @@ SqlStore.prototype.getLock = async function (lockId, cb) {
   } catch(e) {
     cb(e);
   }
-  /*this.adapter.knex(this.tableName).select(['id', 'task']).where('lock', lockId).then(function (rows) {
+  /* Original:
+  this.adapter.knex(this.tableName).select(['id', 'task']).where('lock', lockId).then(function (rows) {
     var tasks = {};
     rows.forEach(function (row) {
       tasks[row.id] = JSON.parse(row.task);
@@ -235,7 +244,6 @@ SqlStore.prototype.getLock = async function (lockId, cb) {
 };
 
 SqlStore.prototype.getRunningTasks = async function (cb) {
-  const self = this;
   const running = await this.Task.findAll({
     attributes: ['id', 'task', 'taskId', 'lock'],
     where: { lock: { [Op.ne]: '' }}
@@ -247,12 +255,10 @@ SqlStore.prototype.getRunningTasks = async function (cb) {
     tasks[row.lock][row.taskId] = JSON.parse(row.task);
   });
 
-  console.log('tasks', tasks);
   cb(null, tasks);
 
-  // TODO catch error
-
-  /*this.adapter.knex(this.tableName).select(['id', 'task', 'lock']).then(function (rows) {
+  /* Original:
+  this.adapter.knex(this.tableName).select(['id', 'task', 'lock']).then(function (rows) {
     var tasks = {};
     rows.forEach(function (row) {
       if (!row.lock) return;

@@ -44,20 +44,13 @@ function sendMessage(topic, payload) {
 // https://www.apollographql.com/docs/react/data/queries/
 
 
-
-
-
-async function bootstrap(server, app, log, redSettings, RED) {
-  const mcSettings = redSettings.RedBot || {};
-
-  // check if mission control is enabled
-  if (!(mcSettings.enableMissionControl || REDBOT_ENABLE_MISSION_CONTROL === 'true')) {
-    console.log(lcd.timestamp() + 'Red Bot Mission Control is not enabled.');
-    console.log(lcd.timestamp() + '  ' + lcd.grey('Enable it running with the REDBOT_ENABLE_MISSION_CONTROL environment variable:'));
-    console.log(lcd.timestamp() + '  ' + lcd.grey('  REDBOT_ENABLE_MISSION_CONTROL=true node-red -u /my-user-dir'));
-    console.log('');
-    return;
+let _mcSettings = null; // cache it
+function getMissionControlConfiguration(redSettings) {
+  if (_mcSettings != null) {
+    return _mcSettings;
   }
+
+  const mcSettings = redSettings.RedBot || {};
 
   // get current version
   const jsonPackage = fs.readFileSync(__dirname + '/../package.json');
@@ -67,10 +60,6 @@ async function bootstrap(server, app, log, redSettings, RED) {
   } catch(e) {
     lcd.error('Unable to open node-red-contrib-chatbot/package.json');
   }
-  // get mission control configurations
-  console.log(lcd.timestamp() + 'Red Bot Mission Control configuration:');
-  console.log(lcd.timestamp() + '  ' + lcd.green('admin root: ') + lcd.grey(redSettings.httpAdminRoot));
-  console.log(lcd.timestamp() + '  ' + lcd.green('backend environment: ') + lcd.grey(GetEnvironment(RED)()));
   // front end evironment
   mcSettings.version = packageJson.version;
 
@@ -84,31 +73,21 @@ async function bootstrap(server, app, log, redSettings, RED) {
   } else if (process.env.REDBOT_DEVELOPMENT_MODE != null && process.env.REDBOT_DEVELOPMENT_MODE.toLowerCase() === 'plugin') {
     frontendEnvironment = 'plugin';
   }
-  console.log(lcd.timestamp() + '  ' + lcd.green('front end environment: ') + lcd.grey(frontendEnvironment));
+  mcSettings.frontendEnvironment = frontendEnvironment;
 
-  // get salt
   mcSettings.salt = !_.isEmpty(redSettings.credentialSecret) ? redSettings.credentialSecret : 'redbot-salt';
-  if (mcSettings.salt == 'redbot-salt') {
-    console.log(lcd.timestamp() + '  ' + lcd.green('salt: ') + lcd.grey('default'));
-  } else {
-    console.log(lcd.timestamp() + '  ' + lcd.green('salt: ') + lcd.grey('****'));
-  }
 
-  // get the database path
   if (!_.isEmpty(process.env.REDBOT_DB_PATH)) {
     mcSettings.dbPath = path.join(process.env.REDBOT_DB_PATH, 'mission-control.sqlite');
+    mcSettings.dbQueuePath = path.join(process.env.REDBOT_DB_PATH, 'queues.sqlite');
   } else if (mcSettings.dbPath == null) {
     mcSettings.dbPath = path.join(redSettings.userDir, 'mission-control.sqlite');
+    mcSettings.dbQueuePath = path.join(redSettings.userDir, 'queues.sqlite');
   } else {
     mcSettings.dbPath = mcSettings.dbPath.replace(/\/$/, '') + '/mission-control.sqlite';
+    mcSettings.dbQueuePath = mcSettings.dbPath.replace(/\/$/, '') + '/queues.sqlite';
   }
-  console.log(lcd.timestamp() + '  ' + lcd.green('dbPath: ') + lcd.grey(mcSettings.dbPath));
-  const { passportMiddlewares, passport } = require('../lib/authentication/index')({
-    dbPath: mcSettings.dbPath,
-    salt: mcSettings.salt
-  });
 
-  // get plugin path
   if (mcSettings.pluginsPath == null && !fs.existsSync(mcSettings.pluginsPath)) {
     mcSettings.pluginsPath = path.join(redSettings.userDir, 'dist-plugins');
   }
@@ -120,12 +99,7 @@ async function bootstrap(server, app, log, redSettings, RED) {
       console.log(lcd.timestamp() + '  ' + lcd.orange(`Unable to create plugins dir: ${mcSettings.pluginsPath}`));
     }
   }
-  console.log(lcd.timestamp() + '  ' + lcd.green('pluginsPath: ') + lcd.grey(mcSettings.pluginsPath));
-  if (mcSettings.pluginsPath == path.join(__dirname, 'dist-plugins')) {
-    console.log(lcd.timestamp() + '  ' + lcd.orange('Warning: external plugin path is the default one in the npm package, the external plugins'));
-    console.log(lcd.timestamp() + '  ' + lcd.orange('will be overwritten if the package is reinstalled, this is good for development but dangerous'));
-    console.log(lcd.timestamp() + '  ' + lcd.orange('for production. Select a different directory with permission rights.'))
-  }
+
   // get root
   if (mcSettings.root == null) {
     mcSettings.root = '/mc';
@@ -135,14 +109,124 @@ async function bootstrap(server, app, log, redSettings, RED) {
   if (!_.isEmpty(redSettings.httpAdminRoot)) {
     mcSettings.root = redSettings.httpAdminRoot.replace(/\/$/, '') + mcSettings.root;
   }
-  console.log(lcd.timestamp() + '  ' + lcd.green('MC root: ') + lcd.grey(mcSettings.root));
+
   // get host
   if (mcSettings.host == null) {
     mcSettings.host = 'localhost';
   }
-  console.log(lcd.timestamp() + '  ' + lcd.green('host: ') + lcd.grey(mcSettings.host));
+
   // get port
   mcSettings.port = redSettings.uiPort;
+
+  _mcSettings = mcSettings;
+  return mcSettings;
+};
+
+
+async function bootstrap(server, app, log, redSettings, RED) {
+  const mcSettings = getMissionControlConfiguration(redSettings);
+  const { frontendEnvironment } = mcSettings;
+  //const mcSettings = redSettings.RedBot || {};
+
+  // check if mission control is enabled
+  if (!(mcSettings.enableMissionControl || REDBOT_ENABLE_MISSION_CONTROL === 'true')) {
+    console.log(lcd.timestamp() + 'Red Bot Mission Control is not enabled.');
+    console.log(lcd.timestamp() + '  ' + lcd.grey('Enable it running with the REDBOT_ENABLE_MISSION_CONTROL environment variable:'));
+    console.log(lcd.timestamp() + '  ' + lcd.grey('  REDBOT_ENABLE_MISSION_CONTROL=true node-red -u /my-user-dir'));
+    console.log('');
+    return;
+  }
+
+  // get current version
+  /*const jsonPackage = fs.readFileSync(__dirname + '/../package.json');
+  let packageJson;
+  try {
+    packageJson = JSON.parse(jsonPackage.toString());
+  } catch(e) {
+    lcd.error('Unable to open node-red-contrib-chatbot/package.json');
+  }*/
+  // get mission control configurations
+  console.log(lcd.timestamp() + 'Red Bot Mission Control configuration:');
+  console.log(lcd.timestamp() + '  ' + lcd.green('admin root: ') + lcd.grey(redSettings.httpAdminRoot));
+  console.log(lcd.timestamp() + '  ' + lcd.green('backend environment: ') + lcd.grey(GetEnvironment(RED)()));
+  // front end evironment
+  //mcSettings.version = packageJson.version;
+
+  /*let frontendEnvironment = 'production';
+  if (process.env.REDBOT_DEVELOPMENT_MODE != null && (
+    process.env.REDBOT_DEVELOPMENT_MODE.toLowerCase() === 'true' ||
+    process.env.REDBOT_DEVELOPMENT_MODE.toLowerCase() === 'dev' ||
+    process.env.REDBOT_DEVELOPMENT_MODE.toLowerCase() === 'development'
+  )) {
+    frontendEnvironment = 'development';
+  } else if (process.env.REDBOT_DEVELOPMENT_MODE != null && process.env.REDBOT_DEVELOPMENT_MODE.toLowerCase() === 'plugin') {
+    frontendEnvironment = 'plugin';
+  }*/
+  console.log(lcd.timestamp() + '  ' + lcd.green('front end environment: ') + lcd.grey(frontendEnvironment));
+
+  // get salt
+  //mcSettings.salt = !_.isEmpty(redSettings.credentialSecret) ? redSettings.credentialSecret : 'redbot-salt';
+
+  if (mcSettings.salt == 'redbot-salt') {
+    console.log(lcd.timestamp() + '  ' + lcd.green('salt: ') + lcd.grey('default'));
+  } else {
+    console.log(lcd.timestamp() + '  ' + lcd.green('salt: ') + lcd.grey('****'));
+  }
+
+  // get the database path
+  /*if (!_.isEmpty(process.env.REDBOT_DB_PATH)) {
+    mcSettings.dbPath = path.join(process.env.REDBOT_DB_PATH, 'mission-control.sqlite');
+    mcSettings.dbQueuePath = path.join(process.env.REDBOT_DB_PATH, 'queues.sqlite');
+  } else if (mcSettings.dbPath == null) {
+    mcSettings.dbPath = path.join(redSettings.userDir, 'mission-control.sqlite');
+    mcSettings.dbQueuePath = path.join(redSettings.userDir, 'queues.sqlite');
+  } else {
+    mcSettings.dbPath = mcSettings.dbPath.replace(/\/$/, '') + '/mission-control.sqlite';
+    mcSettings.dbQueuePath = mcSettings.dbPath.replace(/\/$/, '') + '/queues.sqlite';
+  }*/
+  console.log(lcd.timestamp() + '  ' + lcd.green('dbPath: ') + lcd.grey(mcSettings.dbPath));
+
+  const { passportMiddlewares, passport } = require('../lib/authentication/index')({
+    dbPath: mcSettings.dbPath,
+    salt: mcSettings.salt
+  });
+
+  // get plugin path
+  /*if (mcSettings.pluginsPath == null && !fs.existsSync(mcSettings.pluginsPath)) {
+    mcSettings.pluginsPath = path.join(redSettings.userDir, 'dist-plugins');
+  }
+  if (!fs.existsSync(mcSettings.pluginsPath)) {
+    // try to create it
+    try {
+      fs.mkdirSync(mcSettings.pluginsPath);
+    } catch(e) {
+      console.log(lcd.timestamp() + '  ' + lcd.orange(`Unable to create plugins dir: ${mcSettings.pluginsPath}`));
+    }
+  }*/
+  console.log(lcd.timestamp() + '  ' + lcd.green('pluginsPath: ') + lcd.grey(mcSettings.pluginsPath));
+  if (mcSettings.pluginsPath == path.join(__dirname, 'dist-plugins')) {
+    console.log(lcd.timestamp() + '  ' + lcd.orange('Warning: external plugin path is the default one in the npm package, the external plugins'));
+    console.log(lcd.timestamp() + '  ' + lcd.orange('will be overwritten if the package is reinstalled, this is good for development but dangerous'));
+    console.log(lcd.timestamp() + '  ' + lcd.orange('for production. Select a different directory with permission rights.'))
+  }
+  // get root
+  /*if (mcSettings.root == null) {
+    mcSettings.root = '/mc';
+  } else {
+    mcSettings.root = mcSettings.root.replace(/\/$/, '');
+  }
+  if (!_.isEmpty(redSettings.httpAdminRoot)) {
+    mcSettings.root = redSettings.httpAdminRoot.replace(/\/$/, '') + mcSettings.root;
+  }*/
+
+  console.log(lcd.timestamp() + '  ' + lcd.green('MC root: ') + lcd.grey(mcSettings.root));
+  // get host
+  /*if (mcSettings.host == null) {
+    mcSettings.host = 'localhost';
+  }*/
+  console.log(lcd.timestamp() + '  ' + lcd.green('host: ') + lcd.grey(mcSettings.host));
+  // get port
+  //mcSettings.port = redSettings.uiPort;
   console.log(lcd.timestamp() + '  ' + lcd.green('port: ') + lcd.grey(mcSettings.port));
 
   // get google maps key
@@ -167,7 +251,7 @@ async function bootstrap(server, app, log, redSettings, RED) {
 
   // if database doesn't exist, then create it and run sync to create blank tables
   if (!fs.existsSync(mcSettings.dbPath)) {
-    await sequelize.sync({ force: true })
+    await sequelize.sync({ force: true });
     await Admin.create({ username: 'admin', password: '', permissions: '*', chatbotIds: '*' });
     await ChatBot.create({ name: 'MyChatbot' });
     await Category.create({ name: 'A category', language: 'en', namespace: 'content' });
@@ -380,6 +464,7 @@ module.exports = function(RED) {
   // exposed methods
   return {
     Events,
-    sendMessage: sendMessage
+    sendMessage: sendMessage,
+    getMissionControlConfiguration: () => getMissionControlConfiguration(RED.settings)
   };
 };

@@ -7,6 +7,8 @@ const { Grid } = Placeholder;
 
 import useRouterQuery from '../../../src/hooks/router-query';
 import TableFilters from '../table-filters';
+import ShowError from '../show-error';
+
 import useTable from './hooks/table';
 import './style.scss';
 
@@ -132,7 +134,7 @@ const CustomTable = ({
           <div className="filters">
             <TableFilters
               filters={filters}
-              disabled={disabled}
+              disabled={disabled || error}
               onChange={filters => {
                 setFilters(filters);
                 setQuery(filters);
@@ -158,7 +160,10 @@ const CustomTable = ({
           )}
         </div>
       )}
-      {!bootstrapping && (
+      {!bootstrapping && error && (
+        <ShowError error={error} />
+      )}
+      {!bootstrapping && !error && (
         <Table
           data={data.rows || []}
           loading={loading}

@@ -1,26 +1,13 @@
-//const _ = require('underscore');
-
 const Queue = require('better-queue');
 
 const RegisterType = require('../lib/node-installer');
-/*const { ChatExpress } = require('chat-platform');
-const {
-  enrichFilePayload,
-  isValidMessage,
-  getChatId,
-  getMessageId,
-  getTransport,
-  extractValue,
-  appendPayload
-} = require('../lib/helpers/utils');
-const MessageTemplate = require('../lib/message-template-async');*/
 
+// TODO move this
 const SQLiteStore = require('./store');
-
-
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
+  const { getMissionControlConfiguration } = require('./mc')(RED);
 
   function QueueNode(config) {
     RED.nodes.createNode(this, config);
@@ -39,6 +26,8 @@ module.exports = function(RED) {
         text: node.statusMessage
       });
     }
+
+    const { dbQueuePath } = getMissionControlConfiguration();
 
     const delay = !isNaN(parseInt(node.delay, 10)) ? parseInt(node.delay, 10) : 0
     this.queue = new Queue(
@@ -59,12 +48,12 @@ module.exports = function(RED) {
       },
       {
         store: new SQLiteStore({
+          storage: dbQueuePath,
           tableName: node.name
         }),
         afterProcessDelay: delay,
         batchDelay: delay,
         batchSize: 1, // always one
-        //autoResume: false
         autoResume: node.initialState === 'running'
       }
     ).on('task_finish', function(taskId, result) {
