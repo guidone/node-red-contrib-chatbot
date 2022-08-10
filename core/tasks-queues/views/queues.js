@@ -10,12 +10,9 @@ import Breadcrumbs from '../../../src/components/breadcrumbs';
 import SmartDate from '../../../src/components/smart-date';
 import CustomTable from '../../../src/components/table';
 
-// TODO should be moved to table filters?
 import SelectQueues from '../../../src/components/select-queues';
-import { Input } from '../../../src/components/table-filters';
 import confirm from '../../../src/components/confirm';
 import { NodeRedNode } from '../../../src/components/help-elements';
-
 
 import '../../admins/styles/admins.scss';
 import useTasks from '../hooks/tasks';
@@ -75,6 +72,7 @@ const QueuesTasks = () => {
       </div>
       <CustomTable
         ref={table}
+        key={`tabel_${query.get('queue')}`}
         query={TASKS}
         height={600}
         labels={{
@@ -154,6 +152,11 @@ const QueuesTasks = () => {
           <Cell>
             {({ createdAt }) => <SmartDate date={createdAt} />}
           </Cell>
+        </Column>
+
+        <Column width={80} align="center">
+          <HeaderCell>Priority</HeaderCell>
+          <Cell dataKey="priority" />
         </Column>
 
         <Column width={300} flexGrow={1}>

@@ -1,9 +1,7 @@
 const Queue = require('better-queue');
 
 const RegisterType = require('../lib/node-installer');
-
-// TODO move this
-const SQLiteStore = require('./store');
+const SQLiteStore = require('../lib/queues-store/index');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);

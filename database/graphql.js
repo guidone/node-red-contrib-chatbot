@@ -257,11 +257,15 @@ module.exports = ({
           limit: { type: GraphQLInt },
         },
         resolve: async function(root, { offset = 0, limit = 10 }) {
-          const [tasks] = await sequelizeTasks.query(`
-            SELECT * FROM "${root.name}"
-            ORDER BY createdAt DESC
-            LIMIT ${offset}, ${limit}
-          `)
+          const [tasks] = await sequelizeTasks.query(
+            `SELECT * FROM :queue
+            ORDER BY priority DESC, id ASC
+            LIMIT :offset, :limit
+            `,
+            {
+              replacements: { queue: root.name, offset, limit }
+            }
+          );
           return tasks;
         }
       }
@@ -2156,7 +2160,7 @@ module.exports = ({
             try {
               const [tasks] = await sequelizeTasks.query(
                 `SELECT * FROM :queue
-                ORDER BY createdAt DESC
+                ORDER BY priority DESC, id ASC
                 LIMIT :offset, :limit
                 `, {
                   replacements: { queue, offset, limit }
