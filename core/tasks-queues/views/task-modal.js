@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Modal, Button } from 'rsuite';
+import { Modal, Button, Form, FormGroup, ControlLabel, FormControl } from 'rsuite';
 import ReactJson from 'react-json-view';
 import PropTypes from 'prop-types';
 
 import useCanCloseModal from '../../../src/hooks/modal-can-close';
-import { CopyAndPasteButton } from '../../../src/components';
+import { CopyAndPasteButton, InputInteger } from '../../../src/components';
 
 const TaskModal = ({
   task,
@@ -13,6 +13,7 @@ const TaskModal = ({
   disabled = false
 }) => {
   const [json, setJson] = useState(task.task);
+  const [formValue, setFormValue] = useState(task);
   const { handleCancel, isChanged, setIsChanged } = useCanCloseModal({ onCancel });
 
   const handleChange = ({ updated_src: json }) => {
@@ -26,21 +27,41 @@ const TaskModal = ({
         <Modal.Title>Task <em>(id: {task.id})</em></Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <div style={{ paddingBottom: '15px' }}>
-          Edit the payload of the task ID <span className="cell-task-id">{task.taskId}</span>
-          <CopyAndPasteButton
-            notification="Task ID copied to clipboard!"
-            style="icon"
-            text={task.taskId}
+        <Form
+          onChange={formValue => {
+            setIsChanged(true);
+            setFormValue(formValue);
+          }}
+          formValue={formValue}
+        >
+          <div style={{ paddingBottom: '15px' }}>
+            Edit the payload of the task ID <span className="cell-task-id">{task.taskId}</span>
+            <CopyAndPasteButton
+              notification="Task ID copied to clipboard!"
+              style="icon"
+              text={task.taskId}
+            />
+          </div>
+          <FormGroup>
+            <ControlLabel>Priority</ControlLabel>
+            <FormControl
+              disabled={disabled}
+              accepter={InputInteger}
+              min={1}
+              max={100}
+              style={{ width: '100px' }}
+              name="priority" />
+          </FormGroup>
+        </Form>
+        <FormGroup style={{ paddingTop: '15px' }}>
+          <ControlLabel>Task payload</ControlLabel>
+          <ReactJson
+            src={task.task}
+            onEdit={!disabled ? handleChange : undefined}
+            onAdd={!disabled ? handleChange : undefined}
+            onDelete={!disabled ? handleChange : undefined}
           />
-        </div>
-        <ReactJson
-          src={task.task}
-          onEdit={!disabled ? handleChange : undefined}
-          onAdd={!disabled ? handleChange : undefined}
-          onDelete={!disabled ? handleChange : undefined}
-        />
-
+        </FormGroup>
       </Modal.Body>
       <Modal.Footer>
         <Button onClick={() => handleCancel()} appearance="subtle">
@@ -50,7 +71,7 @@ const TaskModal = ({
           appearance="primary"
           disabled={disabled || !isChanged}
           onClick={() => {
-            onSubmit({ ...task, task: json });
+            onSubmit({ ...formValue, task: json });
           }}
         >
           Save task

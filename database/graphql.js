@@ -1706,10 +1706,10 @@ module.exports = ({
           resolve: async function(root, { id, queue, task }) {
             // update the json
             await sequelizeTasks.query(
-              'UPDATE :queue SET task = :json WHERE id = :id;',
+              'UPDATE :queue SET task = :json, priority = :priority WHERE id = :id;',
               {
                 replacements: {
-                  id, queue, json: task.task
+                  id, queue, json: task.task, priority: task.priority
                 }
               }
             );
