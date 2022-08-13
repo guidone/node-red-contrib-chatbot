@@ -1,0 +1,60 @@
+[
+  {
+      "id": "7842944e2a3678f3",
+      "type": "inject",
+      "z": "359364e46e02d656",
+      "name": "Some data",
+      "props": [
+          {
+              "p": "payload"
+          }
+      ],
+      "repeat": "",
+      "crontab": "",
+      "once": false,
+      "onceDelay": 0.1,
+      "topic": "",
+      "payload": "[{\"name\":\"Ricki Meddows\",\"email\":\"kturton37@github.com\"},{\"name\":\"Heindrick Lauks\",\"email\":\"hdocherty2k@360.cn\"},{\"name\":\"Annora Lemerie\",\"email\":\"ccornish6r@arstechnica.com\"},{\"name\":\"Berky Davidi\",\"email\":\"vhandrik5z@adobe.com\"},{\"name\":\"Stefania Matissoff\",\"email\":\"bciani1b@wikimedia.org\"},{\"name\":\"Michael Siddons\",\"email\":\"peich4p@github.com\"},{\"name\":\"Talya Halsted\",\"email\":\"sblackmoor47@msu.edu\"},{\"name\":\"Eugene O'Hengerty\",\"email\":\"hfeore1f@naver.com\"},{\"name\":\"Erinn Drains\",\"email\":\"flemerie36@ft.com\"},{\"name\":\"Maggy Turton\",\"email\":\"ghalward4@nsw.gov.au\"}]",
+      "payloadType": "json",
+      "x": 180,
+      "y": 860,
+      "wires": [
+          [
+              "ef29abd381ee8760"
+          ]
+      ]
+  },
+  {
+      "id": "ef29abd381ee8760",
+      "type": "mc-queue",
+      "z": "359364e46e02d656",
+      "name": "my-queue",
+      "mode": "sequential",
+      "initialState": "running",
+      "delay": "1000",
+      "x": 400,
+      "y": 860,
+      "wires": [
+          [
+              "ab8652c8a3cb10ed"
+          ]
+      ]
+  },
+  {
+      "id": "ab8652c8a3cb10ed",
+      "type": "debug",
+      "z": "359364e46e02d656",
+      "name": "Show data",
+      "active": true,
+      "tosidebar": true,
+      "console": false,
+      "tostatus": false,
+      "complete": "payload",
+      "targetType": "msg",
+      "statusVal": "",
+      "statusType": "auto",
+      "x": 650,
+      "y": 860,
+      "wires": []
+  }
+]

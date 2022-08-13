@@ -250,6 +250,10 @@ module.exports = ({
         type: GraphQLString,
         description: ''
       },
+      label: {
+        type: GraphQLString,
+        description: ''
+      },
       tasks: {
         type: new GraphQLList(taskType),
         args: {
@@ -2181,6 +2185,10 @@ module.exports = ({
             const [results] = await sequelizeTasks.query('SELECT name FROM sqlite_schema WHERE type=\'table\' ORDER BY name;');
             return results
               .filter(({ name }) => name.startsWith('tasks'))
+              .map(obj => ({
+                ...obj,
+                label: obj.name === 'tasks' ? 'default' : obj.name.replace('tasks-', '')
+              }))
               .filter(queue => _.isEmpty(name) || queue.name === name);
           }
         },

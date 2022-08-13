@@ -1,7 +1,10 @@
+const _ = require('underscore');
 const Queue = require('better-queue');
 
 const RegisterType = require('../lib/node-installer');
 const SQLiteStore = require('../lib/queues-store/index');
+const Evaluate = require('../lib/evaluate');
+const validators = require('../lib/helpers/validators');
 
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
@@ -17,6 +20,8 @@ module.exports = function(RED) {
     this.running = node.initialState === 'running';
     this.statusMessage = 'Total: 0';
 
+    const { dbQueuePath } = getMissionControlConfiguration();
+
     this.updateStatus = function() {
       node.status({
         fill: node.running ? 'green' : 'red',
@@ -25,9 +30,6 @@ module.exports = function(RED) {
       });
     }
 
-    const { dbQueuePath } = getMissionControlConfiguration();
-
-    const delay = !isNaN(parseInt(node.delay, 10)) ? parseInt(node.delay, 10) : 0
     this.queue = new Queue(
       function (input, cb) {
 
@@ -40,6 +42,24 @@ module.exports = function(RED) {
           node.queue.pause();
           node.running = false;
           node.updateStatus();
+          cb(null, input);
+        } else if (!_.isEmpty(node.delay)) {
+          // try to parse the delay
+          let evaluatedDelay = 0;
+          if (!isNaN(parseInt(node.delay, 10))) {
+            // simple string as integer
+            evaluatedDelay = parseInt(node.delay, 10);
+          } else if (_.isString(node.delay) && validators.isVariable(node.delay.trim())) {
+            // evaluate vairables from flow and global context
+            const evaluate = Evaluate({}, node);
+            const tmp = evaluate(node.delay.trim());
+            evaluatedDelay = !isNaN(parseInt(tmp, 10)) ? parseInt(tmp, 10) : 0;
+          }
+
+          node.queue.pause();
+          setTimeout(() => {
+            node.queue.resume();
+          }, evaluatedDelay);
         }
 
         cb(null, input);
@@ -49,8 +69,8 @@ module.exports = function(RED) {
           storage: dbQueuePath,
           tableName: node.name
         }),
-        afterProcessDelay: delay,
-        batchDelay: delay,
+        //afterProcessDelay: delay,
+        //batchDelay: delay,
         batchSize: 1, // always one
         autoResume: node.initialState === 'running'
       }

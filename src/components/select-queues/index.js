@@ -8,7 +8,8 @@ import { useQuery } from 'react-apollo';
 const GET_QUEUES = gql`
 query {
   queues {
-    name
+    name,
+    label
   }
 }`;
 
@@ -22,7 +23,7 @@ const SelectQueues = ({ disabled = false, children, ...props }) => {
       placeholder="Select queue"
       disabled={disabled || loading}
       cleanable={false}
-      data={(data?.queues ?? []).map(queue => ({ value: queue.name, label: queue.name }))}
+      data={(data?.queues ?? []).map(queue => ({ value: queue.name, label: queue.label }))}
     />
   );
 };

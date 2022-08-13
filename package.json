@@ -29,6 +29,7 @@
     "url": "https://github.com/guidone/node-red-contrib-chatbot.git"
   },
   "node-red": {
+    "version": ">=2.0.0",
     "nodes": {
       "chatbot-redbot": "./nodes/chatbot-redbot.js",
       "redbot-config": "./redbot.config.js",
