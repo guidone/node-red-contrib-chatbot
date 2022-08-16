@@ -69,6 +69,10 @@ module.exports = function(RED) {
           storage: dbQueuePath,
           tableName: node.name
         }),
+        id: 'taskId',
+        merge: function (oldTask, newTask, cb) {
+          cb(null, { ...oldTask, ...newTask });
+        },
         //afterProcessDelay: delay,
         //batchDelay: delay,
         batchSize: 1, // always one

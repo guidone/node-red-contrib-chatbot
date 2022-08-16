@@ -205,10 +205,6 @@ Some **formatting** is _allowed_!`
 
   app.post(
     `${mcSettings.root}/login`,
-    function(req, res, next) {
-      console.log('allora cristoddio')
-      next();
-    },
     passport.authenticate('local', {
       successRedirect: `${mcSettings.root}`,
       failureRedirect: `${mcSettings.root}/login`

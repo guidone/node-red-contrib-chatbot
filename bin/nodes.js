@@ -313,5 +313,10 @@ module.exports = [
     notionUrl: 'https://www.notion.so/redbot/Push-and-Pop-Message-node-ac378a8fc4144cd2be57080f07950fe1',
     nodeFile: 'chatbot-pop-message.html',
     nodeType: 'chatbot-pop-message'
+  },
+  {
+    notionUrl: 'https://www.notion.so/redbot/MC-Queue-2ac745c9314f4f17b61f31b6a517586f',
+    nodeFile: 'mc-queue.html',
+    nodeType: 'mc-queue'
   }
 ];
