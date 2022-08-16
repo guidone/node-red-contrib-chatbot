@@ -1,0 +1,80 @@
+<script type="text/javascript">
+  RED.nodes.registerType('mc-queue', {
+    category: 'Mission Control',
+    color: '#6699CC',
+    defaults: {
+      name: {
+        value: ''
+      },
+      mode: {
+        value: 'sequential'
+      },
+      initialState: {
+        value: 'running'
+      },
+      delay: {
+        value: 100,
+        validate: function(value) {
+          return this.mode !== 'sequential' || $.RedBot.validate.numberOrVariable(value);
+        }
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    outputLabels: ['Payloads from the queue'],
+    inputLabels: 'to the queue',
+    paletteLabel: 'MC Queue',
+    icon: 'font-awesome/fa-list',
+    label: function() {
+      return 'MC Queue' + (this.name != null && this.name !== '' ? ' ('+ this.name +')' : '');
+    },
+    oneditprepare: function() {
+      $("#node-input-delay" ).spinner({ min:1 });
+      $('#node-input-mode')
+        .change(function() {
+          var value = $(this).val();
+          $('.form-row-delay').toggle(value === 'sequential');
+        });
+      $('.form-row-delay').toggle(this.mode === 'sequential');
+    },
+    oneditsave: function() {
+      var name = $('#node-input-name').val();
+      $('#node-input-name').val((name || '').replace(/[^a-zA-Z0-9\-]/gi, ''));
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="mc-queue">
+  <div class="form-row">
+    <label for="node-input-name">Name</label>
+    <input type="text" id="node-input-name" placeholder="default">
+  </div>
+  <div class="form-row">
+    <label for="node-input-initialState">Initial state</label>
+    <select id="node-input-initialState" placeholder="Select initial state">
+      <option value="running">Running</option>
+      <option value="paused">Paused</option>
+    </select>
+  </div>
+  <div class="form-row">
+    <label for="node-input-mode">Type</label>
+    <select id="node-input-mode" placeholder="Select Queue mode">
+      <option value="sequential">Sequential</option>
+      <option value="single">Stops after each element</option>
+    </select>
+    <div class="redbot-form-hint" style="padding-left:100px;padding-bottom:10px;">
+      In a sequential tasks queue, the elements will be extracted from the queue continuosly, while in <em>"Stop after each element"</em>
+      the queue pause itself after each element (send a msg with a key <code style="font-size:10px;">{ next: true }</code> to process the next one).
+    </span>
+  </div>
+  <div class="form-row form-row-delay">
+    <label for="node-input-delay">Delay</label>
+    <input type="text" id="node-input-delay" placeholder="Delay" style="text-align:end; width:200px !important">&nbsp;ms
+    <div class="redbot-form-hint" style="padding-left:100px;padding-bottom:10px;">
+      The delay in ms between each element in the queue (in sequential mode)
+    </div>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="mc-queue">
+</script>

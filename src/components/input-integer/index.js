@@ -1,7 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { InputNumber } from 'rsuite';
 
-export default ({ onChange = () => {}, ...rest }) => (
+const InputInteger = ({ onChange = () => {}, ...rest }) => (
   <InputNumber
     {...rest}
     onChange={value => {
@@ -9,3 +10,8 @@ export default ({ onChange = () => {}, ...rest }) => (
     }}
   />
 );
+InputInteger.propTypes = {
+  onChange: PropTypes.func
+};
+
+export default InputInteger;

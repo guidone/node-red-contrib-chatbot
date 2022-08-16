@@ -15,8 +15,6 @@ const ShowError = ({
   onClear
 }) => {
   let message;
-  console.log('ERROR', typeof error === 'error')
-  console.log(error)
 
   if (_.isString(error)) {
     message = <span>{error}</span>;

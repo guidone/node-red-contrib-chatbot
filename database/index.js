@@ -10,12 +10,19 @@ module.exports = mcSettings => {
   if (exportCache != null) {
     return exportCache;
   }
-  const { dbPath } = mcSettings;
+  const { dbPath, dbQueuePath } = mcSettings;
 
   const sequelize = new Sequelize('mission_control', '', '', {
     host: 'localhost',
     dialect: 'sqlite',
     storage: dbPath,
+    logging
+  });
+
+  const sequelizeTasks = new Sequelize('queue', '', '', {
+    host: 'localhost',
+    dialect: 'sqlite',
+    storage: dbQueuePath,
     logging
   });
 
@@ -247,6 +254,7 @@ module.exports = mcSettings => {
     ChatBot,
     Plugin,
     sequelize,
+    sequelizeTasks,
     mcSettings
   });
 
@@ -267,7 +275,8 @@ module.exports = mcSettings => {
     /*Device,*/
     ChatBot,
     Plugin,
-    sequelize
+    sequelize,
+    sequelizeTasks
   };
 
   return exportCache;

@@ -29,6 +29,7 @@
     "url": "https://github.com/guidone/node-red-contrib-chatbot.git"
   },
   "node-red": {
+    "version": ">=2.0.0",
     "nodes": {
       "chatbot-redbot": "./nodes/chatbot-redbot.js",
       "redbot-config": "./redbot.config.js",
@@ -100,7 +101,8 @@
       "mc-user-payload": "./nodes/mc-user-payload.js",
       "mc-input": "./nodes/mc-input.js",
       "mc-output": "./nodes/mc-output.js",
-      "mc-configuration": "./nodes/mc-configuration.js"
+      "mc-configuration": "./nodes/mc-configuration.js",
+      "mc-queue": "./nodes/mc-queue.js"
     }
   },
   "maintainers": [
@@ -127,6 +129,8 @@
     "apollo-link-http": "^1.5.17",
     "apollo-link-ws": "^1.0.20",
     "apollo-server-express": "^2.15.0",
+    "better-queue": "^3.8.10",
+    "better-queue-sql": "^1.0.5",
     "body-parser": "^1.19.0",
     "botbuilder": "^4.7.1",
     "chat-platform": "2.1.2",
@@ -141,6 +145,7 @@
     "express-fileupload": "^1.1.6",
     "express-session": "^1.17.2",
     "express-sessions": "^1.0.6",
+    "extend": "^3.0.2",
     "geolib": "^3.3.1",
     "graphql": "^14.5.8",
     "graphql-relay": "^0.6.0",
