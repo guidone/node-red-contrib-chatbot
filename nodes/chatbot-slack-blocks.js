@@ -24,7 +24,7 @@ module.exports = function(RED) {
     globalContextHelper.init(this.context().global);
     this.blocks = config.blocks;
 
-    this.on('input', function(msg, send, done) {
+    this.on('input', async function(msg, send, done) {
       // send/done compatibility for node-red < 1.0
       send = send || function() { node.send.apply(node, arguments) };
       done = done || function(error) { node.error.call(node, error, msg) };
@@ -52,20 +52,20 @@ module.exports = function(RED) {
         return;
       }
 
-      template(rawBlocks)
-        .then(renderedBlocks => {
-          send({
-            ...msg,
-            payload: {
-              type: 'blocks',
-              content: _.isObject(renderedBlocks) && renderedBlocks.blocks != null ? renderedBlocks.blocks : renderedBlocks,
-              chatId: chatId,
-              messageId: messageId,
-              inbound: false
-            }
-          });
-          done();
-        });
+      const renderedBlocks = await template(rawBlocks)
+
+      send({
+        ...msg,
+        payload: {
+          type: 'blocks',
+          text: _.isString(renderedBlocks.text) ? renderedBlocks.text : undefined,
+          content: _.isObject(renderedBlocks) && renderedBlocks.blocks != null ? renderedBlocks.blocks : renderedBlocks,
+          chatId: chatId,
+          messageId: messageId,
+          inbound: false
+        }
+      });
+      done();
     });
   }
 
