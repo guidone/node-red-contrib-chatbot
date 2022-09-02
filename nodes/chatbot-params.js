@@ -39,10 +39,6 @@ module.exports = function(RED) {
             ...msg,
             payload: _.isArray(msg.payload) ?
               msg.payload.map(obj => ({ ...obj, params })) : { ...msg.payload, params }
-            /*payload: {
-              ...msg.payload,
-              params:
-            } */
           });
           done();
         });
