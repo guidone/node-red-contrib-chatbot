@@ -333,12 +333,13 @@
   </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-params"><p>The <code>Params node</code> is used to specify some platform related parameters or flag. For example in Telegram it’s possible to deliver a message silently while in Twilio it’s possible to specify the originator number (overriding the bot configuration).</p>
-<p>The text-like values of parameters also accepts chat contexts variables. For example in <strong>Telegram</strong> to modify the previous sent message instead of sending a new one, just add a parameter, select platform <strong>Telegram</strong> then select <em>“Reply to message”</em> and then type <code>{{messageId}}</code></p>
-<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/657274aa-82c6-481e-a7d5-12628b9ddd2d/params-node.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220829%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220829T153056Z&X-Amz-Expires=3600&X-Amz-Signature=36510eeb74edf6795334003eec1814cb0a50fc7ad13dea995a632a6b6a4205f7&X-Amz-SignedHeaders=host&x-id=GetObject" alt="Modify message"></p>
+<script type="text/x-red" data-help-name="chatbot-params"><p>The <code>Params node</code> is used to specify some platform related parameters or flag. For example in <strong>Telegram</strong> it’s possible to deliver a message silently while in <strong>Twilio</strong> it’s possible to specify the originator number (overriding the bot configuration).</p>
+<p>The text-like values of parameters also accepts chat contexts variables. For example in <strong>Telegram</strong> to modify the previous sent message instead of sending a new one, just add a parameter, select platform <strong>Telegram</strong> then select <em>“Modify message”</em> and then type <code>{{outboundMessageId}}</code></p>
+<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/159083b5-2efd-4d12-b603-51634fade887/modify-message.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220902%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220902T172529Z&X-Amz-Expires=3600&X-Amz-Signature=416477869581b568080a9783e4772849536c017d34860d8bde34b09bf91afd09&X-Amz-SignedHeaders=host&x-id=GetObject" alt="Modify message"></p>
+<p>The same chat context value <code>{{outboundMessageId}}</code> can be used, for example, to delete a previous message.</p>
 <p>The same can obtained with in a upstream <code>Function node</code>:</p>
-<pre><code class="language-javascript">msg.params = [
-  { platform: &#39;telegram&#39;, name: &#39;modifyMessageId&#39;, value: &#39;{{messageId}}&#39;
+<pre><code class="language-javascript">msg.params = [  
+  { platform: &#39;telegram&#39;, name: &#39;modifyMessageId&#39;, value: &#39;{{outboundMessageId}}&#39;
 ];
 return msg;
 </code></pre>
@@ -382,4 +383,7 @@ return msg;
 <td>The value of the parameter</td>
 </tr>
 </tbody></table>
+<blockquote>
+<p>❗ The chat context <code>messageId</code> is deprecated, it was used ambiguously in previous versions to refer both the last inbound and outbound message. It’s replace by <code>outboundMessageId</code> (the id of the last message sent by the chatbot to the user) and <code>inboundMessageId</code> (the id of the last message received by the chatbot from the user).<br>For retro-compatibility <code>messageId</code> is still available. </p>
+</blockquote>
 </script>

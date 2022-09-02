@@ -78,7 +78,7 @@
 
 <script type="text/x-red" data-help-name="mc-queue"><p>The <code>MC Queue node</code> is used to manage long running tasks. It takes the payload of the incoming message, it stores it a <em>SQLite</em> queue and redirect the stored payloads to the output pin one by one, at regular interval.</p>
 <p>The typical use is broadcasting the same message to a large set of users with a regular pace, accepted by the chat platform, the broadcast is split in single tasks, it can be stopped or resumed, it’s stored in a database and survives across Node-RED’s restarts and can be inspected with the Mission Controls queues panels.</p>
-<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/bfa564f8-144c-4942-b3e8-f3c460761d4d/Schermata_2022-08-13_alle_20.27.56.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220829%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220829T153105Z&X-Amz-Expires=3600&X-Amz-Signature=8730ab384c211190e3d5e3d605738d9154c1f76e0cf2ad7af1cf46f410cd8249&X-Amz-SignedHeaders=host&x-id=GetObject" alt="Simple send to recipients flow"></p>
+<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/bfa564f8-144c-4942-b3e8-f3c460761d4d/Schermata_2022-08-13_alle_20.27.56.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220902%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220902T172540Z&X-Amz-Expires=3600&X-Amz-Signature=2f1812ca1c1fb17213712d13e2a679d02397ede4ba90cccc845cf8e1cf270052&X-Amz-SignedHeaders=host&x-id=GetObject" alt="Simple send to recipients flow"></p>
 <table>
 <thead>
 <tr>
@@ -130,7 +130,7 @@
 </tr>
 </tbody></table>
 <p>The <em>stops after each element queue</em> type is useful in scenarios where each element of the queue needs to be extracted when the previous task is completed, for example a FTP server which doesn’t allow concurrent uploads</p>
-<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/0d575475-0392-4108-86be-6a3cd96a4c06/Schermata_2022-08-14_alle_17.59.16.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220829%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220829T153105Z&X-Amz-Expires=3600&X-Amz-Signature=e1cc790762a530bed185422dc3c664b3c6751700d8d7e1bffd4753f5a6b6de36&X-Amz-SignedHeaders=host&x-id=GetObject" alt="Retroaction to execute one element at a time"></p>
+<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/0d575475-0392-4108-86be-6a3cd96a4c06/Schermata_2022-08-14_alle_17.59.16.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220902%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220902T172540Z&X-Amz-Expires=3600&X-Amz-Signature=8b6d6da51db29e854d44cfc9bd8b33ee12a1a1312e9362adbd4ac6caa6bcab58&X-Amz-SignedHeaders=host&x-id=GetObject" alt="Retroaction to execute one element at a time"></p>
 <p>Here a simple retro-action of the function node which sends to the output a msg <code>{ next: true }</code> which triggers the extraction of the next element of the queue only when the previous element is uploaded completely.</p>
 <p>The payload added to the queue can contain a <em>taskId</em>, which identifies the task, if a task with the same taskId already exists in the queue, then the new payload will be merged with the existing one. If no <em>taskId</em> is provided, then a random one is assigned.</p>
 <pre><code class="language-javascript">{
