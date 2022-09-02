@@ -73,9 +73,11 @@ describe('Value extractors', () => {
       { platform2: 'telegram', name: 'my-value3', value: 'just a string' },
       { platform2: 'slack', name: 'my-chatId', value: '{{chatId}}' }
     ]);
+    const msg4 = ({ my_params: [] });
     assert.isArray(extractValue('params', 'my_params', RED.node , msg1), true);
     assert.isArray(extractValue('params', 'my_params', RED.node , msg2), true);
     assert.isNull(extractValue('params', 'my_params', RED.node , msg3));
+    assert.isNull(extractValue('params', 'my_params', RED.node , msg4));
   });
 
   it('should extract a boolean', () => {

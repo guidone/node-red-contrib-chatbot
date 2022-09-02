@@ -4,11 +4,11 @@
     container.empty();
     switch(param.type) {
       case 'string':
-        console.log('param', param)
         var suggestions = '';
         var size = '100%'
         if (param.suggestions != null && param.suggestions.length !== 0) {
-          suggestions = '<select name="suggestions" autocomplete="disable" style="width: 18px;border: none;display: inline-block;">'
+          suggestions = '<select value="' + (defaultParam != null ? defaultParam : '') + '" name="suggestions" autocomplete="disable" style="width: 18px;border: none;display: inline-block;">'
+            + '<option value="">Select:</option>'
             + param.suggestions.map(function(suggestion) {
               return '<option value="' + suggestion + '">' + suggestion + '</option>';
             })
@@ -27,8 +27,9 @@
             callback($(this).val());
           });
         $('select[name=suggestions]')
-          .change(function() {
+          .change(function(e) {
             $('input', container).val($(this).val());
+            callback($(this).val());
           });
         break;
       case 'boolean':
@@ -69,7 +70,7 @@
             callback($(this).val());
           });
         // if no initial value specified, then use one from param type
-        if (defaultParam == null && param.default != null && skipDefault !== true) {
+        if (defaultParam == null && param.default != null) {
           callback(param.default);
         }
         break;
@@ -115,7 +116,6 @@
       .change(function() {
         var param = $(this).val();
         var paramObj = null;
-
         for(idx = 0; idx < params.length; idx++) {
           if (params[idx].name === param) {
             paramObj = params[idx];
@@ -123,6 +123,7 @@
         }
         if (paramObj != null) {
           $('input[type=hidden].value', row).attr('name', param);
+          $('input[type=hidden].value', row).attr('value', paramObj.default != null ? paramObj.default : null);
           $('input[type=hidden].type', row).attr('value', paramObj.type);
           mountControl(
             $('.control', row),
