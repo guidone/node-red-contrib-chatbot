@@ -1,0 +1,143 @@
+<script type="text/javascript">
+  RED.nodes.registerType('mc-queue', {
+    category: 'Mission Control',
+    color: '#6699CC',
+    defaults: {
+      name: {
+        value: ''
+      },
+      mode: {
+        value: 'sequential'
+      },
+      initialState: {
+        value: 'running'
+      },
+      delay: {
+        value: 100,
+        validate: function(value) {
+          return this.mode !== 'sequential' || $.RedBot.validate.numberOrVariable(value);
+        }
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    outputLabels: ['Payloads from the queue'],
+    inputLabels: 'to the queue',
+    paletteLabel: 'MC Queue',
+    icon: 'font-awesome/fa-list',
+    label: function() {
+      return 'MC Queue' + (this.name != null && this.name !== '' ? ' ('+ this.name +')' : '');
+    },
+    oneditprepare: function() {
+      $("#node-input-delay" ).spinner({ min:1 });
+      $('#node-input-mode')
+        .change(function() {
+          var value = $(this).val();
+          $('.form-row-delay').toggle(value === 'sequential');
+        });
+      $('.form-row-delay').toggle(this.mode === 'sequential');
+    },
+    oneditsave: function() {
+      var name = $('#node-input-name').val();
+      $('#node-input-name').val((name || '').replace(/[^a-zA-Z0-9\-]/gi, ''));
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="mc-queue">
+  <div class="form-row">
+    <label for="node-input-name">Name</label>
+    <input type="text" id="node-input-name" placeholder="default">
+  </div>
+  <div class="form-row">
+    <label for="node-input-initialState">Initial state</label>
+    <select id="node-input-initialState" placeholder="Select initial state">
+      <option value="running">Running</option>
+      <option value="paused">Paused</option>
+    </select>
+  </div>
+  <div class="form-row">
+    <label for="node-input-mode">Type</label>
+    <select id="node-input-mode" placeholder="Select Queue mode">
+      <option value="sequential">Sequential</option>
+      <option value="single">Stops after each element</option>
+    </select>
+    <div class="redbot-form-hint" style="padding-left:100px;padding-bottom:10px;">
+      In a sequential tasks queue, the elements will be extracted from the queue continuosly, while in <em>"Stop after each element"</em>
+      the queue pause itself after each element (send a msg with a key <code style="font-size:10px;">{ next: true }</code> to process the next one).
+    </span>
+  </div>
+  <div class="form-row form-row-delay">
+    <label for="node-input-delay">Delay</label>
+    <input type="text" id="node-input-delay" placeholder="Delay" style="text-align:end; width:200px !important">&nbsp;ms
+    <div class="redbot-form-hint" style="padding-left:100px;padding-bottom:10px;">
+      The delay in ms between each element in the queue (in sequential mode)
+    </div>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="mc-queue"><p>The <code>MC Queue node</code> is used to manage long running tasks. It takes the payload of the incoming message, it stores it a <em>SQLite</em> queue and redirect the stored payloads to the output pin one by one, at regular interval.</p>
+<p>The typical use is broadcasting the same message to a large set of users with a regular pace, accepted by the chat platform, the broadcast is split in single tasks, it can be stopped or resumed, it’s stored in a database and survives across Node-RED’s restarts and can be inspected with the Mission Controls queues panels.</p>
+<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/bfa564f8-144c-4942-b3e8-f3c460761d4d/Schermata_2022-08-13_alle_20.27.56.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220902%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220902T172540Z&X-Amz-Expires=3600&X-Amz-Signature=2f1812ca1c1fb17213712d13e2a679d02397ede4ba90cccc845cf8e1cf270052&X-Amz-SignedHeaders=host&x-id=GetObject" alt="Simple send to recipients flow"></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em>name</em></td>
+<td>The name of the queue, if left blank is <em>default</em></td>
+</tr>
+<tr>
+<td><em>initialState</em></td>
+<td>The initial state of the queue: <em>running</em> or <em>pause</em>. If running it will start consuming elements from the queue as soon as the flow is deployed</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>The type of the queue: <em>sequential</em> or <em>stops after each element</em>. If sequential it will continue to consume elements from the queue at a pace defined by delay, otherwise the queue is paused after each consumed element.</td>
+</tr>
+<tr>
+<td><em>delay</em></td>
+<td>The delay in ms between elements consumed by the queue. It also accepts variables from the <em>flow</em> and <em>global</em> context, for example <code>{{flow.myDelay}}</code> or <code>{{global.someDelay}}</code></td>
+</tr>
+</tbody></table>
+<p>It’s possible to issue commands to the queue with a simple inbound message </p>
+<pre><code class="language-javascript">{
+  mycommand: true
+}
+</code></pre>
+<p>Available commands</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em>start</em></td>
+<td>Start a paused queue</td>
+</tr>
+<tr>
+<td><em>next</em></td>
+<td>Consume next element of the queue</td>
+</tr>
+<tr>
+<td><em>pause</em></td>
+<td>Pause a running queue</td>
+</tr>
+</tbody></table>
+<p>The <em>stops after each element queue</em> type is useful in scenarios where each element of the queue needs to be extracted when the previous task is completed, for example a FTP server which doesn’t allow concurrent uploads</p>
+<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/0d575475-0392-4108-86be-6a3cd96a4c06/Schermata_2022-08-14_alle_17.59.16.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220902%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220902T172540Z&X-Amz-Expires=3600&X-Amz-Signature=8b6d6da51db29e854d44cfc9bd8b33ee12a1a1312e9362adbd4ac6caa6bcab58&X-Amz-SignedHeaders=host&x-id=GetObject" alt="Retroaction to execute one element at a time"></p>
+<p>Here a simple retro-action of the function node which sends to the output a msg <code>{ next: true }</code> which triggers the extraction of the next element of the queue only when the previous element is uploaded completely.</p>
+<p>The payload added to the queue can contain a <em>taskId</em>, which identifies the task, if a task with the same taskId already exists in the queue, then the new payload will be merged with the existing one. If no <em>taskId</em> is provided, then a random one is assigned.</p>
+<pre><code class="language-javascript">{
+  payload: {
+    taskId: &#39;my-task-id&#39;,
+    some: &#39;payload&#39;
+    }
+}
+</code></pre>
+</script>

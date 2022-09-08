@@ -135,6 +135,7 @@ module.exports = ({
   ChatBot,
   Plugin,
   sequelize,
+  sequelizeTasks,
   mcSettings
 }) => {
 
@@ -191,6 +192,88 @@ module.exports = ({
         description: '',
       }
     }
+  });
+
+  const InputTaskType = new GraphQLInputObjectType({
+    name: 'InputTask',
+    description: 'Input task for a queue',
+    fields: () => ({
+      taskId: {
+        type: GraphQLString,
+        description: 'The task id',
+      },
+      priority: {
+        type: GraphQLInt,
+        description: 'The task priority for the current queue'
+      },
+      task: {
+        type: JSONType,
+        description: 'The JSON payload of the task'
+      },
+      createdAt: {
+        type: DateType
+      }
+    })
+  });
+
+  const taskType = new GraphQLObjectType({
+    name: 'Task',
+    description: 'Task for a queue',
+    fields: () => ({
+      id: {
+        type: GraphQLInt,
+        description: 'The SQLIte id of the task',
+      },
+      taskId: {
+        type: GraphQLString,
+        description: 'The task id',
+      },
+      priority: {
+        type: GraphQLInt,
+        description: 'The task priority for the current queue'
+      },
+      task: {
+        type: JSONType,
+        description: 'The JSON payload of the task'
+      },
+      createdAt: {
+        type: DateType
+      }
+    })
+  });
+
+  const queueType = new GraphQLObjectType({
+    name: 'Queue',
+    description: 'Queue of tasks',
+    fields: () => ({
+      name: {
+        type: GraphQLString,
+        description: ''
+      },
+      label: {
+        type: GraphQLString,
+        description: ''
+      },
+      tasks: {
+        type: new GraphQLList(taskType),
+        args: {
+          offset: { type: GraphQLInt },
+          limit: { type: GraphQLInt },
+        },
+        resolve: async function(root, { offset = 0, limit = 10 }) {
+          const [tasks] = await sequelizeTasks.query(
+            `SELECT * FROM :queue
+            ORDER BY priority DESC, id ASC
+            LIMIT :offset, :limit
+            `,
+            {
+              replacements: { queue: root.name, offset, limit }
+            }
+          );
+          return tasks;
+        }
+      }
+    })
   });
 
   const chatIdType = new GraphQLObjectType({
@@ -1166,6 +1249,29 @@ module.exports = ({
     }
   });
 
+  const taskCounterType = new GraphQLObjectType({
+    name: 'TaskCounters',
+    description: 'Task Counters',
+    fields: {
+      count: {
+        type: GraphQLInt,
+        description: 'Total tasks',
+        args: {
+          queue: { type: GraphQLString }
+        },
+        resolve: async(root, { queue }) => {
+          const [count] = await sequelizeTasks.query(
+            'SELECT count(*) as \'total\' FROM :queue;',
+            {
+              replacements: { queue }
+            }
+          );
+          return !_.isEmpty(count) ? count[0].total : 0;
+        }
+      }
+    }
+  });
+
   const adminCounterType = new GraphQLObjectType({
     name: 'AdminCounters',
     description: 'User Counters',
@@ -1363,6 +1469,13 @@ module.exports = ({
       },
       devices: {
         type: deviceCounterType,
+        description: 'Counters for devices',
+        resolve: () => {
+          return {};
+        }
+      },
+      tasks: {
+        type: taskCounterType,
         description: 'Counters for devices',
         resolve: () => {
           return {};
@@ -1584,6 +1697,90 @@ module.exports = ({
             const admin = await Admin.findByPk(id);
             await Admin.destroy({ where: { id }});
             return admin;
+          }
+        },
+
+        updateTask: {
+          type: taskType,
+          args: {
+            id: { type: new GraphQLNonNull(GraphQLInt)},
+            queue: { type: GraphQLString },
+            task: { type: InputTaskType}
+          },
+          resolve: async function(root, { id, queue, task }) {
+            // update the json
+            await sequelizeTasks.query(
+              'UPDATE :queue SET task = :json, priority = :priority WHERE id = :id;',
+              {
+                replacements: {
+                  id, queue, json: task.task, priority: task.priority
+                }
+              }
+            );
+            // get again
+            const [updatedTask] = await sequelizeTasks.query(
+              'SELECT * FROM :queue WHERE id = :id;',
+              {
+                replacements: {
+                  id, queue
+                }
+              }
+            );
+            return updatedTask[0];
+          }
+        },
+
+        deleteTask: {
+          type: taskType,
+          args: {
+            id: { type: new GraphQLNonNull(GraphQLInt)},
+            queue: { type: GraphQLString }
+          },
+          resolve: async function(root, { id, queue }) {
+            const task = await sequelizeTasks.query(
+              'SELECT *  FROM :queue WHERE id = :id;',
+              {
+                replacements: { id, queue }
+              }
+            );
+            if (task.length !== 0) {
+              await sequelizeTasks.query(
+                'DELETE FROM :queue WHERE id = :id;',
+                {
+                  replacements: { id, queue }
+                }
+              );
+              return task[0];
+            }
+            return null;
+          }
+        },
+
+        deleteTasks: {
+          type: new GraphQLList(GraphQLInt),
+          args: {
+            ids: { type: new GraphQLList(GraphQLInt)},
+            queue: { type: GraphQLString },
+            all: { type: GraphQLBoolean }
+          },
+          resolve: async function(root, { all, ids, queue }) {
+            if (all) {
+              await sequelizeTasks.query(
+                'DELETE FROM :queue;',
+                {
+                  replacements: { queue }
+                }
+              );
+              return [];
+            } else {
+              await sequelizeTasks.query(
+                'DELETE FROM :queue WHERE id IN (:ids);',
+                {
+                  replacements: { ids, queue }
+                }
+              );
+              return ids;
+            }
           }
         },
 
@@ -1954,6 +2151,58 @@ module.exports = ({
     query: new GraphQLObjectType({
       name: 'Queries',
       fields: {
+
+        tasks: {
+          type: new GraphQLList(taskType),
+          description: 'List all tasks for a queue',
+          args: {
+            queue: { type: new GraphQLNonNull(GraphQLString) },
+            offset: { type: GraphQLInt },
+            limit: { type: GraphQLInt }
+          },
+          resolve: async function(root, { queue, offset = 0, limit = 10 }) {
+            try {
+              const [tasks] = await sequelizeTasks.query(
+                `SELECT * FROM :queue
+                ORDER BY priority DESC, id ASC
+                LIMIT :offset, :limit
+                `, {
+                  replacements: { queue, offset, limit }
+                });
+              return tasks;
+            } catch(e) {
+              return `Queueu "${queue}" not found.`
+            }
+          }
+        },
+
+        queues: {
+          type: new GraphQLList(queueType),
+          args: {
+            name: { type: GraphQLString }
+          },
+          resolve: async function(root, { name }) {
+            const [results] = await sequelizeTasks.query('SELECT name FROM sqlite_schema WHERE type=\'table\' ORDER BY name;');
+            return results
+              .filter(({ name }) => name.startsWith('tasks'))
+              .map(obj => ({
+                ...obj,
+                label: obj.name === 'tasks' ? 'default' : obj.name.replace('tasks-', '')
+              }))
+              .filter(queue => _.isEmpty(name) || queue.name === name);
+          }
+        },
+
+        queue: {
+          type: queueType,
+          args: {
+            name: { type: new GraphQLNonNull(GraphQLString) }
+          },
+          resolve: async function(root, { name }) {
+            const [results] = await sequelizeTasks.query('SELECT name FROM sqlite_schema WHERE type=\'table\' ORDER BY name;');
+            return results.find(queue => queue.name === name);
+          }
+        },
 
         chatbot: {
           type: chatbotType,

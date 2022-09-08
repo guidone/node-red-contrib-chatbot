@@ -1,18 +1,35 @@
 import React, { useState, forwardRef, useImperativeHandle, useEffect } from 'react';
-import { Table, Placeholder, FlexboxGrid } from 'rsuite';
-import PropTypes from 'prop-types';
+import { Table, Placeholder, Checkbox } from 'rsuite';
+import _ from 'lodash';
 
-const { Pagination } = Table;
+const { Pagination, Column, HeaderCell, Cell } = Table;
 const { Grid } = Placeholder;
 
 import useRouterQuery from '../../../src/hooks/router-query';
 import TableFilters from '../table-filters';
+import ShowError from '../show-error';
+
 import useTable from './hooks/table';
 import './style.scss';
 
 const LABELS = {
   empty: 'No Content'
 };
+
+const CheckCell = ({ rowData, onChange, checked, checkedKeys, dataKey, disabled = false, ...props }) => (
+  <Cell {...props} style={{ padding: 0 }}>
+    <div className="checkbox-cell">
+      <Checkbox
+        value={rowData[dataKey]}
+        inline
+        disabled={disabled}
+        onChange={onChange}
+        checked={checked || checkedKeys.some(item => item === rowData[dataKey])}
+      />
+    </div>
+  </Cell>
+);
+
 
 const CustomTable = ({
   children,
@@ -23,17 +40,22 @@ const CustomTable = ({
   labels,
   filtersSchema = [],
   toolbar,
+  disabled = false,
+  selectable = false,
+  //selection = { ids: [], all: false },
   onFilters = () => {},
   filterEvaluateParams = ['data'],
   onData = () => {},
+  onSelect = () => {},
   ...rest
 }, ref) => {
-  let filterKeys = (filtersSchema || []).map(item => item.name);
+  const filterKeys = (filtersSchema || []).map(item => item.name);
   // get all keys that are numeric and must be parsed to int
   const numericKeys = (filtersSchema || [])
     .filter(filter => filter.type === 'number')
     .map(filter => filter.name);
   const [loaded, setLoaded] = useState(false);
+  const [ selection, setSelection] = useState({ all: false, ids: []});
   const { query: urlQuery, setQuery } = useRouterQuery({
     numericKeys,
     onChangeQuery: query => {
@@ -44,7 +66,6 @@ const CustomTable = ({
       }
     }
   });
-
   const [ filters, setFilters ] = useState(_.pick(urlQuery, filterKeys));
   const [ cursor, setCursor ] = useState({
     page: 1,
@@ -80,7 +101,11 @@ const CustomTable = ({
   });
 
   useImperativeHandle(ref, () => ({
-    refetch: () => refetch()
+    refetch: () => {
+      setSelection({ all: false, ids: [] });
+      onSelect({ all: false, ids: [] });
+      refetch();
+    }
   }));
 
   labels = { ...LABELS, ...labels };
@@ -100,6 +125,7 @@ const CustomTable = ({
     return evaluated;
   });
 
+  const { all: selectedAll = false, ids: checkedKeys = [] } = selection;
   return (
     <div className="ui-custom-table">
       {bootstrapping && <Grid columns={9} rows={3} />}
@@ -108,6 +134,7 @@ const CustomTable = ({
           <div className="filters">
             <TableFilters
               filters={filters}
+              disabled={disabled || error}
               onChange={filters => {
                 setFilters(filters);
                 setQuery(filters);
@@ -116,14 +143,27 @@ const CustomTable = ({
               schema={schema}
             />
           </div>
-          {toolbar != null &&(
+          {toolbar != null && _.isFunction(toolbar) && (
+            <div className="toolbar">
+              {toolbar({
+                filters,
+                count: !error && !bootstrapping ? data.counters.rows.count : 0,
+                selection: { ids: checkedKeys, all: selectedAll },
+                setSelection
+              })}
+            </div>
+          )}
+          {toolbar != null && !_.isFunction(toolbar) && (
             <div className="toolbar">
               {toolbar}
             </div>
           )}
         </div>
       )}
-      {!bootstrapping && (
+      {!bootstrapping && error && (
+        <ShowError error={error} />
+      )}
+      {!bootstrapping && !error && (
         <Table
           data={data.rows || []}
           loading={loading}
@@ -133,6 +173,41 @@ const CustomTable = ({
           onSortColumn={(sortField, sortType) => setCursor({ ...cursor, sortField, sortType })}
           {...rest}
         >
+          {selectable && (
+            <Column width={50} align="center" key="selector">
+              <HeaderCell style={{ padding: 0 }}>
+                <div style={{ marginTop: '-9px' }}>
+                  <Checkbox
+                    inline
+                    disabled={disabled}
+                    checked={selectedAll}
+                    indeterminate={checkedKeys.length !== 0}
+                    onChange={() => {
+                      onSelect({ ids: [], all: !selectedAll });
+                      setSelection({ ids: [], all: !selectedAll });
+                    }}
+                  />
+                </div>
+              </HeaderCell>
+              <CheckCell
+                dataKey="id"
+                checkedKeys={checkedKeys}
+                disabled={disabled}
+                checked={selectedAll}
+                onChange={(value, checked) => {
+                  if (selectedAll) {
+                    onSelect({ ids: [value], all: false });
+                  } else {
+                    const ids = checked
+                      ? [...checkedKeys, value]
+                      : checkedKeys.filter(item => item !== value);
+                    onSelect({ ids, all: false });
+                    setSelection({ ids, all: false });
+                  }
+                }}
+              />
+            </Column>
+          )}
           {children}
         </Table>
       )}
@@ -140,7 +215,7 @@ const CustomTable = ({
         <Pagination
           activePage={page}
           displayLength={limit}
-          disabled={loading}
+          disabled={loading || disabled}
           onChangePage={page => setCursor({ ...cursor, page })}
           lengthMenu={[{ label: '10', value: 10 }, { label: '20', value: 20 }, { label: '30', value: 30 } ]}
           onChangeLength={limit => setCursor({ ...cursor, limit, page: 1 })}
