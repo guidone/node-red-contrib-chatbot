@@ -26,25 +26,38 @@ module.exports = function(RED) {
       // send/done compatibility for node-red < 1.0
       send = send || function() { node.send.apply(node, arguments) };
       done = done || function(error) { node.error.call(node, error, msg) };
-      // check if valid message
-      if (!isValidMessage(msg, node)) {
-        return;
-      }
-      // if it's a command, don't parse it, skip
-      if (isCommand(msg)) {
+
+      // get the context to process:
+      // if it's a valid message
+      let content;
+      if (isValidMessage(msg, node, { silent: true })) {
+        // if it's a command, don't parse it, skip
+        if (isCommand(msg) || msg.payload == null || !_.isString(msg.payload.content)) {
+          send({
+            ...msg,
+            previous: { ...msg.payload }, // store previous msg, use POP to retrieve
+          });
+          done();
+          return;
+        }
+        content = msg.payload.content;
+      } else if (_.isString(msg.payload)) {
+        content = msg.payload;
+      } else {
+        // not a string, pass thru
         send({
           ...msg,
           previous: { ...msg.payload }, // store previous msg, use POP to retrieve
         });
-        done();
+        done('Incoming message is not a string');
         return;
       }
 
       const template = MessageTemplate(msg, node);
       const name = extractValue('string', 'name', node, msg, false);
       const debug = extractValue('boolean', 'debug', node, msg, false);
+      let language = extractValue('string', 'language', node, msg, false);
       let scoreThreshold = extractValue(['number', 'string', 'variable'], 'scoreThreshold', node, msg, false);
-      const content = msg.payload != null ? msg.payload.content : null;
 
       // if not number, then evaluate it
       if (isVariable(scoreThreshold)) {
@@ -66,36 +79,44 @@ module.exports = function(RED) {
       // get the right nlp model
       const manager = globalContextHelper.get('nlp_' + (!_.isEmpty(name) ? name : 'default'));
 
-      // check if string
-      if (!_.isString(content)) {
-        done('Incoming message is not a string');
-        return;
-      }
-      let language = await msg.chat().get('language');
+
+
+
+      // try to detect the language:
+      // if not defined in the configuration then try to get from chat context (if exists)
+      // or try to guess
       if (_.isEmpty(language)) {
-        const languageGuesser = new Language();
-        const guess = languageGuesser.guess(content);
-        if (!_.isEmpty(guess)) {
-          language = guess[0].alpha2;
+        if (_.isFunction(msg.chat)) {
+          language = await msg.chat().get('language');
           if (debug) {
             // eslint-disable-next-line no-console
-            console.log(lcd.white('[NLP] gueesed language ') +  lcd.green(language));
+            console.log(lcd.white('[NLP] detecting with user language ') +  lcd.green(language));
+          }
+        } else {
+          const languageGuesser = new Language();
+          const guess = languageGuesser.guess(content);
+          if (!_.isEmpty(guess)) {
+            language = guess[0].alpha2;
+            if (debug) {
+              // eslint-disable-next-line no-console
+              console.log(lcd.white('[NLP] gueesed language ') +  lcd.green(language));
+            }
           }
         }
       } else {
         if (debug) {
           // eslint-disable-next-line no-console
-          console.log(lcd.white('[NLP] detecting with user language ') +  lcd.green(language));
+          console.log(lcd.white('[NLP] detecting with language from configuration ') +  lcd.green(language));
         }
       }
-      // skip if language is not detected
-
       if (_.isEmpty(language)) {
-        done('Unable to detect content language, skipping');
+        done('Unable to detect content language (from config, from chat context, from guess), skipping');
         return;
       }
+
       // finally process
       const response = await manager.process(language, content);
+
       // extract vars
       const variables = {};
       (response.entities || []).forEach(entity => {
