@@ -6,9 +6,9 @@ const { Client } = require('@notionhq/client')
 const { NotionToMarkdown } = require('notion-to-md');
 
 const green = clc.greenBright;
-//const white = clc.white;
+// const white = clc.white;
 const grey = clc.blackBright;
-const orange = clc.xterm(214);
+// const orange = clc.xterm(214);
 
 const nodeDefinitions = require('./nodes');
 
@@ -49,9 +49,47 @@ const getPage = async function(url) {
   return html;
 };
 
+const getMarkdownPage = async function(url) {
+  // parse url
+  const notionId = extractNotionId(url);
+
+  // TODO check if valid
+  const mdblocks = await n2m.pageToMarkdown(notionId);
+  const mdString = n2m.toMarkdownString(mdblocks);
+
+  return mdString;
+};
+
 const runner = async function() {
 
-  console.log(orange('Generating inline documentation...'));
+  console.log('# ' + grey('Building changelog:'));
+  console.log('');
+
+  const mdChangeLog = await getMarkdownPage('https://www.notion.so/redbot/Change-log-b46a94ab6bbc4c7d8a586cbc21af7d78');
+
+  const mdReleases = mdChangeLog.match(/\|(.*)\|/gm);
+  let changelog = '';
+
+  mdReleases.forEach(row => {
+    const splitted = row.split(' | ');
+
+    if (splitted.length >= 2 && splitted[0].indexOf('------') === -1) {
+
+      const version = splitted[0].replace(/^\|/, '').trim();
+      const description = splitted[1].replace(/\\n$/, '').replace(/\|$/, '').trim();
+
+      changelog += `- **${version}** - ${description}\n`;
+    }
+  });
+
+  fs.writeFileSync(
+    __dirname + '/../CHANGELOG.md',
+    changelog,
+    'utf8'
+  );
+
+  console.log('# ' + grey('Downloading nodes help:'));
+  console.log('');
 
   // download all nodes documentation from notion
   let idx = 0;
