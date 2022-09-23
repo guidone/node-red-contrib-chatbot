@@ -20,12 +20,19 @@ module.exports = function(RED) {
     this.on('input', async function(msg, send, done) {
       // send/done compatibility for node-red < 1.0
       done = done || function(error) { node.error.call(node, error, msg) };
-      // check bot
-      if (node.bot == null) {
+
+      let botNode = node.bot;
+      if (msg != null && _.isString(msg.botNode) && !_.isEmpty(msg.botNode)) {
+        botNode = msg.botNode;
+      } else if (msg != null && msg.payload != null && _.isString(msg.payload.botNode) && !_.isEmpty(msg.payload.botNode)) {
+        botNode = msg.payload.botNode;
+      }
+      // check bot node
+      if (_.isEmpty(botNode)) {
         done('Missing Telegram Bot configuration');
         return;
       }
-      const currentBot = RED.nodes.getNode(node.bot);
+      const currentBot = RED.nodes.getNode(botNode);
       if (currentBot == null || currentBot.chat == null) {
         done('Invalid Telegram Bot configuration');
         return;

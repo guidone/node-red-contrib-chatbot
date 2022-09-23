@@ -107,3 +107,21 @@
   }
 
 }
+
+.modal-plugin-description {
+  .rs-modal-title {
+    font-size: 24px;
+  }
+  .rs-modal-body {
+    h2 {
+      font-size: 20px;
+      line-height: 24px;
+      margin-top: 10px;
+    }
+    h1 {
+      font-size: 26px;
+      line-height: 30px;
+      margin-top: 10px;
+    }
+  }
+}

@@ -78,11 +78,12 @@ const PluginPanel = ({
 
   const { open: openReadMe, close: closeReadMe } = useModal({
     view: ModalMarkdown,
-    title: plugin.name,
+    title: plugin.title,
     size: 'md',
     labelSubmit: 'Close',
     labelCancel: null,
-    align: 'center'
+    align: 'center',
+    className: 'modal-plugin-description'
   });
 
   const installedPlugin = chatbot.plugins.find(installed => installed.plugin === plugin.name);

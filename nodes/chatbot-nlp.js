@@ -78,9 +78,10 @@ module.exports = function(RED) {
 
       // get the right nlp model
       const manager = globalContextHelper.get('nlp_' + (!_.isEmpty(name) ? name : 'default'));
-
-
-
+      if (manager == null) {
+        done('NLP Model not found');
+        return;
+      }
 
       // try to detect the language:
       // if not defined in the configuration then try to get from chat context (if exists)
@@ -92,7 +93,9 @@ module.exports = function(RED) {
             // eslint-disable-next-line no-console
             console.log(lcd.white('[NLP] detecting with user language ') +  lcd.green(language));
           }
-        } else {
+        }
+        // if still empty
+        if (_.isEmpty(language)) {
           const languageGuesser = new Language();
           const guess = languageGuesser.guess(content);
           if (!_.isEmpty(guess)) {
