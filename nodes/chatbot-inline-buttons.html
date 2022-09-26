@@ -657,10 +657,31 @@
       },
       message: {
         value: ''
+      },
+      trackMessage: {
+        value: false
+      },
+      outputs: {
+        value: 1
       }
     },
     inputs: 1,
     outputs: 1,
+    outputLabels: function(index) {
+      if (index === 0) {
+        return 'to sender node';
+      } else {
+        const button = this.buttons[index - 1];
+        if (button.type === 'postback') {
+          if (button.label != null && button.label !== '') {
+            return button.label + (button.value != null && button.value !== '' ? ' (' + button.value + ')' : '');
+          } else if (button.value != null && button.value !== '') {
+            return button.value;
+          }
+        }
+        return 'not used';
+      }
+    },
     paletteLabel: 'Buttons',
     icon: 'chatbot-inline-button.png',
     label: function() {
@@ -673,6 +694,10 @@
       var idx;
       for(idx = 0; idx < buttons.length; idx++) {
         node.buttons.push($(buttons[idx]).RB_getButtonData());
+      }
+      // store outputs
+      if ($('#node-input-trackMessage').is(':checked')) {
+        node.outputs = node.buttons.length + 1;
       }
     },
     oneditprepare: function() {
@@ -731,6 +756,13 @@
 </div>
 <div class="form-row node-input-rule-container-row">
   <ol id="node-input-buttons-container"></ol>
+</div>
+<div class="form-row">
+  <label for="node-input-trackMessage">Track postbacks in this node</label>
+  <input type="checkbox" value="true" id="node-input-trackMessage">
+  <span class="redbot-form-hint">
+    ----- some help here
+  </span>
 </div>
 </script>
 
