@@ -1345,11 +1345,10 @@ module.exports = ({
     namespace,
     search,
     slugs,
-    chatbotId
-    /*,
+    chatbotId,
     latitude,
     longitude,
-    precision = 100*/
+    precision = 100
   }) => {
     const whereParams = compactObject({
       id: _.isArray(ids) && !_.isEmpty(ids) ? { [Op.in]: ids } : id,
@@ -1369,6 +1368,15 @@ module.exports = ({
     }
     if (!_.isEmpty(chatbotId)) {
       whereParams.chatbotId = chatbotId;
+    }
+    if (longitude != null && latitude != null && precision > 9) {
+      const [sw, ne] = geolib.getBoundsOfDistance({ latitude, longitude }, precision);
+      whereParams[Op.and] = [
+        { 'latitude': { [Op.gte]: sw.latitude }},
+        { 'latitude': { [Op.lte]: ne.latitude }},
+        { 'longitude': { [Op.gte]: sw.longitude }},
+        { 'longitude': { [Op.lte]: ne.longitude }},
+      ]
     }
     /*if (longitude != null && latitude != null && precision > 9) {
       const [sw, ne] = geolib.getBoundsOfDistance({ latitude, longitude }, precision);
@@ -2351,7 +2359,7 @@ module.exports = ({
             slugs,
             latitude,
             longitude,
-            precision = 9,
+            precision,
             chatbotId
           }) {
             return Content.findAll({
