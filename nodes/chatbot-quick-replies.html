@@ -22,10 +22,31 @@
           }
           return valid;
         }
+      },
+      trackMessage: {
+        value: false
+      },
+      outputs: {
+        value: 1
       }
     },
     inputs: 1,
     outputs: 1,
+    outputLabels: function(index) {
+      if (index === 0) {
+        return 'to sender node';
+      } else {
+        const button = this.buttons[index - 1];
+        if (button.type === 'quick-reply') {
+          if (button.label != null && button.label !== '') {
+            return button.label + (button.value != null && button.value !== '' ? ' (' + button.value + ')' : '');
+          } else if (button.value != null && button.value !== '') {
+            return button.value;
+          }
+        }
+        return 'not used';
+      }
+    },
     paletteLabel: 'Quick Replies',
     icon: 'chatbot-quick-replies.png',
     label: function() {
@@ -39,19 +60,23 @@
       for(idx = 0; idx < buttons.length; idx++) {
         node.buttons.push($(buttons[idx]).RB_getButtonData());
       }
+      // store outputs
+      if ($('#node-input-trackMessage').is(':checked')) {
+        node.outputs = node.buttons.length + 1;
+      } else {
+        node.outputs = 1;
+      }
     },
     oneditprepare: function() {
       $('#node-input-buttons-container')
         .css('min-width','450px')
         .editableList({
-          addButton: 'Add button',
+          addButton: 'Add quick reply',
           addItem: function(container, i, item) {
-            console.log('add', item)
             $(container).RB_mountButtonDialog({
               types: ['quick-reply', 'phone', 'email'],
               badges: false
             });
-            console.log('setting', item)
             $(container).RB_setButtonData(item, {
               badges: false
             });
@@ -60,19 +85,28 @@
           sortable: true
         });
 
-      if (this.buttons != null) {
-        this.buttons.forEach(function(button) {
-          $('#node-input-buttons-container').editableList('addItem', button);
+      const buttons = this.buttons;
+      $.RedBot.fetchPlatforms()
+        .done(function() {
+          if (buttons != null) {
+            buttons.forEach(function(button) {
+              $('#node-input-buttons-container').editableList('addItem', button);
+            });
+          }
         });
-      }
     },
     oneditresize: function() {
       var dialogForm = $('#dialog-form');
       var rowName = $('.form-row-name', dialogForm);
       var rowMessage = $('.form-row-message', dialogForm);
       var rowLabel = $('.form-row-label', dialogForm);
-
-      var height = dialogForm.height() - rowName.height() - rowLabel.height() - rowMessage.height() - 30;
+      var rowTrack = $('.form-row-track', dialogForm);
+      var height = dialogForm.height()
+        - rowName.height()
+        - rowLabel.height()
+        - rowMessage.height()
+        - rowTrack.height()
+        - 30;
       $('#node-input-buttons-container').editableList('height', height);
     }
   });
@@ -96,6 +130,13 @@
 <div class="form-row node-input-rule-container-row">
   <ol id="node-input-buttons-container"></ol>
 </div>
+<div class="form-row form-row-track">
+  <label for="node-input-trackMessage">Track</label>
+  <input type="checkbox" value="true" id="node-input-trackMessage" style="width:auto">
+  <span class="redbot-form-hint">
+    Track answers to these buttons here (will enable an output pin for each button)
+  </span>
+</div>
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-quick-replies"><p><code>Quick Replies node</code> provide a way to present buttons to the user in response to a message in <strong>Facebook Messenger</strong>.</p>
@@ -111,12 +152,12 @@
 </li>
 </ul>
 <p>The text message can be passed through the payload by the upstream node:</p>
-<pre><code class="language-javascript">return {  
+<pre><code class="language-javascript">return {
   ...msg,
-  message: &#39;Select one&#39;,  
-  buttons: [    
-        { type: &#39;quick-reply&#39;, label: &#39;Test 1&#39;, value: &#39;test1&#39; },    
-    { type: &#39;quick-reply&#39;, label: &#39;Test 2&#39;, value: &#39;test2&#39; }  
+  message: &#39;Select one&#39;,
+  buttons: [
+        { type: &#39;quick-reply&#39;, label: &#39;Test 1&#39;, value: &#39;test1&#39; },
+    { type: &#39;quick-reply&#39;, label: &#39;Test 2&#39;, value: &#39;test2&#39; }
 ];
 </code></pre>
 <p>Available parameters for the <code>msg.payload</code></p>

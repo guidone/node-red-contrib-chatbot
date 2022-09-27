@@ -412,15 +412,18 @@
       .append('<input type="checkbox" name="messenger_extensions" value="on" style="width: auto;margin:0px 10px 5px 10px;"/>')
       .append('<span>Extensions</span><div class="redbot-platforms facebook"/>')
       .appendTo(panelUrl);
+    $(panelUrl).RB_Platforms();
 
     var panelEmail = $('<div class="panel panel-email" style="display:none;"/>').appendTo(container);
     $('<div/>').css('marginTop','5px')
       .append($('<div class="redbot-form-hint">Send user email associated to the Facebook Messenger account</div>'))
       .appendTo(panelEmail);
+
     var panelPhone = $('<div class="panel panel-phone" style="display:none;"/>').appendTo(container);
     $('<div/>').css('marginTop','5px')
       .append($('<div class="redbot-form-hint">Send user phone number associated to the Facebook Messenger account</div>'))
       .appendTo(panelPhone);
+
     var panelPostback = $('<div class="panel panel-postback" style="display:none;"/>').appendTo(container);
     $('<div/>').css('marginTop','5px')
       .append($('<input style="width:100%" class="node-input-rule-type" type="text" name="label" placeholder="Button label"/>'))
@@ -449,6 +452,7 @@
         + '</select>')
       .append('<div class="redbot-platforms slack"/>')
       .appendTo(panelPostback);
+    $(panelPostback).RB_Platforms();
 
     var panelDialog = $('<div class="panel panel-dialog" style="display:none;"/>').appendTo(container);
     $('<div/>').css('marginTop','5px')
@@ -697,7 +701,9 @@
       }
       // store outputs
       if ($('#node-input-trackMessage').is(':checked')) {
-        node.outputs = node.buttons.length + 1;
+        node.outputs = node.buttons.length + 2;
+      } else {
+        node.outputs = 1;
       }
     },
     oneditprepare: function() {
@@ -733,7 +739,14 @@
       var rowMessage = $('.form-row-message', dialogForm);
       var rowLabel = $('.form-row-label', dialogForm);
       var rowHint = $('.form-row-hint', dialogForm);
-      var height = dialogForm.height() - rowName.height() - rowMessage.height() - rowLabel.height() - rowHint.height() - 30;
+      var rowTrack = $('.form-row-track', dialogForm);
+      var height = dialogForm.height()
+        - rowTrack.height()
+        - rowName.height()
+        - rowMessage.height()
+        - rowLabel.height()
+        - rowHint.height()
+        - 30;
       $('#node-input-buttons-container').editableList('height', height);
     }
   });
@@ -757,11 +770,11 @@
 <div class="form-row node-input-rule-container-row">
   <ol id="node-input-buttons-container"></ol>
 </div>
-<div class="form-row">
-  <label for="node-input-trackMessage">Track postbacks in this node</label>
-  <input type="checkbox" value="true" id="node-input-trackMessage">
+<div class="form-row form-row-track">
+  <label for="node-input-trackMessage">Track</label>
+  <input type="checkbox" value="true" id="node-input-trackMessage" style="width:auto">
   <span class="redbot-form-hint">
-    ----- some help here
+    Track answers to these buttons here (will enable an output pin for each button)
   </span>
 </div>
 </script>

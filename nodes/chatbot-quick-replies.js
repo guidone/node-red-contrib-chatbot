@@ -2,12 +2,12 @@ const MessageTemplate = require('../lib/message-template-async');
 const emoji = require('node-emoji');
 const RegisterType = require('../lib/node-installer');
 const { ChatExpress } = require('chat-platform');
-const { 
-  isValidMessage, 
-  getChatId, 
-  getMessageId, 
-  getTransport, 
-  extractValue 
+const {
+  isValidMessage,
+  getChatId,
+  getMessageId,
+  getTransport,
+  extractValue
 } = require('../lib/helpers/utils');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
@@ -21,7 +21,15 @@ module.exports = function(RED) {
     globalContextHelper.init(this.context().global);
     this.buttons = config.buttons;
     this.message = config.message;
-    this.transports = ['facebook'];
+    this.trackMessage = config.trackMessage;
+
+    this.relay = function(msg) {
+      // copy msg in the right position
+      const toSend = node.buttons.map(({ value }) => msg.payload?.content === value ? msg : null);
+      // first pin is alway to sender
+      toSend.unshift(null);
+      node.send(toSend);
+    }
 
     this.on('input', function(msg, send, done) {
       // send/done compatibility for node-red < 1.0
@@ -31,12 +39,12 @@ module.exports = function(RED) {
       if (!isValidMessage(msg, node)) {
         done('Invalid input message');
         return;
-      }      
+      }
       // get RedBot values
       const chatId = getChatId(msg);
       const messageId = getMessageId(msg);
       const template = MessageTemplate(msg, node);
-      const transport = getTransport(msg);      
+      const transport = getTransport(msg);
       // check transport compatibility
       if (!ChatExpress.isSupported(transport, 'quick-replies')) {
         done(`Node "quick-replies" is not supported by ${transport} transport`);
@@ -48,7 +56,7 @@ module.exports = function(RED) {
       const message = extractValue('string', 'message', node, msg);
 
       template(message, buttons)
-        .then(([translatedMessage, translatedButtons]) => {        
+        .then(([translatedMessage, translatedButtons]) => {
           send({
             ...msg,
             payload: {
@@ -56,7 +64,8 @@ module.exports = function(RED) {
               content: message != null ? emoji.emojify(translatedMessage) : null,
               chatId: chatId,
               messageId: messageId,
-              buttons: translatedButtons
+              buttons: translatedButtons,
+              trackNodeId: node.trackMessage ? node._path : undefined
             }
           });
           done();

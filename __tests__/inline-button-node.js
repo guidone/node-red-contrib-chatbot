@@ -1,4 +1,3 @@
-var _ = require('underscore');
 var assert = require('chai').assert;
 var RED = require('../lib/red-stub')();
 var InlineButtonsBlock = require('../nodes/chatbot-inline-buttons');
@@ -48,6 +47,36 @@ describe('Chat inline buttons node', function() {
         assert.equal(RED.node.message().payload.buttons[2].value, '+39347123456');
         assert.equal(RED.node.message().payload.buttons[2].label, 'Call me');
       });
+  });
+
+  it('should send inline buttons in Telegram and track answer', async function () {
+    const msg = RED.createMessage({}, 'telegram');
+    RED.node.config({
+      message: 'message for the buttons',
+      trackMessage: true,
+      buttons: [
+        {
+          type: 'postback',
+          value: 'value 1',
+          label: 'Value 1',
+          answer: null,
+          alert: false
+        }
+      ]
+    });
+    InlineButtonsBlock(RED);
+    RED.node.get().emit('input', msg);
+    await RED.node.get().await()
+
+    const message = RED.node.message();
+    assert.equal(message.payload.type, 'inline-buttons');
+    assert.equal(message.payload.content, 'message for the buttons');
+    assert.equal(message.payload.chatId, 42);
+    assert.isArray(message.payload.buttons);
+    assert.equal(message.payload.buttons[0].type, 'postback');
+    assert.equal(message.payload.buttons[0].value, 'value 1');
+    assert.equal(message.payload.buttons[0].label, 'Value 1');
+    assert.equal(message.payload.trackNodeId, RED.node.get()._path);
   });
 
 
