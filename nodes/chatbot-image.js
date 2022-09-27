@@ -49,7 +49,7 @@ module.exports = function(RED) {
         return;
       }
 
-      let content = extractValue('string', 'image', node, msg)
+      let content = extractValue('url', 'image', node, msg)
         || extractValue('buffer', 'image', node, msg)
         || extractValue('stringWithVariables', 'image', node, msg)
         || extractValue('string', 'filename', node, msg, false, true, false); // for retrocompatibility
@@ -66,11 +66,11 @@ module.exports = function(RED) {
           } else if (validators.buffer(content)) {
             fetcher = fetchers.identity;
           } else if (_.isString(content) && content.length > 4064) {
-            node.error('Looks like you are passing a very long string (> 4064 bytes) in the payload as image url or path\n'
+            done('Looks like you are passing a very long string (> 4064 bytes) in the payload as image url or path\n'
               + 'Perhaps you are using a "Http request" and passing the result as string instead of buffer?');
             return;
           } else {
-            node.error('Don\'t know how to handle: ' + content);
+            done('Don\'t know how to handle: ' + content);
             return;
           }
 
@@ -80,7 +80,7 @@ module.exports = function(RED) {
               // check if a valid file
               const error = ChatExpress.isValidFile(transport, 'photo', file);
               if (error != null) {
-                node.error(error);
+                done(error);
                 throw error;
               }
               return file;
@@ -99,7 +99,7 @@ module.exports = function(RED) {
                   inbound: false
                 });
               },
-              node.error
+              error => done(error)
             );
         });
     });
