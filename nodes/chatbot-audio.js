@@ -49,8 +49,7 @@ module.exports = function(RED) {
         return;
       }
 
-      let content = extractValue('filepath', 'audio', node, msg)
-        || extractValue('url', 'audio', node, msg)
+      let content = extractValue('string', 'audio', node, msg)
         || extractValue('buffer', 'audio', node, msg)
         || extractValue('stringWithVariables', 'audio', node, msg)
         || extractValue('filepath', 'filename', node, msg, false, true, false); // no payload, yes message

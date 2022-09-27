@@ -53,25 +53,25 @@ describe('Chat audio node', () => {
       });
   });
 
-  it('should send a local mp3 audio with filename parameter in upstream node Telegram', () => {
-    const msg = RED.createMessage(null, 'telegram');
+  it('should send a local mp3 audio with filename parameter in upstream node Telegram', async () => {
+    const msg = RED.createMessage({}, 'telegram');
     msg.filename = __dirname + '/dummy/audio.mp3';
     RED.node.config({});
     AudioBlock(RED);
     RED.node.get().emit('input', msg);
 
-    return RED.node.get().await()
-      .then(() => {
-        assert.equal(RED.node.message().payload.type, 'audio');
-        assert.equal(RED.node.message().payload.inbound, false);
-        assert.equal(RED.node.message().payload.filename, 'audio.mp3');
-        assert.instanceOf(RED.node.message().payload.content, Buffer);
-        assert.equal(RED.node.message().originalMessage.chat.id, 42);
-      });
+    await RED.node.get().await();
+
+    assert.equal(RED.node.message().payload.type, 'audio');
+    assert.equal(RED.node.message().payload.inbound, false);
+    assert.equal(RED.node.message().payload.filename, 'audio.mp3');
+    assert.instanceOf(RED.node.message().payload.content, Buffer);
+    assert.equal(RED.node.message().originalMessage.chat.id, 42);
+
   });
 
   it('should send a local audio file with a wrong filename parameter in upstream node Telegram', () => {
-    const msg = RED.createMessage(null, 'telegram');
+    const msg = RED.createMessage({}, 'telegram');
     msg.filename = __dirname + '/dummy/file-wrong.mp4';
     RED.node.config({});
     AudioBlock(RED);

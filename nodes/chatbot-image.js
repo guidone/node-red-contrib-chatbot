@@ -49,7 +49,7 @@ module.exports = function(RED) {
         return;
       }
 
-      let content = extractValue('url', 'image', node, msg)
+      let content = extractValue('string', 'image', node, msg)
         || extractValue('buffer', 'image', node, msg)
         || extractValue('stringWithVariables', 'image', node, msg)
         || extractValue('string', 'filename', node, msg, false, true, false); // for retrocompatibility
