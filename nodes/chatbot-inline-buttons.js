@@ -22,11 +22,20 @@ module.exports = function(RED) {
 
   function ChatBotInlineButtons(config) {
     RED.nodes.createNode(this, config);
-    var node = this;
+    const node = this;
     globalContextHelper.init(this.context().global);
     this.name = config.name;
     this.buttons = config.buttons;
     this.message = config.message;
+    this.trackMessage = config.trackMessage;
+
+    this.relay = function(msg) {
+      // copy msg in the right position
+      const toSend = node.buttons.map(({ value }) => msg.payload?.content === value ? msg : null);
+      // first pin is alway to sender
+      toSend.unshift(null);
+      node.send(toSend);
+    }
 
     this.on('input', function(msg, send, done) {
       // send/done compatibility for node-red < 1.0
@@ -61,7 +70,8 @@ module.exports = function(RED) {
             content: message != null ? emoji.emojify(message) : null,
             chatId,
             messageId,
-            buttons
+            buttons,
+            trackNodeId: node.trackMessage ? node._path : undefined
           });
           done();
         });

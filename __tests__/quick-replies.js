@@ -46,7 +46,48 @@ it('should send quick replies in facebook', () => {
       });
   });
 
-it('should send quick replies in facebook using payload', () => {
+  it('should send quick replies in facebook and track replies', () => {
+    const msg = RED.createMessage({}, 'facebook');
+    msg.chat().set('my_var', 'hello!')
+    RED.node.config({
+      message: 'message for the buttons',
+      trackMessage: true,
+      buttons: [
+        {
+          type: 'postback',
+          value: 'value 1',
+          label: 'Value 1',
+          answer: null,
+          alert: false
+        },
+        {
+          type: 'postback',
+          value: 'value 2',
+          label: 'Value {{my_var}}',
+          answer: null,
+          alert: false
+        },
+      ]
+    });
+    QuickRepliesBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(() => {
+        const message = RED.node.message();
+        assert.equal(message.payload.type, 'quick-replies');
+        assert.equal(message.payload.content, 'message for the buttons');
+        assert.equal(message.payload.chatId, 42);
+        assert.isArray(message.payload.buttons);
+        assert.equal(message.payload.buttons[0].type, 'postback');
+        assert.equal(message.payload.buttons[0].value, 'value 1');
+        assert.equal(message.payload.buttons[0].label, 'Value 1');
+        assert.equal(message.payload.buttons[1].type, 'postback');
+        assert.equal(message.payload.buttons[1].label, 'Value hello!');
+        assert.equal(message.payload.trackNodeId, RED.node.get()._path);
+      });
+  });
+
+  it('should send quick replies in facebook using payload', () => {
     const msg = RED.createMessage({
       message: 'message for the buttons',
       buttons: [
@@ -113,7 +154,7 @@ it('should send quick replies in facebook using payload', () => {
         () => {},
         e => {
           assert.equal(e, 'Node "quick-replies" is not supported by telegram transport');
-        }  
+        }
       );
   });
 

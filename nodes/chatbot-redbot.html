@@ -521,19 +521,18 @@
 
   $.fn.extend({
     RB_Platforms: function() {
-      console.log('contain', this)
       $('.redbot-platforms', this).each(function() {
         var platforms = $(this).attr('class')
           .split(' ')
           .filter(function(platform) {
             return platform !== 'redbot-platforms';
           });
-        console.log('waht', platforms)
         var currentStyle = $(this).attr('style') != null ? $(this).attr('style') : '';
         $(this).attr('style', currentStyle + ';display:inline-block;margin-left:5px;');
         $.RedBot.supportedBy($(this), platforms);
       });
-    }
+    },
+
   });
 
   RED.actions.add("node-red-contrib-chatbot:open-mission-control",function() {
