@@ -152,12 +152,12 @@
 </li>
 </ul>
 <p>The text message can be passed through the payload by the upstream node:</p>
-<pre><code class="language-javascript">return {
+<pre><code class="language-javascript">return {  
   ...msg,
-  message: &#39;Select one&#39;,
-  buttons: [
-        { type: &#39;quick-reply&#39;, label: &#39;Test 1&#39;, value: &#39;test1&#39; },
-    { type: &#39;quick-reply&#39;, label: &#39;Test 2&#39;, value: &#39;test2&#39; }
+  message: &#39;Select one&#39;,  
+  buttons: [    
+        { type: &#39;quick-reply&#39;, label: &#39;Test 1&#39;, value: &#39;test1&#39; },    
+    { type: &#39;quick-reply&#39;, label: &#39;Test 2&#39;, value: &#39;test2&#39; }  
 ];
 </code></pre>
 <p>Available parameters for the <code>msg.payload</code></p>

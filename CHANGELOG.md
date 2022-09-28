@@ -1,3 +1,4 @@
+- **1.1.0** - Added output pins for [Untitled](https://www.notion.so/b8f3ea33948049cca7b94491061183f4) and [Untitled](https://www.notion.so/200e9ae1a1fd459baa29c76d6a4025e2) for better readability, fixed tracking of sender nodes in subflows, fix [Untitled](https://www.notion.so/fab15f139525400f8719ff182238eb4c)
 - **1.0.9** - [Untitled](https://www.notion.so/d7159ae828804a8784a639e6cdbdb95d) accepts parametrized bot node, [Untitled](https://www.notion.so/bbc3deb2d39a4b338fc6515eee337cd4) now accepts plain strings
 - **1.0.8** - Fixed [Untitled](https://www.notion.so/d8b27db3949c475184923af913563833) with props set in upstream node, added variables `{{inboundMessageId}}` and `{{outboundMessageId}}`, fixed edit message use case in **Telegram**, added delete message in **Slack**, fixed once for all the expired token in **Facebook Messenger**
 - **1.0.7** - Fix fallback text for [Untitled](https://www.notion.so/deb80b7ba4584671abf117b8772a694a)

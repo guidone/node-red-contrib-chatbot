@@ -779,7 +779,8 @@
 </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-inline-buttons"><p>Available buttons: </p>
+<script type="text/x-red" data-help-name="chatbot-inline-buttons"><p>This node creates a message with one or more buttons in order to get a quick reaction from the users. </p>
+<p>Available buttons: </p>
 <ul>
 <li><p><strong>URL</strong>: Open a URL inside the client. Button feedbacks are available for Telegram and Messenger extensions in Facebook <em>[Telegram, Facebook, Viber]</em></p>
 </li>
@@ -801,25 +802,15 @@
 <li><p><strong>Facebook</strong> supports some extra parameters in the <code>URL</code> button, like the size of the web view and <a href="https://developers.facebook.com/docs/messenger-platform/webview">messenger extensions</a> and a maximum od three buttons.</p>
 </li>
 </ul>
+<p>The tipical use of the buttons node is with the <em>Track</em> option of a <code>Sender node</code> and <a href="https://www.notion.so/4113636f565d4ff4af08bc61a644206b">Rules node</a> to capture the aswer</p>
+<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/56c82cb6-1c83-41c9-8ec0-2c43c4a912c6/buttons-legacy.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220928%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220928T161608Z&X-Amz-Expires=3600&X-Amz-Signature=ca0f0ea64d8fd66430b56003a6bf1c010c6fbd4c265a2c0784d856c864c1be0d&X-Amz-SignedHeaders=host&x-id=GetObject" alt="Track answer in the Sender node"></p>
+<p>In this example the <code>Buttons node</code> includes two postback buttons wiht a <em>label</em> (it’s the label of the button) and a <em>value</em> (it’s what will be sent back to the chatbot if clicked). The values can be anything but it’s a good habit to use Telegram-like commands, i.e. <code>/option1</code> and <code>/option2</code>, the reason for this is that they don’t interfere with user-generated sentences and can be easily filtered by a <a href="https://www.notion.so/4113636f565d4ff4af08bc61a644206b">Rules node</a>.
+The <code>Sender node</code> uses the Track option, the answer will be captured and sent to the Rules node which can capture one of the possible answers with a rule <em>“Message is command …”.</em></p>
+<p>The <em>“Track message”</em> option enables a more readable layout to handle user’s answers:</p>
+<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/3b7a7638-a5ba-4316-8203-0ae783657941/buttons-new.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220928%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220928T161608Z&X-Amz-Expires=3600&X-Amz-Signature=ee287383e457dc6708d65d350bdb3d3f0bba94c4b6924fd117c2b31c6b768ed8&X-Amz-SignedHeaders=host&x-id=GetObject" alt="Track answer in the Buttons node"></p>
+<p>In that case the user’s answer will be tracked directly by the <code>Buttons node</code> through one of the outputs related the postback buttons (hover on the outputs to know the output details).
+The first pin of the <code>Buttons node</code> is always to be connected to a <code>Sender node</code> while the last pin is the fallback (in case the user, for example, writes something instead of clicking the buttons). </p>
 <p>Buttons can be created programmatically by an upstream <code>Function node</code> passing array of buttons in the message payload:</p>
-<pre><code class="language-javascript">msg.payload = [
-  {
-    type: &#39;url&#39;,
-    url: &#39;http://javascript-jedi.com&#39;,
-    label: &#39;Javascript Jedi&#39;
-  },
-  {
-    type: &#39;postback&#39;,
-    value: &#39;MY_POSTBACK_MESSAGE&#39;,
-    label: &#39;Click me!&#39;
-  },
-  {
-    type: &#39;share&#39;
-  }
-];
-return msg;
-</code></pre>
-<p>Another way is to specify each config option as keys of an object in the message payload:</p>
 <pre><code class="language-javascript">msg.payload = {
   message: &#39;This is a message above the buttons&#39;,
   buttons: [
@@ -858,6 +849,11 @@ return msg;
 <td>buttons</td>
 <td>array of [button]</td>
 <td>The list of inline buttons</td>
+</tr>
+<tr>
+<td>trackMessage</td>
+<td>boolean</td>
+<td>Track the answer message in the <code>Buttons node</code>, the answer will be redirected to one of output pins related to the buttons. Default is <code>false</code>.</td>
 </tr>
 </tbody></table>
 <p>The <code>[button]</code> object</p>
