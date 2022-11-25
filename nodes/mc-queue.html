@@ -15,6 +15,7 @@
       delay: {
         value: 100,
         validate: function(value) {
+          console.log('----', value, $.RedBot.validate.numberOrVariable(value))
           return this.mode !== 'sequential' || $.RedBot.validate.numberOrVariable(value);
         }
       }

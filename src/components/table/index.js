@@ -34,7 +34,7 @@ CheckCell.propTypes = {
   rowData: PropTypes.object,
   onChange: PropTypes.func,
   checked: PropTypes.bool,
-  checkedKeys: PropTypes.arrayOf(PropTypes.string),
+  checkedKeys: PropTypes.array,
   dataKey: PropTypes.string,
   disabled: PropTypes.bool
 };
