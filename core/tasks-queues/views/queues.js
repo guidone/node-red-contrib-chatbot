@@ -76,7 +76,7 @@ const QueuesTasks = () => {
         query={TASKS}
         height={600}
         labels={{
-          empty: 'The tasks queue is empty'
+          empty: 'The queue is empty'
         }}
         selectable={true}
         onSelect={selection => setSelection(selection)}

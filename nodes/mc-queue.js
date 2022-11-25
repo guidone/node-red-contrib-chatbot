@@ -17,30 +17,29 @@ module.exports = function(RED) {
     this.initialState = config.initialState;
     this.name = config.name;
     this.delay = config.delay;
-    this.running = node.initialState === 'running';
-    this.statusMessage = 'Total: 0';
+    this.running = node.initialState === 'running' || this.mode === 'single';
+    //this.statusMessage = 'Processed: 0';
+    this.processedItems = 0;
 
     const { dbQueuePath } = getMissionControlConfiguration();
 
     this.updateStatus = function() {
+
       node.status({
         fill: node.running ? 'green' : 'red',
         shape: 'dot',
-        text: node.statusMessage
+        text: `Processed: ${node.processedItems}`
       });
     }
 
     this.queue = new Queue(
       function (input, cb) {
-
-        const stats = node.queue.getStats();
-        node.statusMessage = `Total: ${stats.total}`;
         node.updateStatus();
 
         // stop if in single mode
         if (node.mode === 'single') {
           node.queue.pause();
-          node.running = false;
+          node.running = true;
           node.updateStatus();
           cb(null, input);
         } else if (!_.isEmpty(node.delay)) {
@@ -78,8 +77,10 @@ module.exports = function(RED) {
         batchSize: 1, // always one
         autoResume: node.initialState === 'running'
       }
-    ).on('task_finish', function(taskId, result) {
+    ).on('task_finish', function(_taskId, result) {
       node.send({ payload: result });
+      node.processedItems += 1;
+      node.updateStatus();
     });
     this.updateStatus();
 
@@ -93,7 +94,11 @@ module.exports = function(RED) {
         node.updateStatus();
         node.queue.resume();
         done();
-      } else if (msg.pause != null) {
+      } else if (msg.reset != null) {
+        node.processedItems = 0;
+        node.updateStatus();
+        done();
+      } else if (msg.pause != null || msg.stop != null) {
         node.running = false;
         node.updateStatus();
         node.queue.pause();

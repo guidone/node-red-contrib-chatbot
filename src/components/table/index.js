@@ -1,6 +1,7 @@
 import React, { useState, forwardRef, useImperativeHandle, useEffect } from 'react';
 import { Table, Placeholder, Checkbox } from 'rsuite';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 
 const { Pagination, Column, HeaderCell, Cell } = Table;
 const { Grid } = Placeholder;
@@ -29,9 +30,16 @@ const CheckCell = ({ rowData, onChange, checked, checkedKeys, dataKey, disabled 
     </div>
   </Cell>
 );
+CheckCell.propTypes = {
+  rowData: PropTypes.object,
+  onChange: PropTypes.func,
+  checked: PropTypes.bool,
+  checkedKeys: PropTypes.array,
+  dataKey: PropTypes.string,
+  disabled: PropTypes.bool
+};
 
-
-const CustomTable = ({
+const CustomTable = forwardRef(({
   children,
   query,
   variables = {},
@@ -71,9 +79,10 @@ const CustomTable = ({
     page: 1,
     limit: 10,
     sortField: initialSortField,
-    sortType: initialSortDirection
+    sortType: initialSortDirection,
+    total: 0 // total records
   });
-  const { limit, page, sortField, sortType } = cursor;
+  const { limit, page, sortField, sortType, total } = cursor;
 
   useEffect(() => {
     // reset cursor everytime filter changes
@@ -94,17 +103,27 @@ const CustomTable = ({
     sortType,
     filters,
     variables,
-    onCompleted: rows => {
+    onCompleted: (rows, counters) => {
       onData(rows);
+      setCursor({ ...cursor, total: counters.rows.count });
       setLoaded(true);
     }
   });
 
   useImperativeHandle(ref, () => ({
-    refetch: () => {
+    refetch: async() => {
       setSelection({ all: false, ids: [] });
       onSelect({ all: false, ids: [] });
-      refetch();
+      const { data } = await refetch();
+      // check cursor consistency (in case in last page and some records delete and reduced the page)
+      const totalPages = Math.floor(data.counters.rows.count / cursor.limit)
+        + ((data.counters.rows.count % cursor.limit) !== 0 ? 1 : 0);
+      // update the total records
+      setCursor({ ...cursor, total: data.counters.rows.count });
+      // if deleted so many records the current page fell beyond the limit, then adjust
+      if (page > totalPages) {
+        setCursor({ ...cursor, page: totalPages });
+      }
     }
   }));
 
@@ -219,14 +238,27 @@ const CustomTable = ({
           onChangePage={page => setCursor({ ...cursor, page })}
           lengthMenu={[{ label: '10', value: 10 }, { label: '20', value: 20 }, { label: '30', value: 30 } ]}
           onChangeLength={limit => setCursor({ ...cursor, limit, page: 1 })}
-          total={data.counters.rows.count}
+          total={total}
       />
       )}
     </div>
   );
-}
-/*CustomTable.propTypes = {
-  query: PropTypes.string,
+});
+CustomTable.displayName = 'CustomTable';
+CustomTable.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]),
+  toolbar: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+    PropTypes.func
+  ]),
+  disabled: PropTypes.bool,
+  selectable: PropTypes.bool,
+  variables: PropTypes.object,
+  query: PropTypes.object,
   // the subset of content to display
   namespace: PropTypes.string,
   initialSortField: PropTypes.string,
@@ -235,7 +267,10 @@ const CustomTable = ({
   labels: PropTypes.shape({
     empty: PropTypes.string
   }),
-  filtersSchema: PropTypes.arrayOf(PropTypes.oneOf([
+  onData: PropTypes.func,
+  onSelect: PropTypes.func,
+  filterEvaluateParams: PropTypes.arrayOf(PropTypes.string),
+  filtersSchema: PropTypes.arrayOf(PropTypes.oneOfType([
     PropTypes.func,
     PropTypes.shape({
       name: PropTypes.string,
@@ -245,6 +280,6 @@ const CustomTable = ({
   ])),
   // callback when filters changes
   onFilters: PropTypes.func
-};*/
+};
 
-export default forwardRef(CustomTable);
+export default CustomTable;

@@ -23,6 +23,8 @@ const SelectQueues = ({ disabled = false, children, ...props }) => {
       placeholder="Select queue"
       disabled={disabled || loading}
       cleanable={false}
+      style={{ minWidth: '300px' }}
+      renderValue={(value) => `Queue: ${value}`}
       data={(data?.queues ?? []).map(queue => ({ value: queue.name, label: queue.label }))}
     />
   );

@@ -1,17 +1,17 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { useHistory } from 'react-router-dom';
 import { Button, ButtonToolbar, SelectPicker } from 'rsuite';
 
 import confirm from '../../../src/components/confirm';
+import { typeUserRecord } from '../../../src/types';
 
-import { useCodePlug, Views } from 'code-plug';
+import { useCodePlug } from 'code-plug';
 
 const Buttons = ({ edit, remove, userRecordType, disabled = false, record, dispatch = () => {} }) => {
   const history = useHistory();
   const { items } = useCodePlug('user-record-buttons');
-
-  console.log('items',items);
 
   return (
     <div className="user-record-buttons">
@@ -38,7 +38,9 @@ const Buttons = ({ edit, remove, userRecordType, disabled = false, record, dispa
           Edit payload
         </Button>
         {items
+          // eslint-disable-next-line react/prop-types
           .filter(({ props }) => _.isEmpty(props.type) || props.type === record.type)
+          // eslint-disable-next-line react/jsx-key
           .map(({ view: View, props }) => <View {...props} record={record}/>)
         }
       </ButtonToolbar>
@@ -51,7 +53,7 @@ const Buttons = ({ edit, remove, userRecordType, disabled = false, record, dispa
             color="red"
             onClick={async () => {
               if (await confirm(
-                <div>Delete {userRecordType.name.toLowerCase()} <em>"{record.title}" ?</em></div>,
+                <div>Delete {userRecordType.name.toLowerCase()} <em>&quot;{record.title}&quot; ?</em></div>,
                 { okLabel: 'Yes, delete' }
               )) {
                 await remove({ variables: { id: record.id }});
@@ -65,6 +67,21 @@ const Buttons = ({ edit, remove, userRecordType, disabled = false, record, dispa
       </div>
     </div>
   );
+};
+Buttons.propTypes = {
+  edit: PropTypes.func,
+  remove: PropTypes.func,
+  userRecordType: PropTypes.shape({
+    name: PropTypes.string,
+    list: PropTypes.string,
+    status: PropTypes.arrayOf(PropTypes.shape({
+      value: PropTypes.string,
+      label: PropTypes.string
+    }))
+  }),
+  disabled: PropTypes.bool,
+  record: typeUserRecord,
+  dispatch: PropTypes.func
 };
 
 export default Buttons;

@@ -17,7 +17,7 @@ const useTable = ({ query, limit, page, sortField, sortType, filters = {}, varia
     },
     onCompleted: data => {
       setBootstrapping(false);
-      onCompleted(data.rows);
+      onCompleted(data.rows, data.counters);
     },
     onError: () => {
       setBootstrapping(false);
