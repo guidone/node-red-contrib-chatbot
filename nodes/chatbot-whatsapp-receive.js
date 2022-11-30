@@ -12,7 +12,6 @@ module.exports = function(RED) {
       'whatsapp',
       RED,
       (node, botConfiguration) => {
-        console.log('botConfiguration', botConfiguration)
         return WhatsappServer.createServer({
           authorizedUsernames: botConfiguration.usernames,
           token: botConfiguration.token,
