@@ -40,6 +40,7 @@
       "chatbot-twilio-receive": "./nodes/chatbot-twilio-receive.js",
       "chatbot-msteams-receive": "./nodes/chatbot-msteams-receive.js",
       "chatbot-facebook-receive": "./nodes/chatbot-facebook-receive.js",
+      "chatbot-whatsapp-receive": "./nodes/chatbot-whatsapp-receive.js",
       "chatbot-viber-receive": "./nodes/chatbot-viber-receive.js",
       "chatbot-alexa-receive": "./nodes/chatbot-alexa-receive.js",
       "chatbot-message": "./nodes/chatbot-message.js",

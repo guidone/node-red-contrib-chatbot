@@ -1,0 +1,401 @@
+<script type="text/javascript">
+  $.RedBot.registerType('chatbot-whatsapp-node', {
+    category: 'config',
+    defaults: {
+      botname: {
+        value: '',
+        required: true
+      },
+      phoneNumberId: {
+        value: '',
+        required: true
+      },
+      usernames: {
+        value: '',
+        required: false
+      },
+      store: {
+        value: '',
+        type: 'chatbot-context-store',
+        required: false
+      },
+      log: {
+        value: null
+      },
+      debug: {
+        value: false
+      },
+      multiWebHook: {
+        value: false
+      },
+      profileFields: {
+        value: 'first_name,last_name'
+      },
+      storeMessages: {
+        value: true
+      },
+      enableMissionControl: {
+        value: false
+      },
+      inspectMessages: {
+        value: true
+      },
+      chatbotId: {
+        value: ''
+      }
+    },
+    oneditprepare: function() {
+      var node = this;
+      var nodeRedUrl = $.RedBot.getNodeRedUrl();
+      // fetch available context providers
+      $.get(nodeRedUrl + 'redbot/globals')
+        .done(function(response) {
+          /*if (response != null && response.facebook != null && response.facebook[node.botname] != null) {
+            $('#node-config-input-botname').prop('readonly', true);
+            $('.form-editable').hide();
+            $('.form-warning').show();
+            $('.form-warning .bot-name').html('"' + node.botname + '"');
+          }*/
+          // hide mission control options if not enabled
+          if (!response.missionControl) {
+            $('.form-row-not-mission-control').show();
+            $('.form-row-mission-control').hide();
+            $('#node-config-input-enableMissionControl')
+              .prop('disabled', true)
+              .prop('checked', false);
+          }
+        });
+            // enable or disable mission control
+            $('#node-config-input-enableMissionControl')
+        .change(function() {
+          if ($(this).is(':checked')) {
+            $('.form-row-not-mission-control').hide();
+            $('.form-row-mission-control').show();
+          } else {
+            $('.form-row-not-mission-control').show();
+            $('.form-row-mission-control').hide();
+          }
+        });
+      // if enable mission control, set a random chatbot id if empty
+      $('#node-config-input-enableMissionControl')
+        .change(function() {
+          if ($(this).is(':checked')) {
+            const chatbotId = $('#node-config-input-chatbotId').val();
+            if (chatbotId == null || chatbotId === '') {
+              $.ajax({ url: '/mc/chatbotIdGenerator' })
+                .then(res => {
+                  $('#node-config-input-chatbotId').val(res);
+                });
+            }
+          }
+        });
+    },
+    paletteName: 'Whatsapp Bot',
+    credentials: {
+      token: {
+        type: 'text'
+      },
+      verify_token: {
+        type: 'text'
+      },
+      app_secret: {
+        type: 'text'
+      }
+    },
+    label: function () {
+      return this.botname;
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-whatsapp-node">
+  <div class="form-row">
+    <label for="node-config-input-botname"><i class="icon-bookmark"></i> Bot Name</label>
+    <input type="text" id="node-config-input-botname">
+  </div>
+  <div class="form-editable">
+    <div class="redbot-separator">
+      <div>Whatsapp settings</div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-token">Token</label>
+      <input type="text" id="node-config-input-token" placeholder="Access Token">
+      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+        The access token that is generated when the XXXX app is connected to a xxxxx page
+      </div>
+    </div>
+      <div class="form-row">
+      <label for="node-config-input-phoneNumberId">Phone Number ID</label>
+      <input type="text" id="node-config-input-app_secret" placeholder="App secret">
+      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+        ...
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-verify_token">Verify</label>
+      <input type="text" id="node-config-input-verify_token" placeholder="Verify token">
+      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+        The verify token is an arbitrary string, must match the same string in the "Webhooks" section in the
+        xxxx app
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-usernames">Users</label>
+      <input type="text" id="node-config-input-usernames" placeholder="Authorized users">
+      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+        Comma separated list of userId authorized to use the chatBot
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-profileFields">Profile fields</label>
+      <input type="text" id="node-config-input-profileFields">
+      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-multiWebHook" style="width:auto;">Support multiple chatbots</label>
+      <input type="checkbox" value="true" id="node-config-input-multiWebHook" class="redbot-checkbox">
+      <span class="redbot-form-hint">
+        Supports multiple xxxx Messenger chatbots using different callbacks (<em>http://my.host.com/redbot//1234abcd</em>)
+      </span>
+    </div>
+    <div class="redbot-separator">
+      <div>RedBot settings</div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-debug">Debug</label>
+      <input type="checkbox" value="true" class="redbot-checkbox" id="node-config-input-debug">
+      <span class="redbot-form-hint">
+        Show debug information on send/receive
+      </span>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-enableMissionControl" class="redbot-label">Use Mission Control</label>
+      <input type="checkbox" value="true" class="redbot-checkbox" id="node-config-input-enableMissionControl">
+      <span class="redbot-form-hint">
+        Enable Mission Control, see <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Mission-Control" target="_blank">documentation here</a>
+      </span>
+    </div>
+    <div class="form-row form-row-mission-control">
+      <div class="redbot-form-hint">
+        Mission Control uses the built-in <b>SQLite context provider</b>.
+      </div>
+    </div>
+    </div>
+    <div class="form-row form-row-not-mission-control">
+      <label for="node-input-bot">Context</label>
+      <input type="text" id="node-config-input-store" placeholder="Select storage for chat context">
+      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+        Select the chat context provider to use with this bot, if none is selected then non-persistent "memory" will be used.<br>
+        To extend <strong>RedBot</strong> with a new chat context provider see <a href="https://github.com/guidone/node-red-contrib-chatbot/wiki/Creating-a-Chat-Context-Provider" target="_blank">this tutorial</a>.
+      </div>
+    </div>
+    <div class="form-row form-row-mission-control">
+      <label for="node-config-input-chatbotId" class="redbot-label">Chatbot ID</label>
+      <input type="text" id="node-config-input-chatbotId" placeholder="Enter a chatbot ID">
+      <span class="redbot-form-hint">
+        Specify a chatbot ID if you're running multiple chatbots on this Node-RED instance (it's just a string of your choice). Leave it blank if you're just running a single chatbot.
+      </span>
+    </div>
+    <div class="form-row form-row-mission-control">
+      <label class="redbot-label" for="node-config-input-storeMessages">Store messages</label>
+      <input type="checkbox" value="true" class="redbot-checkbox" id="node-config-input-storeMessages">
+      <span class="redbot-form-hint">
+        Store inbound and outbound messages in Mission Control
+      </span>
+    </div>
+    <div class="form-row form-row-mission-control">
+      <label for="node-config-input-inspectMessages" class="redbot-label">Inspect messages</label>
+      <input type="checkbox" value="true" class="redbot-checkbox" id="node-config-input-inspectMessages">
+      <span class="redbot-form-hint">
+        Inspect messages in real time in Mission Control
+      </span>
+    </div>
+    <div class="redbot-separator">
+      <div>
+        Legacy settings
+      </div>
+      <span class="redbot-form-hint">
+        These settings are for retrocompatibility, should only be used in legacy bots. Use <b>Mission Control</b>
+        to control user access or to log messages
+      </span>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-usernames">Users</label>
+      <input type="text" id="node-config-input-usernames">
+      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+        Comma separated list of userId authorized to use the chatBot
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-log">Log file</label>
+      <input type="text" id="node-config-input-log">
+      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+        Store inbound and outbound messages to file
+      </div>
+    </div>
+  </div>
+  <div class="form-warning" style="display:none;">
+    This bot configuration is stored in <b>Node-RED</b> <em>settings.js</em> and cannot be modified from the UI, check
+    the section <code>functionGlobalContext</code> near the key <em class="bot-name">""</em>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-whatsapp-node"></script>
+
+
+<script type="text/javascript">
+  $.RedBot.registerType('chatbot-whatsapp-receive', {
+    category: $.RedBot.config.name + ' Platforms',
+    color: '#FFCC66',
+    defaults: {
+      bot: {
+        value: '',
+        type: 'chatbot-whatsapp-node',
+        required: true
+      },
+      botProduction: {
+        value: '',
+        type: 'chatbot-whatsapp-node',
+        required: false
+      }
+    },
+    inputs: 0,
+    outputs: 1,
+    icon: 'chatbot-receiver.png',
+    paletteLabel: 'Whatsapp In',
+    label: function () {
+      return 'Whatsapp Receiver';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-whatsapp-receive">
+  <div class="form-row">
+    <label for="node-input-bot" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(development)</span></label>
+    <input type="text" id="node-input-bot" placeholder="Bot">
+  </div>
+  <div class="form-row" style="margin-top:25px;">
+    <label for="node-input-botProduction" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(production)</span></label>
+    <input type="text" id="node-input-botProduction" placeholder="Bot">
+  </div>
+  <div class="redbot-form-hint">
+    Bot for <strong>production</strong> will be launched only if the global variable <em>"environment"</em> in <em>settings.js</em> is set to <em>"production"</em>, otherwise will be used the configuration for <strong>development</strong>.
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-whatsapp-receive">
+  <p>Input node for Whatsapp.</p>
+</script>
+
+<script type="text/javascript">
+  $.RedBot.registerType('chatbot-whatsapp-send', {
+    category: $.RedBot.config.name + ' Platforms',
+    color: '#FFCC66',
+    defaults: {
+      bot: {
+        value: "",
+        type: 'chatbot-whatsapp-node',
+        required: true
+      },
+      botProduction: {
+        value: '',
+        type: 'chatbot-whatsapp-node',
+        required: false
+      },
+      track: {
+        value: false
+      },
+      passThrough: {
+        value: false
+      },
+      errorOutput: {
+        value: false
+      },
+      outputs: {
+        value: 0
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'chatbot-sender.png',
+    paletteLabel: 'Whatsapp Out',
+    label: function () {
+      return 'Whatsapp Sender';
+    },
+    inputLabels: 'Chat flow',
+    outputLabels: function(idx) {
+      if (idx === 0 && this.track) {
+        return 'Track';
+      } else if (idx === 0 && this.passThrough) {
+        return 'Pass through';
+      } else if (idx === 1) {
+        return 'Error';
+      }
+    },
+    oneditprepare: function() {
+      // cannot be checked at the same time
+      $('#node-input-passThrough')
+        .click(function() {
+          if ($(this).is(':checked')) {
+            $('#node-input-track').prop('checked', false);
+          }
+        });
+      $('#node-input-track')
+        .click(function() {
+          if ($(this).is(':checked')) {
+            $('#node-input-passThrough').prop('checked', false);
+          }
+        });
+    },
+    oneditsave: function() {
+      var count = 0;
+      var track = $('#node-input-track').is(':checked');
+      var passThrough = $('#node-input-passThrough').is(':checked');
+      var errorOutput = $('#node-input-errorOutput').is(':checked');
+      if (track || passThrough) {
+        count = 1;
+      }
+      if (errorOutput) {
+        count += 1;
+      }
+      this.outputs = count;
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-whatsapp-send">
+  <div class="form-row">
+    <label for="node-input-bot" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(development)</span></label>
+    <input type="text" id="node-input-bot" placeholder="Bot">
+  </div>
+  <div class="form-row" style="margin-top:25px;">
+    <label for="node-input-botProduction" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(production)</span></label>
+    <input type="text" id="node-input-botProduction" placeholder="Bot">
+  </div>
+  <div class="redbot-form-hint">
+    Bot for <strong>production</strong> will be launched only if the global variable <em>"environment"</em> in <em>settings.js</em> is set to <em>"production"</em>, otherwise will be used the configuration for <strong>development</strong>.
+  </div>
+  <div class="form-row" style="margin-top:25px;">
+    <label for="node-input-track" style="margin-bottom:0px;">Track</label>
+    <input type="checkbox" value="true" id="node-input-track" style="margin-top:0px;">
+    <div class="redbot-form-hint">
+    Track response of the user for this message: any further answer will be redirect to the output pin.
+    </div>
+    <label for="node-input-track" style="margin-bottom:0px;margin-top:15px;">Pass Through</label>
+    <input type="checkbox" value="true" id="node-input-passThrough" style="margin-top:0px;">
+    <div class="redbot-form-hint">
+    Forward the message to the output pin after sending (useful to chain messages and keep the right order)
+    </div>
+    <label for="node-input-errorOutput" style="margin-bottom:0px;margin-top:15px;">Error Output</label>
+    <input type="checkbox" value="true" id="node-input-errorOutput" style="margin-top:0px;">
+    <div class="redbot-form-hint">
+    Redirect the flow to the error pin in case of platform specific error on sending the message
+    </div>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-whatsapp-send">
+  <p>Output node for Whatsapp.</p>
+</script>
