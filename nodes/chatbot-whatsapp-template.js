@@ -52,7 +52,7 @@ module.exports = function(RED) {
       let templateName = extractValue('string', 'template', node, msg);
       let language = extractValue('string', 'language', node, msg);
 
-      // do something
+      // TODO remove
       console.log('bodyParams', paramsBody)
       console.log('template', templateName)
 
