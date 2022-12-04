@@ -16,6 +16,7 @@ module.exports = function(RED) {
           authorizedUsernames: botConfiguration.usernames,
           token: botConfiguration.token,
           phoneNumberId: botConfiguration.phoneNumberId,
+          businessAccountId: botConfiguration.businessAccountId,
           verifyToken: botConfiguration.verify_token,
           appSecret: botConfiguration.app_secret,
           contextProvider: node.contextProvider,
@@ -30,6 +31,7 @@ module.exports = function(RED) {
       (config, node) => ({
         usernames: config.usernames,
         phoneNumberId: config.phoneNumberId,
+        businessAccountId: config.businessAccountId,
         token: node.credentials != null && node.credentials.token != null ? node.credentials.token.trim() : null,
         verifyToken: node.credentials != null && node.credentials.verify_token != null ? node.credentials.verify_token.trim() : null,
         appSecret: node.credentials != null && node.credentials.app_secret != null ? node.credentials.app_secret.trim() : null,
