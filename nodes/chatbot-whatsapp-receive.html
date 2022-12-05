@@ -14,10 +14,6 @@
         value: '',
         required: true
       },
-      usernames: {
-        value: '',
-        required: false
-      },
       store: {
         value: '',
         type: 'chatbot-context-store',
@@ -28,12 +24,6 @@
       },
       debug: {
         value: false
-      },
-      multiWebHook: {
-        value: false
-      },
-      profileFields: {
-        value: 'first_name,last_name'
       },
       storeMessages: {
         value: true
@@ -125,23 +115,17 @@
       <label for="node-config-input-token">Token</label>
       <input type="text" id="node-config-input-token" placeholder="Access Token">
       <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
-        The access token that is generated when the XXXX app is connected to a xxxxx page
+        The temporary access token or the permanent one from the <em>"Getting started"</em> page
       </div>
     </div>
       <div class="form-row">
-      <label for="node-config-input-phoneNumberId">Phone Number ID</label>
+      <label for="node-config-input-phoneNumberId" style="width:auto;margin-right:10px;">Phone Number ID</label>
       <input type="text" id="node-config-input-phoneNumberId" placeholder="1234567890 ">
-      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
-        ...
-      </div>
     </div>
     </div>
       <div class="form-row">
-      <label for="node-config-input-phoneNumberId">Business Account ID</label>
+      <label for="node-config-input-phoneNumberId" style="width:auto;margin-right:10px;">Business Account ID</label>
       <input type="text" id="node-config-input-businessAccountId" placeholder="1234567890 ">
-      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
-        ...
-      </div>
     </div>
     <div class="form-row">
       <label for="node-config-input-verify_token">Verify</label>
@@ -150,27 +134,6 @@
         The verify token is an arbitrary string, must match the same string in the "Webhooks" section in the
         xxxx app
       </div>
-    </div>
-    <div class="form-row">
-      <label for="node-config-input-usernames">Users</label>
-      <input type="text" id="node-config-input-usernames" placeholder="Authorized users">
-      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
-        Comma separated list of userId authorized to use the chatBot
-      </div>
-    </div>
-    <div class="form-row">
-      <label for="node-config-input-profileFields">Profile fields</label>
-      <input type="text" id="node-config-input-profileFields">
-      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
-
-      </div>
-    </div>
-    <div class="form-row">
-      <label for="node-config-input-multiWebHook" style="width:auto;">Support multiple chatbots</label>
-      <input type="checkbox" value="true" id="node-config-input-multiWebHook" class="redbot-checkbox">
-      <span class="redbot-form-hint">
-        Supports multiple xxxx Messenger chatbots using different callbacks (<em>http://my.host.com/redbot//1234abcd</em>)
-      </span>
     </div>
     <div class="redbot-separator">
       <div>RedBot settings</div>
