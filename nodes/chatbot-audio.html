@@ -22,6 +22,12 @@
     paletteLabel: 'Audio',
     label: function() {
       return this.name || 'Audio';
+    },
+    oneditprepare: function() {
+      $.RedBot.fetchPlatforms()
+        .done(function(platforms) {
+          $('#dialog-form').RB_Platforms();
+        });
     }
   });
 </script>
@@ -38,6 +44,7 @@
 <div class="form-row">
   <label for="node-input-duration">Duration</label>
   <input type="text" id="node-input-duration" placeholder="Duration in seconds">
+  <div class="redbot-platforms telegram"/>
 </div>
 </script>
 
@@ -70,5 +77,3 @@
 </tr>
 </tbody></table>
 </script>
-
-
