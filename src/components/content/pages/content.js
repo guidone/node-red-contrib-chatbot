@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, Fragment } from 'react';
 import gql from 'graphql-tag';
 import _ from 'lodash';
 import { Table, Icon, SelectPicker, ButtonGroup, Button, ButtonToolbar } from 'rsuite';
@@ -139,7 +139,8 @@ const Contents = ({
   fields,
   defaultContent,
   columns,
-  plugins
+  plugins,
+  sortable
  }) => {
   const { state } = useMCContext();
   const [filters, setFilters] = useState(null);
@@ -151,7 +152,8 @@ const Contents = ({
     saving,
     deleteContent,
     editContent,
-    createContent
+    createContent,
+    swapOrder
   } = useContents();
 
   labels = { ...LABELS, ...labels };
@@ -163,7 +165,7 @@ const Contents = ({
   // remove unwanted column
   const filtersSchema = FILTERS_SCHEMA
     .filter(({ name }) => hasField(fields, name))
-    .map(filter => ({ ...filter, label: columnField(columns, filter.name, 'label', filter.label)}))
+    .map(filter => ({ ...filter, label: columnField(columns, filter.name, 'label', filter.label)}));
 
   return (
     <PageContainer className="page-contents">
@@ -195,8 +197,8 @@ const Contents = ({
         ref={table}
         query={CONTENTS}
         variables={{ namespace, chatbotId: state.chatbotId }}
-        initialSortField="createdAt"
-        initialSortDirection="desc"
+        initialSortField={sortable ? 'order' : 'createdAt'}
+        initialSortDirection={sortable ? 'asc' : 'desc'}
         toolbar={(
           <ButtonToolbar>
             {_.isFunction(custom) ? custom({
@@ -236,20 +238,20 @@ const Contents = ({
           <Cell dataKey="id" />
         </Column>
 
-        <Column width={columnsSize.date} resizable sortable>
+        <Column width={columnsSize.date} resizable sortable={!sortable}>
           <HeaderCell>Date</HeaderCell>
           <Cell dataKey="createdAt">
             {({ createdAt }) => <SmartDate date={createdAt} />}
           </Cell>
         </Column>
 
-        <Column width={260} align="left" sortable flexGrow={1}>
+        <Column width={260} align="left" sortable={!sortable} flexGrow={1}>
           <HeaderCell>{labels.title}</HeaderCell>
           <Cell dataKey="title" />
         </Column>
 
         {hasField(fields, 'slug') && (
-          <Column width={columnsSize.slug} align="left" sortable resizable>
+          <Column width={columnsSize.slug} align="left" sortable={!sortable} resizable>
             <HeaderCell>{labels.slug}</HeaderCell>
             <Cell dataKey="slug" />
           </Column>
@@ -297,34 +299,76 @@ const Contents = ({
             ))
         )}
 
-        <Column width={80} fixed>
+        <Column width={sortable ? 150 : 80} fixed>
           <HeaderCell>Action</HeaderCell>
           <Cell>
-            {content => (
-              <ButtonGroup>
-                <Button
-                  disabled={disabled}
-                  size="xs"
-                  onClick={async () => {
-                    if (confirm(`Delete "${content.title}"?`)) {
-                      await deleteContent({ variables: { id: content.id }})
-                      table.current.refetch();
-                    }
-                  }}
-                >
-                  <Icon icon="trash" />
-                </Button>
-                <Button
-                  disabled={disabled}
-                  size="xs"
-                  onClick={() => {
-                    setContent(content)
-                  }}
-                >
-                  <Icon icon="edit2" />
-                </Button>
-            </ButtonGroup>
-            )}
+            {function(content) {
+              return (
+                <ButtonGroup>
+                  {sortable && (
+                    <Fragment>
+                      <Button
+                        disabled={!table.current.getPrevious(content.id)}
+                        size="xs"
+                        onClick={async () => {
+                          const previous = table.current.getPrevious(content.id);
+                          if (previous) {
+                            await swapOrder({
+                              variables: {
+                                id: content.id,
+                                withId: previous
+                              }
+                            });
+                            table.current.refetch();
+                          }
+                        }}
+                      >
+                        <Icon icon="up" />
+                      </Button>
+                      <Button
+                        disabled={!table.current.getNext(content.id)}
+                        size="xs"
+                        onClick={async () => {
+                          const next = table.current.getNext(content.id);
+                          if (next) {
+                            await swapOrder({
+                              variables: {
+                                id: content.id,
+                                withId: next
+                              }
+                            });
+                            table.current.refetch();
+                        }}
+                      }
+                      >
+                        <Icon icon="down" />
+                      </Button>
+                    </Fragment>
+                  )}
+                  <Button
+                    disabled={disabled}
+                    size="xs"
+                    onClick={async () => {
+                      if (confirm(`Delete "${content.title}"?`)) {
+                        await deleteContent({ variables: { id: content.id }})
+                        table.current.refetch();
+                      }
+                    }}
+                  >
+                    <Icon icon="trash" />
+                  </Button>
+                  <Button
+                    disabled={disabled}
+                    size="xs"
+                    onClick={() => {
+                      setContent(content)
+                    }}
+                  >
+                    <Icon icon="edit2" />
+                  </Button>
+              </ButtonGroup>
+            );
+          }}
           </Cell>
         </Column>
       </CustomTable>

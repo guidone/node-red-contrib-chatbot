@@ -43,7 +43,8 @@ const ContentsType = {
     })
   ])),
   fields: FieldsType,
-  customFieldsSchema: CustomFieldsSchemaType
+  customFieldsSchema: CustomFieldsSchemaType,
+  sortable: PropTypes.bool
 };
 
 const ContentViewType = {
