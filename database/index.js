@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 
 const GraphQLServer = require('./graphql');
+const { migrate } = require('../lib/utils/migration');
 
 let exportCache;
 
@@ -18,6 +19,9 @@ module.exports = mcSettings => {
     storage: dbPath,
     logging
   });
+
+  // execute migrations
+  migrate(sequelize, `${__dirname}/../migrations`);
 
   const sequelizeTasks = new Sequelize('queue', '', '', {
     host: 'localhost',
@@ -48,7 +52,8 @@ module.exports = mcSettings => {
     latitude: Sequelize.DOUBLE,
     longitude: Sequelize.DOUBLE,
     geohash: Sequelize.STRING,
-    chatbotId: Sequelize.STRING
+    chatbotId: Sequelize.STRING,
+    order: Sequelize.NUMBER
   }, {
     indexes: [
       { name: 'content_title', using: 'BTREE', fields: ['title'] },
@@ -58,6 +63,7 @@ module.exports = mcSettings => {
       { name: 'content_namespace', using: 'BTREE', fields: ['namespace'] },
       { name: 'content_geohash', using: 'BTREE', fields: ['geohash'] },
       { name: 'content_chatbotId', using: 'BTREE', fields: ['chatbotId'] },
+      { name: 'content_order', using: 'BTREE', fields: ['order'] }
     ]
   });
 

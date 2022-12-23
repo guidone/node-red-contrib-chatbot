@@ -48,6 +48,14 @@ mutation($content: InputContent!) {
 }
 `;
 
+const SWAP_CONTENT = gql`
+mutation($id: Int!, $withId: Int!) {
+  swapContent(id: $id, withId: $withId) {
+    id,
+    order
+  }
+}
+`;
 
 
 export default ({ onCompleted = () => {} } = {}) => {
@@ -63,14 +71,19 @@ export default ({ onCompleted = () => {} } = {}) => {
     editContent,
     { loading: editLoading, error: editError },
   ] = useMutation(EDIT_CONTENT, { onCompleted });
+  const [
+    swapOrder,
+    { loading: swapLoading, error: swapError }
+  ] = useMutation(SWAP_CONTENT, { onCompleted })
 
   return {
     //bootstrapping,
     //loading: loading,
-    saving: deleteLoading || createLoading || editLoading,
-    error: deleteError || editError || createError,
+    saving: deleteLoading || createLoading || editLoading || swapLoading,
+    error: deleteError || editError || createError || swapError,
     //data,
     deleteContent,
+    swapOrder,
     createContent: withoutParams(createContent, ['id', 'updatedAt', 'createdAt', '__typename', 'cid', 'category']),
     editContent: withoutParams(editContent, ['id', 'updatedAt', 'createdAt', '__typename', 'cid', 'category']),
     //refetch

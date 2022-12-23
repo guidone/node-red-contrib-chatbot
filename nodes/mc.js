@@ -16,6 +16,8 @@ const validators = require('../lib/helpers/validators');
 const uploadFromBuffer = require('../lib/helpers/upload-from-buffer');
 const chatbotIdGenerator = require('../lib/utils/chatbot-id-generator');
 const GetEnvironment = require('../lib/helpers/get-environment');
+const { getMigrations } = require('../lib/utils/migration');
+const { isEmptyDatabase } = require('../lib/utils/database');
 
 const { REDBOT_ENABLE_MISSION_CONTROL } = require('../src/env');
 
@@ -179,7 +181,7 @@ async function bootstrap(server, app, log, redSettings, RED) {
   const { graphQLServer, Category, Content, Admin,  ChatBot, Plugin, sequelize } = databaseSchema;
 
   // if database doesn't exist, then create it and run sync to create blank tables
-  if (!fs.existsSync(mcSettings.dbPath)) {
+  if (!fs.existsSync(mcSettings.dbPath) || await isEmptyDatabase(sequelize)) {
     await sequelize.sync({ force: true });
     await Admin.create({ username: 'admin', password: '', permissions: '*', chatbotIds: '*' });
     await ChatBot.create({ name: 'MyChatbot' });
@@ -194,6 +196,14 @@ async function bootstrap(server, app, log, redSettings, RED) {
 
 Some **formatting** is _allowed_!`
     });
+    // if database doesn't exist, then upgrade to the latest
+    // update the database to the latest
+    if (sequelize.isDefined('version')) {
+      console.log(lcd.timestamp() + 'Applying migrations...');
+      const migrations = getMigrations(`${__dirname}/../migrations`);
+      const Version = sequelize.model('version');
+      await Version.create({ version: _.last(migrations) });
+    }
   }
 
   app.use(session({

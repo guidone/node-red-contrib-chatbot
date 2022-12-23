@@ -1126,6 +1126,10 @@ module.exports = ({
       chatbotId: {
         type: GraphQLString,
         description: '',
+      },
+      order: {
+        type: GraphQLInt,
+        description: 'If specified, the order of the content'
       }
     }
   });
@@ -1623,6 +1627,31 @@ module.exports = ({
               await category.destroy();
             }
             return category;
+          }
+        },
+
+        swapContent: {
+          type: contentType,
+          args: {
+            id: { type: new GraphQLNonNull(GraphQLInt) },
+            withId: { type: new GraphQLNonNull(GraphQLInt) }
+          },
+          resolve: async (root, { id, withId }) => {
+            const content = await Content.findByPk(id);
+            const withContent = await Content.findByPk(withId);
+
+            if (content == null || withContent == null) {
+              throw `Unable to swap order of contents: ${id} and ${withId}`;
+            }
+            const contentOrder = content.order || content.id;
+            const withContentOrder = withContent.order || withContent.id;
+            // now swap
+            content.order = withContentOrder;
+            withContent.order = contentOrder;
+            await content.save();
+            await withContent.save();
+
+            return content;
           }
         },
 

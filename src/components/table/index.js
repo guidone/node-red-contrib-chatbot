@@ -111,7 +111,7 @@ const CustomTable = forwardRef(({
   });
 
   useImperativeHandle(ref, () => ({
-    refetch: async() => {
+    refetch: async () => {
       setSelection({ all: false, ids: [] });
       onSelect({ all: false, ids: [] });
       const { data } = await refetch();
@@ -124,6 +124,24 @@ const CustomTable = forwardRef(({
       if (page > totalPages) {
         setCursor({ ...cursor, page: totalPages });
       }
+    },
+    getPrevious: id => {
+      let previous;
+      data.rows.forEach((row, idx) => {
+        if (row.id === id && idx > 0) {
+          previous = data.rows[idx - 1].id;
+        }
+      });
+      return previous;
+    },
+    getNext: id => {
+      let next;
+      data.rows.forEach((row, idx) => {
+        if (row.id === id && idx < (data.rows.length - 1)) {
+          next = data.rows[idx + 1].id;
+        }
+      });
+      return next;
     }
   }));
 

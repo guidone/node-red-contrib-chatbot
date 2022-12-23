@@ -63,9 +63,10 @@ module.exports = function(RED) {
       }
 
       const mutate = isMutation(translatedQuery);
-      const query = gql`${translatedQuery}`;
 
       try {
+        const query = gql`${translatedQuery}`;
+
         const response = mutate ?
           await client.mutate({ mutation: query, variables }) :
           await client.query({ query, variables, fetchPolicy: 'network-only' });
