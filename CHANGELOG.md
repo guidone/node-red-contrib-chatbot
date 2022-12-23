@@ -1,3 +1,5 @@
+- **1.1.3** - Added sortable option to `contents` table, added migrations
+- **1.1.2** - Improved templating in [Untitled](https://www.notion.so/4ae98c5959704cd993a0cc602a17d68b) (i.e., use of `{{msg.myVariable}}`
 - **1.1.1** - Improved Queue node, fixed error missing `chatbotId` in SQLite context
 - **1.1.0** - Added output pins for [Untitled](https://www.notion.so/b8f3ea33948049cca7b94491061183f4) and [Untitled](https://www.notion.so/200e9ae1a1fd459baa29c76d6a4025e2) for better readability, fixed tracking of sender nodes in subflows, fix [Untitled](https://www.notion.so/fab15f139525400f8719ff182238eb4c)
 - **1.0.9** - [Untitled](https://www.notion.so/d7159ae828804a8784a639e6cdbdb95d) accepts parametrized bot node, [Untitled](https://www.notion.so/bbc3deb2d39a4b338fc6515eee337cd4) now accepts plain strings

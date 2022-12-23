@@ -75,7 +75,7 @@
 
 <script type="text/x-red" data-help-name="chatbot-dialogflow-token"><p>Insert here the access token for <strong>Dialogflow.ai</strong>.</p>
 <p>To get the token, click on the small cog in the left column and get them in the <em>Api Section</em></p>
-<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/f7a85ad3-6b30-476b-b1c2-28cacc6e61f0/example-dialogflow-2.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221215%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221215T082321Z&X-Amz-Expires=3600&X-Amz-Signature=d6824d4b2ea93cfa9af1fbff864b20c86c786548ab4750262ab569bf207d31a2&X-Amz-SignedHeaders=host&x-id=GetObject" alt=""></p>
+<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/f7a85ad3-6b30-476b-b1c2-28cacc6e61f0/example-dialogflow-2.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221223%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221223T120353Z&X-Amz-Expires=3600&X-Amz-Signature=54e96948a048e0d2703801ad8e3e2effc8e4c117b5899d8e63fe54ef957fe437&X-Amz-SignedHeaders=host&x-id=GetObject" alt=""></p>
 </script>
 
 <script type="text/javascript">
@@ -226,7 +226,7 @@ Can I have a moscow mule
 May I have a mojito
 </code></pre>
 <p>and verify that the words <em>“martini rosso”</em>, <em>“martini”</em>, <em>“moscow mule”</em> and <em>“mojito”</em> are already marked with the entity <code>Drinks</code>, if not, it’s possible to mark portions of the sentences with the appropriate entity. Then prepare a flow like this</p>
-<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/8e43dc8a-5c74-4f7d-a87a-abc9ca583fcb/example-dialogflow.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221215%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221215T082320Z&X-Amz-Expires=3600&X-Amz-Signature=032580487b0f95fcac997b8a0bb478b0be0c669aa4dd876581b858cffe09fbe1&X-Amz-SignedHeaders=host&x-id=GetObject" alt=""></p>
+<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/8e43dc8a-5c74-4f7d-a87a-abc9ca583fcb/example-dialogflow.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221223%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221223T120343Z&X-Amz-Expires=3600&X-Amz-Signature=01ef56d24e042938b8dac5fcd171b0c385647008a371b65b5f74e6d8f8d37d31&X-Amz-SignedHeaders=host&x-id=GetObject" alt=""></p>
 <p>If the user says <em>“I want a martini”</em>, the topic will be switched to <em>“want-drink”</em> and the output will be</p>
 <pre><code class="language-javascript">{
   payload: {
@@ -243,16 +243,16 @@ May I have a mojito
 <p>To configure the connection for <strong>Dialogflow.com</strong> follow this steps:</p>
 <ol>
 <li><p>Open the agent configuration (the cog in the left column) and switch to <em>“V2 API”</em> and click <em>“Save”</em></p>
-<p> <img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/9b539653-0563-4daf-a7d3-83bb58ec6cb0/dialog-flow-1.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221215%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221215T082320Z&X-Amz-Expires=3600&X-Amz-Signature=7634c4f1d6ccc90c9f1cba1ec391ce9c13c245ef72d3ce0af2885412c7c480b3&X-Amz-SignedHeaders=host&x-id=GetObject" alt=""></p>
+<p> <img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/9b539653-0563-4daf-a7d3-83bb58ec6cb0/dialog-flow-1.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221223%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221223T120343Z&X-Amz-Expires=3600&X-Amz-Signature=962119c2c86823dbb095e88c27a3997e1197a5da96604cfcfb4c78b4cc4b296a&X-Amz-SignedHeaders=host&x-id=GetObject" alt=""></p>
 </li>
 <li><p>Grab the <strong>Project ID</strong> and add a service account for the <em>Google Cloud Platform</em> (click on the “+”), wait until the <strong>Service Account</strong> appears and grab it</p>
-<p> <img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/86788245-5e90-43d1-a88a-385f96afbd14/dialog-flow-2.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221215%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221215T082320Z&X-Amz-Expires=3600&X-Amz-Signature=78ed9b1befcb8e351db34f6863672b5569dca14fd4e5bd2e3f1154c6ed95092d&X-Amz-SignedHeaders=host&x-id=GetObject" alt=""></p>
+<p> <img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/86788245-5e90-43d1-a88a-385f96afbd14/dialog-flow-2.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221223%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221223T120344Z&X-Amz-Expires=3600&X-Amz-Signature=daf1af7fec626880b61734b37a26c3d23120e77f5c97f5403505fcf65c3c676e&X-Amz-SignedHeaders=host&x-id=GetObject" alt=""></p>
 </li>
 <li><p>Click on the <strong>Service Account</strong>, you will be redirected to the <em>Google Cloud Platform</em> service account, click on the three dots of the last <em>Service Account</em> and generate a key</p>
-<p> <img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/9705198f-8b21-4e92-a877-d5151fe231aa/dialog-flow-3.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221215%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221215T082321Z&X-Amz-Expires=3600&X-Amz-Signature=c35e4615b615dec1bfdad1c4377033bef6175b07e1f33fe524ab6f047bc88f04&X-Amz-SignedHeaders=host&x-id=GetObject" alt=""></p>
+<p> <img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/9705198f-8b21-4e92-a877-d5151fe231aa/dialog-flow-3.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221223%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221223T120344Z&X-Amz-Expires=3600&X-Amz-Signature=c9970405bc149486cf18abf9b7db251d1ab2d1bd0ef763f091edbb38ae9d7936&X-Amz-SignedHeaders=host&x-id=GetObject" alt=""></p>
 </li>
 <li><p>Copy and paste the downloaded .JSON file in “Private Key” field in the <strong>Dialogflow.com</strong> connection in <strong>Node-RED</strong></p>
-<p> <img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/e422fb4c-e834-4450-bbb8-27c1b7a8804b/dialog-flow-4.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221215%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221215T082321Z&X-Amz-Expires=3600&X-Amz-Signature=ea5897fd2a92d42534f54bb92c23eadedd8883853a24823b12b6a13e12966cdb&X-Amz-SignedHeaders=host&x-id=GetObject" alt=""></p>
+<p> <img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/e422fb4c-e834-4450-bbb8-27c1b7a8804b/dialog-flow-4.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221223%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221223T120345Z&X-Amz-Expires=3600&X-Amz-Signature=491d5ab2a541e923da96c860386fe8c30934672571ea92f1ae57b9667d36214b&X-Amz-SignedHeaders=host&x-id=GetObject" alt=""></p>
 <p> See also <a href="https://www.notion.so/3663be9a404e4e3a9f3022bb66fe8d1e">Dialogflow token node</a></p>
 </li>
 </ol>
