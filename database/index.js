@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 
 const GraphQLServer = require('./graphql');
+const { migrate } = require('../lib/utils/migration');
 
 let exportCache;
 
@@ -18,6 +19,9 @@ module.exports = mcSettings => {
     storage: dbPath,
     logging
   });
+
+  // execute migrations
+  migrate(sequelize, `${__dirname}/../migrations`);
 
   const sequelizeTasks = new Sequelize('queue', '', '', {
     host: 'localhost',
