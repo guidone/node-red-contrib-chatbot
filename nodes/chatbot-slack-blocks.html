@@ -140,7 +140,7 @@
 }
 </code></pre>
 <p>A <code>response</code> type message can be chained directly to a [[Context node|Context-node]] to store the results directly in the current user chat context.</p>
-<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/1056fb7e-c18a-4972-aa30-0e3fca3bf150/slack-blocks.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221223%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221223T120417Z&X-Amz-Expires=3600&X-Amz-Signature=d3223de07bdf3be7a433c01985f44c8f4db83f757b7d3e68dc9edd886d2e32c8&X-Amz-SignedHeaders=host&x-id=GetObject" alt="Example Slack Blocks"></p>
+<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/1056fb7e-c18a-4972-aa30-0e3fca3bf150/slack-blocks.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221225%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221225T203507Z&X-Amz-Expires=3600&X-Amz-Signature=40a3d99e4825c1f1ac61fcc5c31b7ab5714482d1b8deb6fc27a000d586831b08&X-Amz-SignedHeaders=host&x-id=GetObject" alt="Example Slack Blocks"></p>
 <p>The JSON can be passed through the payload by the upstream node:</p>
 <pre><code class="language-javascript">msg.payload = {  
     blocks: &#39;[{ ... }]&#39;
