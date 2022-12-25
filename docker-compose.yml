@@ -25,6 +25,9 @@ services:
         source: ${REDBOT_DIR}/bin
         target: /usr/src/node-red/node_modules/node-red-contrib-chatbot/bin
       - type: bind
+        source: ${REDBOT_DIR}/migrations
+        target: /usr/src/node-red/node_modules/node-red-contrib-chatbot/migrations
+      - type: bind
         source: ${REDBOT_DIR}/database
         target: /usr/src/node-red/node_modules/node-red-contrib-chatbot/database
       - type: bind
