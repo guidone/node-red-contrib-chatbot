@@ -261,16 +261,20 @@ module.exports = ({
           limit: { type: GraphQLInt },
         },
         resolve: async function(root, { offset = 0, limit = 10 }) {
-          const [tasks] = await sequelizeTasks.query(
-            `SELECT * FROM :queue
-            ORDER BY priority DESC, id ASC
-            LIMIT :offset, :limit
-            `,
-            {
-              replacements: { queue: root.name, offset, limit }
-            }
-          );
-          return tasks;
+          try {
+            const [tasks] = await sequelizeTasks.query(
+              `SELECT * FROM :queue
+              ORDER BY priority DESC, id ASC
+              LIMIT :offset, :limit
+              `,
+              {
+                replacements: { queue: root.name, offset, limit }
+              }
+            );
+            return tasks;
+          } catch(e) {
+            throw queueErrorMessage(root.name);
+          }
         }
       }
     })
@@ -1253,6 +1257,14 @@ module.exports = ({
     }
   });
 
+  const queueErrorMessage = queue => {
+    if (queue === 'tasks') {
+      return 'The default queue still doesn\'t exist. Add a \'MC queue\' node with an empty queue name and add some elements';
+    } else {
+      return `Queue '${queue}' doesn't exist yet. Add a 'MC queue' node with the queue name '${queue}' and add some elements`;
+    }
+  }
+
   const taskCounterType = new GraphQLObjectType({
     name: 'TaskCounters',
     description: 'Task Counters',
@@ -1264,13 +1276,17 @@ module.exports = ({
           queue: { type: GraphQLString }
         },
         resolve: async(root, { queue }) => {
-          const [count] = await sequelizeTasks.query(
-            'SELECT count(*) as \'total\' FROM :queue;',
-            {
-              replacements: { queue }
-            }
-          );
-          return !_.isEmpty(count) ? count[0].total : 0;
+          try {
+            const [count] = await sequelizeTasks.query(
+              'SELECT count(*) as \'total\' FROM :queue;',
+              {
+                replacements: { queue }
+              }
+            );
+            return !_.isEmpty(count) ? count[0].total : 0;
+          } catch(e) {
+            throw queueErrorMessage(queue);
+          }
         }
       }
     }

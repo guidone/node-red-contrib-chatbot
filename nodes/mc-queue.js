@@ -2,7 +2,7 @@ const _ = require('underscore');
 const Queue = require('better-queue');
 
 const RegisterType = require('../lib/node-installer');
-const SQLiteStore = require('../lib/queues-store/index');
+const { SQLiteStore } = require('../lib/queues-store/index');
 const Evaluate = require('../lib/evaluate');
 const validators = require('../lib/helpers/validators');
 

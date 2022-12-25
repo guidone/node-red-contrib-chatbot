@@ -18,7 +18,7 @@ describe('Message template', () => {
     assert.equal(evaluate('chatId - {{payload.chatId}}'), 'chatId - 123456');
     assert.equal(evaluate('{{payload.name}} - {{payload.chatId}}'), 'Guido - 123456');
     assert.equal(evaluate('{{fullName}}'), 'My fullname is Guido And Something');
-  })
+  });
 
   it('Leave a string without token intact', () => {
     const msg = RED.createMessage();
@@ -333,6 +333,32 @@ describe('Message template', () => {
     await chatContext.set('language', 'it');
     assert.equal(await template('{{tx.ns.translate_1}}'), 'ciao');
     assert.equal(await template('{{tx.ns.translate_2}}'), 'prego');
+  });
+
+  it('should evaluate a string supporting cirillic chara', () => {
+    const evaluate = Evaluate({
+      payload: {
+        Цена: '123456',
+        name: 'Guido'
+      },
+      fullName: 'My fullname is Guido And Something'
+    });
+
+    assert.equal(evaluate('{{payload.Цена}}'), '123456');
+    assert.equal(evaluate('chatId - {{payload.Цена}}'), 'chatId - 123456');
+    assert.equal(evaluate('{{payload.name}} - {{payload.Цена}}'), 'Guido - 123456');
+  });
+
+  it('Simple replacement of a cirillic token', () => {
+    const msg = RED.createMessage();
+    const node = {};
+    RED.nodes.createNode(node, {});
+    msg.chat().set({Цена: 'guido'});
+    const template = MessageTemplate(msg, node);
+    return template('I am a template for {{Цена}} user')
+      .then(result => {
+        assert.equal(result, 'I am a template for guido user');
+      });
   });
 
 });
