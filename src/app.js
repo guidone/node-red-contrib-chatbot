@@ -124,6 +124,8 @@ import * as globalUseHttp from 'use-http';
 import * as globalGraphQLTag from 'graphql-tag';
 import * as globalReactApollo from 'react-apollo';
 import { useNodeRedSocket as globalUseNodeRedSocket } from './hooks/socket';
+import { Link as globalLink } from 'react-router-dom';
+import * as globalClassnames from 'classnames';
 const globalUseSocket = { useNodeRedSocket: globalUseNodeRedSocket };
 
 
@@ -136,6 +138,8 @@ window.globalLibs['use-http'] = globalUseHttp;
 window.globalLibs['graphql-tag'] = globalGraphQLTag;
 window.globalLibs['react-apollo'] = globalReactApollo;
 window.globalLibs['hooks-socket'] = globalUseSocket;
+window.globalLibs['react-router-dom'] = { Link: globalLink };
+window.globalLibs['classnames'] = globalClassnames;
 
 const initialState = {
   user: null,
