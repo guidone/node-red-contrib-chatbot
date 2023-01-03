@@ -31,10 +31,16 @@ module.exports = function(RED) {
       const template = MessageTemplate(msg, node, { preserveNumbers: true });
       const transport = getTransport(msg);
       // get vars
-      let params = extractValue('params', 'params', node, msg)
+      let params = extractValue('params', 'params', node, msg);
+
       template(params.filter(param => param.platform === transport || param.platform === 'all'))
         .then(p => {
-          const params = p.reduce((accumulator, param) => ({ ...accumulator, [param.name]: param.value }), {});
+          // keep params set by a previous params node (if it's an object, an array means params were set
+          // by an upstream node as configuration for the current one)
+          const params = p.reduce(
+            (accumulator, param) => ({ ...accumulator, [param.name]: param.value }),
+            _.isObject(msg.payload.params) && !_.isArray(msg.payload.params) ? { ...msg.payload.params } : {}
+          );
           send({
             ...msg,
             payload: _.isArray(msg.payload) ?
