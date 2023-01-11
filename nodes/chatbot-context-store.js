@@ -64,7 +64,7 @@ module.exports = function(RED) {
     // collect message types
     result.messageTypes = _(ChatPlatform.getMessageTypes()).sortBy(type => type.label);
     // collect events
-    result.eventTypes = _(ChatPlatform.getEvents()).sortBy(event => event.name);
+    result.eventTypes = _(ChatPlatform.getEvents()).sortBy(event => event.value);
     // collect params
     result.params = ChatPlatform.getParams();
     // add port

@@ -90,10 +90,21 @@
             + '" class="' + $.RedBot.platformClass('select', node.messageTypes[idx].platforms) + '">'
             + node.messageTypes[idx].label + '</option>';
         }
-        for(idx = 0; idx < node.eventTypes.length; idx++) {
-          eventTypes += '<option value="' + node.eventTypes[idx].value
-            + '" class="' + $.RedBot.platformClass('select', node.eventTypes[idx].platforms) + '">'
-            + node.eventTypes[idx].value + '</option>';
+        // build events types
+        for(idx = 0; idx < node.platforms.length; idx++) {
+          var platformEvents = '';
+          for(k = 0; k < node.eventTypes.length; k++) {
+            if (node.eventTypes[k].platforms.includes(node.platforms[idx].id)) {
+              platformEvents += '<option value="' + node.eventTypes[k].value + '"'
+                + ' class="' + $.RedBot.platformClass('select', node.eventTypes[idx].platforms) + '">'
+                + node.eventTypes[k].value + ': ' + node.eventTypes[k].label + '</option>';
+            }
+          }
+          if (platformEvents !== '') {
+            eventTypes += '<optgroup label="' + node.platforms[idx].name + '">'
+              + platformEvents
+              + '</optgroup>';
+          }
         }
         // build transport options
         var transportOptions = '';
