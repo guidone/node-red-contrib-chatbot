@@ -47,6 +47,7 @@
             + '  <option value="outbound">Message is outbound</option>'
             + '  <option value="inbound">Message is inbound</option>'
             + '  <option value="messageEvent">Message is event ...</option>'
+            + '  <option value="messageAnyEvent">Message is an event</option>'
             + '  <option value="messageType">Message is type ...</option>'
             + '  <option value="notMessageType">Message is not type ...</option>'
             + '</optgroup>'
@@ -410,6 +411,8 @@
         return 'Message type is "' + ($.RedBot.validate.notEmpty(rule.messageType) ? rule.messageType : '...') + '"';
       } else if (rule.type === 'messageEvent') {
         return 'Message type is event "' + ($.RedBot.validate.notEmpty(rule.event) ? rule.event : '...') + '"';
+      } else if (rule.type === 'messageAnyEvent') {
+        return 'Message type is an event';
       } else if (rule.type === 'notMessageType') {
         return 'Message type is not "' + ($.RedBot.validate.notEmpty(rule.messageType) ? rule.messageType : '...') + '"';
       } else if (rule.type === 'catchAll') {

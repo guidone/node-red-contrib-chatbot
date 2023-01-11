@@ -191,6 +191,18 @@ const Types = {
     });
   },
 
+  messageAnyEvent(rule, message) {
+    return new Promise(function(resolve, reject) {
+      if (message != null && message.payload != null) {
+        if (message.payload.type === 'event') {
+          resolve(rule);
+        } else {
+          reject();
+        }
+      }
+    });
+  },
+
   notMessageType(rule, message) {
     return new Promise(function(resolve, reject) {
       if (message != null && message.payload != null) {

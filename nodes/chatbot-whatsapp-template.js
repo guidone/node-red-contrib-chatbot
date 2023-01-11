@@ -50,10 +50,6 @@ module.exports = function(RED) {
       let templateName = extractValue('string', 'template', node, msg);
       let language = extractValue('string', 'language', node, msg);
 
-      // TODO remove
-      console.log('bodyParams', paramsBody)
-      console.log('template', templateName)
-
       template({ paramsBody, paramsHeader, templateName, language })
         .then(({ paramsBody, paramsHeader, templateName, language }) => {
 
