@@ -1,8 +1,6 @@
-const _ = require('underscore');
 const RegisterType = require('../lib/node-installer');
 const { ChatExpress } = require('chat-platform');
 const {
-  enrichFilePayload,
   isValidMessage,
   getChatId,
   getMessageId,
