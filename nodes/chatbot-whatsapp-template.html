@@ -315,7 +315,7 @@
     },
     inputs: 1,
     outputs: 1,
-    icon: 'chatbot-sticker.png',
+    icon: 'font-awesome/fa-file-text',
     paletteLabel: 'Whatsapp Template',
     label: function() {
       return this.name || 'Whatsapp Template';
@@ -324,7 +324,7 @@
       // body
       $('#node-input-paramsBody-container')
         .css('min-width','450px')
-        .css('min-height','100px')
+        .css('min-height','200px')
         .editableList({
           addItem: function(container, i, item) {
             $(container).RB_mountWhatsappParams({
@@ -343,7 +343,7 @@
       // header
       $('#node-input-paramsHeader-container')
         .css('min-width','450px')
-        .css('min-height','100px')
+        .css('min-height','200px')
         .editableList({
           addItem: function(container, i, item) {
             $(container).RB_mountWhatsappParams();
