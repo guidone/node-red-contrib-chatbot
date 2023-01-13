@@ -1,3 +1,5 @@
+- **1.1.6** - Add support for spoiler images, video and text in Telegram
+- **1.1.5** - Fixed global imports in **Mission Control** for **Mass Contact** plugin
 - **1.1.4** - Fix templates with non latin chars, fix missing queue error
 - **1.1.3** - Added sortable option to `contents` table, added migrations
 - **1.1.2** - Improved templating in [Untitled](https://www.notion.so/4ae98c5959704cd993a0cc602a17d68b) (i.e., use of `{{msg.myVariable}}`
