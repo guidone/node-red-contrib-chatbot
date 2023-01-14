@@ -9,9 +9,6 @@
       command: {
         value: 'set'
       },
-      name: {
-        value: ''
-      },
       items: {
         value: [],
         validate: function(items) {
@@ -25,6 +22,11 @@
           return valid;
         }
       },
+      bot: {
+        value: "",
+        type: 'chatbot-facebook-node',
+        required: true
+      },
       message: {
         value: ''
       }
@@ -32,10 +34,8 @@
     inputs: 1,
     outputs: 1,
     paletteLabel: 'Messenger Menu',
-    icon: 'chatbot-menu.png',
-    label: function() {
-      return this.name || 'Messenger Menu';
-    },
+    icon: 'messenger.svg',
+    label: 'Messenger Menu',
     oneditsave: function() {
       var items = $("#node-input-items-container").editableList('items');
       var node = this;
@@ -46,6 +46,7 @@
       }
     },
     oneditprepare: function() {
+      var node = this;
       $('#node-input-command').change(function() {
         if ($(this).val() === 'set') {
           $('.form-row-list, .form-row-items, .form-row-composer, .form-row-buttons').show();
@@ -68,11 +69,14 @@
         removable: true,
         sortable: true
       });
-      if (this.items != null) {
-        this.items.forEach(function(item) {
-          $('#node-input-items-container').editableList('addItem', item);
+      $.RedBot.fetchPlatforms()
+        .done(function() {
+          if (node.items != null) {
+            node.items.forEach(function(item) {
+              $('#node-input-items-container').editableList('addItem', item);
+            });
+          }
         });
-      }
     },
     oneditresize: function() {
       var dialogForm = $('#dialog-form');
@@ -87,9 +91,9 @@
 </script>
 
 <script type="text/x-red" data-template-name="chatbot-messenger-menu">
-<div class="form-row form-row-name">
-  <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-  <input type="text" id="node-input-name" placeholder="Name">
+<div class="form-row form-row-bot">
+  <label for="node-input-bot" style="display:block;width:100%;">Facebook Bot</label>
+  <input type="text" id="node-input-bot" placeholder="Bot">
 </div>
 <div class="form-row form-row-command">
   <label for="node-input-command">Action</label>
@@ -119,67 +123,67 @@
 </ul>
 <p>It also allows the disable the text area (user will interact only with menu with the chatbot) or to delete a previous menu. <strong>On desktop, remember to reload the chat window in order to see the menu changes</strong>.</p>
 <p>The menu items can be passed through the payload by the upstream node:</p>
-<pre><code class="language-javascript">msg.payload = [  
-    {    
-        type: &#39;url&#39;,    
-        label: &#39;JavaScript Jedi&#39;,    
-        url: &#39;http://javascript-jedi.com&#39;,    
-        webview_height_ratio: &#39;full&#39; // tall|full|compact  
-    },  
-    {    
-        type: &#39;postback&#39;,    
-        label: &#39;Help&#39;,    
-        value: &#39;/help&#39;  
+<pre><code class="language-javascript">msg.payload = [
+    {
+        type: &#39;url&#39;,
+        label: &#39;JavaScript Jedi&#39;,
+        url: &#39;http://javascript-jedi.com&#39;,
+        webview_height_ratio: &#39;full&#39; // tall|full|compact
+    },
+    {
+        type: &#39;postback&#39;,
+        label: &#39;Help&#39;,
+        value: &#39;/help&#39;
     }
 ];
 return msg;
 </code></pre>
 <p>otherwise all parameters can be passed by the upstream node</p>
 <pre><code class="language-javascript">msg.payload = {
-    composerInputDisabled: true,  
-    command: &#39;set&#39;,  
-    items: [    
-        { 
-            type: &#39;url&#39;,      
-            label: &#39;JavaScript Jedi&#39;,      
-            url: &#39;http://javascript-jedi.com&#39;,      
-            webview_height_ratio: &#39;full&#39; // tall|full|compact    
-        },    
-        {      
-            type: &#39;postback&#39;,      
-            label: &#39;Help&#39;,      
-            value: &#39;/help&#39;    
-        }  
+    composerInputDisabled: true,
+    command: &#39;set&#39;,
+    items: [
+        {
+            type: &#39;url&#39;,
+            label: &#39;JavaScript Jedi&#39;,
+            url: &#39;http://javascript-jedi.com&#39;,
+            webview_height_ratio: &#39;full&#39; // tall|full|compact
+        },
+        {
+            type: &#39;postback&#39;,
+            label: &#39;Help&#39;,
+            value: &#39;/help&#39;
+        }
     ]
 };
 return msg;
 </code></pre>
 <p>A maximum 3 menu items are allowed. If more items are needed, it’s possible to create nested menus via <code>Function node</code>:</p>
-<pre><code class="language-javascript">msg.payload = {  
-    composerInputDisabled: true,  
-    command: &#39;set&#39;,  
-    items: [    
-        {      
-            type: &#39;url&#39;,      
-            label: &#39;JavaScript Jedi&#39;,      
-            url: &#39;http://javascript-jedi.com&#39;,      
-            webview_height_ratio: &#39;full&#39; // tall|full|compact    
-        },   
-        {      
-            label: &#39;Sub Menu&#39;,      
-            items: [        
-                {          
-                    type: &#39;postback&#39;,          
-                    label: &#39;Postback 1&#39;,          
-                    value: &#39;postback1&#39;        
-                },        
-                {          
-                    type: &#39;postback&#39;,          
-                    label: &#39;Postback 2&#39;,          
-                    value: &#39;postback2&#39;        
-                }      
-            ]    
-        }  
+<pre><code class="language-javascript">msg.payload = {
+    composerInputDisabled: true,
+    command: &#39;set&#39;,
+    items: [
+        {
+            type: &#39;url&#39;,
+            label: &#39;JavaScript Jedi&#39;,
+            url: &#39;http://javascript-jedi.com&#39;,
+            webview_height_ratio: &#39;full&#39; // tall|full|compact
+        },
+        {
+            label: &#39;Sub Menu&#39;,
+            items: [
+                {
+                    type: &#39;postback&#39;,
+                    label: &#39;Postback 1&#39;,
+                    value: &#39;postback1&#39;
+                },
+                {
+                    type: &#39;postback&#39;,
+                    label: &#39;Postback 2&#39;,
+                    value: &#39;postback2&#39;
+                }
+            ]
+        }
     ]
 };
 return msg;
@@ -255,7 +259,3 @@ return msg;
 </tr>
 </tbody></table>
 </script>
-
-
-
-
