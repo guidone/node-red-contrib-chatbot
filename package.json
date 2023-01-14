@@ -84,7 +84,6 @@
       "chatbot-support-table": "./nodes/chatbot-support-table.js",
       "chatbot-alexa-card": "./nodes/chatbot-alexa-card.js",
       "chatbot-alexa-directive": "./nodes/chatbot-alexa-directive.js",
-      "chatbot-broadcast": "./nodes/chatbot-broadcast.js",
       "chatbot-alexa-speech": "./nodes/chatbot-alexa-speech.js",
       "chatbot-slack-blocks": "./nodes/chatbot-slack-blocks.js",
       "chatbot-nlp": "./nodes/chatbot-nlp.js",

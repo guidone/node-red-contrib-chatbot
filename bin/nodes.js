@@ -240,11 +240,6 @@ module.exports = [
     nodeType: 'chatbot-extend'
   },
   {
-    notionUrl: 'https://www.notion.so/redbot/Messenger-Broadcast-node-79a3de9e5f6d4c3faf8561997092ab56',
-    nodeFile: 'chatbot-broadcast.html',
-    nodeType: 'chatbot-broadcast'
-  },
-  {
     notionUrl: 'https://www.notion.so/redbot/Support-table-6cfd957b91f642b5894a76e2b15feb05',
     nodeFile: 'chatbot-support-table.html',
     nodeType: 'chatbot-support-table'
