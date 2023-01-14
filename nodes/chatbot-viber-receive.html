@@ -32,7 +32,7 @@
       $("#node-config-input-polling").spinner({min: 0, step: 100});
       var node = this;
       var nodeRedUrl = $.RedBot.getNodeRedUrl();
-      
+
       // fetch available context providers
       $.get(nodeRedUrl + 'redbot/globals')
         .done(function(response) {
@@ -142,7 +142,7 @@
     inputs: 0,
     outputs: 1,
     icon: 'chatbot-receiver.png',
-    paletteLabel: 'Viber In',
+    paletteLabel: 'Viber Receiver',
     label: function () {
       return 'Viber Receiver';
     }
@@ -195,7 +195,7 @@
     inputs: 1,
     outputs: 1,
     icon: 'chatbot-sender.png',
-    paletteLabel: 'Viber Out',
+    paletteLabel: 'Viber Sender',
     label: function () {
       return 'Viber Sender';
     },
@@ -236,5 +236,3 @@
 <script type="text/x-red" data-help-name="chatbot-viber-send">
   <p>Output node for Viber.</p>
 </script>
-
-

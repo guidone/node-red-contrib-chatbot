@@ -35,10 +35,10 @@ module.exports = function(RED) {
       if (node.chat) {
         this.status({fill: 'green', shape: 'ring', text: 'connected'});
       } else {
-        node.warn('Missing or incomplete configuration in Facebook Receiver');
+        node.warn('Missing or incomplete configuration in Messenger Receiver');
       }
     } else {
-      node.warn('Missing configuration in Facebook Broadcast');
+      node.warn('Missing configuration in Messenger Broadcast');
     }
 
     this.on('input', function(msg) {

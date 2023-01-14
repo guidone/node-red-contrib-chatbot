@@ -138,7 +138,7 @@
     inputs: 1,
     outputs: 1,
     icon: 'chatbot-receiver.png',
-    paletteLabel: 'Universal In',
+    paletteLabel: 'Universal Receiver',
     label: function () {
       return 'Universal Receiver';
     }
@@ -176,13 +176,13 @@
 </ol>
 <p>Like explained in <a href="https://www.notion.so/04668c7a415547bc9f34be57dd063db2">Extend node</a>  a connector handles inbound messages with a chain of middlewares: chunk of codes executed sequentially in order to accomplish steps 1 to 3. In order to keep the code simple and maintainable is a good practice to let middleware takes care of detecting and translating one kind of message in each middleware, as soon as a message has been <em>resolved</em> (means that a message <em>type</em> is assigned to the incoming message), the rest of middlewares chain is skipped and the message is injected in the <strong>RedBot</strong>’s flow.</p>
 <p>For example suppose that a SMS gateway calls the <strong>Node-RED</strong> instance web-hook with this payload</p>
-<pre><code class="language-javascript">{  
-    sms: {    
-        from: &#39;+39347123456&#39;,    
-        to: &#39;+39338654321&#39;,    
-        id: &#39;_xyz&#39;,    
-        text: &#39;Hello there!&#39;,    
-        sender_name: &#39;Alan Turing&#39;  
+<pre><code class="language-javascript">{
+    sms: {
+        from: &#39;+39347123456&#39;,
+        to: &#39;+39338654321&#39;,
+        id: &#39;_xyz&#39;,
+        text: &#39;Hello there!&#39;,
+        sender_name: &#39;Alan Turing&#39;
     }
 }
 </code></pre>
@@ -191,14 +191,14 @@
 // variables of a RedBot message like .api(), .chat(), chatId, etc
 node.chat.onChatId(message =&gt; message.sms.from);
 node.chat.onMessageId(message =&gt; message.sms.id);
-node.chat.in(message =&gt; {  
-    return new Promise((resolve, reject) =&gt; {    
-        // check that the incoming payload is an actual &quot;text&quot; message    
+node.chat.in(message =&gt; {
+    return new Promise((resolve, reject) =&gt; {
+        // check that the incoming payload is an actual &quot;text&quot; message
         if (message.originalMessage.sms != null &amp;&amp; message.originalMessage.sms.text != &#39;&#39;) {
-      message.payload.type = &#39;message&#39;;      
-            message.payload.content = message.originalMessage.sms.text;    
-        }    
-        resolve(message);  
+      message.payload.type = &#39;message&#39;;
+            message.payload.content = message.originalMessage.sms.text;
+        }
+        resolve(message);
     });
 });
 </code></pre>
@@ -206,19 +206,19 @@ node.chat.in(message =&gt; {
 <p>In the example above there is additional information in the payload, it’s a good practice to use the chat context for storing this information, for example</p>
 <pre><code class="language-javascript">node.chat.onChatId(payload =&gt; payload.sms.from);
 node.chat.onMessageId(payload =&gt; payload.sms.id);
-node.chat.in(message =&gt; {  
-    const chat = message.chat();  
-    // check that the incoming payload is an actual message, if not return and resolve immediately  
-    // this will skip to the next middleware  
-    if (message.originalMessage.sms == nulll || message.originalMessage.sms.text == null) {    
-        return Promise.resolve(message);  
-    }  
-    // not all context provider return a promise  
-    return Promise.resolve(chat.set(&#39;name&#39;, message.originalMessage.sms.sender_name))    
-    .then(() =&gt; {      
-        message.payload.type = &#39;message&#39;;      
-        message.payload.content = message.originalMessage.sms.text;      
-        return message;    
+node.chat.in(message =&gt; {
+    const chat = message.chat();
+    // check that the incoming payload is an actual message, if not return and resolve immediately
+    // this will skip to the next middleware
+    if (message.originalMessage.sms == nulll || message.originalMessage.sms.text == null) {
+        return Promise.resolve(message);
+    }
+    // not all context provider return a promise
+    return Promise.resolve(chat.set(&#39;name&#39;, message.originalMessage.sms.sender_name))
+    .then(() =&gt; {
+        message.payload.type = &#39;message&#39;;
+        message.payload.content = message.originalMessage.sms.text;
+        return message;
         });
 });
 </code></pre>
@@ -226,17 +226,17 @@ node.chat.in(message =&gt; {
 <p>If none of the middlewares in the inbound chain is able to infer a message type and fill in the <em>type</em> and <em>content</em> of the neutral message, then the message is discarded (enable the <em>debug</em> option in the receiver configuration to log the discarded messages in the system console).</p>
 <p>The <code>Universal sender node</code> has always an output pin used for following up the conversation or to chain multiple messages to be sent in a specific order. In the example above the code to send a SMS message to a custom API</p>
 <pre><code class="language-javascript">// this middleware handles the message of type &#39;message&#39;
-node.chat.out(&#39;message&#39;, message =&gt; {  
+node.chat.out(&#39;message&#39;, message =&gt; {
     return request(
-        &#39;https://my.api/send&#39;, 
-        data: {    
-            text: message.payload.content,    
-            to: message.payload.chatId  
+        &#39;https://my.api/send&#39;,
+        data: {
+            text: message.payload.content,
+            to: message.payload.chatId
         }
-    ).then(response =&gt; {    
-        message.status = response.statusCode;    
-            // this make the chain of promises returns the message object enriched with the status code    // returned by API to be used by a downstream node    
-        return message;  
+    ).then(response =&gt; {
+        message.status = response.statusCode;
+            // this make the chain of promises returns the message object enriched with the status code    // returned by API to be used by a downstream node
+        return message;
     });
 });
 </code></pre>
@@ -275,7 +275,7 @@ node.chat.out(&#39;message&#39;, message =&gt; {
     inputs: 1,
     outputs: 1,
     icon: 'chatbot-sender.png',
-    paletteLabel: 'Universal Out',
+    paletteLabel: 'Universal Sender',
     label: function () {
       return 'Universal Sender';
     }
@@ -311,5 +311,3 @@ node.chat.out(&#39;message&#39;, message =&gt; {
 <script type="text/x-red" data-help-name="chatbot-universal-send">
   <p>Output node for Universal connector.</p>
 </script>
-
-
