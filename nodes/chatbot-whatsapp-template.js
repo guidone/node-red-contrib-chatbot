@@ -44,6 +44,7 @@ module.exports = function(RED) {
         done(`Node "chatbot-my-node" is not supported by ${transport} transport`);
         return;
       }
+
       // get vars
       let paramsBody = extractValue('whatsappTemplateParams', 'paramsBody', node, msg);
       let paramsHeader = extractValue('whatsappTemplateParams', 'paramsHeader', node, msg);
@@ -52,7 +53,6 @@ module.exports = function(RED) {
 
       template({ paramsBody, paramsHeader, templateName, language })
         .then(({ paramsBody, paramsHeader, templateName, language }) => {
-
           sendPayload({
             type: 'whatsapp-template',
             paramsBody,

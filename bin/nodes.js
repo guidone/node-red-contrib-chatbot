@@ -308,5 +308,10 @@ module.exports = [
     notionUrl: 'https://www.notion.so/redbot/MC-Queue-2ac745c9314f4f17b61f31b6a517586f',
     nodeFile: 'mc-queue.html',
     nodeType: 'mc-queue'
+  },
+  {
+    notionUrl: 'https://www.notion.so/redbot/Whatsapp-Template-2cf0f96ed14b4f72b3d4a8cee58bc2b0',
+    nodeFile: 'chatbot-whatsapp-template',
+    nodeType: 'whatsapp-template'
   }
 ];
