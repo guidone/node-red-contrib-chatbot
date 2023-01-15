@@ -60,7 +60,6 @@
       "chatbot-ask": "./nodes/chatbot-ask.js",
       "chatbot-inline-buttons": "./nodes/chatbot-inline-buttons.js",
       "chatbot-quick-replies": "./nodes/chatbot-quick-replies.js",
-      "chatbot-generic-template": "./nodes/chatbot-generic-template.js",
       "chatbot-request": "./nodes/chatbot-request.js",
       "chatbot-log": "./nodes/chatbot-log.js",
       "chatbot-qrcode": "./nodes/chatbot-qrcode.js",

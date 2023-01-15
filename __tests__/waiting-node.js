@@ -1,7 +1,6 @@
-var _ = require('underscore');
-var assert = require('chai').assert;
-var RED = require('../lib/red-stub')();
-var ActionBlock = require('../nodes/chatbot-waiting');
+const assert = require('chai').assert;
+const RED = require('../lib/red-stub')();
+const ActionBlock = require('../nodes/chatbot-waiting');
 
 describe('Chat waiting node', function() {
 
@@ -39,4 +38,3 @@ describe('Chat waiting node', function() {
   });
 
 });
-

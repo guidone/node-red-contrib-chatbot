@@ -15,11 +15,6 @@ module.exports = [
     notionUrl: 'https://www.notion.so/redbot/MC-GraphQL-node-0dc75116dee9458486e1a4f09fc3f44b'
   },
   {
-    notionUrl: 'https://www.notion.so/redbot/Generic-Template-node-1102a94bf9d445178dfb621fe3c91b58',
-    nodeFile: 'chatbot-generic-template.html',
-    nodeType: 'chatbot-generic-template'
-  },
-  {
     notionUrl: 'https://www.notion.so/redbot/Quick-Replies-node-200e9ae1a1fd459baa29c76d6a4025e2',
     nodeFile: 'chatbot-quick-replies.html',
     nodeType: 'chatbot-quick-replies'
