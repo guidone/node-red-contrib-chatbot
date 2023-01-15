@@ -466,5 +466,137 @@
 </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-whatsapp-template">
+<script type="text/x-red" data-help-name="chatbot-whatsapp-template"><p><strong>Whatsapp</strong> Message templates are used to initiate conversations with customers. Unlike other types of messages, message templates are the only type of message that can be sent to customers who have yet to initiate a conversation with you, or who have not sent you a message in an existing conversation thread within the last 24 hours.</p>
+<p>Message templates must be approved before you can send them to customers. In addition, templates may be disabled automatically based on customer feedback. Once disabled, a message template cannot be sent to customers again until its quality rating has improved or it no longer violates Facebook <a href="https://l.facebook.com/l.php?u=https%3A%2F%2Fwww.whatsapp.com%2Flegal%2Fbusiness-policy%2F%3Ffbclid%3DIwAR0mEqGfaYvRxsP1fKntp2sx2dFpqAukYe2clzYMtlhmpufrEl_9LEWBR04&amp;h=AT0Z0AugObraxIqwT8PoV76tFyyhht-wFGonPGE0q151h9nY1HlUmTG1u1Q_Rb8nP5Wa1afsTAkp92uISpJEkuxYPq5D-bhj5g4pep7YuhaNyeapfyrgidlWMtTsH8enaGs_zG5h">business</a> or <a href="https://l.facebook.com/l.php?u=https%3A%2F%2Fwww.whatsapp.com%2Flegal%2Fcommerce-policy%2F%3Ffbclid%3DIwAR16tUOGOhWwDQK8BPEZhsv8ZX-SJUP61d--YrwTDIWWAN5i76PLpC2c4B4&amp;h=AT0CzvI2HKF0tl7Z-jagZ_1hS38V40BDtjIjFQjLVdMgLycSiGQ_EzDFrslDfBbTfYcee5uLeOmoKkVONwG3vVoIniKNAIK5Cq4CtRBzanzHEhFZjkW2aQj5BWF0K7fneYUZ7Ca0">commerce</a> policies.</p>
+<p>Enter the templates page from the <em>Whatsapp</em> → <em>Quickstart</em> section (pay attention you’re editing the templates for the right Account ID in the top right drop-down). </p>
+<p>Add params in header and body section, should match the number or params of the template, otherwise you’ll get a <code>WhatsAPI error: (#132000) Number of parameters does not match the expected number of params</code>. </p>
+<p>You can use string interpolation in any input box, using chat context variables or payload variables (i.e., <code>{{myContextVariable}}</code>, <code>{{payload.aVariableInPayload}}</code> or <code>{{msg.anotherVariableInInputMessage}}</code>. </p>
+<p>In order to use a Whatsapp template in a upstream <code>Function node</code></p>
+<pre><code class="language-javascript">return {
+  ...msg,
+  payload: {
+    template: &#39;hello_world&#39;,
+    language: &#39;en_US&#39;,
+    paramsBody: [
+      {
+        type: &#39;text&#39;,
+        text: &#39;Some text&#39;
+      }
+    ]
+  }
+};
+</code></pre>
+<p>Available parameters for the <code>msg.payload</code></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>template</td>
+<td>string</td>
+<td>A template name (from the Whatsapp template manager)</td>
+</tr>
+<tr>
+<td>language</td>
+<td>string</td>
+<td>The template language (i.e., <code>en</code> or <code>en_US</code>)</td>
+</tr>
+<tr>
+<td>paramsBody</td>
+<td>[waTemplateParameter]</td>
+<td>Template parameters for the body</td>
+</tr>
+<tr>
+<td>paramsHeader</td>
+<td>[waTemplateParameter]</td>
+<td>Template parameters for the header</td>
+</tr>
+</tbody></table>
+<p>The <code>[waTemplateParameter]</code> object</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>type</td>
+<td>string</td>
+<td>Type of parameter, one of: <code>text</code>, <code>video</code>, <code>date_time</code>, <code>image</code>, <code>document</code>, <code>currency</code></td>
+</tr>
+<tr>
+<td>video</td>
+<td>string</td>
+<td>Filepath or url of a video. Required for <code>video</code> type</td>
+</tr>
+<tr>
+<td>image</td>
+<td>string</td>
+<td>Filepath or url of an image. Required for <code>image</code> type</td>
+</tr>
+<tr>
+<td>document</td>
+<td>string</td>
+<td>Filepath or url of a document. Required for <code>document</code> type</td>
+</tr>
+<tr>
+<td>date_time</td>
+<td>[waFallbackDateTime]</td>
+<td>Date time object. Required for <code>date_time</code> type</td>
+</tr>
+<tr>
+<td>currency</td>
+<td>[waCurrency]</td>
+<td>Currency object. Required for <code>currency</code> type</td>
+</tr>
+</tbody></table>
+<p>The <code>[waFallbackDateTime]</code> object</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>fallback_value</td>
+<td>string</td>
+<td>Always use the fallback value, and Whatsapp API do not attempt to localize using other optional fields.</td>
+</tr>
+</tbody></table>
+<p>The <code>[waCurrency]</code> object</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>amount_1000</td>
+<td>string</td>
+<td>Amount multiplied by 1000</td>
+</tr>
+<tr>
+<td>code</td>
+<td>string</td>
+<td>Currency code as defined in <em>ISO 4217</em></td>
+</tr>
+<tr>
+<td>fallback_value</td>
+<td>string</td>
+<td>Default text if localization fails.</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>💡 Read <strong>Whatsapp Cloud API</strong> <a href="https://developers.facebook.com/docs/whatsapp/message-templates/guidelines">Templates section</a> for more informations</p>
+</blockquote>
 </script>

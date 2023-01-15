@@ -311,7 +311,7 @@ module.exports = [
   },
   {
     notionUrl: 'https://www.notion.so/redbot/Whatsapp-Template-2cf0f96ed14b4f72b3d4a8cee58bc2b0',
-    nodeFile: 'chatbot-whatsapp-template',
-    nodeType: 'whatsapp-template'
+    nodeFile: 'chatbot-whatsapp-template.html',
+    nodeType: 'chatbot-whatsapp-template'
   }
 ];
