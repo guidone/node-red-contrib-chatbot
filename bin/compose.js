@@ -86,6 +86,16 @@ const folderExists = dir => existsSync(dir) && lstatSync(dir).isDirectory();
       },
       {
         type: 'select',
+        name: 'enableOTP',
+        message: 'Enable OTP',
+        choices: [
+          { title: 'Yes', value: 'true' },
+          { title: 'No', value: 'false' }
+        ],
+        initial: 0
+      },
+      {
+        type: 'select',
         name: 'frontendEnvironment',
         message: 'Select backend environment',
         choices: [
@@ -118,7 +128,7 @@ const folderExists = dir => existsSync(dir) && lstatSync(dir).isDirectory();
     // update local bots
     writeFileSync(
       `${__dirname}/../.local-bots`,
-      [...projects, `${response.name},${response.dir},${response.projects},${response.backendEnvironment},${response.frontendEnvironment},${(response.plugins || []).join('|')}`].join('\n'),
+      [...projects, `${response.name},${response.dir},${response.projects},${response.enableOTP},${response.backendEnvironment},${response.frontendEnvironment},${(response.plugins || []).join('|')}`].join('\n'),
       'utf8'
     );
     let developmentMode = 'false';
@@ -131,6 +141,7 @@ const folderExists = dir => existsSync(dir) && lstatSync(dir).isDirectory();
     const env = [
       'REDBOT_DIR=.',
       'REDBOT_ENABLE_MISSION_CONTROL=true',
+      `REDBOT_ENABLE_OTP=${response.enableOTP}`,
       `REDBOT_DEVELOPMENT_MODE=${developmentMode}`,
       `DATA_DIR=${response.dir}`,
       `NODE_RED_ENABLE_PROJECTS=${projects === 'PROJECTS' ? 'true' : 'false'}`,
@@ -144,7 +155,7 @@ const folderExists = dir => existsSync(dir) && lstatSync(dir).isDirectory();
     console.log(`Starting "${response.name}" -> (${response.dir})`);
     console.log('');
   } else {
-    const [name, dir, projects, backendEnvironment, frontendEnvironment, plugins = ''] = response.value.split(',');
+    const [name, dir, projects, enableOTP, backendEnvironment, frontendEnvironment, plugins = ''] = response.value.split(',');
 
     // eslint-disable-next-line no-console
     console.log(`Starting ${name} (${dir})`);
@@ -163,6 +174,7 @@ const folderExists = dir => existsSync(dir) && lstatSync(dir).isDirectory();
     const env = [
       'REDBOT_DIR=.',
       'REDBOT_ENABLE_MISSION_CONTROL=true',
+      `REDBOT_ENABLE_OTP=${enableOTP}`,
       `REDBOT_DEVELOPMENT_MODE=${developmentMode}`,
       `DATA_DIR=${dir}`,
       'NODE_RED_ENABLE_PROJECTS=' + (projects === 'PROJECTS' ? 'true' : 'false'),

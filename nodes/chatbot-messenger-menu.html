@@ -9,9 +9,6 @@
       command: {
         value: 'set'
       },
-      name: {
-        value: ''
-      },
       items: {
         value: [],
         validate: function(items) {
@@ -25,6 +22,11 @@
           return valid;
         }
       },
+      bot: {
+        value: "",
+        type: 'chatbot-facebook-node',
+        required: true
+      },
       message: {
         value: ''
       }
@@ -32,10 +34,8 @@
     inputs: 1,
     outputs: 1,
     paletteLabel: 'Messenger Menu',
-    icon: 'chatbot-menu.png',
-    label: function() {
-      return this.name || 'Messenger Menu';
-    },
+    icon: 'messenger.svg',
+    label: 'Messenger Menu',
     oneditsave: function() {
       var items = $("#node-input-items-container").editableList('items');
       var node = this;
@@ -46,6 +46,7 @@
       }
     },
     oneditprepare: function() {
+      var node = this;
       $('#node-input-command').change(function() {
         if ($(this).val() === 'set') {
           $('.form-row-list, .form-row-items, .form-row-composer, .form-row-buttons').show();
@@ -68,11 +69,14 @@
         removable: true,
         sortable: true
       });
-      if (this.items != null) {
-        this.items.forEach(function(item) {
-          $('#node-input-items-container').editableList('addItem', item);
+      $.RedBot.fetchPlatforms()
+        .done(function() {
+          if (node.items != null) {
+            node.items.forEach(function(item) {
+              $('#node-input-items-container').editableList('addItem', item);
+            });
+          }
         });
-      }
     },
     oneditresize: function() {
       var dialogForm = $('#dialog-form');
@@ -87,9 +91,9 @@
 </script>
 
 <script type="text/x-red" data-template-name="chatbot-messenger-menu">
-<div class="form-row form-row-name">
-  <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-  <input type="text" id="node-input-name" placeholder="Name">
+<div class="form-row form-row-bot">
+  <label for="node-input-bot" style="display:block;width:100%;">Facebook Bot</label>
+  <input type="text" id="node-input-bot" placeholder="Bot">
 </div>
 <div class="form-row form-row-command">
   <label for="node-input-command">Action</label>
@@ -255,7 +259,3 @@ return msg;
 </tr>
 </tbody></table>
 </script>
-
-
-
-

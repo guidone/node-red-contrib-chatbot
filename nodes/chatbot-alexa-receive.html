@@ -91,28 +91,28 @@
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-alexa-node"><p>Open the <a href="https://developer.amazon.com/alexa/console/ask">Alexa Developer Console</a> and create a new <strong>skill</strong>:</p>
-<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/34cacc3a-3d2b-46be-883e-9da288a01ae3/example-alexa-1.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20230113%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20230113T150358Z&X-Amz-Expires=3600&X-Amz-Signature=1f6f2c73df97f3c221e281d57fd377f1cafb68456d0bd6da5fc055ddb34b3ae9&X-Amz-SignedHeaders=host&x-id=GetObject" alt="Example 1"></p>
+<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/34cacc3a-3d2b-46be-883e-9da288a01ae3/example-alexa-1.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20230115%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20230115T192117Z&X-Amz-Expires=3600&X-Amz-Signature=41f99b92e04dd479365487cb19698e2f0fb144ed0186ac0beab1f24d52d41d0a&X-Amz-SignedHeaders=host&x-id=GetObject" alt="Example 1"></p>
 <p>Be sure to select the <em>custom</em> model and <em>Start from scratch</em> in the following step.</p>
 <p>Then you have to pickup the invocation name, it the name of your chatbot that will answer to sentences like <em>“Alexa, ask my-chatbot-name to …”</em>.</p>
 <p><strong>Alexa</strong> needs a callback to send the requests to: it must be a https endpoint (a self signed certificate it’s not enough). For testing we’ll use <strong>ngrok</strong> to create a https tunnel for our local <strong>Node-RED</strong> instance. Install it, then open a shell window and run</p>
 <pre><code class="language-bash">ngrok http 127.0.0.1:1880
 </code></pre>
 <p>You should get something like</p>
-<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/58f7c691-68c9-4b1e-a781-5195cc281f0b/facebook-1.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20230113%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20230113T150358Z&X-Amz-Expires=3600&X-Amz-Signature=46ce1c3472187f043de046274a9b06c4da672fa374cdaafcbb95e094a30aeaa4&X-Amz-SignedHeaders=host&x-id=GetObject" alt=""></p>
+<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/58f7c691-68c9-4b1e-a781-5195cc281f0b/facebook-1.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20230115%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20230115T192117Z&X-Amz-Expires=3600&X-Amz-Signature=b6cc7840c7d834d76b1aac38834af588bd63036fad20e51cab776d42f3d61967&X-Amz-SignedHeaders=host&x-id=GetObject" alt=""></p>
 <p>Grab the https address you get, something like <em><a href="https://123123.ngrok.io">https://123123.ngrok.io</a></em>, this is the base url that points back to your <strong>Node-RED</strong> instance.</p>
 <p>The callback is</p>
 <pre><code class="language-plain">http://youraddress.ngrok.io/redbot/alexa
 </code></pre>
 <p>This callback should fill the field <em>Default region</em> in the <em>Endpoint</em> session</p>
-<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/1faafaf8-a853-4701-8af6-6dab18f9732b/example-alexa-2.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20230113%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20230113T150358Z&X-Amz-Expires=3600&X-Amz-Signature=e1ebf81aa03b449cb1f6fce24e019f2f343cb6570e87105f8ed49b872f24ef66&X-Amz-SignedHeaders=host&x-id=GetObject" alt="Example 2"></p>
+<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/1faafaf8-a853-4701-8af6-6dab18f9732b/example-alexa-2.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20230115%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20230115T192117Z&X-Amz-Expires=3600&X-Amz-Signature=ed6031266420197c607b6df4b18fcd593df482fa3e00d4dbb6eca20a8366715d&X-Amz-SignedHeaders=host&x-id=GetObject" alt="Example 2"></p>
 <p>We’re ready to create the first simple flow:</p>
-<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/1b2f58a1-7809-4d64-89cd-4b8451db57de/example-alexa-3.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20230113%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20230113T150358Z&X-Amz-Expires=3600&X-Amz-Signature=1e36901737757fd1339a4ddeb9d013150efb512740244e26545d584842378cb8&X-Amz-SignedHeaders=host&x-id=GetObject" alt="Example 3"></p>
+<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/1b2f58a1-7809-4d64-89cd-4b8451db57de/example-alexa-3.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20230115%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20230115T192117Z&X-Amz-Expires=3600&X-Amz-Signature=a9b08456477b474e806ff6a17f196665d78839dfc400341c60c15259245d631a&X-Amz-SignedHeaders=host&x-id=GetObject" alt="Example 3"></p>
 <p><em>Note:</em> the <code>Alexa Receiver</code> node configuration doesn’t need any particular configuration (no tokens or secret key like other chatbots), for testing the default one is ok.</p>
 <p>Now switch to the test page from the menu and type</p>
 <pre><code class="language-plain">start my-chatbot-name
 </code></pre>
 <p>you should hear the answer defined in the <a href="https://www.notion.so/08bc9f05559a47819fd07a4bacc28c73">Alexa Speech node</a>  and see in the console the <a href="https://www.notion.so/4a49f90897d8444fa8a780ea40d6b26e">Events</a>  of type <em>start</em></p>
-<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/7d1e7ac5-b4f8-4bc9-b3c4-fc5eac7d5ebe/example-alexa-4.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20230113%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20230113T150358Z&X-Amz-Expires=3600&X-Amz-Signature=1a659b76a55fb5acaf63b038df515f67b1dc3b9face77954b25245895509ddea&X-Amz-SignedHeaders=host&x-id=GetObject" alt="Example 4"></p>
+<p><img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/7d1e7ac5-b4f8-4bc9-b3c4-fc5eac7d5ebe/example-alexa-4.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20230115%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20230115T192117Z&X-Amz-Expires=3600&X-Amz-Signature=abb408b8b66df5632a2849043e00180346f56635310ee5d3e2e82a8930e13229&X-Amz-SignedHeaders=host&x-id=GetObject" alt="Example 4"></p>
 <p><strong>Important:</strong> <strong>Alexa</strong> chatbots works differently compared to other chatbot APIs like <strong>Telegram</strong> or <strong>Facebook</strong>: calls are synchronous, when <strong>Alexa</strong> calls the <strong>RedBot</strong>’s endpoint it expects an immediate response. Internally <strong>RedBot</strong> will store the <em>response</em> object in the <strong>Node-RED</strong> message and will use it in the final <code>Alexa Sender node</code>. For this reason the flow (nodes between the receiver to the sender nodes) cannot last more than the <strong>Alexa</strong> timeout (<strong>3000 ms</strong>).</p>
 </script>
 
@@ -134,8 +134,8 @@
     },
     inputs: 0,
     outputs: 1,
-    icon: 'chatbot-receiver.png',
-    paletteLabel: 'Alexa In',
+    icon: 'alexa.svg',
+    paletteLabel: 'Alexa Receiver',
     label: function () {
       return "Alexa Receiver";
     }
@@ -187,8 +187,8 @@
     },
     inputs: 1,
     outputs: 1,
-    icon: 'chatbot-sender.png',
-    paletteLabel: 'Alexa Out',
+    icon: 'alexa.svg',
+    paletteLabel: 'Alexa Sender',
     label: function () {
       return 'Alexa Sender';
     },
@@ -229,5 +229,3 @@
 <script type="text/x-red" data-help-name="chatbot-alexa-send">
   <p>Output node for Alexa.</p>
 </script>
-
-

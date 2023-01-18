@@ -15,6 +15,7 @@ import {
 } from 'rsuite';
 
 import { LogoFull } from '../components/logo';
+import useSettings from '../hooks/settings';
 
 const LoginPanel = () => {
   const [errorMessage, setErrorMessage] = useState();
@@ -22,7 +23,8 @@ const LoginPanel = () => {
   const [formValue, setFormValue] = useState({
     username: '',
     password: ''
-  })
+  });
+  const { enableOTP, hasOTPs } = useSettings();
 
   const root = window.bootstrap != null
     && window.bootstrap.settings != null
@@ -36,7 +38,7 @@ const LoginPanel = () => {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
       },
-      body: `username=${encodeURIComponent(formValue.username)}&password=${encodeURIComponent(formValue.password)}`
+      body: `username=${encodeURIComponent(formValue.username)}&password=${encodeURIComponent(formValue.password)}&otp=${encodeURIComponent(formValue.code)}`
     });
 
     if (response.redirected) {
@@ -85,8 +87,8 @@ const LoginPanel = () => {
                       />
                     </InputGroup>
                   </FormGroup>
-                  <FormGroup>
-                    <InputGroup inside>
+                  <FormGroup style={{ display: 'flex' }}>
+                    <InputGroup inside style={{ flex: '2 0 auto' }}>
                       <InputGroup.Addon>
                         <Icon icon="unlock-alt" size="lg" />
                       </InputGroup.Addon>
@@ -105,6 +107,26 @@ const LoginPanel = () => {
                         }}
                       />
                     </InputGroup>
+                    {enableOTP && hasOTPs && (
+                      <InputGroup inside style={{ flex: '1 0 100px', textAlign: 'center', marginLeft: '20px' }}>
+                        <InputGroup.Addon>
+                          <Icon icon="tag-area" size="lg" />
+                        </InputGroup.Addon>
+                        <FormControl
+                          name="code"
+                          autoComplete="off"
+                          placeholder="OTP"
+                          size="lg"
+                          onChange={() => setErrorMessage(null)}
+                          onKeyUp={(e) => {
+                            // auto login
+                            if (e.keyCode === 13) {
+                              loginButton();
+                            }
+                          }}
+                        />
+                      </InputGroup>
+                    )}
                   </FormGroup>
                   {errorMessage && (
                     <div className="error-message">

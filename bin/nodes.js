@@ -15,11 +15,6 @@ module.exports = [
     notionUrl: 'https://www.notion.so/redbot/MC-GraphQL-node-0dc75116dee9458486e1a4f09fc3f44b'
   },
   {
-    notionUrl: 'https://www.notion.so/redbot/Generic-Template-node-1102a94bf9d445178dfb621fe3c91b58',
-    nodeFile: 'chatbot-generic-template.html',
-    nodeType: 'chatbot-generic-template'
-  },
-  {
     notionUrl: 'https://www.notion.so/redbot/Quick-Replies-node-200e9ae1a1fd459baa29c76d6a4025e2',
     nodeFile: 'chatbot-quick-replies.html',
     nodeType: 'chatbot-quick-replies'
@@ -240,11 +235,6 @@ module.exports = [
     nodeType: 'chatbot-extend'
   },
   {
-    notionUrl: 'https://www.notion.so/redbot/Messenger-Broadcast-node-79a3de9e5f6d4c3faf8561997092ab56',
-    nodeFile: 'chatbot-broadcast.html',
-    nodeType: 'chatbot-broadcast'
-  },
-  {
     notionUrl: 'https://www.notion.so/redbot/Support-table-6cfd957b91f642b5894a76e2b15feb05',
     nodeFile: 'chatbot-support-table.html',
     nodeType: 'chatbot-support-table'
@@ -318,5 +308,10 @@ module.exports = [
     notionUrl: 'https://www.notion.so/redbot/MC-Queue-2ac745c9314f4f17b61f31b6a517586f',
     nodeFile: 'mc-queue.html',
     nodeType: 'mc-queue'
+  },
+  {
+    notionUrl: 'https://www.notion.so/redbot/Whatsapp-Template-2cf0f96ed14b4f72b3d4a8cee58bc2b0',
+    nodeFile: 'chatbot-whatsapp-template.html',
+    nodeType: 'chatbot-whatsapp-template'
   }
 ];

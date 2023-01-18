@@ -738,6 +738,28 @@ describe('Chat rules node', () => {
       });
   });
 
+  it('should go through the first if the message is any event', () => {
+    const msg = RED.createMessage({
+      content: 'no command',
+      type: 'event',
+      eventType: 'any-event'
+    }, 'telegram');
+    RED.node.config({
+      rules: [
+        { type: 'messageAnyEvent' },
+        { type: 'catchAll' }
+      ]
+    });
+    msg.chat().set('myVar', 'test_value');
+    RulesBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(() => {
+        assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
+        assert.isNull(RED.node.message(1));
+      });
+  });
+
   it('should go through the second if the message is a different event', () => {
     const msg = RED.createMessage({
       content: 'no command',

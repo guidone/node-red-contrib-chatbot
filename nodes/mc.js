@@ -20,7 +20,7 @@ const { getMigrations } = require('../lib/utils/migration');
 const { isEmptyDatabase, tableExists } = require('../lib/utils/database');
 const { defineQueueTable } = require('../lib/queues-store/index');
 
-const { REDBOT_ENABLE_MISSION_CONTROL } = require('../src/env');
+const { REDBOT_ENABLE_MISSION_CONTROL, REDBOT_ENABLE_OTP } = require('../src/env');
 
 let initialized = false;
 const Events = new events.EventEmitter();
@@ -165,6 +165,12 @@ async function bootstrap(server, app, log, redSettings, RED) {
   if (mcSettings.googleMapsKey != null) {
     console.log(lcd.timestamp() + '  ' + lcd.green('googleMapsKey: ') + lcd.grey(mcSettings.googleMapsKey));
   }
+  if (REDBOT_ENABLE_OTP === 'true') {
+    mcSettings.enableOTP = true;
+  } else {
+    mcSettings.enableOTP = false;
+  }
+  console.log(lcd.timestamp() + '  ' + lcd.green('OTP: ') + lcd.grey(mcSettings.enableOTP));
   if (validators.credentials.cloudinary(mcSettings.cloudinary)) {
     console.log(lcd.timestamp() + '  ' + lcd.green('cloudinary name: ') + lcd.grey(mcSettings.cloudinary.cloudName));
     console.log(lcd.timestamp() + '  ' + lcd.green('cloudinary apiKey: ') + lcd.grey(mcSettings.cloudinary.apiKey));
@@ -222,9 +228,50 @@ Some **formatting** is _allowed_!`
   app.post(
     `${mcSettings.root}/login`,
     passport.authenticate('local', {
-      successRedirect: `${mcSettings.root}`,
       failureRedirect: `${mcSettings.root}/login`
-    })
+    }),
+    async function(req, res) {
+      // if not enable, just go
+      if (!mcSettings.enableOTP) {
+        res.redirect(mcSettings.root);
+        return;
+      }
+      const otp = req.body.otp;
+      const otps = await Content.findAll({
+        where: {
+          namespace: 'otp'
+        }
+      });
+      // check if there's a valid otp
+      let isValidOTP = false;
+      let k = 0;
+      if (otps.length === 0) {
+        isValidOTP = true;
+      } else {
+        for(k = 0; k < otps.length; k++) {
+          let json;
+          try {
+            json = JSON.parse(otps[k].payload);
+            if (json.otp === otp) {
+              isValidOTP = true;
+              // remove the otp
+              await otps[k].destroy();
+            }
+          } catch(e) {
+            // do nothing
+          }
+        }
+      }
+      // redirect
+      if (isValidOTP) {
+        res.redirect(mcSettings.root);
+      } else {
+        // destroy session
+        req.logout();
+        // send failed status
+        res.redirect(`${mcSettings.root}/login`);
+      }
+    }
   );
 
   // mount graphql endpoints to Node-RED app
@@ -304,6 +351,9 @@ Some **formatting** is _allowed_!`
     async (_req, res) => {
       const admins = await Admin.findAll();
       const isDefaultUser = admins.length === 1 && _.isEmpty(admins[0].password);
+      // store in settings if any otps
+      const hasOTPs = (await Content.count({ where: { namespace: 'otp' }})) !== 0;
+
       fs.readFile(`${__dirname}/../src/login.html`, (err, data) => {
         const template = data.toString();
         const assets = frontendEnvironment === 'development' || frontendEnvironment === 'plugin' ?
@@ -312,6 +362,7 @@ Some **formatting** is _allowed_!`
           settings: {
             ...mcSettings,
             isDefaultUser,
+            hasOTPs,
             environment: frontendEnvironment
           }
         };

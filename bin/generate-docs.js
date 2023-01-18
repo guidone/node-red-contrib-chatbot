@@ -16,7 +16,6 @@ var tasks = new Promise(function(resolve) {
 var mappings = {
   'Slack-blocks-node.md': 'chatbot-slack-blocks.html',
   'Push-and-Pop-Message-node.md': ['chatbot-pop-message.html', 'chatbot-push-message.html'],
-  'Generic-Template-node.md': 'chatbot-generic-template.html',
   'Quick-Replies-node.md': 'chatbot-quick-replies.html',
   'Messenger-Menu-node.md': 'chatbot-messenger-menu.html',
   'Messenger-Template-node.md': 'chatbot-messenger-template.html',

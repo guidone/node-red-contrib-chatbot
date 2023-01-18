@@ -1,0 +1,602 @@
+<script type="text/javascript">
+
+  $.fn.RB_getWACurrencies = function() {
+    return `<select name="code" style="width:32%;margin-left:2%;" placeholder="Choose currency...">
+      <option>Select currency</option>
+      <option value="AFN">Afghan Afghani</option>
+      <option value="ALL">Albanian Lek</option>
+      <option value="DZD">Algerian Dinar</option>
+      <option value="AOA">Angolan Kwanza</option>
+      <option value="ARS">Argentine Peso</option>
+      <option value="AMD">Armenian Dram</option>
+      <option value="AWG">Aruban Florin</option>
+      <option value="AUD">Australian Dollar</option>
+      <option value="AZN">Azerbaijani Manat</option>
+      <option value="BSD">Bahamian Dollar</option>
+      <option value="BHD">Bahraini Dinar</option>
+      <option value="BDT">Bangladeshi Taka</option>
+      <option value="BBD">Barbadian Dollar</option>
+      <option value="BYR">Belarusian Ruble</option>
+      <option value="BEF">Belgian Franc</option>
+      <option value="BZD">Belize Dollar</option>
+      <option value="BMD">Bermudan Dollar</option>
+      <option value="BTN">Bhutanese Ngultrum</option>
+      <option value="BTC">Bitcoin</option>
+      <option value="BOB">Bolivian Boliviano</option>
+      <option value="BAM">Bosnia-Herzegovina Convertible Mark</option>
+      <option value="BWP">Botswanan Pula</option>
+      <option value="BRL">Brazilian Real</option>
+      <option value="GBP">British Pound Sterling</option>
+      <option value="BND">Brunei Dollar</option>
+      <option value="BGN">Bulgarian Lev</option>
+      <option value="BIF">Burundian Franc</option>
+      <option value="KHR">Cambodian Riel</option>
+      <option value="CAD">Canadian Dollar</option>
+      <option value="CVE">Cape Verdean Escudo</option>
+      <option value="KYD">Cayman Islands Dollar</option>
+      <option value="XOF">CFA Franc BCEAO</option>
+      <option value="XAF">CFA Franc BEAC</option>
+      <option value="XPF">CFP Franc</option>
+      <option value="CLP">Chilean Peso</option>
+      <option value="CNY">Chinese Yuan</option>
+      <option value="COP">Colombian Peso</option>
+      <option value="KMF">Comorian Franc</option>
+      <option value="CDF">Congolese Franc</option>
+      <option value="CRC">Costa Rican ColÃ³n</option>
+      <option value="HRK">Croatian Kuna</option>
+      <option value="CUC">Cuban Convertible Peso</option>
+      <option value="CZK">Czech Republic Koruna</option>
+      <option value="DKK">Danish Krone</option>
+      <option value="DJF">Djiboutian Franc</option>
+      <option value="DOP">Dominican Peso</option>
+      <option value="XCD">East Caribbean Dollar</option>
+      <option value="EGP">Egyptian Pound</option>
+      <option value="ERN">Eritrean Nakfa</option>
+      <option value="EEK">Estonian Kroon</option>
+      <option value="ETB">Ethiopian Birr</option>
+      <option value="EUR">Euro</option>
+      <option value="FKP">Falkland Islands Pound</option>
+      <option value="FJD">Fijian Dollar</option>
+      <option value="GMD">Gambian Dalasi</option>
+      <option value="GEL">Georgian Lari</option>
+      <option value="DEM">German Mark</option>
+      <option value="GHS">Ghanaian Cedi</option>
+      <option value="GIP">Gibraltar Pound</option>
+      <option value="GRD">Greek Drachma</option>
+      <option value="GTQ">Guatemalan Quetzal</option>
+      <option value="GNF">Guinean Franc</option>
+      <option value="GYD">Guyanaese Dollar</option>
+      <option value="HTG">Haitian Gourde</option>
+      <option value="HNL">Honduran Lempira</option>
+      <option value="HKD">Hong Kong Dollar</option>
+      <option value="HUF">Hungarian Forint</option>
+      <option value="ISK">Icelandic KrÃ³na</option>
+      <option value="INR">Indian Rupee</option>
+      <option value="IDR">Indonesian Rupiah</option>
+      <option value="IRR">Iranian Rial</option>
+      <option value="IQD">Iraqi Dinar</option>
+      <option value="ILS">Israeli New Sheqel</option>
+      <option value="ITL">Italian Lira</option>
+      <option value="JMD">Jamaican Dollar</option>
+      <option value="JPY">Japanese Yen</option>
+      <option value="JOD">Jordanian Dinar</option>
+      <option value="KZT">Kazakhstani Tenge</option>
+      <option value="KES">Kenyan Shilling</option>
+      <option value="KWD">Kuwaiti Dinar</option>
+      <option value="KGS">Kyrgystani Som</option>
+      <option value="LAK">Laotian Kip</option>
+      <option value="LVL">Latvian Lats</option>
+      <option value="LBP">Lebanese Pound</option>
+      <option value="LSL">Lesotho Loti</option>
+      <option value="LRD">Liberian Dollar</option>
+      <option value="LYD">Libyan Dinar</option>
+      <option value="LTL">Lithuanian Litas</option>
+      <option value="MOP">Macanese Pataca</option>
+      <option value="MKD">Macedonian Denar</option>
+      <option value="MGA">Malagasy Ariary</option>
+      <option value="MWK">Malawian Kwacha</option>
+      <option value="MYR">Malaysian Ringgit</option>
+      <option value="MVR">Maldivian Rufiyaa</option>
+      <option value="MRO">Mauritanian Ouguiya</option>
+      <option value="MUR">Mauritian Rupee</option>
+      <option value="MXN">Mexican Peso</option>
+      <option value="MDL">Moldovan Leu</option>
+      <option value="MNT">Mongolian Tugrik</option>
+      <option value="MAD">Moroccan Dirham</option>
+      <option value="MZM">Mozambican Metical</option>
+      <option value="MMK">Myanmar Kyat</option>
+      <option value="NAD">Namibian Dollar</option>
+      <option value="NPR">Nepalese Rupee</option>
+      <option value="ANG">Netherlands Antillean Guilder</option>
+      <option value="TWD">New Taiwan Dollar</option>
+      <option value="NZD">New Zealand Dollar</option>
+      <option value="NIO">Nicaraguan CÃ³rdoba</option>
+      <option value="NGN">Nigerian Naira</option>
+      <option value="KPW">North Korean Won</option>
+      <option value="NOK">Norwegian Krone</option>
+      <option value="OMR">Omani Rial</option>
+      <option value="PKR">Pakistani Rupee</option>
+      <option value="PAB">Panamanian Balboa</option>
+      <option value="PGK">Papua New Guinean Kina</option>
+      <option value="PYG">Paraguayan Guarani</option>
+      <option value="PEN">Peruvian Nuevo Sol</option>
+      <option value="PHP">Philippine Peso</option>
+      <option value="PLN">Polish Zloty</option>
+      <option value="QAR">Qatari Rial</option>
+      <option value="RON">Romanian Leu</option>
+      <option value="RUB">Russian Ruble</option>
+      <option value="RWF">Rwandan Franc</option>
+      <option value="SVC">Salvadoran ColÃ³n</option>
+      <option value="WST">Samoan Tala</option>
+      <option value="SAR">Saudi Riyal</option>
+      <option value="RSD">Serbian Dinar</option>
+      <option value="SCR">Seychellois Rupee</option>
+      <option value="SLL">Sierra Leonean Leone</option>
+      <option value="SGD">Singapore Dollar</option>
+      <option value="SKK">Slovak Koruna</option>
+      <option value="SBD">Solomon Islands Dollar</option>
+      <option value="SOS">Somali Shilling</option>
+      <option value="ZAR">South African Rand</option>
+      <option value="KRW">South Korean Won</option>
+      <option value="XDR">Special Drawing Rights</option>
+      <option value="LKR">Sri Lankan Rupee</option>
+      <option value="SHP">St. Helena Pound</option>
+      <option value="SDG">Sudanese Pound</option>
+      <option value="SRD">Surinamese Dollar</option>
+      <option value="SZL">Swazi Lilangeni</option>
+      <option value="SEK">Swedish Krona</option>
+      <option value="CHF">Swiss Franc</option>
+      <option value="SYP">Syrian Pound</option>
+      <option value="STD">São Tomé and Príncipe Dobra</option>
+      <option value="TJS">Tajikistani Somoni</option>
+      <option value="TZS">Tanzanian Shilling</option>
+      <option value="THB">Thai Baht</option>
+      <option value="TOP">Tongan pa'anga</option>
+      <option value="TTD">Trinidad & Tobago Dollar</option>
+      <option value="TND">Tunisian Dinar</option>
+      <option value="TRY">Turkish Lira</option>
+      <option value="TMT">Turkmenistani Manat</option>
+      <option value="UGX">Ugandan Shilling</option>
+      <option value="UAH">Ukrainian Hryvnia</option>
+      <option value="AED">United Arab Emirates Dirham</option>
+      <option value="UYU">Uruguayan Peso</option>
+      <option value="USD">US Dollar</option>
+      <option value="UZS">Uzbekistan Som</option>
+      <option value="VUV">Vanuatu Vatu</option>
+      <option value="VEF">Venezuelan BolÃ­var</option>
+      <option value="VND">Vietnamese Dong</option>
+      <option value="YER">Yemeni Rial</option>
+      <option value="ZMK">Zambian Kwacha</option>
+    </select>`;
+  };
+
+  $.fn.RB_getWhatsappTemplateParams = function(items) {
+    params = [];
+    var idx;
+    for(idx = 0; idx < items.length; idx++) {
+      var container = items[idx];
+      var obj = {
+        type: $('select[name=type]', container).val()
+      };
+      if (obj.type === 'text') {
+        obj.text = $('input[name=text]', container).val();
+      }
+      if (obj.type === 'video') {
+        obj.video = $('input[name=video]', container).val();
+      }
+      if (obj.type === 'image') {
+        obj.image = $('input[name=image]', container).val();
+      }
+      if (obj.type === 'document') {
+        obj.document = $('input[name=document]', container).val();
+      }
+      if (obj.type === 'currency') {
+        obj.currency = {
+          code: $('select[name=code]', container).val(),
+          amount_1000: $('input[name=amount_1000]', container).val(),
+          fallback_value: $('input[name=fallback_value]', container).val()
+        };
+      }
+      if (obj.type === 'date_time') {
+        obj.date_time = {
+          fallback_value: $('input[name=fallbackValue]', container).val()
+        };
+      }
+      params.push(obj);
+    }
+    return params;
+  };
+
+  $.fn.RB_setWhatsappParams = function(item) {
+    var container = $(this);
+    if (item != null) {
+      $('select[name=type]', container).val(item.type);
+      $('.panel-' + item.type, container).css('display', 'inline-block');
+      if (item.type === 'text') {
+        $('input[name=text]', container).val(item.text);
+      }
+      if (item.type === 'video') {
+        $('input[name=video]', container).val(item.video);
+      }
+      if (item.type === 'image') {
+        $('input[name=image]', container).val(item.image);
+      }
+      if (item.type === 'document') {
+        $('input[name=document]', container).val(item.document);
+      }
+      if (item.type === 'date_time') {
+        $('input[name=fallbackValue]', container).val(item.date_time.fallback_value);
+      }
+      if (item.type === 'currency') {
+        $('select[name=code]', container).val(item.currency.code);
+        $('input[name=amount_1000]', container).val(item.currency.amount_1000);
+        $('input[name=fallback_value]', container).val(item.currency.fallback_value);
+      }
+    }
+  };
+
+  $.fn.RB_mountWhatsappParams = function(options) {
+    options = options != null ? options : {};
+    var container = $(this).css('paddingBottom', '5px');
+    var main = $('<div style="display:inline-block;margin-right:10px;"/>').appendTo(container);
+    var types = options.types ? options.types : ['currency', 'date_time', 'document', 'image', 'text', 'video'];
+    var typesLabels = {
+      currency: 'Currency',
+      date_time: 'Date-time',
+      document: 'Document',
+      image: 'Image',
+      text: 'Text',
+      video: 'Viceo'
+    }
+    var selectButtonType = $('<select name="type"></select>')
+      .attr('style', 'width:100px; margin-left: 5px;')
+      .attr('placeholder', 'Select parameter type')
+      .change(function() {
+        var type = $(this).val();
+        $('.panel', container).hide();
+        $('.panel-' + type, container).css('display', 'inline-block');
+      })
+      .appendTo(main);
+    $('<option value="">Select type</option>').appendTo(selectButtonType);
+    types.forEach(type => $('<option value="' + type + '">' + typesLabels[type] + '</option>').appendTo(selectButtonType));
+
+    var panelText = $('<div class="panel panel-text" style="display:none;width:calc(100% - 120px);"/>').appendTo(container);
+    $('<div/>')
+      .append($('<input style="width:100%" type="text" name="text" placeholder="Text value"/>'))
+      .appendTo(panelText);
+
+    var panelImage = $('<div class="panel panel-image" style="display:none;width:calc(100% - 120px);"/>').appendTo(container);
+    $('<div/>')
+      .append($('<input style="width:100%" type="text" name="image" placeholder="Image URL or path"/>'))
+      .appendTo(panelImage);
+
+    var panelDocument = $('<div class="panel panel-document" style="display:none;width:calc(100% - 120px);"/>').appendTo(container);
+    $('<div/>')
+      .append($('<input style="width:100%" type="text" name="document" placeholder="Document URL or path"/>'))
+      .appendTo(panelDocument);
+
+    var panelCurrency = $('<div class="panel panel-currency" style="display:none;width:calc(100% - 120px);"/>').appendTo(container);
+    $('<div/>')
+      .append($('<input style="width:32%" type="text" name="amount_1000" placeholder="Amount x 1000"/>'))
+      .append($.fn.RB_getWACurrencies())
+      .append($('<input style="width:32%;margin-left:2%;" type="text" name="fallback_value" placeholder="Fallback"/>'))
+      .appendTo(panelCurrency);
+
+    var panelVideo = $('<div class="panel panel-video" style="display:none;width:calc(100% - 120px);"/>').appendTo(container);
+    $('<div/>')
+      .append($('<input style="width:100%" type="text" name="video" placeholder="Video URL or path"/>'))
+      .appendTo(panelVideo);
+
+    var panelText = $('<div class="panel panel-date_time" style="display:none;width:calc(100% - 120px);"/>').appendTo(container);
+    $('<div/>')
+      .append($('<input style="width:100%" type="text" name="fallbackValue" placeholder="Fallback value"/>'))
+      .appendTo(panelText);
+  };
+
+  $.RedBot.registerType('chatbot-whatsapp-template', {
+    category: $.RedBot.config.name,
+    color: '#FFCC66',
+    defaults: {
+      name: {
+        value: ''
+      },
+      language: {
+        value: ''
+      },
+      template: {
+        value: ''
+      },
+      paramsBody: {
+        value: null
+      },
+      paramsHeader: {
+        value: null
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'font-awesome/fa-file-text',
+    paletteLabel: 'Whatsapp Template',
+    label: function() {
+      return this.name || 'Whatsapp Template';
+    },
+    oneditprepare: function() {
+      // body
+      $('#node-input-paramsBody-container')
+        .css('min-width','450px')
+        .css('min-height','200px')
+        .editableList({
+          addItem: function(container, i, item) {
+            $(container).RB_mountWhatsappParams({
+              types: ['currency', 'date_time', 'text']
+            });
+            $(container).RB_setWhatsappParams(item);
+          },
+          removable: true,
+          sortable: true
+        });
+      if (this.paramsBody != null && this.paramsBody.length !== 0) {
+        for (idx = 0; idx < this.paramsBody.length; idx++) {
+          $('#node-input-paramsBody-container').editableList('addItem', this.paramsBody[idx]);
+        }
+      }
+      // header
+      $('#node-input-paramsHeader-container')
+        .css('min-width','450px')
+        .css('min-height','200px')
+        .editableList({
+          addItem: function(container, i, item) {
+            $(container).RB_mountWhatsappParams();
+            $(container).RB_setWhatsappParams(item);
+          },
+          removable: true,
+          sortable: true
+        });
+      if (this.paramsHeader != null && this.paramsHeader.length !== 0) {
+        for (idx = 0; idx < this.paramsBody.length; idx++) {
+          $('#node-input-paramsHeader-container').editableList('addItem', this.paramsHeader[idx]);
+        }
+      }
+    },
+    oneditsave: function() {
+      var items = $("#node-input-paramsBody-container").editableList('items');
+      this.paramsBody = $.fn.RB_getWhatsappTemplateParams(items);
+      var items = $("#node-input-paramsHeader-container").editableList('items');
+      this.paramsHeader = $.fn.RB_getWhatsappTemplateParams(items);
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-whatsapp-template">
+<div class="form-row">
+  <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+  <input type="text" id="node-input-name" placeholder="Name">
+</div>
+<div class="form-row">
+  <label for="node-input-name">Template name</label>
+  <input type="text" id="node-input-template" placeholder="my-template">
+</div>
+<div class="form-row">
+  <label for="node-input-language">Language</label>
+  <select id="node-input-language" placeholder="Choose a Language...">
+    <option value="af">Afrikanns</option>
+    <option value="sq">Albanian</option>
+    <option value="ar">Arabic</option>
+    <option value="az">Azerbaijani</option>
+    <option value="bn">Bengali</option>
+    <option value="bg">Bulgarian</option>
+    <option value="ca">Catalan</option>
+    <option value="zh_CN">Chinese (CHN)</option>
+    <option value="zh_HK">Chinese (HKG)</option>
+    <option value="zh_TW">Chinese (TAI)</option>
+    <option value="hr">Croation</option>
+    <option value="cs">Czech</option>
+    <option value="da">Danish</option>
+    <option value="nl">Dutch</option>
+    <option value="en">English</option>
+    <option value="en_GB">English UK</option>
+    <option value="en_US">English US</option>
+    <option value="et">Estonian</option>
+    <option value="fil">Filipino</option>
+    <option value="fi">Finnish</option>
+    <option value="fr">French</option>
+    <option value="ka">Georgian</option>
+    <option value="de">German</option>
+    <option value="el">Greek</option>
+    <option value="gu">Gujarati</option>
+    <option value="ha">Hausa</option>
+    <option value="he">Hebrew</option>
+    <option value="hi">Hindi</option>
+    <option value="hu">Hungarian</option>
+    <option value="id">Indonesian</option>
+    <option value="ga">Irish</option>
+    <option value="it">Italian</option>
+    <option value="js">Japanese</option>
+    <option value="ka">Kannada</option>
+    <option value="kk">Kazakh</option>
+    <option value="rw_RW">Kinyarwanda</option>
+    <option value="ko">Korean</option>
+    <option value="ky_KG">Kyrgyz (Kyrgyzstan)</option>
+    <option value="lo">Lao</option>
+    <option value="lv">Latvian</option>
+    <option value="lt">Lithuanian</option>
+    <option value="mk">Macedonian</option>
+    <option value="ms">Malay</option>
+    <option value="ml">Malayalam</option>
+    <option value="mr">Marathi</option>
+    <option value="no">Norwegian</option>
+    <option value="fa">Persian</option>
+    <option value="pl">Polish</option>
+    <option value="pt_BR">Portuguese (BR)</option>
+    <option value="pt_PT">Portuguese (POR)</option>
+    <option value="pa">Punjabi</option>
+    <option value="ro">Romanian</option>
+    <option value="ru">Russian</option>
+    <option value="sr">Serbian</option>
+    <option value="sk">Slovak</option>
+    <option value="sl">Slovenian</option>
+    <option value="es">Spanish</option>
+    <option value="es_AR">Spanish (ARG)</option>
+    <option value="es_ES">Spanish (SPA)</option>
+    <option value="es_MX">Spanish (MEX)</option>
+    <option value="sw">Swahili</option>
+    <option value="sv">Swedish</option>
+    <option value="ta">Tamil</option>
+    <option value="te">Telugu</option>
+    <option value="th">Thai</option>
+    <option value="tr">Turkish</option>
+    <option value="uk">Ukranian</option>
+    <option value="ur">Urdu</option>
+    <option value="uz">Uzbek</option>
+    <option value="vi">Vietnamese</option>
+    <option value="zu">Zulu</option>
+  </select>
+</div>
+<div class="form-row form-row-label" style="margin-bottom:0;">
+  <label style="width:100%;"><i class="fa fa-list"></i> <span>Header parameters</span></label>
+</div>
+<div class="form-row node-input-rule-container-row" style="min-height:80px;">
+  <ol id="node-input-paramsHeader-container"></ol>
+</div>
+<div class="form-row form-row-label" style="margin-bottom:0;">
+  <label style="width:100%;"><i class="fa fa-list"></i> <span>Body parameters</span></label>
+</div>
+<div class="form-row node-input-rule-container-row" style="min-height:80px;">
+  <ol id="node-input-paramsBody-container"></ol>
+</div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-whatsapp-template"><p><strong>Whatsapp</strong> Message templates are used to initiate conversations with customers. Unlike other types of messages, message templates are the only type of message that can be sent to customers who have yet to initiate a conversation with you, or who have not sent you a message in an existing conversation thread within the last 24 hours.</p>
+<p>Message templates must be approved before you can send them to customers. In addition, templates may be disabled automatically based on customer feedback. Once disabled, a message template cannot be sent to customers again until its quality rating has improved or it no longer violates Facebook <a href="https://l.facebook.com/l.php?u=https%3A%2F%2Fwww.whatsapp.com%2Flegal%2Fbusiness-policy%2F%3Ffbclid%3DIwAR0mEqGfaYvRxsP1fKntp2sx2dFpqAukYe2clzYMtlhmpufrEl_9LEWBR04&amp;h=AT0Z0AugObraxIqwT8PoV76tFyyhht-wFGonPGE0q151h9nY1HlUmTG1u1Q_Rb8nP5Wa1afsTAkp92uISpJEkuxYPq5D-bhj5g4pep7YuhaNyeapfyrgidlWMtTsH8enaGs_zG5h">business</a> or <a href="https://l.facebook.com/l.php?u=https%3A%2F%2Fwww.whatsapp.com%2Flegal%2Fcommerce-policy%2F%3Ffbclid%3DIwAR16tUOGOhWwDQK8BPEZhsv8ZX-SJUP61d--YrwTDIWWAN5i76PLpC2c4B4&amp;h=AT0CzvI2HKF0tl7Z-jagZ_1hS38V40BDtjIjFQjLVdMgLycSiGQ_EzDFrslDfBbTfYcee5uLeOmoKkVONwG3vVoIniKNAIK5Cq4CtRBzanzHEhFZjkW2aQj5BWF0K7fneYUZ7Ca0">commerce</a> policies.</p>
+<p>Enter the templates page from the <em>Whatsapp</em> → <em>Quickstart</em> section (pay attention you’re editing the templates for the right Account ID in the top right drop-down). </p>
+<p>Add params in header and body section, should match the number or params of the template, otherwise you’ll get a <code>WhatsAPI error: (#132000) Number of parameters does not match the expected number of params</code>. </p>
+<p>You can use string interpolation in any input box, using chat context variables or payload variables (i.e., <code>{{myContextVariable}}</code>, <code>{{payload.aVariableInPayload}}</code> or <code>{{msg.anotherVariableInInputMessage}}</code>. </p>
+<p>In order to use a Whatsapp template in a upstream <code>Function node</code></p>
+<pre><code class="language-javascript">return {
+  ...msg,
+  payload: {
+    template: &#39;hello_world&#39;,
+    language: &#39;en_US&#39;,
+    paramsBody: [
+      {
+        type: &#39;text&#39;,
+        text: &#39;Some text&#39;
+      }
+    ]
+  }
+};
+</code></pre>
+<p>Available parameters for the <code>msg.payload</code></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>template</td>
+<td>string</td>
+<td>A template name (from the Whatsapp template manager)</td>
+</tr>
+<tr>
+<td>language</td>
+<td>string</td>
+<td>The template language (i.e., <code>en</code> or <code>en_US</code>)</td>
+</tr>
+<tr>
+<td>paramsBody</td>
+<td>[waTemplateParameter]</td>
+<td>Template parameters for the body</td>
+</tr>
+<tr>
+<td>paramsHeader</td>
+<td>[waTemplateParameter]</td>
+<td>Template parameters for the header</td>
+</tr>
+</tbody></table>
+<p>The <code>[waTemplateParameter]</code> object</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>type</td>
+<td>string</td>
+<td>Type of parameter, one of: <code>text</code>, <code>video</code>, <code>date_time</code>, <code>image</code>, <code>document</code>, <code>currency</code></td>
+</tr>
+<tr>
+<td>video</td>
+<td>string</td>
+<td>Filepath or url of a video. Required for <code>video</code> type</td>
+</tr>
+<tr>
+<td>image</td>
+<td>string</td>
+<td>Filepath or url of an image. Required for <code>image</code> type</td>
+</tr>
+<tr>
+<td>document</td>
+<td>string</td>
+<td>Filepath or url of a document. Required for <code>document</code> type</td>
+</tr>
+<tr>
+<td>date_time</td>
+<td>[waFallbackDateTime]</td>
+<td>Date time object. Required for <code>date_time</code> type</td>
+</tr>
+<tr>
+<td>currency</td>
+<td>[waCurrency]</td>
+<td>Currency object. Required for <code>currency</code> type</td>
+</tr>
+</tbody></table>
+<p>The <code>[waFallbackDateTime]</code> object</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>fallback_value</td>
+<td>string</td>
+<td>Always use the fallback value, and Whatsapp API do not attempt to localize using other optional fields.</td>
+</tr>
+</tbody></table>
+<p>The <code>[waCurrency]</code> object</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>amount_1000</td>
+<td>string</td>
+<td>Amount multiplied by 1000</td>
+</tr>
+<tr>
+<td>code</td>
+<td>string</td>
+<td>Currency code as defined in <em>ISO 4217</em></td>
+</tr>
+<tr>
+<td>fallback_value</td>
+<td>string</td>
+<td>Default text if localization fails.</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>💡 Read <strong>Whatsapp Cloud API</strong> <a href="https://developers.facebook.com/docs/whatsapp/message-templates/guidelines">Templates section</a> for more informations</p>
+</blockquote>
+</script>
