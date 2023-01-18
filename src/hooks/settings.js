@@ -4,7 +4,13 @@ import AppContext from '../common/app-context';
 const useSettings = () => {
   const { state } = useContext(AppContext);
 
-  return state.settings
+  if (state != null) {
+    return state.settings;
+  } else if (window.bootstrap?.settings) {
+    return window.bootstrap?.settings;
+  } else {
+    return {};
+  }
 };
 
 export default useSettings;

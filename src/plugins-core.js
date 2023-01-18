@@ -12,3 +12,4 @@ import '../core/content-image';
 import '../core/access-tokens';
 import '../core/simulator';
 import '../core/tasks-queues';
+import '../core/otp';

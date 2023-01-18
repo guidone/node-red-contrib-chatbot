@@ -11,6 +11,7 @@ services:
       NODE_RED_ENABLE_TOURS: 'false'
       REDBOT_DEVELOPMENT_MODE: ${REDBOT_DEVELOPMENT_MODE}
       REDBOT_ENVIRONMENT: ${ENVIRONMENT}
+      REDBOT_ENABLE_OTP: ${REDBOT_ENABLE_OTP}
     volumes:
       - type: bind
         source: ${REDBOT_DIR}/nodes
