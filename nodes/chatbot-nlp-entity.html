@@ -16,7 +16,18 @@
       },
       regex: {
         value: '',
-        required: false, // TODO fix
+        validate: function(value) {
+          if (this.entityType === 'regex') {
+            var isValid = true;
+            try {
+              new RegExp(value);
+            } catch(e) {
+              isValid = false;
+            }
+            return isValid;
+          }
+          return true;
+        }
       },
       entityType: {
         value: 'enum',
@@ -25,7 +36,7 @@
       entities: {
         value: [],
         validate: function(entities) {
-          return $.RedBot.validate.entities(entities);
+          return this.entityType !== 'enum' || $.RedBot.validate.entities(entities);
         }
       },
       outputs: {
@@ -64,6 +75,7 @@
       }
     },
     oneditprepare: function() {
+      var node = this;
       $('#node-input-name')
         .blur(function() {
           var intent = $(this).val();
@@ -76,13 +88,7 @@
           $('.form-row-entityType').hide();
           $('.form-row-entityType-' + entityType).show();
         });
-      $('.form-row-type').hide();
-      console.log('entityType', this.entityType)
-      if (this.entityType === null || this.entityType === undefined || this.entityType === '' || this.entityType === 'enum') {
-        $('.form-row-entityType-enum').show();
-      } else {
-        $('.form-row-entityType-regex').show();
-      }
+
       $('#node-input-values-container')
         .css('min-width', '450px')
         .editableList({
@@ -110,12 +116,25 @@
           removable: true,
           sortable: true
         });
-      var entities = this.entities || [];
-      // populate the control
-      var idx;
-      for (idx = 0; idx < entities.length; idx++) {
-        $("#node-input-values-container").editableList('addItem', entities[idx]);
-      }
+      // wait a little before updating dom
+      setTimeout(function() {
+        $('.form-row-entityType').hide();
+        if (node.entityType === null || node.entityType === undefined || node.entityType === '' || node.entityType === 'enum') {
+          $('.form-row-entityType-enum').show();
+          // preselect enum if enumType is empty (legacy)
+          if (node.entityType === null || node.entityType === undefined || node.entityType === '') {
+            $('#node-input-entityType').val('enum');
+          }
+          // populate the control
+          var entities = node.entities || [];
+          var idx;
+          for (idx = 0; idx < entities.length; idx++) {
+            $("#node-input-values-container").editableList('addItem', entities[idx]);
+          }
+        } else {
+          $('.form-row-entityType-regex').show();
+        }
+      }, 10);
     },
     oneditresize: function() {
       var dialogForm = $('#dialog-form');

@@ -3,6 +3,16 @@ const utils = require('../lib/helpers/utils');
 const RegisterType = require('../lib/node-installer');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
+const isValidRegex = str => {
+  let isValid = true;
+  try {
+    new RegExp(str);
+  } catch(e) {
+    isValid = false;
+  }
+  return isValid;
+};
+
 module.exports = function(RED) {
   const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
@@ -43,17 +53,16 @@ module.exports = function(RED) {
 
       // collect the lexicon of the node and mix with the one of the incoming payload
       if (entityType === 'regex') {
-
-        // TODO check if valid regex
-
-        msg.payload.entities[language][name] = {
-          type: 'regex',
-          regex: node.regex
-        };
+        if (isValidRegex(node.regex)) {
+          msg.payload.entities[language][name] = {
+            type: 'regex',
+            regex: node.regex
+          };
+        } else {
+          done(`Invalid NLP.js regex for entity "${name}"`);
+          return;
+        }
       } else if (_.isEmpty(entityType) || entityType === 'enum') {
-
-        // TODO check if not array
-
         if (_.isArray(entities) && !_.isEmpty(entities)) {
           msg.payload.entities[language][name] = {
             type: 'enum',
@@ -65,11 +74,9 @@ module.exports = function(RED) {
           };
         }
       } else {
-        done(`Invalid NLP.js entity type: ${entityType}`);
+        done(`Invalid NLP.js entity type: ${entityType} for entity "${name}"`);
         return;
       }
-
-
 
       send(msg);
       done();

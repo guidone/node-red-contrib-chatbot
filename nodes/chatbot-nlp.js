@@ -122,10 +122,6 @@ module.exports = function(RED) {
 
       // extract vars
       const variables = {};
-
-      console.log('entities', response.entities);
-
-
       (response.entities || []).forEach(entity => {
         if (entity.type === 'regex') {
           variables[entity.entity] = entity.utteranceText;
