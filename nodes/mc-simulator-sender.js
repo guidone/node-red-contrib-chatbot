@@ -34,7 +34,7 @@ module.exports = function(RED) {
 
       const context = msg.chat();
       // skip messages not from the simulator and from the right chatbotId
-      if (!msg.originalMessage.simulator && msg.originalMessage.chatbotId !== node.chatbotId) {
+      if (!msg.originalMessage.simulator || msg.originalMessage.chatbotId !== node.chatbotId) {
         done();
         return;
       }
