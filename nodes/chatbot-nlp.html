@@ -91,16 +91,16 @@
 <script type="text/x-red" data-help-name="chatbot-nlpjs"><p>When the model is trained and loaded into the flow, <code>NLP.js Process</code> can be used to analyse the sentences from the chatbot users.</p>
 <p><img src="https://raw.githubusercontent.com/guidone/node-red-contrib-chatbot/master/docs/images/nlp-process.png" alt="Train model"></p>
 <p>If, for example, the user writes <em>“Turn on lights in the kitchen”</em>, the output of the <a href="https://www.notion.so/bbc3deb2d39a4b338fc6515eee337cd4">NLPjs Process</a>  will be</p>
-<pre><code class="language-javascript">{
-    payload: {
-        type: &#39;intent,
-        intent: &#39;switch.on&#39;,
-        score: 0.7,
-        isFallback: false,
-        language: &#39;en&#39;,
-        variables: {
-            room: &#39;kitchen&#39;
-        }
+<pre><code class="language-javascript">{ 
+    payload: {   
+        type: &#39;intent,   
+        intent: &#39;switch.on&#39;,   
+        score: 0.7,   
+        isFallback: false,   
+        language: &#39;en&#39;,   
+        variables: {     
+            room: &#39;kitchen&#39;   
+        } 
     }
 }
 </code></pre>
