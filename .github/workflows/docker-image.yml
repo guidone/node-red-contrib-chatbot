@@ -1,4 +1,4 @@
-name: Build RedBot Docker Image
+name: Docker Image CI
 
 on:
   release:
