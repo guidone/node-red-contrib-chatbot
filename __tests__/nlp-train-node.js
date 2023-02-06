@@ -22,11 +22,14 @@ describe('Chat nlp entity node', () => {
       },
       entities: {
         en: {
-          room: [
-            { name: 'kitchen' },
-            { name: 'dining room' },
-            { name: 'lavatory' }
-          ]
+          room: {
+            type: 'enum',
+            entities: [
+              { name: 'kitchen' },
+              { name: 'dining room' },
+              { name: 'lavatory' }
+            ]
+          }
         }
       }
     });
