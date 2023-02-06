@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Build RedBot Docker image
 
 on:
   release:
@@ -25,3 +25,11 @@ jobs:
            platforms: linux/amd64,linux/arm64
            push: true
            tags: guidone/redbot:latest
+       - name: notification
+         if: cancelled() == false
+         uses: xinthink/action-telegram@v1.1
+           with:
+             botToken: ${{ secrets.BotToken }}
+             chatId: ${{ secrets.ChatID }}
+             jobStatus: ${{ job.status }}
+
