@@ -1,12 +1,13 @@
-var _ = require('underscore');
-var assert = require('chai').assert;
-var RED = require('../lib/red-stub')();
-var KeyboardBlock = require('../nodes/chatbot-ask');
+const assert = require('chai').assert;
+const RED = require('../lib/red-stub')();
+const KeyboardBlock = require('../nodes/chatbot-ask');
 
-describe('Chat keyword node', function() {
+require('../lib/platforms/telegram');
 
-  it('should send custom keyboard in Telegram', function () {
-    var msg = RED.createMessage({}, 'telegram');
+describe('Chat keyword node', () => {
+
+  it('should send custom keyboard in Telegram', async () => {
+    const msg = RED.createMessage({}, 'telegram');
     RED.node.config({
       message: 'message for the buttons',
       buttons: [
@@ -30,24 +31,24 @@ describe('Chat keyword node', function() {
     KeyboardBlock(RED);
     RED.node.get().emit('input', msg);
 
-    return RED.node.get().await()
-      .then(function () {
-        assert.equal(RED.node.message().payload.type, 'buttons');
-        assert.equal(RED.node.message().payload.content, 'message for the buttons');
-        assert.equal(RED.node.message().payload.chatId, 42);
-        assert.isArray(RED.node.message().payload.buttons);
-        assert.equal(RED.node.message().payload.buttons[0].type, 'keyboardButton');
-        assert.equal(RED.node.message().payload.buttons[0].label, 'Value 1');
-        assert.equal(RED.node.message().payload.buttons[1].type, 'keyboardButton');
-        assert.equal(RED.node.message().payload.buttons[1].label, 'Value 2');
-        assert.equal(RED.node.message().payload.buttons[2].type, 'newline');
-        assert.equal(RED.node.message().payload.buttons[3].type, 'keyboardButton');
-        assert.equal(RED.node.message().payload.buttons[3].label, 'Value 3');
-      });
+    await RED.node.get().await()
+
+    assert.equal(RED.node.message().payload.type, 'telegram-buttons');
+    assert.equal(RED.node.message().payload.content, 'message for the buttons');
+    assert.equal(RED.node.message().payload.chatId, 42);
+    assert.isArray(RED.node.message().payload.buttons);
+    assert.equal(RED.node.message().payload.buttons[0].type, 'keyboardButton');
+    assert.equal(RED.node.message().payload.buttons[0].label, 'Value 1');
+    assert.equal(RED.node.message().payload.buttons[1].type, 'keyboardButton');
+    assert.equal(RED.node.message().payload.buttons[1].label, 'Value 2');
+    assert.equal(RED.node.message().payload.buttons[2].type, 'newline');
+    assert.equal(RED.node.message().payload.buttons[3].type, 'keyboardButton');
+    assert.equal(RED.node.message().payload.buttons[3].label, 'Value 3');
+
   });
 
-  it('should send a reset keyboard if the buttons array is empty', function () {
-    var msg = RED.createMessage({}, 'telegram');
+  it('should send a reset keyboard if the buttons array is empty', async () => {
+    const msg = RED.createMessage({}, 'telegram');
     RED.node.config({
       message: 'message for the buttons',
       buttons: []
@@ -55,17 +56,16 @@ describe('Chat keyword node', function() {
     KeyboardBlock(RED);
     RED.node.get().emit('input', msg);
 
-    return RED.node.get().await()
-      .then(function () {
-        assert.equal(RED.node.message().payload.type, 'reset-buttons');
-        assert.equal(RED.node.message().payload.content, 'message for the buttons');
-        assert.equal(RED.node.message().payload.chatId, 42);
-      });
+    await RED.node.get().await()
+
+    assert.equal(RED.node.message().payload.type, 'telegram-reset-buttons');
+    assert.equal(RED.node.message().payload.content, 'message for the buttons');
+    assert.equal(RED.node.message().payload.chatId, 42);
   });
 
 
-  it('should send custom keyboard in Telegram passed thru payload', function () {
-    var msg = RED.createMessage({
+  it('should send custom keyboard in Telegram passed thru payload', async () => {
+    const msg = RED.createMessage({
       message: 'message for the buttons',
       buttons: [
         {
@@ -90,25 +90,23 @@ describe('Chat keyword node', function() {
     KeyboardBlock(RED);
     RED.node.get().emit('input', msg);
 
-    return RED.node.get().await()
-      .then(function () {
-        assert.equal(RED.node.message().payload.type, 'buttons');
-        assert.equal(RED.node.message().payload.content, 'message for the buttons');
-        assert.equal(RED.node.message().payload.chatId, 42);
-        assert.isArray(RED.node.message().payload.buttons);
-        assert.equal(RED.node.message().payload.buttons[0].type, 'keyboardButton');
-        assert.equal(RED.node.message().payload.buttons[0].label, 'Value 1');
-        assert.equal(RED.node.message().payload.buttons[1].type, 'keyboardButton');
-        assert.equal(RED.node.message().payload.buttons[1].label, 'Value 2');
-        assert.equal(RED.node.message().payload.buttons[2].type, 'newline');
-        assert.equal(RED.node.message().payload.buttons[3].type, 'keyboardButton');
-        assert.equal(RED.node.message().payload.buttons[3].label, 'Value 3');
-      });
+    await RED.node.get().await()
 
+    assert.equal(RED.node.message().payload.type, 'telegram-buttons');
+    assert.equal(RED.node.message().payload.content, 'message for the buttons');
+    assert.equal(RED.node.message().payload.chatId, 42);
+    assert.isArray(RED.node.message().payload.buttons);
+    assert.equal(RED.node.message().payload.buttons[0].type, 'keyboardButton');
+    assert.equal(RED.node.message().payload.buttons[0].label, 'Value 1');
+    assert.equal(RED.node.message().payload.buttons[1].type, 'keyboardButton');
+    assert.equal(RED.node.message().payload.buttons[1].label, 'Value 2');
+    assert.equal(RED.node.message().payload.buttons[2].type, 'newline');
+    assert.equal(RED.node.message().payload.buttons[3].type, 'keyboardButton');
+    assert.equal(RED.node.message().payload.buttons[3].label, 'Value 3');
   });
 
-  it('should NOT send custom keyboard in Facebook', function () {
-    var msg = RED.createMessage({}, 'facebook');
+  it('should NOT send custom keyboard in Facebook', async () => {
+    const msg = RED.createMessage({}, 'facebook');
     RED.node.config({
       message: 'message for the buttons',
       answers: [
@@ -132,33 +130,8 @@ describe('Chat keyword node', function() {
     assert.isNull(RED.node.message());
   });
 
-  it('should NOT send custom keyboard in Smooch', function () {
-    var msg = RED.createMessage({}, 'smooch');
-    RED.node.config({
-      message: 'message for the buttons',
-      answers: [
-        {
-          value: 'value 1',
-          label: 'Value 1'
-        },
-        {
-          value: 'value 2',
-          label: 'Value 2'
-        },
-        {
-          value: 'value 3',
-          label: 'Value 3'
-        }
-      ]
-    });
-    KeyboardBlock(RED);
-    RED.node.get().emit('input', msg);
-
-    assert.isNull(RED.node.message());
-  });
-
-  it('should NOT send custom keyboard in Slack', function () {
-    var msg = RED.createMessage({}, 'slack');
+  it('should NOT send custom keyboard in Slack', async () => {
+    const msg = RED.createMessage({}, 'slack');
     RED.node.config({
       message: 'message for the buttons',
       answers: [

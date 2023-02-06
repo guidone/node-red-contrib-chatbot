@@ -67,17 +67,31 @@ module.exports = function(RED) {
       if (_.isObject(payload.entities)) {
         Object.keys(payload.entities).forEach(language => {
           Object.keys(payload.entities[language] || {}).forEach(name => {
-            (payload.entities[language][name] || []).forEach(entity => {
+            const entity = payload.entities[language][name];
+            if (entity.type === 'enum') {
+              (entity.entities || []).forEach(item => {
+                // prevent aliases containing a single empty string
+                const aliases = (item.aliases || []).filter(str => !_.isEmpty(str));
+                if (debug) {
+                  // eslint-disable-next-line no-console
+                  console.log(
+                    '  Entity: ' + lcd.white(name) + ' [' + language.toUpperCase() + '] '
+                    + lcd.green(item.name)
+                    + (_.isArray(aliases) && !_.isEmpty(aliases) ? ` (${aliases.join(',')})` : '')
+                  );
+                }
+                manager.addNamedEntityText(name, item.name, [language], !_.isEmpty(aliases) ? [item.name, ...aliases] : [item.name]);
+              });
+            } else if (entity.type === 'regex') {
+              manager.nlp.addNerRegexRule(language, name, entity.regex);
               if (debug) {
                 // eslint-disable-next-line no-console
                 console.log(
                   '  Entity: ' + lcd.white(name) + ' [' + language.toUpperCase() + '] '
-                  + lcd.green(entity.name)
-                  + _.isArray(entity.aliases) && !_.isEmpty(entity.aliases) ? ` (${entity.aliases.join(',')})` : ''
+                  + lcd.green(entity.regex)
                 );
               }
-              manager.addNamedEntityText(name, entity.name, [language], !_.isEmpty(entity.aliases) ? [entity.name, ...entity.aliases] : [entity.name]);
-            });
+            }
           });
         });
       }

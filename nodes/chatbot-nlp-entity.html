@@ -14,10 +14,29 @@
         value: 'en',
         required: true
       },
+      regex: {
+        value: '',
+        validate: function(value) {
+          if (this.entityType === 'regex') {
+            var isValid = true;
+            try {
+              new RegExp(value);
+            } catch(e) {
+              isValid = false;
+            }
+            return isValid;
+          }
+          return true;
+        }
+      },
+      entityType: {
+        value: 'enum',
+        required: true
+      },
       entities: {
         value: [],
         validate: function(entities) {
-          return $.RedBot.validate.entities(entities);
+          return this.entityType !== 'enum' || $.RedBot.validate.entities(entities);
         }
       },
       outputs: {
@@ -43,8 +62,11 @@
         var selectorAliases = domRules[idx].find('input[name=aliases]');
         var aliases = [];
         var splitAliases = selectorAliases.val().split(',');
-        for(var k = 0; k < splitAliases.length; k++) {
-          aliases.push($.trim(splitAliases[k]));
+        for (var k = 0; k < splitAliases.length; k++) {
+          var str = $.trim(splitAliases[k]);
+          if (str != null && str != undefined && str !== '') {
+            aliases.push(str);
+          }
         }
         node.entities.push({
           name: selectorName.val().toLowerCase(),
@@ -53,12 +75,20 @@
       }
     },
     oneditprepare: function() {
+      var node = this;
       $('#node-input-name')
         .blur(function() {
           var intent = $(this).val();
           intent = intent.replace(/ /g, '');
           $(this).val(intent);
         });
+      $('#node-input-entityType')
+        .change(function() {
+          var entityType = $(this).val();
+          $('.form-row-entityType').hide();
+          $('.form-row-entityType-' + entityType).show();
+        });
+
       $('#node-input-values-container')
         .css('min-width', '450px')
         .editableList({
@@ -70,7 +100,7 @@
                 style: 'width:100%',
                 class: 'node-input-name',
                 name: 'name',
-                type: 'text', 
+                type: 'text',
                 placeholder: 'Name',
                 value: entity.name
               }).appendTo(row);
@@ -86,12 +116,25 @@
           removable: true,
           sortable: true
         });
-      var entities = this.entities || [];
-      // populate the control
-      var idx;
-      for (idx = 0; idx < entities.length; idx++) {
-        $("#node-input-values-container").editableList('addItem', entities[idx]);
-      }
+      // wait a little before updating dom
+      setTimeout(function() {
+        $('.form-row-entityType').hide();
+        if (node.entityType === null || node.entityType === undefined || node.entityType === '' || node.entityType === 'enum') {
+          $('.form-row-entityType-enum').show();
+          // preselect enum if enumType is empty (legacy)
+          if (node.entityType === null || node.entityType === undefined || node.entityType === '') {
+            $('#node-input-entityType').val('enum');
+          }
+          // populate the control
+          var entities = node.entities || [];
+          var idx;
+          for (idx = 0; idx < entities.length; idx++) {
+            $("#node-input-values-container").editableList('addItem', entities[idx]);
+          }
+        } else {
+          $('.form-row-entityType-regex').show();
+        }
+      }, 10);
     },
     oneditresize: function() {
       var dialogForm = $('#dialog-form');
@@ -107,7 +150,7 @@
 
 <script type="text/x-red" data-template-name="chatbot-nlpjs-entity">
 <div class="form-row form-row-name">
-  <label for="node-input-intent"><i class="icon-tag"></i> Entity name</label>
+  <label for="node-input-intent"><i class="icon-tag"></i>Entity name</label>
   <input type="text" id="node-input-name" placeholder="Name">
 </div>
 <div class="form-row form-row-language">
@@ -148,10 +191,21 @@
     <option value="zh">Chinese</option>
   </select>
 </div>
-<div class="form-row form-row-label" style="margin-bottom:0;">
+<div class="form-row">
+  <label for="node-input-entityType">Entity type</label>
+  <select id="node-input-entityType" placeholder="Entity type">
+    <option value="enum">List</option>
+    <option value="regex">Regular Expression</option>
+  </select>
+</div>
+<div class="form-row form-row-entityType form-row-entityType-regex">
+  <label for="node-input-intent" style="display:block;width:auto;">Regular Expression</label>
+  <input type="text" id="node-input-regex" placeholder="i.e./ ... /gi">
+</div>
+<div class="form-row form-row-entityType form-row-entityType-enum form-row-label" style="margin-bottom:0;">
   <label style="width:100%;"><i class="fa fa-list"></i> <span>Utterances</span></label>
 </div>
-<div class="form-row node-input-values-container-row">
+<div class="form-row form-row-entityType form-row-entityType-enum node-input-values-container-row">
   <ol id="node-input-values-container"></ol>
 </div>
 </script>

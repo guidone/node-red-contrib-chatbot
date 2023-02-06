@@ -123,21 +123,25 @@ module.exports = function(RED) {
       // extract vars
       const variables = {};
       (response.entities || []).forEach(entity => {
-        const name = entity.alias != null ? entity.alias : entity.entity;
-        const obj = entity.option ? entity.option : entity.resolution;
-        obj.entity = entity.entity;
-        // ensure all extracted entity has at least "value" and "entity" keeping all
-        // other keys for retrocompatibility
-        if (obj.value == null) {
-          if (obj.values != null && Array.isArray(obj.values) && obj.values.length !== 0) {
-            obj.value = obj.values[0].value;
-            // handle the exception of duration as string
-            if (obj.entity === 'duration') {
-              obj.value = parseInt(obj.value, 10);
+        if (entity.type === 'regex') {
+          variables[entity.entity] = entity.utteranceText;
+        } else {
+          const name = entity.alias != null ? entity.alias : entity.entity;
+          const obj = entity.option ? entity.option : entity.resolution;
+          obj.entity = entity.entity;
+          // ensure all extracted entity has at least "value" and "entity" keeping all
+          // other keys for retrocompatibility
+          if (obj.value == null) {
+            if (obj.values != null && Array.isArray(obj.values) && obj.values.length !== 0) {
+              obj.value = obj.values[0].value;
+              // handle the exception of duration as string
+              if (obj.entity === 'duration') {
+                obj.value = parseInt(obj.value, 10);
+              }
             }
           }
+          variables[name] = obj;
         }
-        variables[name] = obj;
       });
 
       if (debug) {
