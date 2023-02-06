@@ -214,14 +214,14 @@
 <p><img src="https://raw.githubusercontent.com/guidone/node-red-contrib-chatbot/master/docs/images/nlp-entity.png" alt="Entity"></p>
 <p>Built-in entities are: <em>email</em>, <em>ip</em>, <em>hashtag</em>, <em>phonenumber</em>, <em>url</em>, <em>number</em>, <em>ordinal</em>, <em>percentage</em>, <em>age</em>, <em>currency</em>, <em>date</em>, <em>duration</em>.</p>
 <p>The entity can also be defined in a upstream node:</p>
-<pre><code class="language-javascript">{
-    payload: {
-        name: &#39;fruits&#39;,
-        language: &#39;en&#39;,
-        entities: [
-            { name: &#39;orange&#39; },
-            { name: &#39;apple&#39;, aliases: [&#39;golden apple&#39;, &#39;granny smith apple&#39;] }
-        ]
+<pre><code class="language-javascript">{  
+    payload: {    
+        name: &#39;fruits&#39;,    
+        language: &#39;en&#39;,    
+        entities: [      
+            { name: &#39;orange&#39; },      
+            { name: &#39;apple&#39;, aliases: [&#39;golden apple&#39;, &#39;granny smith apple&#39;] }    
+        ]  
     }
 }
 </code></pre>
