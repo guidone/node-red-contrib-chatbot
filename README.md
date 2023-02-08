@@ -24,10 +24,10 @@ Maintaining **RedBot** is very time-consuming, if you like it, please consider:
 ## Documentation
 
 1. [RedBot nodes](https://github.com/guidone/node-red-contrib-chatbot/wiki/RedBot-nodes)
-2. [Examples](https://github.com/guidone/node-red-contrib-chatbot/wiki#examples)
-3. [Advanced examples](https://github.com/guidone/node-red-contrib-chatbot/wiki#advanced-examples)
-4. [Chat context](https://github.com/guidone/node-red-contrib-chatbot/wiki/Chat-Context)
-5. [Changelog](https://github.com/guidone/node-red-contrib-chatbot/wiki/Changelog)
+2. [Examples](https://www.notion.so/redbot/Examples-5c2c1d6bd49641499c97b65d9f46d4ba)
+3. [Advanced examples](https://www.notion.so/redbot/Advanced-Topics-18a43568eaf14ee4a442ea4cf2f44068)
+4. [Chat context](https://www.notion.so/redbot/Chat-Context-3460c588cf234344974936acd05f8c16)
+5. [Changelog](https://www.notion.so/redbot/Change-log-b46a94ab6bbc4c7d8a586cbc21af7d78)
 
 ## Getting started
 
