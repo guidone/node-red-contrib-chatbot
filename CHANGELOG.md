@@ -1,4 +1,5 @@
-- **1.1.6** -
+- **1.2.1** - [Untitled](https://www.notion.so/f73d1e0200804467b8f03e077584fb16) now supports regular expressions, [Untitled](https://www.notion.so/0085af98bd2c4c169d4c7e579c7db316)  and [Untitled](https://www.notion.so/d8b27db3949c475184923af913563833)  now implements alla flags for keyboards (persistant, one time only, etc)
+- **1.2.0** - Support for **Whatsapp Cloud API, i**mproved events in `Rules` node, updated Facebook Messenger API to _v15.0, r_emoved deprecated node `Generic Template` node in Facebook Messenger and `Location` node support, added _read, delivery_ and _reactions_ event for Facebook Messenger, refactored Facebook, Messenger events names (now matches the [events](https://developers.facebook.com/docs/messenger-platform/reference/webhook-events)), refactored `Messenger Menu` node (doesn't require to be connected to `Messenger Sender` node), added support in Facebook Messenger for notification types, message types and message tags
 - **1.1.6** - Add support for spoiler images, video and text in Telegram
 - **1.1.5** - Fixed global imports in **Mission Control** for **Mass Contact** plugin
 - **1.1.4** - Fix templates with non latin chars, fix missing queue error
@@ -176,7 +177,7 @@
 - **0.6.4** - Added chat context node, refactored transport node
 - **0.6.3** - Cleanup
 - **0.6.2** - Added support for Smooch.io
-- **0.6.0** -
+- **0.6.0** - 
 - **0.5.14** - **[breaking changes]** moved Facebook endpoint to the same address/port of Node-Red: http://localhost:1880/redbot/facebook (this allows to use it on Heroku for example)
 - **0.5.10** - added language node
 - **0.5.9** - cache Rivescript and enable follow up
