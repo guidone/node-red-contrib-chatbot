@@ -181,4 +181,26 @@ describe('Chat params node', () => {
     assert.strictEqual(message.payload.params['my-value1'], 42);
   });
 
+  it('should not break if the payload is null', async function() {
+    const msg = RED.createMessage(null, 'telegram');
+    msg.payload = null;
+    RED.node.config({
+      params: [
+        { platform: 'telegram', name: 'my-value2', value: true },
+        { platform: 'slack', name: 'my-chatId', value: '{{chatId}}' }
+      ]
+    });
+    ParamsBlock(RED);
+    msg.chat().set({});
+    RED.node.get().emit('input', msg);
+
+    await RED.node.get().await()
+
+    const message = RED.node.message(0);
+
+    assert.equal(message.originalMessage.chat.id, '42');
+    assert.lengthOf(Object.keys(message.payload.params), 1);
+    assert.equal(message.payload.params['my-value2'], true);
+  });
+
 });
