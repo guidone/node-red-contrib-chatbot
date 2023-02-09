@@ -126,7 +126,8 @@ const PluginsManager = ({ dispatch }) => {
   // fetch plugins from redbot dashboard
   const { data, error: fetchError } = useFetch('https://dashboard.red-bot.io/graphql', {
     method: 'post',
-    body: JSON.stringify(PLUGINS_QUERY)
+    body: JSON.stringify(PLUGINS_QUERY),
+    cachePolicy: 'network-only'
   }, []);
   const plugins = data != null && data.data != null ? data.data.plugins : undefined;
 

@@ -39,7 +39,7 @@ module.exports = function(RED) {
           // by an upstream node as configuration for the current one)
           const params = p.reduce(
             (accumulator, param) => ({ ...accumulator, [param.name]: param.value }),
-            _.isObject(msg.payload.params) && !_.isArray(msg.payload.params) ? { ...msg.payload.params } : {}
+            _.isObject(msg.payload?.params) && !_.isArray(msg.payload?.params) ? { ...msg.payload.params } : {}
           );
           send({
             ...msg,

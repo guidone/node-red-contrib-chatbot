@@ -3,7 +3,9 @@ import { Tag, Icon } from 'rsuite';
 
 import './style.scss';
 
-const NodeRedNode = ({ children }) => <Tag style={{ backgroundColor: '#ff6633', color: '#ffffff'}}>{children}</Tag>;
+const NodeRedNode = ({ children }) => <Tag style={{ backgroundColor: '#ff6633', color: '#ffffff' }}>{children}</Tag>;
+
+const NodeRedUrl = ({ children }) => <Tag style={{ backgroundColor: '#3399AA', color: '#ffffff', fontSize: '14px' }}>{children}</Tag>;
 
 const SlugHelp = () => (
   <p>
@@ -18,4 +20,4 @@ const TypeCommand = ({ children }) => (
 
 const ChatbotStatus = ({ children }) => <Tag color="orange" className="ui-chatbot-status">{children}</Tag>;
 
-export { NodeRedNode, SlugHelp, TypeCommand, ChatbotStatus };
+export { NodeRedNode, SlugHelp, TypeCommand, ChatbotStatus, NodeRedUrl };
