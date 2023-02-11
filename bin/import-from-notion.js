@@ -12,12 +12,16 @@ const grey = clc.blackBright;
 
 const nodeDefinitions = require('./nodes');
 
-if (!fs.existsSync(`${__dirname}/../.env-notion`)) {
+// notion api key
+let notionAuthToken = process.env.NOTION_API_KEY;
+if (fs.existsSync(`${__dirname}/../.env-notion`)) {
+  notionAuthToken = fs.readFileSync(`${__dirname}/../.env-notion`);
+}
+if (notionAuthToken == null || notionAuthToken === '') {
   console.log('Missing notion token, skipping');
   process.exit();
 }
 
-const notionAuthToken = process.env.NOTION_API_KEY || fs.readFileSync(`${__dirname}/../.env-notion`);
 
 // Initializing a client
 const notion = new Client({ auth: notionAuthToken });
