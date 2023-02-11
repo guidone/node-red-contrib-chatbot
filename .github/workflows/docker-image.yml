@@ -15,14 +15,14 @@ jobs:
           node-version: '16.x'
           registry-url: 'https://registry.npmjs.org'
       - run: npm ci
-      - name: 'change version'
-        uses: reedyuk/npm-version@1.1.1
-        with:
-          version: '${{ github.ref_name }}'
-          git-tag-version: 'false'
+      - name: Commit CHANGELOG.md and package.json changes and create tag
+        run: |
+          npm version ${{ github.ref_name }} 
+          git push
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - run: npm publish
+        name: Publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
   docker:
