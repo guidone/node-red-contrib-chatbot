@@ -19,6 +19,9 @@ jobs:
         uses: reedyuk/npm-version@1.1.1
         with:
           version: '${{ github.ref_name }}'
+          git-tag-version: 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
