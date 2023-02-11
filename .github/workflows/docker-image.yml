@@ -18,6 +18,8 @@ jobs:
       - name: Build
         run: |
           npm run build
+        env:
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
       - name: Bump version
         run: |
           git config --global user.email "guido.bellomo@gmail.com"
