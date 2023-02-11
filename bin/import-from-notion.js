@@ -17,7 +17,7 @@ if (!fs.existsSync(`${__dirname}/../.env-notion`)) {
   process.exit();
 }
 
-const notionAuthToken = fs.readFileSync(`${__dirname}/../.env-notion`);
+const notionAuthToken = process.env.NOTION_API_KEY || fs.readFileSync(`${__dirname}/../.env-notion`);
 
 // Initializing a client
 const notion = new Client({ auth: notionAuthToken });
