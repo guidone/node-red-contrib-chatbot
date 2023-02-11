@@ -23,6 +23,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
   docker:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
