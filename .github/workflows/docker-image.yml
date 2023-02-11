@@ -15,7 +15,10 @@ jobs:
           node-version: '16.x'
           registry-url: 'https://registry.npmjs.org'
       - run: npm ci
-      - run: npm version ${{ env.GITHUB_REF }}
+      - name: 'change version'
+        uses: reedyuk/npm-version@1.1.1
+        with:
+          version: ${{ env.GITHUB_REF }}
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
