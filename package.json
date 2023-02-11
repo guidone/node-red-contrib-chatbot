@@ -165,7 +165,7 @@
     "node-nlp": "^4.26.1",
     "node-telegram-bot-api": "^0.58.0",
     "notion-to-md": "^2.4.1",
-    "passport": "^0.4.1",
+    "passport": "^0.6.0",
     "passport-http": "^0.3.0",
     "passport-local": "^1.0.0",
     "prettyjson": "^1.2.1",
