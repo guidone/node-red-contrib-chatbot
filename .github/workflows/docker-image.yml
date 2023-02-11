@@ -15,16 +15,20 @@ jobs:
           node-version: '16.x'
           registry-url: 'https://registry.npmjs.org'
       - run: npm ci
-      - name: Commit CHANGELOG.md and package.json changes and create tag
+      - name: Bump version
         run: |
           git config --global user.email "guido.bellomo@gmail.com"
           git config --global user.name "Guido Bellomo"
           git add .
           git commit -m "build"
           npm version ${{ github.ref_name }} 
-          git push
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Push changes to repository
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git push origin && git push --tags          
       - run: npm publish
         name: Publish
         env:
