@@ -60,6 +60,6 @@ module.exports = function(RED) {
   );
 
   registerType('chatbot-telegram-receive', GenericInNode('telegram', RED));
-  console.log('finale')
+
   registerType('chatbot-telegram-send', GenericOutNode('telegram', RED));
 };
