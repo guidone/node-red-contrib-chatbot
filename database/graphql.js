@@ -1,7 +1,6 @@
 const { ApolloServer } = require('@apollo/server');
 const { resolver } = require('graphql-sequelize');
 const { Kind } = require('graphql/language');
-const { PubSub } = require('graphql-subscriptions');
 const _ = require('lodash');
 const geolib = require('geolib');
 const Sequelize = require('sequelize');
@@ -19,7 +18,6 @@ const translateWhere = require('../src/helpers/translate-where');
 
 const directus = new Directus('https://dashboard.red-bot.io');
 const Op = Sequelize.Op;
-const pubsub = new PubSub();
 
 const deleteFile = filename => new Promise((resolve, reject) => {
   fs.unlink(filename, err => {
@@ -2584,7 +2582,7 @@ module.exports = ({
     }),
 
 
-    subscription: new GraphQLObjectType({
+    /*subscription: new GraphQLObjectType({
       name: 'Subscriptions',
       fields: {
         deviceUpdated: {
@@ -2600,7 +2598,7 @@ module.exports = ({
         }
       }
 
-    })
+    })*/
 
   });
 

@@ -1,5 +1,5 @@
 import { useMemo} from 'react';
-import { InMemoryCache, HttpLink, ApolloClient, ApolloLink } from '@apollo/client';
+import { InMemoryCache, HttpLink, ApolloClient } from '@apollo/client';
 
 // DOCS: connecting web socket
 // https://www.apollographql.com/docs/react/data/subscriptions/
@@ -12,7 +12,7 @@ export default _settings => {
 
     return new ApolloClient({
       cache,
-      link: ApolloLink.from([apolloLink])
+      link: apolloLink
     });
   }, []);
   return client;
