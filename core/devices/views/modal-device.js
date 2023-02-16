@@ -1,6 +1,6 @@
 import React, { useState, Fragment, useRef } from 'react';
 import gql from 'graphql-tag';
-import { useQuery } from 'react-apollo';
+import { useQuery } from '@apollo/client';
 import PropTypes from 'prop-types';
 import {
   Modal,

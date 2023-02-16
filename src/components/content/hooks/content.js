@@ -1,5 +1,4 @@
-import gql from 'graphql-tag';
-import { useMutation } from 'react-apollo';
+import { useMutation, gql } from '@apollo/client';
 
 import withoutParams from '../../../../src/helpers/without-params';
 

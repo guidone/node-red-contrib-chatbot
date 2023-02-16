@@ -1,4 +1,4 @@
-const { ApolloServer } = require('apollo-server-express');
+const { ApolloServer } = require('@apollo/server');
 const { resolver } = require('graphql-sequelize');
 const { Kind } = require('graphql/language');
 const { PubSub } = require('graphql-subscriptions');
@@ -552,7 +552,7 @@ module.exports = ({
         }
       },
       messages: {
-        type: GraphQLList(messageType),
+        type: new GraphQLList(messageType),
         args: {
           offset: { type: GraphQLInt },
           limit: { type: GraphQLInt },
@@ -1593,7 +1593,7 @@ module.exports = ({
         editChatbot: {
           type: chatbotType,
           args: {
-            id: { type: GraphQLNonNull(GraphQLInt) },
+            id: { type: new GraphQLNonNull(GraphQLInt) },
             chatbot: { type: new GraphQLNonNull(inputChatbotType)}
           },
           async resolve(root, { chatbot, id }) {

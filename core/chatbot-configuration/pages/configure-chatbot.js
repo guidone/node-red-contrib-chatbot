@@ -1,7 +1,6 @@
 import React from 'react';
 import { FlexboxGrid } from 'rsuite';
-import gql from 'graphql-tag';
-import { useQuery, useMutation } from 'react-apollo';
+import { useQuery, useMutation, gql } from '@apollo/client';
 import { Notification } from 'rsuite';
 import _ from 'lodash';
 
@@ -55,7 +54,6 @@ const ConfigureChatbot = () => {
     }
   });
 
-  console.log('loading', loading)
   const ready = !loading;
   const disabled = editLoading;
   const error = loadError || editError;
@@ -65,7 +63,7 @@ const ConfigureChatbot = () => {
       {_.isEmpty(state.chatbotId) && (
         <>
           <Breadcrumbs pages={['Chatbot']}/>
-          <FlexboxGrid justify="space-between">
+          <FlexboxGrid justify='space-between'>
             <FlexboxGrid.Item colspan={17} style={{ paddingTop: '20px', paddingLeft: '20px' }}>
               <strong>Select a chatbot</strong> from the drop down menu in the top right corner.
             </FlexboxGrid.Item>

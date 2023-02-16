@@ -1,6 +1,5 @@
 import React, { useState, useEffect, Fragment, useRef } from 'react';
-import gql from 'graphql-tag';
-import { useQuery, useApolloClient } from 'react-apollo';
+import { useQuery, useApolloClient, gql } from '@apollo/client';
 import _ from 'lodash';
 import {
   Modal,

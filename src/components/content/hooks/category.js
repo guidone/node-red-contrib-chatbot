@@ -1,6 +1,5 @@
-import gql from 'graphql-tag';
 import { useState } from 'react';
-import { useQuery, useMutation } from 'react-apollo';
+import { useQuery, useMutation, gql } from '@apollo/client';;
 
 import withoutParams from '../../../../src/helpers/without-params';
 

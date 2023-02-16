@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Table, Icon, ButtonGroup, Button } from 'rsuite';
 import gql from 'graphql-tag';
 import { Link } from 'react-router-dom';
-import { useMutation } from 'react-apollo';
+import { useMutation } from '@apollo/client';
 
 const { Column, HeaderCell, Cell } = Table;
 

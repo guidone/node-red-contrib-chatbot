@@ -1,7 +1,7 @@
 import React, { useMemo, useState, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { Notification, Message, FlexboxGrid, Input, Checkbox } from 'rsuite';
-import { useMutation, useApolloClient } from 'react-apollo';
+import { useMutation, useApolloClient } from '@apollo/client';
 import useFetch from 'use-http';
 
 import ModalLoader from '../../../src/components/loader-modal';

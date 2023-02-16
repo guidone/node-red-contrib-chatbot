@@ -1,5 +1,5 @@
 import React, { useState, useReducer } from 'react';
-import { useQuery, useMutation } from 'react-apollo';
+import { useQuery, useMutation } from '@apollo/client';
 import { Button } from 'rsuite';
 import {
   BrowserRouter as Router,

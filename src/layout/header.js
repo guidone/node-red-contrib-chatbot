@@ -4,7 +4,7 @@ import gql from 'graphql-tag';
 import gravatar from 'gravatar';
 import { Tooltip, Whisper, Header, Navbar, Dropdown, Nav, Icon, IconButton, Avatar, Notification } from 'rsuite';
 import { useCodePlug } from 'code-plug';
-import { useApolloClient } from 'react-apollo';
+import { useApolloClient } from '@apollo/client';
 import { Link, useHistory } from 'react-router-dom';
 import _ from 'lodash';
 import useFetch from 'use-http';

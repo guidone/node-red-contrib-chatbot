@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useMutation } from 'react-apollo';
+import { useMutation } from '@apollo/client';
 import _ from 'lodash';
 import { Modal, FormGroup, ControlLabel, FormControl, HelpBlock, Form, Button } from 'rsuite';
 import gql from 'graphql-tag';

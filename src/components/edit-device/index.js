@@ -1,7 +1,6 @@
 
 import React, { useState, useCallback } from 'react';
-import { useMutation } from 'react-apollo';
-import gql from 'graphql-tag';
+import { useMutation, gql } from '@apollo/client';
 
 import { Modal, Tooltip, Whisper, Icon, Button } from 'rsuite';
 import SchemaForm, { validate } from '../../../src/components/schema-form';

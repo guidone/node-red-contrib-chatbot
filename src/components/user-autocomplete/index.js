@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { AutoComplete, InputGroup } from 'rsuite';
 import PropTypes from 'prop-types';
-import { useQuery } from 'react-apollo';
+import { useQuery } from '@apollo/client';
 import _ from 'lodash';
 
 import useMCContext from '../../../src/hooks/mc-context';

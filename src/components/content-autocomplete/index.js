@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { AutoComplete, InputGroup, Button, FlexboxGrid, ButtonGroup, IconButton, Icon, Tooltip, Whisper } from 'rsuite';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { useQuery } from 'react-apollo';
+import { useQuery } from '@apollo/client';
 
 import Language from '../../components/language';
 import useMCContext from '../../hooks/mc-context';

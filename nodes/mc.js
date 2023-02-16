@@ -3,6 +3,9 @@ const serveStatic = require('serve-static');
 const path = require('path');
 const events = require('events');
 const fs = require('fs');
+const { expressMiddleware } = require('@apollo/server/express4');
+const cors = require('cors');
+const { json } = require('body-parser');
 
 const session = require('express-session');
 const _ = require('lodash');
@@ -309,7 +312,11 @@ Some **formatting** is _allowed_!`
     }
     next();
   });
-  graphQLServer.applyMiddleware({ app });
+  //graphQLServer.applyMiddleware({ app });
+
+  await graphQLServer.start();
+  app.use('/graphql', cors(), json(), expressMiddleware(graphQLServer));
+
 
   // eslint-disable-next-line no-console
   console.log(lcd.timestamp() + '  ' + lcd.green('GraphQL URL: ')

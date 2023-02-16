@@ -1,5 +1,8 @@
+
 const TelegramServer = require('../lib/platforms/telegram');
+
 const RegisterType = require('../lib/node-installer');
+
 const { GenericOutNode, GenericInNode, GenericBotNode } = require('../lib/sender-factory/index');
 
 module.exports = function(RED) {
@@ -57,6 +60,6 @@ module.exports = function(RED) {
   );
 
   registerType('chatbot-telegram-receive', GenericInNode('telegram', RED));
-
+  console.log('finale')
   registerType('chatbot-telegram-send', GenericOutNode('telegram', RED));
 };
