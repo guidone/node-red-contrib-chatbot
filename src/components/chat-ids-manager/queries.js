@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 const DELETE_CHAT_ID = gql`
 mutation($id: Int!) {

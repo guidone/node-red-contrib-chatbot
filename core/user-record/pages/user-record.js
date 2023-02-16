@@ -1,5 +1,5 @@
 import React, { useState, useReducer } from 'react';
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation, gql } from '@apollo/client';
 import { Button } from 'rsuite';
 import {
   BrowserRouter as Router,
@@ -9,8 +9,6 @@ import {
   useHistory,
   useParams
 } from 'react-router-dom';
-
-import gql from 'graphql-tag';
 
 import { useCodePlug } from 'code-plug';
 import PageContainer from '../../../src/components/page-container';

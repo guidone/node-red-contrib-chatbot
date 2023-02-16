@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 const SEARCH = gql`
 query($id: Int,$username: String, $search: String, $chatbotId: String) {

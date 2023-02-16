@@ -1,5 +1,5 @@
 import React, { useState, useRef, Fragment } from 'react';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import _ from 'lodash';
 import { Table, Icon, SelectPicker, ButtonGroup, Button, ButtonToolbar } from 'rsuite';
 

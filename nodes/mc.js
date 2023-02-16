@@ -446,7 +446,10 @@ Some **formatting** is _allowed_!`
         if (frontendEnvironment === 'plugin' || frontendEnvironment === 'production') {
           pluginsScript = plugins.map(plugin => `<script src="${mcSettings.root}/plugins/${plugin.filename}"></script>`);
         }
-        const json = `<script>var bootstrap = ${JSON.stringify(bootstrap)};var mc_environment='${frontendEnvironment}';</script>`;
+        const json = `<script>
+        window.process = { env: { NODE_ENV: 'development' }};
+        var bootstrap = ${JSON.stringify(bootstrap)};var mc_environment='${frontendEnvironment}';
+        </script>`;
         res.send(template.replace('{{data}}', json).replace('{{assets}}', assets).replace('{{plugins}}', pluginsScript.join('')));
      });
     }

@@ -5,7 +5,7 @@ import SocketListener from './lib/socket';
 import getRoot from '../helpers/get-root';
 import getNodeRedRoot from '../helpers/get-node-red-root';
 
-const DEBUG_SOCKET = true;
+const DEBUG_SOCKET = false;
 let nodeRedSocketListener;
 
 const useNodeRedSocket = ({

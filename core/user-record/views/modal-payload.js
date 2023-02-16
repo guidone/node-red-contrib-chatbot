@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Button } from 'rsuite';
-//import gql from 'graphql-tag';
-//import { useQuery, useMutation } from '@apollo/client';
+//import { useQuery, useMutation, gql } from '@apollo/client';
 import ReactJson from 'react-json-view'
 
 //import WarningBox from '../../components/warning-box';

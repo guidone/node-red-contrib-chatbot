@@ -120,7 +120,6 @@ import * as globalCodePlug from 'code-plug';
 import _, * as globalLodash from 'lodash';
 import * as globalRsuite from 'rsuite';
 import * as globalUseHttp from 'use-http';
-//import * as globalGraphQLTag from 'graphql-tag';
 import * as globalReactApollo from '@apollo/client';
 import { useNodeRedSocket as globalUseNodeRedSocket } from './hooks/socket';
 import { Link as globalLink } from 'react-router-dom';
@@ -134,7 +133,8 @@ window.globalLibs['code-plug'] = globalCodePlug;
 window.globalLibs.lodash = globalLodash;
 window.globalLibs.rsuite = globalRsuite;
 window.globalLibs['use-http'] = globalUseHttp;
-window.globalLibs['graphql-tag'] = globalReactApollo.gql;
+window.globalLibs['graphql-tag'] = globalReactApollo.gql; // for retro-compatibility
+window.globalLibs['react-apollo'] = globalReactApollo; // for retro-compatibility
 window.globalLibs['@apollo/client'] = globalReactApollo;
 window.globalLibs[''] = globalReactApollo;
 window.globalLibs['hooks-socket'] = globalUseSocket;

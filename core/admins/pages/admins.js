@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Table, Icon, ButtonGroup, Button } from 'rsuite';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
+
 
 const { Column, HeaderCell, Cell } = Table;
 

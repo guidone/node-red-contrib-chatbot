@@ -1,7 +1,6 @@
 import React, { useState, useRef, Fragment, useCallback } from 'react';
 import { Table, Icon, ButtonGroup, Button, FlexboxGrid } from 'rsuite';
-import { useQuery, useSubscription } from '@apollo/client';
-import gql from 'graphql-tag';
+import { useQuery, useSubscription, gql } from '@apollo/client';
 import GoogleMapReact from 'google-map-react';
 
 import {
