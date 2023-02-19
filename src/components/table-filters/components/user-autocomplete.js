@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useApolloClient } from 'react-apollo';
-import gql from 'graphql-tag';
+import { useApolloClient, gql } from '@apollo/client';
 import _ from 'lodash';
 
 import UserAutocomplete from '../../../../src/components/user-autocomplete';

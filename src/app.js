@@ -2,8 +2,7 @@
 import React, { useReducer, useEffect, useState, useMemo} from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-import gql from 'graphql-tag';
-import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider, gql } from '@apollo/client';
 import { Container, Content, Loader } from 'rsuite';
 import {
   BrowserRouter as Router,
@@ -121,8 +120,7 @@ import * as globalCodePlug from 'code-plug';
 import _, * as globalLodash from 'lodash';
 import * as globalRsuite from 'rsuite';
 import * as globalUseHttp from 'use-http';
-import * as globalGraphQLTag from 'graphql-tag';
-import * as globalReactApollo from 'react-apollo';
+import * as globalReactApollo from '@apollo/client';
 import { useNodeRedSocket as globalUseNodeRedSocket } from './hooks/socket';
 import { Link as globalLink } from 'react-router-dom';
 import * as globalClassnames from 'classnames';
@@ -135,8 +133,10 @@ window.globalLibs['code-plug'] = globalCodePlug;
 window.globalLibs.lodash = globalLodash;
 window.globalLibs.rsuite = globalRsuite;
 window.globalLibs['use-http'] = globalUseHttp;
-window.globalLibs['graphql-tag'] = globalGraphQLTag;
-window.globalLibs['react-apollo'] = globalReactApollo;
+window.globalLibs['graphql-tag'] = globalReactApollo.gql; // for retro-compatibility
+window.globalLibs['react-apollo'] = globalReactApollo; // for retro-compatibility
+window.globalLibs['@apollo/client'] = globalReactApollo;
+window.globalLibs[''] = globalReactApollo;
 window.globalLibs['hooks-socket'] = globalUseSocket;
 window.globalLibs['react-router-dom'] = { Link: globalLink };
 window.globalLibs['classnames'] = globalClassnames;

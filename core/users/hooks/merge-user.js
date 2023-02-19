@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { useMutation } from 'react-apollo';
+import { useMutation, gql } from '@apollo/client';
 import _ from 'lodash';
 import { Modal, FormGroup, ControlLabel, FormControl, HelpBlock, Form, Button } from 'rsuite';
-import gql from 'graphql-tag';
 import PropTypes from 'prop-types';
 
 import useMCContext from '../../../src/hooks/mc-context';

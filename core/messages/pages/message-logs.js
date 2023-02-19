@@ -1,8 +1,6 @@
 import React, { useRef } from 'react';
-import gql from 'graphql-tag';
 import classNames from 'classnames';
-import _ from 'lodash';
-import { useApolloClient } from 'react-apollo';
+import { useApolloClient, gql } from '@apollo/client';
 import { Table, Icon, SelectPicker, Button, ButtonGroup } from 'rsuite';
 
 const { Column, HeaderCell, Cell } = Table;
@@ -17,7 +15,7 @@ import SmartDate from '../../../src/components/smart-date';
 import { Input } from '../../../src/components/table-filters';
 import { useModal } from '../../../src/components/modal';
 import CustomTable from '../../../src/components/table';
-import useClient from '../../../src/hooks/client';
+//import useClient from '../../../src/hooks/client';
 import useMCContext from '../../../src/hooks/mc-context';
 
 import '../styles/message-logs.scss';

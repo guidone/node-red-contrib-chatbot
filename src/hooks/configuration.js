@@ -1,5 +1,4 @@
-import gql from 'graphql-tag';
-import { useQuery, useMutation } from 'react-apollo';
+import { gql, useQuery, useMutation } from '@apollo/client';
 
 import useMCContext from './mc-context';
 

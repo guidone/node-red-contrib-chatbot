@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Table, Icon, ButtonGroup, Button, ButtonToolbar } from 'rsuite';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { useLocation } from 'react-router-dom';
 
 const { Column, HeaderCell, Cell } = Table;

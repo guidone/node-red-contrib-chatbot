@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const gql = require('graphql-tag');
+const { gql } = require('@apollo/client');
 
 const Client = require('../database/client');
 

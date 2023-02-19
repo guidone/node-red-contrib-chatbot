@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useQuery, useMutation } from 'react-apollo';
+import { useQuery, useMutation } from '@apollo/client';
 
 // TODO move this in a common component
 import ModalContent from '../../../../plugins/content/views/modal-content';
@@ -13,12 +13,12 @@ const ContentPreview = ({ contentId, onCancel = () => {}, onSubmit = () => {} })
 
   const { loading, error, data } = useQuery(CONTENT, {
     fetchPolicy: 'network-only',
-    variables: { 
+    variables: {
       id: contentId
     }
   });
 
-  const [editContent, { loading: editLoading, error: editError }] = useMutation(EDIT_CONTENT, { 
+  const [editContent, { loading: editLoading, error: editError }] = useMutation(EDIT_CONTENT, {
     onCompleted: onSubmit
   });
 
@@ -32,7 +32,7 @@ const ContentPreview = ({ contentId, onCancel = () => {}, onSubmit = () => {} })
     <ModalContent
       content={data.content}
       error={error || editError}
-      disabled={editLoading}    
+      disabled={editLoading}
       categories={data.categories}
       onCancel={onCancel}
       onSubmit={content => edit({ variables: { id: content.id, content }})}

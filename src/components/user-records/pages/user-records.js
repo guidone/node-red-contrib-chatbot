@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import _ from 'lodash';
 import { Table, Icon, SelectPicker, ButtonGroup, Button, FlexboxGrid } from 'rsuite';
 import { Link } from 'react-router-dom';

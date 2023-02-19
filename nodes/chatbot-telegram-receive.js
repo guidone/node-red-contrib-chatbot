@@ -1,5 +1,8 @@
+
 const TelegramServer = require('../lib/platforms/telegram');
+
 const RegisterType = require('../lib/node-installer');
+
 const { GenericOutNode, GenericInNode, GenericBotNode } = require('../lib/sender-factory/index');
 
 module.exports = function(RED) {

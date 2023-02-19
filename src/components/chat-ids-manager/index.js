@@ -1,11 +1,12 @@
 import React from 'react';
-import { useMutation } from 'react-apollo';
+import { useMutation } from '@apollo/client';;
 import PropTypes from 'prop-types';
 
 import ChatIdItem from './chat-id-item';
 
 import { DELETE_CHAT_ID } from './queries';
 import './style.scss';
+
 
 const ChatIdsManager = ({
   value,

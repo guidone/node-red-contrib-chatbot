@@ -3,6 +3,9 @@ const serveStatic = require('serve-static');
 const path = require('path');
 const events = require('events');
 const fs = require('fs');
+const { expressMiddleware } = require('@apollo/server/express4');
+const cors = require('cors');
+const { json } = require('body-parser');
 
 const session = require('express-session');
 const _ = require('lodash');
@@ -309,7 +312,11 @@ Some **formatting** is _allowed_!`
     }
     next();
   });
-  graphQLServer.applyMiddleware({ app });
+  //graphQLServer.applyMiddleware({ app });
+
+  await graphQLServer.start();
+  app.use('/graphql', cors(), json(), expressMiddleware(graphQLServer));
+
 
   // eslint-disable-next-line no-console
   console.log(lcd.timestamp() + '  ' + lcd.green('GraphQL URL: ')
@@ -439,7 +446,10 @@ Some **formatting** is _allowed_!`
         if (frontendEnvironment === 'plugin' || frontendEnvironment === 'production') {
           pluginsScript = plugins.map(plugin => `<script src="${mcSettings.root}/plugins/${plugin.filename}"></script>`);
         }
-        const json = `<script>var bootstrap = ${JSON.stringify(bootstrap)};var mc_environment='${frontendEnvironment}';</script>`;
+        const json = `<script>
+        window.process = { env: { NODE_ENV: 'development' }};
+        var bootstrap = ${JSON.stringify(bootstrap)};var mc_environment='${frontendEnvironment}';
+        </script>`;
         res.send(template.replace('{{data}}', json).replace('{{assets}}', assets).replace('{{plugins}}', pluginsScript.join('')));
      });
     }

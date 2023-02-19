@@ -2,8 +2,7 @@ import React from 'react'
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { SelectPicker } from 'rsuite';
-import gql from 'graphql-tag';
-import { useQuery } from 'react-apollo';
+import { useQuery, gql } from '@apollo/client';
 
 const GET_QUEUES = gql`
 query {

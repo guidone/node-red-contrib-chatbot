@@ -202,7 +202,7 @@ const CustomTable = forwardRef(({
       )}
       {!bootstrapping && !error && (
         <Table
-          data={data.rows || []}
+          data={data?.rows || []}
           loading={loading}
           sortColumn={sortField}
           sortType={sortType}

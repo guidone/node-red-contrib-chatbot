@@ -1,7 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { useQuery } from 'react-apollo';
-import gql from 'graphql-tag';
+import { useQuery, gql } from '@apollo/client';
 import { CheckPicker, Icon } from 'rsuite';
 import _ from 'lodash';
 
