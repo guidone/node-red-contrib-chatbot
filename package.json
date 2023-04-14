@@ -53,6 +53,7 @@
       "chatbot-document": "./nodes/chatbot-document.js",
       "chatbot-video": "./nodes/chatbot-video.js",
       "chatbot-image": "./nodes/chatbot-image.js",
+      "chatbot-image-url": "./nodes/chatbot-image-url.js",
       "chatbot-sticker": "./nodes/chatbot-sticker.js",
       "chatbot-animation": "./nodes/chatbot-animation.js",
       "chatbot-audio": "./nodes/chatbot-audio.js",
