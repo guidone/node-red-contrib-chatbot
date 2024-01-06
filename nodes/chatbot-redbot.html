@@ -246,7 +246,7 @@
     return str == null || str.length === 0;
   };
   $.RedBot.validate.url = function(url) {
-    return url != null && url.match(/[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi);
+    return url != null && url.match(/[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi) !== null;
   };
   $.RedBot.validate.arrayNotEmpty = function(array) {
     return array != null && array.length !== 0;
