@@ -11,6 +11,7 @@ module.exports = function(RED) {
       'telegram',
       RED,
       (node, botConfiguration) => {
+        console.log('creating my server')
         return TelegramServer.createServer({
           authorizedUsernames: botConfiguration.usernames,
           token: botConfiguration.token,
