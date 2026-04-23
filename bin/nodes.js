@@ -45,11 +45,6 @@ module.exports = [
     nodeType: 'chatbot-qrcode'
   },
   {
-    notionUrl: 'https://www.notion.so/redbot/Rivescript-node-db8481a702b6491093f7ea53d765129e',
-    nodeFile: 'chatbot-rivescript.html',
-    nodeType: 'chatbot-rivescript'
-  },
-  {
     notionUrl: 'https://www.notion.so/redbot/Conversation-node-1d90a6e8dfc448d6865c88358c459de2',
     nodeFile: 'chatbot-conversation.html',
     nodeType: 'chatbot-conversation'

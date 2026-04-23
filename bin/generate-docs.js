@@ -22,7 +22,6 @@ var mappings = {
   'Document-node.md': 'chatbot-document.html',
   'Message-node.md': 'chatbot-message.html',
   'QR-Code-node.md': 'chatbot-qrcode.html',
-  'Rivescript-node.md': 'chatbot-rivescript.html',
   'Conversation-node.md': 'chatbot-conversation.html',
   'Command-node.md': 'chatbot-command.html',
   'Analytics-node.md': 'chatbot-analytics.html',
