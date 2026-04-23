@@ -90,11 +90,6 @@ module.exports = [
     nodeType: 'chatbot-authorized'
   },
   {
-    notionUrl: 'https://www.notion.so/redbot/Log-node-58087595acec4d0593dd7f1375b092d5',
-    nodeFile: 'chatbot-log.html',
-    nodeType: 'chatbot-log'
-  },
-  {
     notionUrl: 'https://www.notion.so/redbot/Location-node-60e07c48313c4d0690c0e2ff96fa941f',
     nodeFile: 'chatbot-location.html',
     nodeType: 'chatbot-location'

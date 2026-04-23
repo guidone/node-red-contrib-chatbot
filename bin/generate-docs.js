@@ -34,7 +34,6 @@ var mappings = {
   'Image-node.md': 'chatbot-image.html',
   'Language-node.md': 'chatbot-language.html',
   'Authorized-node.md': 'chatbot-authorized.html',
-  'Log-node.md': 'chatbot-log.html',
   'Location-node.md': 'chatbot-location.html',
   'Context-node.md': 'chatbot-context.html',
   'Sticker-node.md': 'chatbot-sticker.html',
