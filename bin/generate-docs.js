@@ -32,7 +32,6 @@ var mappings = {
   'Audio-node.md': 'chatbot-audio.html',
   'Voice-node.md': 'chatbot-voice.html',
   'Image-node.md': 'chatbot-image.html',
-  'Language-node.md': 'chatbot-language.html',
   'Location-node.md': 'chatbot-location.html',
   'Sticker-node.md': 'chatbot-sticker.html',
   'Animation-node.md': 'chatbot-animation.html',

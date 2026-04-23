@@ -75,11 +75,6 @@ module.exports = [
     nodeType: 'chatbot-image'
   },
   {
-    notionUrl: 'https://www.notion.so/redbot/Language-node-f5566a5158ad462186414d41766e7056',
-    nodeFile: 'chatbot-language.html',
-    nodeType: 'chatbot-language'
-  },
-  {
     notionUrl: 'https://www.notion.so/redbot/Location-node-60e07c48313c4d0690c0e2ff96fa941f',
     nodeFile: 'chatbot-location.html',
     nodeType: 'chatbot-location'
