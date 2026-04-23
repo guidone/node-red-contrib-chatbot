@@ -24,7 +24,6 @@ var mappings = {
   'QR-Code-node.md': 'chatbot-qrcode.html',
   'Conversation-node.md': 'chatbot-conversation.html',
   'Command-node.md': 'chatbot-command.html',
-  'Analytics-node.md': 'chatbot-analytics.html',
   'Transport-node.md': 'chatbot-transport.html',
   'Topic-node.md': 'chatbot-topic.html',
   'Debug-node.md': 'chatbot-debug.html',
