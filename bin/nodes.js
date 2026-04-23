@@ -195,16 +195,6 @@ module.exports = [
     nodeType: 'chatbot-rules'
   },
   {
-    notionUrl: 'https://www.notion.so/redbot/Dialogflow-node-84b9ea66d20743fd9cf45d3de5f17693',
-    nodeFile: 'chatbot-dialogflow.html',
-    nodeType: 'chatbot-dialogflow'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/Dialogflow-token-node-3663be9a404e4e3a9f3022bb66fe8d1e',
-    nodeFile: 'chatbot-dialogflow.html',
-    nodeType: 'chatbot-dialogflow-token'
-  },
-  {
     notionUrl: 'https://www.notion.so/redbot/Invoice-node-15b9b0d320d04b55ad550610112f04dd',
     nodeFile: 'chatbot-invoice.html',
     nodeType: 'chatbot-invoice'
