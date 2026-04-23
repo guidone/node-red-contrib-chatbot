@@ -28,7 +28,6 @@ var mappings = {
   'Transport-node.md': 'chatbot-transport.html',
   'Topic-node.md': 'chatbot-topic.html',
   'Debug-node.md': 'chatbot-debug.html',
-  'Parse-node.md': 'chatbot-parse.html',
   'Request-node.md': 'chatbot-request.html',
   'Video-node.md': 'chatbot-video.html',
   'Audio-node.md': 'chatbot-audio.html',

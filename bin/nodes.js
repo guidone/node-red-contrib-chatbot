@@ -60,11 +60,6 @@ module.exports = [
     nodeType: 'chatbot-debug'
   },
   {
-    notionUrl: 'https://www.notion.so/redbot/Parse-node-face8e9f6efc4369a9ea8527ecd81b1b',
-    nodeFile: 'chatbot-parse.html',
-    nodeType: 'chatbot-parse'
-  },
-  {
     notionUrl: 'https://www.notion.so/redbot/Request-node-df78ffeae16d40238f672fbc447ba69e',
     nodeFile: 'chatbot-request.html',
     nodeType: 'chatbot-request'
