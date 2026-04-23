@@ -35,6 +35,24 @@ Each node lives in `nodes/<name>/` with:
 - `index.js` — node logic registered with Node-RED
 - `index.html` — editor UI definition
 
+## Platform Parameters (lib/platforms/<platform>.js)
+
+Each platform (e.g. `telegram.js`, `facebook.js`) exposes platform-specific send options as **params**. The pattern:
+
+1. **Read a param** inside an `out` handler: `const param = params(message);` then `param('camelCaseName', defaultValue)`.
+2. **Pass to API**: map camelCase param names to snake_case API fields (e.g. `allowPaidBroadcast` → `allow_paid_broadcast: param('allowPaidBroadcast', false)`).
+3. **Register** at the bottom of the file so the UI (Mission Control) can expose it as a node option:
+   ```js
+   Telegram.registerParam('camelCaseName', 'boolean'|'string'|'select', {
+     label: 'Human label',
+     default: false,
+     description: 'Shown in UI',
+     // for 'select': options: [{ value, label }, ...]
+     // for 'string': placeholder, suggestions: ['{{token}}', ...]
+   });
+   ```
+   Registered params appear as configurable fields on nodes in the Node-RED editor.
+
 ## Notes
 
 - Recent commits removed: authorized node, msteams, nlp old nodes, twilio, viber, alexa
