@@ -315,19 +315,6 @@ describe('Validators', function() {
     assert.isNotNull(validators.platform.twilio(_.extend({}, base, { logfile: 42})));
   });
 
-  it('validates a Alexa configuration', function() {
-    var base = {
-      usernames: null,
-      contextProvider: 'memory',
-      logfile: null
-    };
-
-    assert.isNull(validators.platform.alexa(base));
-    assert.isNotNull(validators.platform.alexa(_.extend({}, base, { contextProvider: 'wrong_context'})));
-    assert.isNotNull(validators.platform.alexa(_.extend({}, base, { usernames: 42})));
-    assert.isNotNull(validators.platform.alexa(_.extend({}, base, { logfile: 42})));
-  });
-
   it('validates an invoice', function() {
 
     var invoice = {

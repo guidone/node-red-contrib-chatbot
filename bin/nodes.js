@@ -5,11 +5,6 @@ module.exports = [
     notionUrl: 'https://www.notion.so/redbot/MC-Configuration-node-585cd33e293c40478a47635246742a27'
   },
   {
-    nodeFile: 'chatbot-alexa-card.html',
-    nodeType: 'chatbot-alexa-card',
-    notionUrl: 'https://redbot.notion.site/Alexa-Card-node-fc89c43d79324c8da2f251e26f638246'
-  },
-  {
     nodeFile: 'mc-graphql.html',
     nodeType: 'mc-graphql',
     notionUrl: 'https://www.notion.so/redbot/MC-GraphQL-node-0dc75116dee9458486e1a4f09fc3f44b'
@@ -135,11 +130,6 @@ module.exports = [
     nodeType: 'chatbot-facebook-node'
   },
   {
-    notionUrl: 'https://www.notion.so/redbot/Alexa-Receiver-node-82b7744b70fa45e8b786fdd2feae1777',
-    nodeFile: 'chatbot-alexa-receive.html',
-    nodeType: 'chatbot-alexa-node'
-  },
-  {
     notionUrl: 'https://www.notion.so/redbot/Twilio-Receiver-node-a0fb82e714fb4674b29e24fa984ca992',
     nodeFile: 'chatbot-twilio-receive.html',
     nodeType: 'chatbot-twilio-node'
@@ -208,16 +198,6 @@ module.exports = [
     notionUrl: 'https://www.notion.so/redbot/Support-table-6cfd957b91f642b5894a76e2b15feb05',
     nodeFile: 'chatbot-support-table.html',
     nodeType: 'chatbot-support-table'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/Alexa-Receiver-node-82b7744b70fa45e8b786fdd2feae1777',
-    nodeFile: 'chatbot-alexa-speech.html',
-    nodeType: 'chatbot-alexa-speech'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/Alexa-Directive-node-e1e54a8f8c24404f8cd2b01e91b695cf',
-    nodeFile: 'chatbot-alexa-directive.html',
-    nodeType: 'chatbot-alexa-directive'
   },
   {
     notionUrl: 'https://www.notion.so/redbot/Universal-Connector-node-4c24b378e02c491a90240309b9f349c1',
