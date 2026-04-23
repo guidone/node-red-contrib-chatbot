@@ -7,8 +7,7 @@ process.env.NTBA_FIX_319 = 1;
 
 require('../lib/platforms/telegram');
 require('../lib/platforms/slack/index');
-require('../lib/platforms/twilio/twilio');
-require('../lib/platforms/viber');
+
 require('../lib/platforms/facebook/facebook');
 
 const jsonPackage = fs.readFileSync(__dirname + '/../package.json');
