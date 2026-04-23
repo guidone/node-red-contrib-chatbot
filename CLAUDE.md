@@ -53,18 +53,8 @@ Each platform (e.g. `telegram.js`, `facebook.js`) exposes platform-specific send
    ```
    Registered params appear as configurable fields on nodes in the Node-RED editor.
 
-## ChatExpress Middlewares (lib/platforms/<platform>.js)
-
-Platforms register middlewares via `Platform.in(fn)` (inbound) and `Platform.out(fn)` (outbound):
-
-- **`.in(fn)`** — runs on every incoming message before it reaches the Node-RED flow. Used to enrich the message context (e.g. storing `firstName`, `lastName`, `username` from the raw API payload into the chat context, downloading media files).
-- **`.out(fn)`** — runs on every outgoing message before it is sent to the platform API. Used to map Node-RED message fields to platform-specific API parameters.
-- Each middleware receives the `message` object and must return it (or a Promise resolving to it) to continue the chain.
-- `this.getOptions()` inside a middleware gives access to the bot configuration options (token, connector settings, etc.).
-- `message.chat()` returns the chat context store for the conversation; use `context.get(...)` / `context.set(...)` to persist per-user state across messages.
-- **`authorizedUsernames` is deprecated** — authorization is no longer handled inside platform middlewares; the `.in()` middleware in `telegram.js` no longer sets `vars.authorized` based on that option.
-
 ## Notes
 
 - Recent commits removed: authorized node, msteams, nlp old nodes, twilio, viber, alexa
 - Version: 1.2.4
+- ChatExpress middleware system: [docs/chatexpress.md](docs/chatexpress.md)
