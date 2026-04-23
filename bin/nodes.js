@@ -130,19 +130,9 @@ module.exports = [
     nodeType: 'chatbot-facebook-node'
   },
   {
-    notionUrl: 'https://www.notion.so/redbot/Twilio-Receiver-node-a0fb82e714fb4674b29e24fa984ca992',
-    nodeFile: 'chatbot-twilio-receive.html',
-    nodeType: 'chatbot-twilio-node'
-  },
-  {
     notionUrl: 'https://www.notion.so/redbot/Microsoft-Teams-Receiver-node-7bc640d7770e4542a83de7c8ee0cc246',
     nodeFile: 'chatbot-msteams-receive.html',
     nodeType: 'chatbot-msteams-node'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/Viber-Receiver-node-ae52e68a3aef4483b52b339caa08c62c',
-    nodeFile: 'chatbot-viber-receive.html',
-    nodeType: 'chatbot-viber-node'
   },
   {
     notionUrl: 'https://www.notion.so/redbot/Switch-node-017a464afeb84225bcb68f8c671808c5',

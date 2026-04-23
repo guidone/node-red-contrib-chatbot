@@ -38,12 +38,10 @@
       "chatbot-telegram-receive": "./nodes/chatbot-telegram-receive.js",
       "chatbot-universal-receive": "./nodes/chatbot-universal-receive.js",
       "chatbot-slack-receive": "./nodes/chatbot-slack-receive.js",
-      "chatbot-twilio-receive": "./nodes/chatbot-twilio-receive.js",
       "chatbot-msteams-receive": "./nodes/chatbot-msteams-receive.js",
       "chatbot-facebook-receive": "./nodes/chatbot-facebook-receive.js",
       "chatbot-whatsapp-receive": "./nodes/chatbot-whatsapp-receive.js",
       "chatbot-whatsapp-template": "./nodes/chatbot-whatsapp-template.js",
-      "chatbot-viber-receive": "./nodes/chatbot-viber-receive.js",
       "chatbot-message": "./nodes/chatbot-message.js",
       "chatbot-context": "./nodes/chatbot-context.js",
       "chatbot-voice": "./nodes/chatbot-voice.js",
@@ -171,10 +169,8 @@
     "stream-buffers": "^3.0.1",
     "streamifier": "^0.1.1",
     "subscriptions-transport-ws": "^0.9.16",
-    "twilio": "^3.19.2",
     "underscore": "^1.10.2",
     "underscore.string": "^3.3.4",
-    "viber-bot": "^1.0.13",
     "ws": "^7.2.0"
   },
   "devDependencies": {
