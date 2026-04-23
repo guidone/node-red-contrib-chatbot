@@ -20,8 +20,8 @@
     "pre-start": "node bin/import.js",
     "plugin": "node bin/build.js",
     "version": "node bin/update-version.js && git add latest-version.txt && git commit -m \"update version\"",
-    "build": "cross-env NODE_OPTIONS=--max_old_space_size=8192 webpack --config webpack/webpack.prod.js && node ./bin/import-from-notion && echo \"Build complete!\"",
-    "build-plugin": "webpack --config webpack/webpack.plugin.js",
+    "build": "cross-env NODE_OPTIONS=\"--max_old_space_size=8192 --openssl-legacy-provider\" webpack --config webpack/webpack.prod.js && node ./bin/import-from-notion && echo \"Build complete!\"",
+    "build-plugin": "cross-env NODE_OPTIONS=--openssl-legacy-provider webpack --config webpack/webpack.plugin.js",
     "build-docker-assets": "docker build -f ./Dockerfile-webpack -t redbot-assets .",
     "build-docker": "docker buildx build --platform linux/amd64,linux/arm64 -t guidone/redbot:latest . --push --no-cache  "
   },
@@ -60,7 +60,7 @@
       "chatbot-conversation": "./nodes/chatbot-conversation.js",
       "chatbot-debug": "./nodes/chatbot-debug.js",
       "chatbot-waiting": "./nodes/chatbot-waiting.js",
-"chatbot-messenger-menu": "./nodes/chatbot-messenger-menu.js",
+      "chatbot-messenger-menu": "./nodes/chatbot-messenger-menu.js",
       "chatbot-messenger-template": "./nodes/chatbot-messenger-template.js",
       "chatbot-telegram-menu": "./nodes/chatbot-telegram-menu.js",
       "chatbot-context-store": "./nodes/chatbot-context-store.js",
@@ -159,7 +159,7 @@
     "stream-buffers": "^3.0.1",
     "streamifier": "^0.1.1",
     "subscriptions-transport-ws": "^0.9.16",
-    "underscore": "^1.10.2",
+    "underscore": "^1.13.8",
     "underscore.string": "^3.3.4",
     "ws": "^7.2.0"
   },
