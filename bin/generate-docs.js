@@ -34,7 +34,6 @@ var mappings = {
   'Image-node.md': 'chatbot-image.html',
   'Language-node.md': 'chatbot-language.html',
   'Location-node.md': 'chatbot-location.html',
-  'Context-node.md': 'chatbot-context.html',
   'Sticker-node.md': 'chatbot-sticker.html',
   'Animation-node.md': 'chatbot-animation.html',
   'Telegram-Menu-node.md': 'chatbot-telegram-menu.html',

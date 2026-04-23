@@ -85,11 +85,6 @@ module.exports = [
     nodeType: 'chatbot-location'
   },
   {
-    notionUrl: 'https://www.notion.so/redbot/Context-node-24a646bff58b4edfb249f1d27384230f',
-    nodeFile: 'chatbot-context.html',
-    nodeType: 'chatbot-context'
-  },
-  {
     notionUrl: 'https://www.notion.so/redbot/Telegram-Sticker-node-0e02d900e15e45b39eb4150941d7c9ea',
     nodeFile: 'chatbot-sticker.html',
     nodeType: 'chatbot-sticker'

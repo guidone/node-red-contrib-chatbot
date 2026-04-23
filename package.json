@@ -42,7 +42,6 @@
       "chatbot-whatsapp-receive": "./nodes/chatbot-whatsapp-receive.js",
       "chatbot-whatsapp-template": "./nodes/chatbot-whatsapp-template.js",
       "chatbot-message": "./nodes/chatbot-message.js",
-      "chatbot-context": "./nodes/chatbot-context.js",
       "chatbot-voice": "./nodes/chatbot-voice.js",
       "chatbot-language": "./nodes/chatbot-language.js",
       "chatbot-document": "./nodes/chatbot-document.js",
