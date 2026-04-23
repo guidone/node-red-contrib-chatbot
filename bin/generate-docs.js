@@ -45,7 +45,6 @@ var mappings = {
   'Facebook-Receiver-node.md': 'chatbot-facebook-receive.html|chatbot-facebook-node',
   'Twilio-Receiver-node.md': 'chatbot-twilio-receive.html|chatbot-twilio-node',
   'Routee-Receiver-node.md': 'chatbot-routee-receive.html|chatbot-routee-node',
-  'Microsoft-Teams-Receiver-node.md': 'chatbot-msteams-receive.html|chatbot-msteams-node',
   'Viber-Receiver-node.md': 'chatbot-viber-receive.html|chatbot-viber-node',
   'Switch-node.md': 'chatbot-rules.html',
   'Inline-Query-node.md': 'chatbot-inline-query.html',
@@ -60,13 +59,7 @@ var mappings = {
   'Broadcast-node.md': 'chatbot-broadcast.html',
   'Support-table.md': 'chatbot-support-table.html',
   'Universal-Connector-node.md': 'chatbot-universal-receive.html|chatbot-universal-receive',
-  'Params-node.md': 'chatbot-params.html',
-  'NLPjs-Train.md': 'chatbot-nlp-train.html|chatbot-nlpjs-train',
-  'NLPjs-Entity.md': 'chatbot-nlp-entity.html|chatbot-nlpjs-entity',
-  'NLPjs-Intent.md': 'chatbot-nlp-intent.html|chatbot-nlpjs-intent',
-  'NLPjs-Save.md': 'chatbot-nlp-save.html|chatbot-nlpjs-save',
-  'NLPjs-Load.md': 'chatbot-nlp-load.html|chatbot-nlpjs-load',
-  'NLPjs-Process.md': 'chatbot-nlp.html|chatbot-nlpjs'
+  'Params-node.md': 'chatbot-params.html'
 };
 
 function collectImages(html) {

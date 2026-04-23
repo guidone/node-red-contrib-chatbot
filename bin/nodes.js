@@ -130,11 +130,6 @@ module.exports = [
     nodeType: 'chatbot-facebook-node'
   },
   {
-    notionUrl: 'https://www.notion.so/redbot/Microsoft-Teams-Receiver-node-7bc640d7770e4542a83de7c8ee0cc246',
-    nodeFile: 'chatbot-msteams-receive.html',
-    nodeType: 'chatbot-msteams-node'
-  },
-  {
     notionUrl: 'https://www.notion.so/redbot/Switch-node-017a464afeb84225bcb68f8c671808c5',
     nodeFile: 'chatbot-rules.html',
     nodeType: 'chatbot-rules'
@@ -203,36 +198,6 @@ module.exports = [
     notionUrl: 'https://www.notion.so/redbot/Params-node-d8b27db3949c475184923af913563833',
     nodeFile: 'chatbot-params.html',
     nodeType: 'chatbot-params'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/NLPjs-Train-77f9e99250274f12b37b67fd3854f831',
-    nodeFile: 'chatbot-nlp-train.html',
-    nodeType: 'chatbot-nlpjs-train'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/NLPjs-Entity-f73d1e0200804467b8f03e077584fb16',
-    nodeFile: 'chatbot-nlp-entity.html',
-    nodeType: 'chatbot-nlpjs-entity'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/NLPjs-Intent-node-c91af0a6fde74dc5b575aa7230565ba8',
-    nodeFile: 'chatbot-nlp-intent.html',
-    nodeType: 'chatbot-nlpjs-intent'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/NLPjs-Save-4f99d9bfe1ee4683acbee70c02eb24d2',
-    nodeFile: 'chatbot-nlp-save.html',
-    nodeType: 'chatbot-nlpjs-save'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/NLPjs-Load-fc80ea9420fe492389109c610ee7f812',
-    nodeFile: 'chatbot-nlp-load.html',
-    nodeType: 'chatbot-nlpjs-load'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/NLPjs-Process-bbc3deb2d39a4b338fc6515eee337cd4',
-    nodeFile: 'chatbot-nlp.html',
-    nodeType: 'chatbot-nlpjs'
   },
   {
     notionUrl: 'https://www.notion.so/redbot/MC-User-Payload-dc8260a96abb430c856bfc2deb388238',

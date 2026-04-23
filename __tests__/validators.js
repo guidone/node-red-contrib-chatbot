@@ -274,24 +274,6 @@ describe('Validators', function() {
     assert.isNotNull(validators.platform.routee(_.extend({}, base, { logfile: 42})));
   });
 
-  it('validates a MSTeams configuration', function() {
-    var base = {
-      usernames: null,
-      appId: '123456',
-      appPassword: '236472347623462376',
-      contextProvider: 'memory',
-      logfile: null
-    };
-
-    assert.isNull(validators.platform.msteams(base));
-    assert.isNotNull(validators.platform.msteams(_.extend({}, base, { appPassword: null})));
-    assert.isNotNull(validators.platform.msteams(_.extend({}, base, { appId: null})));
-    assert.isNotNull(validators.platform.msteams(_.extend({}, base, { appId: ''})));
-    assert.isNotNull(validators.platform.msteams(_.extend({}, base, { contextProvider: 'wrong_context'})));
-    assert.isNotNull(validators.platform.msteams(_.extend({}, base, { usernames: 42})));
-    assert.isNotNull(validators.platform.msteams(_.extend({}, base, { logfile: 42})));
-  });
-
   it('validates an invoice', function() {
 
     var invoice = {
