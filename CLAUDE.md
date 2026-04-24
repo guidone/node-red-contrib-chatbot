@@ -53,6 +53,15 @@ Each platform (e.g. `telegram.js`, `facebook.js`) exposes platform-specific send
    ```
    Registered params appear as configurable fields on nodes in the Node-RED editor.
 
+## Documentation
+
+Documentation for single nodes are stored in [Notion RedBot page](https://redbot.notion.site/RedBot-Documentation-1de27db692114f4db163f10e1586dc71?pvs=74) in the "RedBot" workspace.
+
+When a node is deprecated update the documentation:
+
+1. Add a callout block, with a question mark icon and light grey background with the text "This node is deprecated"
+2. In the main page, move the link to the page of the deprecated node under the section "Deprecated nodes"
+
 ## Notes
 
 - Recent commits removed: authorized node, msteams, nlp old nodes, twilio, viber, alexa
