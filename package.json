@@ -41,6 +41,7 @@
       "chatbot-facebook-receive": "./nodes/chatbot-facebook-receive.js",
       "chatbot-whatsapp-receive": "./nodes/chatbot-whatsapp-receive.js",
       "chatbot-whatsapp-template": "./nodes/chatbot-whatsapp-template.js",
+      "chatbot-viber-receive": "./nodes/chatbot-viber-receive.js",
       "chatbot-message": "./nodes/chatbot-message.js",
       "chatbot-voice": "./nodes/chatbot-voice.js",
       "chatbot-document": "./nodes/chatbot-document.js",
@@ -159,6 +160,7 @@
     "subscriptions-transport-ws": "^0.9.16",
     "underscore": "^1.13.8",
     "underscore.string": "^3.3.4",
+    "viber-bot": "^1.0.13",
     "ws": "^7.2.0"
   },
   "devDependencies": {
