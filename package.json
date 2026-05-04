@@ -160,7 +160,7 @@
     "subscriptions-transport-ws": "^0.9.16",
     "underscore": "^1.13.8",
     "underscore.string": "^3.3.4",
-    "viber-bot": "^1.0.13",
+    "viber-bot": "^1.0.18",
     "ws": "^7.2.0"
   },
   "devDependencies": {
