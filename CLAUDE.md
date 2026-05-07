@@ -67,3 +67,4 @@ When a node is deprecated update the documentation:
 - Recent commits removed: authorized node, msteams, nlp old nodes, twilio, alexa
 - Version: 1.2.4
 - ChatExpress middleware system: [docs/chatexpress.md](docs/chatexpress.md)
+- Best practises (canonical helpers, conventions): [docs/best-practise.md](docs/best-practise.md)

@@ -1,13 +1,16 @@
 const OpenAI = require('openai');
 
-const tryParse = require('../lib/helpers/try-parse');
-const isFunctionResponse = require('../lib/helpers/is-function-response');
-const processOutputs = require('../lib/helpers/process-outputs');
-const processError = require('../lib/helpers/process-error');
-const resolver = require('../lib/helpers/resolver');
-const updateTokens = require('../lib/helpers/update-tokens');
-const GPTContext = require('../lib/helpers/gpt-context');
-const formatContext = require('../lib/helpers/format-context');
+const { getChatId } = require('../../lib/helpers/utils');
+const tryParse = require('./helper/try-parse');
+const isFunctionResponse = require('./helper/is-function-response');
+const processOutputs = require('./helper/process-outputs');
+const processError = require('./helper/process-error');
+const resolver = require('./helper/resolver');
+const updateTokens = require('./helper/update-tokens');
+const GPTContext = require('./helper/gpt-context');
+const formatContext = require('./helper/format-context');
+const isAttachment = require('./helper/is-attachment');
+const bufferToStream = require('./helper/buffer-to-stream');
 
 // DOCS:
 // UI element for dialog
@@ -21,6 +24,9 @@ const formatContext = require('../lib/helpers/format-context');
 //
 // OpenAPI conversation state
 // https://platform.openai.com/docs/guides/conversation-state?api-mode=responses
+//
+// OpenAPI upload file
+// https://platform.openai.com/docs/api-reference/files/create
 
 module.exports = function(RED) {
   function ChatGPTResponses(config) {
@@ -60,9 +66,11 @@ module.exports = function(RED) {
         { msg, node },
         msg?.['chatgpt-function-call']?.sessionId
       );*/
-      const sessionId = msg.originalMessage?.chatId;
+
+      // TODO check if valid redbot message
+      const sessionId = getChatId(msg);
       const inputMessage = resolver(node.messageKey, node.messageKeyType, { msg, node });
-      console.log('Resolved content -> sessionId: ', sessionId, 'message: ', inputMessage);
+      console.log('Resolved content: sessionId: ', sessionId, 'message: ', inputMessage);
 
       const context = GPTContext({ context: this.context().flow, sessionId });
 
@@ -72,19 +80,19 @@ module.exports = function(RED) {
 
       // Warn if empty session id
       if (!sessionId) {
-        node.warn('Was not possible to extract a session id from msg payload, a session will not be created it will not be possible to follow up messages with ChatGPT');
+        node.warn(`Was not possible to extract a session id from msg payload, a session will not be created it will not be possible to follow up messages with ChatGPT`);
       }
 
       const session = await context.getSession(sessionId);
-      //console.log('current session', session);
+      console.log('current session', session);
 
       // prepare the call to openAI
       let response;
       if (isFunctionResponse(msg)) {
 
         // HAMDLE MESSAGE RESPONSE
-        //console.log('answering to ', msg['chatgpt-function-call']);
-        //console.log('');
+        console.log('answering to ', msg['chatgpt-function-call']);
+        console.log('');
 
         const gptRequest = {
           ...promptDesign,
@@ -117,6 +125,41 @@ module.exports = function(RED) {
         const contextAssistant = formatContext(msg.context?.assistant);
         const contextUser = formatContext(msg.context?.user);
 
+        const userPrompt = {
+          role: 'user',
+          content: [
+            {
+              type: 'input_text',
+              text: inputMessage
+            }
+          ]
+        };
+
+        // upload attachments if any
+        const attachments = Array.isArray(msg.attachments) ? msg.attachments : [msg.attachments];
+        if (attachments.every(isAttachment)) {
+
+          let idx;
+          for(idx = 0; idx < attachments.length; idx++) {
+
+            const stream = bufferToStream(attachments[idx].content);
+            stream.path = attachments[idx].filename;
+
+            try {
+              const file = await openai.files.create({
+                file: stream,
+                purpose: 'assistants'
+              });
+              userPrompt.content.push({
+                type: 'input_image',
+                file_id: file.id
+              });
+            } catch (e) {
+              console.error('Error uploading file:', e);
+            }
+          }
+        }
+
         const gptRequest = {
           ...promptDesign,
           input: [
@@ -124,15 +167,7 @@ module.exports = function(RED) {
             ...contextSystem,
             ...contextAssistant,
             ...contextUser,
-            {
-              role: 'user',
-              content: [
-                {
-                  type: 'input_text',
-                  text: inputMessage
-                }
-              ]
-            }
+            userPrompt
           ],
           // override store flag
           store: true,
@@ -145,7 +180,7 @@ module.exports = function(RED) {
           gptRequest.previous_response_id = session.previousId;
         }
 
-        //console.log('Bare gptRequest', gptRequest);
+        console.log('Bare gptRequest', gptRequest);
         // execute call
         try {
           response = await openai.responses.create(gptRequest);
