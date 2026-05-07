@@ -1,6 +1,6 @@
 const OpenAI = require('openai');
 
-const { getChatId } = require('../../lib/helpers/utils');
+const { getChatId, isValidMessage } = require('../../lib/helpers/utils');
 const tryParse = require('./helper/try-parse');
 const isFunctionResponse = require('./helper/is-function-response');
 const processOutputs = require('./helper/process-outputs');
@@ -52,6 +52,10 @@ module.exports = function(RED) {
     }
 
     node.on('input', async function(msg, send, done) {
+      // check if valid message
+      if (!isValidMessage(msg, node)) {
+        return;
+      }
 
       const promptDesign = tryParse(node.prompt);
       if (!promptDesign) {
@@ -67,7 +71,6 @@ module.exports = function(RED) {
         msg?.['chatgpt-function-call']?.sessionId
       );*/
 
-      // TODO check if valid redbot message
       const sessionId = getChatId(msg);
       const inputMessage = resolver(node.messageKey, node.messageKeyType, { msg, node });
       console.log('Resolved content: sessionId: ', sessionId, 'message: ', inputMessage);

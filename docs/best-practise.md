@@ -2,6 +2,31 @@
 
 Conventions to follow when adding or modifying nodes in this project.
 
+## Validating an incoming `msg`
+
+Always use the `isValidMessage` helper from `lib/helpers/utils.js` as the first check inside a node's `input` handler. It is the canonical guard used across the codebase (see `nodes/chatbot-message.js`, `nodes/chatbot-document.js`, `nodes/chatbot-audio.js`, etc.).
+
+```js
+const { isValidMessage } = require('../lib/helpers/utils');
+
+// inside the input handler, before any other work
+if (!isValidMessage(msg, node)) {
+  return;
+}
+```
+
+`isValidMessage` returns `true` only when `msg.originalMessage.transport` is set — i.e. the message was originated by a RedBot receiver (Telegram Receive, Facebook Receiver, Slack Receiver, …) or a Conversation node. When it returns `false` it also prints a self-explanatory warning to the console pointing the user at the Conversation-node docs, so the early `return` is enough — do **not** call `done()` or `node.error()` here.
+
+Pass `{ silent: true }` as the third argument when the node should accept arbitrary inputs and only opt into RedBot-aware behavior (see `nodes/mc-graphql.js`):
+
+```js
+if (isValidMessage(msg, null, { silent: true })) {
+  // RedBot-aware branch
+}
+```
+
+Do **not** hand-roll checks on `msg.originalMessage` or `msg.payload.chatId`: they bypass the standard warning and drift from the rest of the codebase.
+
 ## Extracting the chatId from a `msg`
 
 Always use the `getChatId` helper from `lib/helpers/utils.js`. It is the canonical extractor used across the codebase (see `nodes/chatbot-message.js`).
