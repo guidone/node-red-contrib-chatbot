@@ -12,8 +12,8 @@
 
 
   RED.nodes.registerType('chatbot-openai-responses',{
-      category: 'function',
-      color: '#ffffff',
+      category: $.RedBot.config.name + ' Platforms',
+      color: '#FFCC66',
       defaults: {
         openAIKey: {value: '', type: 'chatbot-open-ai-key' },
         name: { value:'' },
@@ -23,6 +23,7 @@
       inputs: 1,
       outputs: 1,
       icon: 'chat-gpt-logo.svg',
+      paletteLabel: 'ChatGPT Responses',
       label: function() {
         return this.name || 'ChatGPT Responses';
       },
