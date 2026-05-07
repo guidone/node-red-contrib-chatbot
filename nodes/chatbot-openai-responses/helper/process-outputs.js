@@ -17,7 +17,6 @@ const processOutputs = (outputs, gptRequest, msg, response, sessionId) => {
   const output = Array(outputCount);
   outputs.forEach(obj => {
     if (obj.type === 'message' && obj.role === 'assistant') {
-      console.log('passa di qua')
       if (!Array.isArray(output[0])) {
         output[0] = [];
       }
@@ -27,7 +26,6 @@ const processOutputs = (outputs, gptRequest, msg, response, sessionId) => {
         }
       });
     } else if (obj.type === 'function_call') {
-      console.log('no func call')
       const outputIdx = findOutputIndex(gptRequest, obj.name);
       if (outputIdx) {
         if (!Array.isArray(output[outputIdx])) {
