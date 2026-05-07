@@ -1,11 +1,10 @@
 const OpenAI = require('openai');
 
-const { getChatId, isValidMessage } = require('../../lib/helpers/utils');
+const { getChatId, isValidMessage, message: messageUtils } = require('../../lib/helpers/utils');
 const tryParse = require('./helper/try-parse');
 const isFunctionResponse = require('./helper/is-function-response');
 const processOutputs = require('./helper/process-outputs');
 const processError = require('./helper/process-error');
-const resolver = require('./helper/resolver');
 const updateTokens = require('./helper/update-tokens');
 const GPTContext = require('./helper/gpt-context');
 const formatContext = require('./helper/format-context');
@@ -33,10 +32,6 @@ module.exports = function(RED) {
     RED.nodes.createNode(this,config);
     const node = this;
     node.prompt = config.prompt;
-    node.sessionKey = config.sessionKey;
-    node.sessionKeyType = config.sessionKeyType;
-    node.messageKey = config.messageKey;
-    node.messageKeyType = config.messageKeyType;
     let openai;
 
     // Retrieve the config node
@@ -63,16 +58,8 @@ module.exports = function(RED) {
         return;
       }
 
-      // resolve session and message payload
-      /*const sessionId = resolver(
-        node.sessionKey,
-        node.sessionKeyType,
-        { msg, node },
-        msg?.['chatgpt-function-call']?.sessionId
-      );*/
-
       const sessionId = getChatId(msg);
-      const inputMessage = resolver(node.messageKey, node.messageKeyType, { msg, node });
+      const inputMessage = messageUtils.isMessage(msg) ? msg.payload.content : undefined;
       console.log('Resolved content: sessionId: ', sessionId, 'message: ', inputMessage);
 
       const context = GPTContext({ context: this.context().flow, sessionId });
@@ -83,7 +70,7 @@ module.exports = function(RED) {
 
       // Warn if empty session id
       if (!sessionId) {
-        node.warn(`Was not possible to extract a session id from msg payload, a session will not be created it will not be possible to follow up messages with ChatGPT`);
+        node.warn('Was not possible to extract a session id from msg payload, a session will not be created it will not be possible to follow up messages with ChatGPT');
       }
 
       const session = await context.getSession(sessionId);
