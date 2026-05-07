@@ -1,0 +1,125 @@
+<script type="text/javascript">
+  const gptTryParse = str => {
+    let parsed;
+    try {
+      parsed = JSON.parse(str);
+
+      return parsed;
+    } catch(e) {
+      return null;
+    }
+  };
+
+
+  RED.nodes.registerType('chatbot-openai-responses',{
+      category: 'function',
+      color: '#ffffff',
+      defaults: {
+        openAIKey: {value: '', type: 'chatbot-open-ai-key' },
+        name: { value:'' },
+        prompt: { value: '' },
+        sessionKey: { value: '' },
+        sessionKeyType: { value: '' },
+        messageKey: { value: 'payload' },
+        messageKeyType: { value: 'msg' },
+        outputs: { value: 1 }
+      },
+      inputs: 1,
+      outputs: 1,
+      icon: 'chat-gpt-logo.svg',
+      label: function() {
+        return this.name || 'ChatGPT Responses';
+      },
+      oneditprepare: function() {
+        this.editor = RED.editor.createEditor({
+          id: 'node-input-example-editor',
+          mode: 'ace/mode/json',
+          value: this.prompt
+        });
+        $('#node-input-sessionKey').typedInput({
+          type:'msg',
+          types:['msg', 'flow','global'],
+          typeField: '#node-input-sessionKeyType'
+        });
+        $('#node-input-messageKey').typedInput({
+          type:'msg',
+          types:['msg', 'flow','global'],
+          typeField: '#node-input-messageKeyType'
+        });
+
+      },
+      oneditsave: function() {
+        this.prompt = this.editor.getValue();
+        this.editor.destroy();
+        delete this.editor;
+
+        let parsed;
+        try {
+          parsed = JSON.parse(this.prompt);
+        } catch(e) {
+          // invalid json
+        }
+        const functionTools = parsed && parsed.tools ? parsed.tools.filter(t => t.type === 'function').length : 0;
+        this.outputs = 1 + 1 + functionTools; // error, gtp responses, gtp functions
+      },
+      oneditcancel: function() {
+        this.editor.destroy();
+        delete this.editor;
+      },
+      outputLabels: function(index) {
+        if (index === 0) {
+          return 'ChatGPT response';
+        } else if (index === (this.outputs - 1)) {
+          return 'ChatGPT error';
+        } else {
+          let parsed = gptTryParse(this.prompt);
+          if (parsed && Array.isArray(parsed.tools)) {
+            const funcs = parsed.tools.filter(t => t.type === 'function');
+            if (index <= funcs.length) {
+              return 'Function call ' + funcs[index - 1].name;
+            }
+          }
+        }
+      }
+  });
+</script>
+
+<script type="text/html" data-template-name="chatbot-openai-responses">
+  <div class="form-row">
+    <input type="text" id="node-input-openAIKey">
+  </div>
+  <div class="form-row">
+    <label for="node-input-name">Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row">
+    <label for="node-input-messageKey">Message key</label>
+    <input type="text" id="node-input-messageKey">
+    <input type="hidden" id="node-input-messageKeyType">
+    <div  style="font-size: 0.9em;line-height: normal;color: #999999;margin-top: 5px;">Define they key and the context for the message to send to ChatGPT, generally its <em>"msg.payload"</em></div>
+  </div>
+  <div class="form-row">
+    <label for="node-input-sessionKey">Session key</label>
+    <input type="text" id="node-input-sessionKey">
+    <input type="hidden" id="node-input-sessionKeyType">
+    <div style="font-size: 0.9em;line-height: normal;color: #999999;margin-top: 5px;">
+      Define they key and the context for the session <em>id</em>, it's used to keep track of the conversation in
+      ChatGPT and return answers based on previous meessage. It's generally an unique id which persists through the
+      messaging platform you're usine (i.e. "msg.session.id"). Leave blank for testing.
+    </div>
+  </div>
+  <div class="form-row">
+    <label>Prompt</label>
+    <div style="height: 350px; min-height:150px;" class="node-text-editor" id="node-input-example-editor"></div>
+    <div style="font-size: 0.9em;line-height: normal;color: #999999;margin-top: 5px;">
+      Copy and paste the JSON of the prompts created with <a href="https://platform.openai.com/playground/prompts?models=gpt-4.1" target="_blank" >Prompts Playground</a>.<br/>
+    </div>
+  </div>
+</script>
+
+<script type="text/html" data-help-name="chatbot-openai-responses">
+  <p>
+    ChatGPT Responses is a Node-RED extension node to use OpenAI <a href="https://platform.openai.com/docs/api-reference/responses/create" target="_blank">Responses API</a>
+  </p>
+
+</script>
