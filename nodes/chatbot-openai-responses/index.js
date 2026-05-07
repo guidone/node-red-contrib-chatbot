@@ -100,6 +100,14 @@ module.exports = function(RED) {
           parallel_tool_calls: false
         };
 
+        // merge variables from msg.variables into stored prompt
+        if (msg.variables != null && typeof msg.variables === 'object') {
+          gptRequest.prompt = {
+            ...(gptRequest.prompt || {}),
+            variables: { ...(gptRequest.prompt?.variables || {}), ...msg.variables }
+          };
+        }
+
         // execute call
         try {
           response = await openai.responses.create(gptRequest);
@@ -168,6 +176,14 @@ module.exports = function(RED) {
         // set previous
         if (session) {
           gptRequest.previous_response_id = session.previousId;
+        }
+
+        // merge variables from msg.variables into stored prompt
+        if (msg.variables != null && typeof msg.variables === 'object') {
+          gptRequest.prompt = {
+            ...(gptRequest.prompt || {}),
+            variables: { ...(gptRequest.prompt?.variables || {}), ...msg.variables }
+          };
         }
 
         console.log('Bare gptRequest', gptRequest);
