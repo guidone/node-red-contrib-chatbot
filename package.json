@@ -31,6 +31,9 @@
   },
   "node-red": {
     "version": ">=2.0.0",
+    "plugins": {
+      "chatbot-launch-mission-control": "./plugins/chatbot-launch-mission-control.js"
+    },
     "nodes": {
       "chatbot-redbot": "./nodes/chatbot-redbot.js",
       "redbot-config": "./redbot.config.js",
