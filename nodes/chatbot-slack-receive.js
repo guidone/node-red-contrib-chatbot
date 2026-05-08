@@ -14,13 +14,11 @@ module.exports = function(RED) {
       (node, botConfiguration) => {
         return SlackServer.createServer({
           botname: botConfiguration.botname,
-          authorizedUsernames: botConfiguration.usernames,
           token: botConfiguration.token,
           appToken: botConfiguration.appToken,
           signingSecret: botConfiguration.signingSecret,
           serverPort: botConfiguration.serverPort,
           contextProvider: node.contextProvider,
-          logfile: botConfiguration.logfile,
           debug: botConfiguration.debug,
           useWebSocket: botConfiguration.useWebSocket,
           chatbotId: botConfiguration.chatbotId,
@@ -28,7 +26,6 @@ module.exports = function(RED) {
         });
       },
       (config, node) => ({
-        usernames: config.usernames,
         botname: config.botname,
         token: node.credentials != null && node.credentials.token != null ?
           node.credentials.token.trim() : null,
@@ -39,7 +36,6 @@ module.exports = function(RED) {
         serverPort: config.serverPort,
         debug: config.debug,
         useWebSocket: config.useWebSocket,
-        logfile: config.log,
         storeMessages: config.storeMessages,
         enableMissionControl: config.enableMissionControl,
         inspectMessages: config.inspectMessages,

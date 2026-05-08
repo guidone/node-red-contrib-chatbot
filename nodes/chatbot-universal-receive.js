@@ -45,9 +45,7 @@ module.exports = function(RED) {
 
     this.botname = n.botname;
     this.store = n.store;
-    this.log = n.log;
     this.connectorParams = n.connectorParams;
-    this.usernames = n.usernames != null ? n.usernames.split(',') : [];
     this.polling = n.polling;
     this.providerToken = n.providerToken;
     this.debug = n.debug;
@@ -83,8 +81,6 @@ module.exports = function(RED) {
     }
     // build the configuration object
     var botConfiguration = {
-      authorizedUsernames: node.usernames,
-      logfile: node.log,
       contextProvider: contextStorageNode != null ? contextStorageNode.contextStorage : null,
       contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null,
       debug: node.debug,
@@ -135,9 +131,7 @@ module.exports = function(RED) {
         node.contextProvider.start();
         node.chat = UniversalServer.createServer(_.extend(
           {
-            authorizedUsernames: botConfiguration.authorizedUsernames,
             contextProvider: node.contextProvider,
-            logfile: botConfiguration.logfile,
             debug: botConfiguration.debug,
             RED: RED
           },

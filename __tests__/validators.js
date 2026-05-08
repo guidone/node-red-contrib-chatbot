@@ -177,11 +177,9 @@ describe('Validators', function() {
 
   it('validates a Telegram configuration', function() {
     var base = {
-      usernames: '12213123',
       token: 'xxx:xxxxyyyyyyzzzz',
       polling: 1000,
       contextProvider: 'memory',
-      logfile: null,
       connectMode: 'polling'
     };
 
@@ -200,8 +198,6 @@ describe('Validators', function() {
     assert.isNotNull(validators.platform.telegram(_.extend({}, base, { token: null})));
     assert.isNotNull(validators.platform.telegram(_.extend({}, base, { token: ''})));
     assert.isNotNull(validators.platform.telegram(_.extend({}, base, { contextProvider: 'wrong_context'})));
-    assert.isNotNull(validators.platform.telegram(_.extend({}, base, { usernames: 42})));
-    assert.isNotNull(validators.platform.telegram(_.extend({}, base, { logfile: 42})));
   });
 
   it('validates a Slack configuration', function() {
@@ -210,9 +206,7 @@ describe('Validators', function() {
       token: 'xoxb-00000000-1111111111111',
       serverPort: '3001',
       signingSecret: 'mysecret',
-      usernames: null,
       contextProvider: 'memory',
-      logfile: null,
       oauthToken: '12345678901234567890'
     };
 
@@ -223,18 +217,14 @@ describe('Validators', function() {
     assert.isNotNull(validators.platform.slack(_.extend(base, { token: null })));
     assert.isNotNull(validators.platform.slack(_.extend(base, { token: '' })));
     assert.isNotNull(validators.platform.slack(_.extend(base, { contextProvider: 'wrong_context' })));
-    assert.isNotNull(validators.platform.slack(_.extend(base, { usernames: 42 })));
-    assert.isNotNull(validators.platform.slack(_.extend(base, { logfile: 42 })));
   });
 
   it('validates a Facebook configuration', function() {
     var base = {
-      usernames: null,
       token: 'xxxxyyyyzzzz',
       verifyToken: 'test',
       appSecret: 'xxxxyyyyyzzzz',
-      contextProvider: 'memory',
-      logfile: null
+      contextProvider: 'memory'
     };
 
     assert.isNull(validators.platform.facebook(base));
@@ -244,8 +234,6 @@ describe('Validators', function() {
     assert.isNotNull(validators.platform.facebook(_.extend({}, base, { token: null})));
     assert.isNotNull(validators.platform.facebook(_.extend({}, base, { token: ''})));
     assert.isNotNull(validators.platform.facebook(_.extend({}, base, { contextProvider: 'wrong_context'})));
-    assert.isNotNull(validators.platform.facebook(_.extend({}, base, { usernames: 42})));
-    assert.isNotNull(validators.platform.facebook(_.extend({}, base, { logfile: 42})));
     assert.isNotNull(validators.platform.facebook(_.extend({}, base, { profileFields: 42})));
   });
 
