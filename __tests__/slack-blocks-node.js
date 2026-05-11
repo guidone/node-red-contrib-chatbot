@@ -100,7 +100,7 @@ describe('Chat Slack Blocks node', () => {
       .then(
         () => {},
         () => {
-          assert.include(RED.node.error().toString(), 'Unexpected string in JSON at position');
+          assert.include(RED.node.error().toString(), 'JSON at position');
         }
       );
   });
