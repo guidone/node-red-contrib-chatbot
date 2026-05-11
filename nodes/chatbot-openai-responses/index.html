@@ -10,6 +10,16 @@
     }
   };
 
+  const gptCountFunctions = parsed => {
+    if (parsed && Array.isArray(parsed.tools)) {
+      return parsed.tools.filter(t => t.type === 'function').length;
+    }
+    return 0;
+  };
+
+  const gptIsStoredPromptOnly = parsed =>
+    parsed && parsed.prompt && parsed.prompt.id && !Array.isArray(parsed.tools);
+
 
   RED.nodes.registerType('chatbot-openai-responses',{
       category: $.RedBot.config.name + ' Platforms',
@@ -18,6 +28,7 @@
         openAIKey: {value: '', type: 'chatbot-open-ai-key' },
         name: { value:'' },
         prompt: { value: '' },
+        functions: { value: [] },
         outputs: { value: 1 }
       },
       inputs: 1,
@@ -28,10 +39,78 @@
         return this.name || 'ChatGPT Responses';
       },
       oneditprepare: function() {
-        this.editor = RED.editor.createEditor({
+        const node = this;
+        node.editor = RED.editor.createEditor({
           id: 'node-input-example-editor',
           mode: 'ace/mode/json',
           value: this.prompt
+        });
+
+        const $list = $('#node-input-functions-list');
+        const $status = $('#node-input-functions-status');
+        const $button = $('#node-input-functions-refresh');
+
+        const renderList = (functions) => {
+          $list.empty();
+          if (!functions || functions.length === 0) {
+            $list.append('<div style="color:#999;font-style:italic;">No function tools yet. Click Refresh after entering a prompt id.</div>');
+            return;
+          }
+          functions.forEach((f) => {
+            const desc = f.description ? ' — <span style="color:#999;">' + $('<div/>').text(f.description).html() + '</span>' : '';
+            $list.append('<div><i class="fa fa-cog" style="color:#888;margin-right:6px;"></i><strong>' + $('<div/>').text(f.name).html() + '</strong>' + desc + '</div>');
+          });
+        };
+
+        const updateButtonState = () => {
+          const parsed = gptTryParse(node.editor.getValue());
+          const isStoredPrompt = gptIsStoredPromptOnly(parsed);
+          const hasKey = !!$('#node-input-openAIKey').val();
+          $button.prop('disabled', !(isStoredPrompt && hasKey));
+          if (!isStoredPrompt) {
+            $status.text('Refresh available when prompt JSON has prompt.id and no inline tools.').css('color', '#999');
+          } else if (!hasKey) {
+            $status.text('Select an OpenAI API key first.').css('color', '#999');
+          } else {
+            $status.text('').css('color', '#999');
+          }
+        };
+
+        renderList(node.functions);
+        updateButtonState();
+
+        node.editor.on('input', updateButtonState);
+        $('#node-input-openAIKey').on('change', updateButtonState);
+
+        $button.on('click', (ev) => {
+          ev.preventDefault();
+          const parsed = gptTryParse(node.editor.getValue());
+          if (!gptIsStoredPromptOnly(parsed)) return;
+          const apiKeyNodeId = $('#node-input-openAIKey').val();
+          if (!apiKeyNodeId) return;
+
+          $button.prop('disabled', true);
+          $status.text('Probing OpenAI…').css('color', '#999');
+
+          $.ajax({
+            url: 'chatbot-openai-responses/probe',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+              apiKeyNodeId,
+              promptId: parsed.prompt.id,
+              version: parsed.prompt.version
+            })
+          }).done((data) => {
+            node.functions = Array.isArray(data.functions) ? data.functions : [];
+            renderList(node.functions);
+            $status.text('Found ' + node.functions.length + ' function tool(s). Click Done to apply.').css('color', '#3a7a3a');
+            updateButtonState();
+          }).fail((xhr) => {
+            const msg = (xhr.responseJSON && xhr.responseJSON.error) || xhr.statusText || 'unknown error';
+            $status.text('Error: ' + msg).css('color', '#a33');
+            updateButtonState();
+          });
         });
       },
       oneditsave: function() {
@@ -39,14 +118,19 @@
         this.editor.destroy();
         delete this.editor;
 
-        let parsed;
-        try {
-          parsed = JSON.parse(this.prompt);
-        } catch(e) {
-          // invalid json
+        const parsed = gptTryParse(this.prompt);
+        let functionCount;
+        if (parsed && Array.isArray(parsed.tools)) {
+          // legacy: full prompt JSON pasted, tools are inline
+          functionCount = gptCountFunctions(parsed);
+          this.functions = parsed.tools
+            .filter(t => t.type === 'function')
+            .map(t => ({ name: t.name, description: t.description }));
+        } else {
+          // stored-prompt mode: use the discovered functions list
+          functionCount = (this.functions || []).length;
         }
-        const functionTools = parsed && parsed.tools ? parsed.tools.filter(t => t.type === 'function').length : 0;
-        this.outputs = 1 + 1 + functionTools; // error, gtp responses, gtp functions
+        this.outputs = 1 + functionCount + 1; // response + N functions + error
       },
       oneditcancel: function() {
         this.editor.destroy();
@@ -58,7 +142,10 @@
         } else if (index === (this.outputs - 1)) {
           return 'ChatGPT error';
         } else {
-          let parsed = gptTryParse(this.prompt);
+          if (Array.isArray(this.functions) && this.functions[index - 1]) {
+            return 'Function call ' + this.functions[index - 1].name;
+          }
+          const parsed = gptTryParse(this.prompt);
           if (parsed && Array.isArray(parsed.tools)) {
             const funcs = parsed.tools.filter(t => t.type === 'function');
             if (index <= funcs.length) {
@@ -82,7 +169,20 @@
     <label>Prompt</label>
     <div style="height: 450px; min-height:150px;" class="node-text-editor" id="node-input-example-editor"></div>
     <div style="font-size: 0.9em;line-height: normal;color: #999999;margin-top: 5px;">
-      Copy and paste the JSON of the prompts created with <a href="https://platform.openai.com/playground/prompts?models=gpt-4.1" target="_blank" >Prompts Playground</a>.<br/>
+      Copy and paste the JSON of the prompts created with <a href="https://platform.openai.com/playground/prompts?models=gpt-4.1" target="_blank" >Prompts Playground</a>, or paste a stored prompt reference like <code>{ "prompt": { "id": "pmpt_…", "version": "2" } }</code>.
+    </div>
+  </div>
+  <div class="form-row">
+    <label>Function tools</label>
+    <div id="node-input-functions-list" style="border:1px solid #ddd;border-radius:4px;padding:8px;background:#fafafa;font-size:0.9em;line-height:1.6em;"></div>
+    <div style="margin-top:6px;display:flex;align-items:center;gap:8px;">
+      <button type="button" id="node-input-functions-refresh" class="red-ui-button">
+        <i class="fa fa-refresh"></i> Refresh tools
+      </button>
+      <span id="node-input-functions-status" style="font-size:0.9em;color:#999;"></span>
+    </div>
+    <div style="font-size: 0.9em;line-height: normal;color: #999999;margin-top: 5px;">
+      When using a stored prompt id, click Refresh to fetch the function tools from OpenAI and update the output pins of the node.
     </div>
   </div>
 </script>

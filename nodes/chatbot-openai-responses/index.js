@@ -27,11 +27,51 @@ const bufferToStream = require('./helper/buffer-to-stream');
 // OpenAPI upload file
 // https://platform.openai.com/docs/api-reference/files/create
 
+const buildEffectiveTools = (promptDesign, configuredFunctions) => {
+  if (Array.isArray(promptDesign?.tools) && promptDesign.tools.length > 0) {
+    return promptDesign.tools;
+  }
+  return (configuredFunctions ?? []).map(f => ({ type: 'function', name: f.name }));
+};
+
 module.exports = function(RED) {
+
+  RED.httpAdmin.post(
+    '/chatbot-openai-responses/probe',
+    RED.auth.needsPermission('chatbot.write'),
+    async (req, res) => {
+      const { apiKeyNodeId, promptId, version } = req.body || {};
+      if (!promptId) {
+        return res.status(400).json({ error: 'missing prompt id' });
+      }
+      const creds = apiKeyNodeId ? RED.nodes.getCredentials(apiKeyNodeId) : null;
+      if (!creds || !creds.apiKey) {
+        return res.status(400).json({ error: 'missing or invalid OpenAI API key' });
+      }
+      try {
+        const client = new OpenAI({ apiKey: creds.apiKey });
+        const response = await client.responses.create({
+          prompt: { id: promptId, ...(version ? { version: String(version) } : {}) },
+          input: [{ role: 'user', content: 'ping' }],
+          tool_choice: 'none',
+          max_output_tokens: 16,
+          store: false
+        });
+        const functions = (response.tools || [])
+          .filter(t => t.type === 'function')
+          .map(t => ({ name: t.name, description: t.description }));
+        return res.json({ functions });
+      } catch (e) {
+        return res.status(500).json({ error: e.message || String(e) });
+      }
+    }
+  );
+
   function ChatGPTResponses(config) {
     RED.nodes.createNode(this,config);
     const node = this;
     node.prompt = config.prompt;
+    node.functions = Array.isArray(config.functions) ? config.functions : [];
     let openai;
 
     // Retrieve the config node
@@ -57,6 +97,8 @@ module.exports = function(RED) {
         node.error('Invalid prompt');
         return;
       }
+
+      const effectiveTools = buildEffectiveTools(promptDesign, node.functions);
 
       const sessionId = getChatId(msg);
       const inputMessage = messageUtils.isMessage(msg) ? msg.payload.content : undefined;
@@ -112,7 +154,7 @@ module.exports = function(RED) {
         try {
           response = await openai.responses.create(gptRequest);
         } catch(e) {
-          send(processError(e, promptDesign, msg, sessionId));
+          send(processError(e, effectiveTools, msg, sessionId));
           done();
           return;
         }
@@ -191,7 +233,7 @@ module.exports = function(RED) {
         try {
           response = await openai.responses.create(gptRequest);
         } catch(e) {
-          send(processError(e, promptDesign, msg, sessionId));
+          send(processError(e, effectiveTools, msg, sessionId));
           done();
           return;
         }
@@ -214,7 +256,7 @@ module.exports = function(RED) {
         await context.updateSession(sessionId, { previousId: response.id });
       }
 
-      send(processOutputs(response.output, promptDesign, msg, response, sessionId));
+      send(processOutputs(response.output, effectiveTools, msg, response, sessionId));
       done();
     });
   }

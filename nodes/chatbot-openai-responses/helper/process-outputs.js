@@ -1,19 +1,15 @@
 const tryParse = require("./try-parse");
 
-const findOutputIndex = (json, functionName) => {
-  let found;
-  (json.tools ?? []).forEach((tool, idx) => {
-    if (tool.name === functionName) {
-      found = idx;
-    }
-  });
-  return found + 1;
+const findFunctionIndex = (effectiveTools, functionName) => {
+  const idx = (effectiveTools ?? []).findIndex(t => t.type === 'function' && t.name === functionName);
+  return idx === -1 ? -1 : idx + 1;
 };
 
-const processOutputs = (outputs, gptRequest, msg, response, sessionId) => {
-  const outputCount = 2 + (gptRequest.tools ?? []).filter(o => o.type === 'function').length;
+const processOutputs = (outputs, effectiveTools, msg, response, sessionId) => {
+  const functionCount = (effectiveTools ?? []).filter(t => t.type === 'function').length;
+  const errorIdx = 1 + functionCount;
+  const outputCount = errorIdx + 1;
 
-  // collect responses and map to outputs
   const output = Array(outputCount);
   outputs.forEach(obj => {
     if (obj.type === 'message' && obj.role === 'assistant') {
@@ -26,8 +22,8 @@ const processOutputs = (outputs, gptRequest, msg, response, sessionId) => {
         }
       });
     } else if (obj.type === 'function_call') {
-      const outputIdx = findOutputIndex(gptRequest, obj.name);
-      if (outputIdx) {
+      const outputIdx = findFunctionIndex(effectiveTools, obj.name);
+      if (outputIdx > 0) {
         if (!Array.isArray(output[outputIdx])) {
           output[outputIdx] = [];
         }
@@ -38,6 +34,17 @@ const processOutputs = (outputs, gptRequest, msg, response, sessionId) => {
             ...obj,
             previousId: response.id,
             sessionId
+          }
+        });
+      } else {
+        if (!Array.isArray(output[errorIdx])) {
+          output[errorIdx] = [];
+        }
+        output[errorIdx].push({
+          ...msg,
+          payload: {
+            error: `Function "${obj.name}" not found in node tools list. Refresh tools in the node editor.`,
+            functionCall: obj
           }
         });
       }
