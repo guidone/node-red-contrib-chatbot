@@ -115,7 +115,6 @@ module.exports = [
     nodeType: 'chatbot-facebook-node'
   },
   {
-  {
     notionUrl: 'https://www.notion.so/redbot/Viber-Receiver-node-ae52e68a3aef4483b52b339caa08c62c',
     nodeFile: 'chatbot-viber-receive.html',
     nodeType: 'chatbot-viber-node'
