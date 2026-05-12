@@ -187,9 +187,178 @@
   </div>
 </script>
 
-<script type="text/html" data-help-name="chatbot-openai-responses">
-  <p>
-    ChatGPT Responses is a Node-RED extension node to use OpenAI <a href="https://platform.openai.com/docs/api-reference/responses/create" target="_blank">Responses API</a>
-  </p>
+<script type="text/html" data-help-name="chatbot-openai-responses"><p>Used to send a message to OpenAI&#39;s <a href="https://platform.openai.com/docs/api-reference/responses/create">Responses API</a> and receive a generated answer back into the flow. The node also supports <strong>function calling</strong>, <strong>conversation state</strong> and <strong>image / file attachments</strong>.</p>
+<p>The text sent to ChatGPT is taken from the upstream <code>Message</code> payload (<code>msg.payload.content</code>), the response is forwarded out of the first pin and can be sent back to the user as a regular <code>Message</code>.</p>
+<p>The prompt design (model, instructions, tools, variables, …) is <strong>not</strong> configured field by field in the editor: instead the JSON exported from the <a href="https://platform.openai.com/playground/prompts?models=gpt-4.1">Prompts Playground</a> is pasted in the <code>Prompt</code> text area. Any change made in the Playground (a new tool, a different model, a longer instruction) is therefore propagated by simply copying and pasting the updated JSON.</p>
+<p>The example flow <code>ChatGPT example.json</code> ships a working setup with one function tool (<code>get_temperature</code>), a Telegram receiver / sender pair and a typing indicator.</p>
+<h2 id="using-chatgpt-tools">Using ChatGPT tools</h2>
+<p>ChatGPT Responses dynamically grows its output pins based on the <code>tools</code> array declared in the <code>Prompt</code> JSON: one pin per <code>function</code> tool is created, plus the standard <em>response</em> pin (first) and <em>error</em> pin (last).</p>
+<p><img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/b55ba134-c1dd-4ca1-9942-d1fe66c465a2/3a0d6583-595b-42ad-92f9-b3519c7ed5ad/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665C4L2PMW%2F20260512%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260512T122918Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEGQaCXVzLXdlc3QtMiJHMEUCIBbgE6Yi4eL3sz8CMo%2FcF7x3eid%2FBGSLqzKwsyM%2BYosqAiEA84HUHVsb6bHfY39NEYoCD5E7kKiCFCl8CtbmHf295D0q%2FwMILRAAGgw2Mzc0MjMxODM4MDUiDMrD68cjlA8VuuZbdyrcA%2BHaoknYre23n0CzYJdTJVvKsrA2v7P3xls%2BA6SiuYWMN3124RHHzih6P4CpnJGj0DNLbW1jjb2G%2FVVY2KfEnultS%2FfpTFb%2FbqBosMWPbDpN410vbYHUpdN0b8YSHhltrUpTBsRXf4anW7L2jTcqYDOO%2Bp5Q4%2B%2BNWIbb6GtsZJEBKHdopxA0gDsUeL8NF8CIQs1EC%2F1wdSMd5rNcHe0gJZcQ2giB9ux7fPzg000tvJQezn%2FyviY9n65bF5pTqq3cl7TS4n3TSLpt%2B64EsXyTWVYw09iYBv3CQWk%2BLSxdSCseUAKasSgHJhwIKENXvCokZv4tINndY45nBJ0ZlO8fGRdjSf4FRT1MqKuKVyk93aZ%2Fq2BUZzCIBXj7Dr6ZIZ3bKy60GnXwiE30KsFDMNJlzVZhtqKRpZrgL45Q4HtfcolHyJryO3fdbRtzJSBkknYUWhz9LXKN3A2BJ02kuxkg8eGmGG2nHR%2F%2FrEiqzHL63flsJQWqLuKYsShhdP8428IbihrzQEhvg9Nj9jtxGegUZk60piGsG0MRLITA6T4%2Br2%2BWOmpW1QQ4VHX8tckEUSxJ%2B0aLWmDtJ%2BMLoxBRqdQE%2FnLOZJFPWXAuBlh%2Bd1drVNNR626SaRX8v9I9DOATMKiejNAGOqUBRrk1UBioGnnFs2qAYIs9MQk1mXkm2VPzCBumV%2FklBguvw9ejHX06vAIABh752pKmDPRIGGu4lvAT8xO%2FE1Z%2Fune%2B2xwSaoFTmesatDrzlbnhlHxUge2aD7ot7OjwhvH4vGCz7%2FWZow6hP9cPHSwLMDPJUlsxIW%2FtIlbMbByxEIiH%2FgylSz%2Fg927dbFP%2BfkNkdNBEc8HejbjU5nGO5%2B96J8R319Ce&X-Amz-Signature=09acb9c7e211912a2ef64aeda5324d1819b8a15dda8aa9840eeef7d3910fe92f&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject" alt=""></p>
+<p>In the screenshot above:</p>
+<ul>
+<li><p>the <strong>Telegram Receiver</strong> forwards the incoming message both to the <code>ChatGPT Responses</code> node and to a <code>Waiting…</code> message that gives the user immediate feedback while the model is thinking</p>
+</li>
+<li><p>the <code>ChatGPT Responses</code> node exposes three pins because the prompt declares one function tool named <code>get_temperature</code>:</p>
+<ul>
+<li><p><strong>pin 1 — ChatGPT response</strong>: emits the text answer produced by the model, routed to a <code>Message</code> / <code>Params</code> / <code>Telegram Sender</code> chain</p>
+</li>
+<li><p><strong>pin 2 — Function call</strong> <strong><code>get_temperature</code></strong>: fires whenever the model decides to call the <code>get_temperature</code> tool. The downstream <code>Get temperature</code> function node resolves the value (for example by calling an external weather API) and <strong>loops the result back into the input of</strong> <strong><code>ChatGPT Responses</code></strong> so the model can produce the final natural-language answer</p>
+</li>
+<li><p><strong>pin 3 — ChatGPT error</strong>: emits the error returned by the OpenAI API (rate limits, invalid prompt, network errors, …)</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>To answer a function call, the downstream node must:</p>
+<ol>
+<li><p>compute the result and place it on <code>msg.payload</code> (any JSON-serializable value)</p>
+</li>
+<li><p><strong>leave</strong> <strong><code>msg[&#39;chatgpt-function-call&#39;]</code></strong> <strong>untouched</strong> — it carries the <code>call_id</code> and <code>previous_response_id</code> the node needs to resume the conversation with the model</p>
+</li>
+<li><p>wire its output back into the <strong>input</strong> of the same <code>ChatGPT Responses</code> node</p>
+</li>
+</ol>
+<p>For example, the <code>Get temperature</code> function node reads the city argument provided by the model and writes the temperature back:</p>
+<pre><code class="language-javascript">// msg.payload contains the arguments parsed from the model, e.g. { city: &#39;Milan&#39; }
+const city = msg.payload.city;
 
+msg.payload = { city, temperature: 21, unit: &#39;C&#39; };
+return msg;
+</code></pre>
+<p>The same pattern scales to any number of tools: declare them in the prompt JSON, wire one branch per tool and loop each branch back to the <code>ChatGPT Responses</code> input.</p>
+<h2 id="conversation-state">Conversation state</h2>
+<p>ChatGPT Responses keeps the conversation alive across messages by storing the <code>response.id</code> of the latest OpenAI call into the flow context, scoped by <code>chatId</code>. The next call automatically reuses it as <code>previous_response_id</code>, so the model sees the full history without the chatbot having to resend it.</p>
+<p>If the upstream message does not carry a <code>chatId</code> (for example a broadcast or a manual <code>Inject</code>), the node will log a warning and the conversation will be stateless.</p>
+<p>To inject extra context at runtime (without changing the saved prompt) use <code>msg.context</code>:</p>
+<pre><code class="language-javascript">msg.context = {
+  system: &#39;The user is a premium customer&#39;,
+  assistant: [&#39;Previously the user asked about shipping costs&#39;],
+  user: &#39;My order number is #12345&#39;
+};
+return msg;
+</code></pre>
+<p>Each key accepts a single string or an array of strings. The strings are appended to the <code>input</code> array of the OpenAI request as additional turns.</p>
+<hr>
+<h2 id="prompt-variables">Prompt variables</h2>
+<p>If the prompt declares variables (using the <code>{{variable}}</code> syntax in the Playground), they can be filled at runtime from <code>msg.variables</code>:</p>
+<pre><code class="language-javascript">msg.variables = {
+  firstName: &#39;John&#39;,
+  productName: &#39;REDBot&#39;
+};
+return msg;
+</code></pre>
+<p>The values are merged into the <code>prompt.variables</code> field of the OpenAI request, overriding any value stored in the saved prompt.</p>
+<h2 id="attachments">Attachments</h2>
+<p>When <code>msg.attachments</code> is set (typically by an upstream <code>Image</code> or <code>Document</code> receiver), each attachment is uploaded to OpenAI via the <a href="https://platform.openai.com/docs/api-reference/files/create">Files API</a> with <code>purpose: &#39;assistants&#39;</code> and then attached to the user turn as <code>input_image</code>. This enables vision use-cases (let the user send a photo and ask ChatGPT to describe it).</p>
+<p><code>msg.attachments</code> can be a single attachment or an array; each item must expose <code>.content</code> (Buffer) and <code>.filename</code>.</p>
+<h2 id="configuration">Configuration</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>OpenAI key</td>
+<td>config node</td>
+<td>API key created on the <a href="https://platform.openai.com/api-keys">OpenAI dashboard</a>. Stored as a <code>chatbot-open-ai-key</code> credential and reusable across nodes</td>
+</tr>
+<tr>
+<td>Name</td>
+<td>string</td>
+<td>Optional label shown in the editor</td>
+</tr>
+<tr>
+<td>Prompt</td>
+<td>JSON</td>
+<td>JSON exported from the <a href="https://platform.openai.com/playground/prompts?models=gpt-4.1">Prompts Playground</a>. Contains model, instructions, tools, variables and any other Responses API parameter</td>
+</tr>
+</tbody></table>
+<h2 id="input">Input</h2>
+<p>Available parameters for <code>msg</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>payload.content</code></td>
+<td>string</td>
+<td>Text message to send to the model. Usually populated by the platform receiver node</td>
+</tr>
+<tr>
+<td><code>attachments</code></td>
+<td>object / array</td>
+<td>Optional file or image attachments. Each item must have <code>content</code> (Buffer) and <code>filename</code></td>
+</tr>
+<tr>
+<td><code>context.system</code></td>
+<td>string / array of [string]</td>
+<td>Additional <code>system</code>-flavoured turns injected before the user message</td>
+</tr>
+<tr>
+<td><code>context.assistant</code></td>
+<td>string / array of [string]</td>
+<td>Additional <code>assistant</code>-flavoured turns injected before the user message</td>
+</tr>
+<tr>
+<td><code>context.user</code></td>
+<td>string / array of [string]</td>
+<td>Additional <code>user</code>-flavoured turns injected before the user message</td>
+</tr>
+<tr>
+<td><code>variables</code></td>
+<td>object</td>
+<td>Values for the variables declared in the saved prompt. Merged into <code>prompt.variables</code></td>
+</tr>
+<tr>
+<td><code>chatgpt-function-call</code></td>
+<td>object</td>
+<td>Set by the node itself on the tool pins. Must be left untouched when looping the response back to the node</td>
+</tr>
+</tbody></table>
+<h2 id="output">Output</h2>
+<p>The node exposes a dynamic number of output pins, calculated from the <code>tools</code> declared in the prompt JSON:</p>
+<table>
+<thead>
+<tr>
+<th>Pin</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>ChatGPT response</td>
+<td>Text answer produced by the model. <code>msg.payload = { message: &#39;…&#39; }</code> — ready to be fed into a <code>Message</code> node</td>
+</tr>
+<tr>
+<td>2 … N</td>
+<td>Function call <em>name</em></td>
+<td>One pin per <code>function</code> tool. <code>msg.payload</code> holds the parsed arguments produced by the model. <code>msg[&#39;chatgpt-function-call&#39;]</code> carries the metadata needed to resume the conversation</td>
+</tr>
+<tr>
+<td>Last</td>
+<td>ChatGPT error</td>
+<td>Emitted only when the OpenAI API returns an error. <code>msg.payload</code> holds the original error object</td>
+</tr>
+</tbody></table>
+<p>If the model produces both a text answer and one or more function calls in the same turn, all the relevant pins fire in parallel.</p>
+<h2 id="example">Example</h2>
+<p>The <code>ChatGPT example.json</code> flow shipped with REDBot wires a minimal Telegram chatbot with one function tool:</p>
+<ol start="4">
+<li><p>import the flow from the <em>Examples</em> menu of Node-RED</p>
+</li>
+<li><p>open the <code>OpenAI key</code> config node and paste a valid API key</p>
+</li>
+<li><p>open the <code>Telegram Receiver</code> / <code>Telegram Sender</code> nodes and connect them to a Telegram bot token</p>
+</li>
+<li><p>deploy and chat with the bot — asking for example <em>&quot;What is the temperature in Milan?&quot;</em> will trigger the <code>get_temperature</code> tool, the result is fed back to the model and the final natural-language answer is sent to the user</p>
+</li>
+</ol>
 </script>

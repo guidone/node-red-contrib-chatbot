@@ -1,0 +1,32 @@
+
+The `Image node` sends an image to the chatbot from a local file or from a URL or from a Buffer passed by an upstream node (the simplest way to use it to chain with to `File node` or a `Http node`).
+
+To programmatically send an image with a `Function node`
+
+```javascript
+msg.payload = '/my_dir/my_image.png';
+```
+
+or
+
+```javascript
+msg.payload = {
+  caption: 'I am the caption',
+  image: 'http://www.my_host.com/my_dir/my_image.png'
+};
+```
+
+Available parameters for the `msg.payload`
+
+| Name    | Type             | Description                                                                                |
+| ------- | ---------------- | ------------------------------------------------------------------------------------------ |
+| image   | string or buffer | The image string could be a path for a local file or a URL (context variables can be used) |
+| caption | string           | Caption of the image. Only for Telegram, Slack and Viber                                   |
+
+An example of fetching an image with a `Http node`
+
+![](https://prod-files-secure.s3.us-west-2.amazonaws.com/b55ba134-c1dd-4ca1-9942-d1fe66c465a2/07070f97-c7c7-4d18-9af0-fcac0835cc32/example-image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663PP2O522%2F20260512%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260512T122945Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEGQaCXVzLXdlc3QtMiJHMEUCIQCV0k0E%2FTUaM6a8MyAflrbtR%2F%2FKeOxxumf8x8BZDINEdgIgOXHoOelyTMrkSqOnZIMmmw45SolugwQukogQQkc3Jloq%2FwMILRAAGgw2Mzc0MjMxODM4MDUiDB9exCpdk0iFA64KjSrcA47kmKuU83NYSXyTPGsDds4NpI2PJAYsYUvXObVDfB7qZYu3NFNkbatyrGUJ01TEgVsXkMcG%2F2xxQT2JcooD%2B%2BFA%2FBxArEEIjSRXpR9u33xUoCPDqQcH1vY5tb64OhWjc3TtN%2BAjQRRAncSIfLVFHVwrRq9AZe4wuCyrFH3RC7JE5CyM%2B0tnMQ%2BfAIS4a3P%2B54teutbBWsc3RbBa7Z0whqaTIRKXwVebDI9y9YlQFvF1b0nqlnpNV2m5MSgyp4QpzPXPDR9ls02KF3J%2FObqoqf%2BtDwh0fVKByT7Ry1DRWIsvgJObX%2FBna3T8qJrc618UU3gi4lpDCwtOJQ35CLUKU3V%2FbBEKxuHzDUEHmru%2FB6%2Fo6rzDuqjyMb7wUj68uwAiKY0YDVdPuX0hINCNCHX2P%2B2SMOojYLSFBtUUkYfZaMPlDW2Yq%2Fm2R3cN7zSCq58SFa8PjyllX5sDOSvYVvEiXOIHU4u0sqhA%2FYQQnNZ6XMFc2mWuNmUbLltr7znBHczfEAjTEFfKum3V6gSemD%2Bv8hyGMw%2FFQ5zUgGqVM1dVBrqF9DAUSFHOLZtnDH8zoykjuvdDuwgaWe0I2WpB9O7P3AycUiT6UfU%2BwSdy%2FVBDk0knGYkgI5SB6EdoQ1lGMPCcjNAGOqUB7iohS4hfVUMRPNMwqZDd%2FZgTdVnzwvAP9KsgErA%2FFqGJEmNytMCk9UWKc8IFxnpQeP0i9lElpnofqghdMOqu6deqpYoRiFybL%2BvWTdrw7h4J9vGx2Nv3y2ej0ib9%2Bwln1PY74%2BDuG4qSkOAHGxKxRislyYVPF53WJ1VWLeXGCgAM3sWc1xUd6yWf56eLLT69WBD5fXispyzXo2fSXk3%2B9IBUrLCj&X-Amz-Signature=559b0f2a17dca8ca30cb1f61de4493847081f94580172ce1152f9c6340c39105&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+Pay attention to select to select _binary buffer_ in the _return_ drop down of the `File node`.
+
+**Viber** only accepts _.jpg_ images less than 1 Mb.

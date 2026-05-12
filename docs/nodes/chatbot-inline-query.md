@@ -1,0 +1,59 @@
+
+Inline mode allows the user to query a chatbot from a different chat, it’s a powerful tool to make your chatbot go viral, read more [here](https://core.telegram.org/bots/inline).
+
+Every query invoked with a line like `@mychatbot how are you?` are routed through the [Telegram Receiver node](https://www.notion.so/4132ce6c78dc4dbbab0fe9eb7e1c3c9b)  as a message of type `inline-query`, it will look like
+
+```javascript
+{
+  originalMessage: {
+    // ...
+  },
+  payload: {
+    content: 'how are you?',
+    type: 'inline_query',
+    // ...
+  }
+}
+```
+
+and can be sent to any other parser nodes like other messages.
+
+At some point of the flow it might be useful to route the incoming message on a different path based on the type, for example in order to handle the inline query differently, here is where the `Switch node` might be useful
+
+![Switch node example](https://prod-files-secure.s3.us-west-2.amazonaws.com/b55ba134-c1dd-4ca1-9942-d1fe66c465a2/4b30a036-7b2d-4e71-9650-1fce62605977/example-switch.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466XDXQPG4H%2F20260512%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260512T122956Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEGQaCXVzLXdlc3QtMiJHMEUCIQCYSvkp4WzBq8jEwgDFA7f%2BqFQrHfZ4SIfep4WyETFtqgIgT17lubaEyrXKLBVfOqTxs75R%2BzHpc1KJz6iG96NlEU4q%2FwMILRAAGgw2Mzc0MjMxODM4MDUiDFInOMgPT7w3mv9YdSrcA5RYTLMw58FsTJib3Rxcv7KVXXQWFzRVO4VaNdysH%2BLCdW5aeJLnvBQ4tdIe4XUyL0itVcFzgcm5RZCXO2o%2BT%2FFeLt1gZ%2FBPMJwpcfyII6MdDWheCRqV2zU9sUMfKeOKC3gK4%2F087iIfWeqlS0AstXDUJeMgF7ps2Y1pMl80rXcK1NUqNYxBsE0Vmrh3zvjps%2F0X0ZNKBqAKphFWjSsfMDDVrTGBfW3RlzoKE4BRIQ7KVICN2tXryqmYEZ5G2rieUx8qdtmf2JIuGvB95MjoePd14APvg0QBQZxTeE4siZ0NH97juO6VIYtohPuW05SBlds6XPOyMHwun3eXd%2BZpYb%2Bj9R90vBks7aHaFRVJU7MCXCaTBxQlGjP1GAtDBaCwZaFN5vrcHIlrYsjygZSfvg8vMikJPYWy4VEzfmaCVDxDQCok%2FY2JeQkTPlCE0uts1bcswh0Tipm2Zp7bDi5qI1ybrdhhSmKspUVfXa%2Bg2Hs8ECPjj3AbyGjYHSC86N4Z1Pb0Tx%2FM3nW%2FkDgy499ySa7%2B0jn%2Bo%2BrEzNKPV1ezhEbiLSLqX1X8G84y2Imstd4ipFWKMP4RQsCZ1VVa6uFUozFKiflC%2Fv%2Fk47Tw1kHzlO%2FwqDKUYPXCk%2BABKF66MMukjNAGOqUBdcRyhYu7U%2Fk7f121sFcvlk1hnWdDJaxW%2BxgD4NuDgVAYsPQIW624de6oBwtlTC7ugj3mAk5wichJ8D0VHwIi64buTf1vweuqFd4CiK9O%2Fzhh4%2FU%2FB4YUL%2B7hmRHNqlBFE49KtzMHYHTqQxkgqhgc2wBqYIh6IvqwyB8OYRtxIJOoJHcO8ih7ZVFl73T2v1pXumsLlwADFmMDJ5GER0%2BfU3%2FS9vJZ&X-Amz-Signature=97d32cc8b5422b003f9d1d3c67d61a59fe2ac209c244fffd6f52919b9a8012db&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+After a inline query is received, use a `Function node` to prepare the payload to send to a `Inline Query Results node` and then to a `Telegram Sender node`.
+
+The `Function node`
+
+```javascript
+msg.payload = [
+  {
+    type: 'article',
+    id: 'AAA-123',
+    title: 'Title #1',
+    input_message_content: {
+      message_text: 'You selected title #1',
+    }
+  },
+  {
+    type: 'article',
+    id: 'AAA-124',
+    title: 'Title #2',
+    input_message_content: {
+      message_text: 'You selected title #2'
+    }
+  }
+]
+return msg;
+```
+
+Learn more [here](https://core.telegram.org/bots/api#inline-mode) about what kind of message it’s possible to send as inline query answer.
+
+Available parameters for `msg.payload`
+
+| Name              | Type         | Description                                              |
+| ----------------- | ------------ | -------------------------------------------------------- |
+| inlineQueryAnswer | array of obj | The query results to show to the client                  |
+| caching           | integer      | How long results are cached, in seconds                  |
+| personal          | boolean      | If the results should be presented privately to the user |

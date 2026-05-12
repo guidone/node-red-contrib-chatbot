@@ -15,7 +15,9 @@ const nodeDefinitions = require('./nodes');
 // notion api key
 let notionAuthToken = process.env.NOTION_API_KEY;
 if (fs.existsSync(`${__dirname}/../.env-notion`)) {
-  notionAuthToken = fs.readFileSync(`${__dirname}/../.env-notion`);
+  const raw = fs.readFileSync(`${__dirname}/../.env-notion`, 'utf8').trim();
+  const match = raw.match(/^\s*(?:NOTION_API_KEY\s*=\s*)?["']?([^"'\s]+)["']?\s*$/m);
+  notionAuthToken = match != null ? match[1] : raw;
 }
 if (notionAuthToken == null || notionAuthToken === '') {
   console.log('Missing notion token, skipping');
@@ -38,19 +40,6 @@ const extractNotionId = url => {
       + notionId.substring(16, 20) + '-'
       + notionId.substring(20, 32);
   }
-};
-
-const getPage = async function(url) {
-  // parse url
-  const notionId = extractNotionId(url);
-
-  // TODO check if valid
-  const mdblocks = await n2m.pageToMarkdown(notionId);
-  const mdString = n2m.toMarkdownString(mdblocks);
-
-  const html = marked.parse(mdString);
-
-  return html;
 };
 
 const getMarkdownPage = async function(url) {
@@ -95,6 +84,11 @@ const runner = async function() {
   console.log('# ' + grey('Downloading nodes help:'));
   console.log('');
 
+  const nodesDocsDir = __dirname + '/../docs/nodes';
+  fs.mkdirSync(nodesDocsDir, { recursive: true });
+
+  const docsIndex = [];
+
   // download all nodes documentation from notion
   let idx = 0;
   for(idx = 0; idx < nodeDefinitions.length; idx++) {
@@ -102,7 +96,14 @@ const runner = async function() {
     const node = nodeDefinitions[idx];
     console.log('- ' + grey(node.notionUrl) + ' (' + node.nodeType + ')');
 
-    const htmlSource = await getPage(node.notionUrl);
+    const mdSource = await getMarkdownPage(node.notionUrl);
+    const htmlSource = marked.parse(mdSource);
+
+    fs.writeFileSync(nodesDocsDir + '/' + node.nodeType + '.md', mdSource, 'utf8');
+
+    const titleMatch = mdSource.match(/^#\s+(.+)$/m);
+    const title = titleMatch != null ? titleMatch[1].trim() : node.nodeType;
+    docsIndex.push({ nodeType: node.nodeType, title });
 
     let nodeSource;
     try {
@@ -111,12 +112,19 @@ const runner = async function() {
       console.log(`Unable to find file ${node.nodeFile}`);
     }
 
-    const newDoc = '<script type="text\/x-red" data-help-name="' + node.nodeType + '">' + htmlSource + '</script>';
-    const regexp = new RegExp('<script type=\"text\/x-red\" data-help-name=\"' + node.nodeType + '\">[\\s\\S]*?<\/script>', 'g');
-    nodeSource = nodeSource.replace(regexp, newDoc);
+    const regexp = new RegExp('<script type=\"(text\/x-red|text\/html)\" data-help-name=\"' + node.nodeType + '\">[\\s\\S]*?<\/script>', 'g');
+    nodeSource = nodeSource.replace(regexp, (_match, scriptType) => {
+      return '<script type="' + scriptType + '" data-help-name="' + node.nodeType + '">' + htmlSource + '</script>';
+    });
 
     fs.writeFileSync(__dirname + '/../nodes/' + node.nodeFile, nodeSource, 'utf8');
   }
+
+  docsIndex.sort((a, b) => a.title.localeCompare(b.title));
+  const indexContent = '# Nodes\n\n'
+    + docsIndex.map(({ nodeType, title }) => `- [${title}](nodes/${nodeType}.md)`).join('\n')
+    + '\n';
+  fs.writeFileSync(__dirname + '/../docs/nodes.md', indexContent, 'utf8');
 
   // end
   console.log(green('All done.'));

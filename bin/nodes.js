@@ -1,5 +1,10 @@
 module.exports = [
   {
+    nodeFile: 'chatbot-openai-responses/index.html',
+    nodeType: 'chatbot-openai-responses',
+    notionUrl: 'https://redbot.notion.site/ChatGpt-Responses-35d499b2879a80269412ecf0425a71e1'
+  },
+  {
     nodeFile: 'mc-configuration.html',
     nodeType: 'mc-configuration',
     notionUrl: 'https://www.notion.so/redbot/MC-Configuration-node-585cd33e293c40478a47635246742a27'
