@@ -1,6 +1,6 @@
 const OpenAI = require('openai');
 
-const { getChatId, isValidMessage, message: messageUtils } = require('../../lib/helpers/utils');
+const { getChatId, message: messageUtils } = require('../../lib/helpers/utils');
 const tryParse = require('./helper/try-parse');
 const isFunctionResponse = require('./helper/is-function-response');
 const processOutputs = require('./helper/process-outputs');
@@ -10,6 +10,47 @@ const GPTContext = require('./helper/gpt-context');
 const formatContext = require('./helper/format-context');
 const isAttachment = require('./helper/is-attachment');
 const bufferToStream = require('./helper/buffer-to-stream');
+
+const DEFAULT_SESSION_ID = 'generic-session';
+
+const resolveSessionId = msg => {
+  try {
+    const chatId = getChatId(msg);
+    return chatId != null && chatId !== '' ? chatId : DEFAULT_SESSION_ID;
+  } catch (e) {
+    return DEFAULT_SESSION_ID;
+  }
+};
+
+const resolveInputMessage = msg => {
+  if (messageUtils.isMessage(msg)) {
+    return msg.payload.content;
+  }
+  if (typeof msg?.payload === 'string') {
+    return msg.payload;
+  }
+  return undefined;
+};
+
+// OpenAI's Responses API treats the top-level `prompt` field as a stored-prompt
+// reference (`{ id, version, variables }`). Sending a partial `prompt` without
+// `id` triggers "400 Missing required parameter: 'prompt.id'", especially on
+// continuation requests (with `previous_response_id`). Drop partial references
+// before dispatch.
+const stripPartialPromptRef = gptRequest => {
+  if (gptRequest.prompt && !gptRequest.prompt.id) {
+    delete gptRequest.prompt;
+  }
+};
+
+const mergeVariablesIntoStoredPrompt = (gptRequest, variables) => {
+  if (variables == null || typeof variables !== 'object') return;
+  if (!gptRequest.prompt?.id) return;
+  gptRequest.prompt = {
+    ...gptRequest.prompt,
+    variables: { ...(gptRequest.prompt.variables || {}), ...variables }
+  };
+};
 
 // DOCS:
 // UI element for dialog
@@ -87,11 +128,6 @@ module.exports = function(RED) {
     }
 
     node.on('input', async function(msg, send, done) {
-      // check if valid message
-      if (!isValidMessage(msg, node)) {
-        return;
-      }
-
       const promptDesign = tryParse(node.prompt);
       if (!promptDesign) {
         node.error('Invalid prompt');
@@ -100,20 +136,10 @@ module.exports = function(RED) {
 
       const effectiveTools = buildEffectiveTools(promptDesign, node.functions);
 
-      const sessionId = getChatId(msg);
-      const inputMessage = messageUtils.isMessage(msg) ? msg.payload.content : undefined;
-      console.log('Resolved content: sessionId: ', sessionId, 'message: ', inputMessage);
+      const sessionId = resolveSessionId(msg);
+      const inputMessage = resolveInputMessage(msg);
 
       const context = GPTContext({ context: this.context().flow, sessionId });
-
-      console.log('default sessionId', msg?.['chatgpt-function-call']?.sessionId);
-      console.log('sessionId', sessionId);
-      console.log('inputMessage', inputMessage);
-
-      // Warn if empty session id
-      if (!sessionId) {
-        node.warn('Was not possible to extract a session id from msg payload, a session will not be created it will not be possible to follow up messages with ChatGPT');
-      }
 
       const session = await context.getSession(sessionId);
       console.log('current session', session);
@@ -142,13 +168,8 @@ module.exports = function(RED) {
           parallel_tool_calls: false
         };
 
-        // merge variables from msg.variables into stored prompt
-        if (msg.variables != null && typeof msg.variables === 'object') {
-          gptRequest.prompt = {
-            ...(gptRequest.prompt || {}),
-            variables: { ...(gptRequest.prompt?.variables || {}), ...msg.variables }
-          };
-        }
+        mergeVariablesIntoStoredPrompt(gptRequest, msg.variables);
+        stripPartialPromptRef(gptRequest);
 
         // execute call
         try {
@@ -220,15 +241,9 @@ module.exports = function(RED) {
           gptRequest.previous_response_id = session.previousId;
         }
 
-        // merge variables from msg.variables into stored prompt
-        if (msg.variables != null && typeof msg.variables === 'object') {
-          gptRequest.prompt = {
-            ...(gptRequest.prompt || {}),
-            variables: { ...(gptRequest.prompt?.variables || {}), ...msg.variables }
-          };
-        }
+        mergeVariablesIntoStoredPrompt(gptRequest, msg.variables);
+        stripPartialPromptRef(gptRequest);
 
-        console.log('Bare gptRequest', gptRequest);
         // execute call
         try {
           response = await openai.responses.create(gptRequest);
@@ -244,15 +259,11 @@ module.exports = function(RED) {
 
       // create or update current session
       if (!session) {
-        // if no session identifier, do nothing
-        if (sessionId) {
-          await context.createSession({
-            sessionId,
-            previousId: response.id
-          });
-        }
+        await context.createSession({
+          sessionId,
+          previousId: response.id
+        });
       } else {
-        // session exists, update it
         await context.updateSession(sessionId, { previousId: response.id });
       }
 
