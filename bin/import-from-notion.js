@@ -99,6 +99,7 @@ const runner = async function() {
     const mdSource = await getMarkdownPage(node.notionUrl);
     const htmlSource = marked.parse(mdSource);
 
+    // write markdown locally
     fs.writeFileSync(nodesDocsDir + '/' + node.nodeType + '.md', mdSource, 'utf8');
 
     const titleMatch = mdSource.match(/^#\s+(.+)$/m);
