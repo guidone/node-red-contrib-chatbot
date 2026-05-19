@@ -1,4 +1,4 @@
 
 Merge the **Node-RED** message payload into the current chatbot user’s payload.
 
-![User custom payload](https://raw.githubusercontent.com/guidone/node-red-contrib-chatbot/master/docs/images/user-3.png)
+![User custom payload](./docs/assets/77d2d4c8c6ca974c.png)

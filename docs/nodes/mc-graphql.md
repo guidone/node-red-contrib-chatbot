@@ -48,7 +48,7 @@ In order to access and explore the GraphQL server with clients like [Altair](htt
 
 **Contents** is a blog-post-like table with some fields like title, body, language, category and some custom multi-purpose fields (like custom fields and JSON payload) that can be used in multiple situations.
 
-![](https://raw.githubusercontent.com/guidone/node-red-contrib-chatbot/master/docs/images/content.gif)
+![](./docs/assets/8488ca796d754ee3.gif)
 
 Contents section in MissionControl
 
@@ -79,7 +79,7 @@ The `slug` field is using to create and reference a content with a user-defined 
 
 Here are stored the chatbot users. When Mission Control is enabled for a specific chatbot and the Store Messages is enabled, the user is automatically created when a message is received, it includes some basic information (if available in the specific platform).
 
-![](https://raw.githubusercontent.com/guidone/node-red-contrib-chatbot/master/docs/images/user.gif)
+![](./docs/assets/3c91b56bc7fe040e.gif)
 
 Users section in MissionControl
 
