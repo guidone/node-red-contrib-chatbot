@@ -1,6 +1,6 @@
 const lcd = require('../lib/helpers/lcd');
 const fs = require('fs');
-const moment = require('moment');
+const dayjs = require('dayjs');
 
 // get rid of telegram-bot-api warning
 process.env.NTBA_FIX_319 = 1;
@@ -14,7 +14,7 @@ const jsonPackage = fs.readFileSync(__dirname + '/../package.json');
 try {
   const pack = JSON.parse(jsonPackage);
   // eslint-disable-next-line no-console
-  console.log(lcd.white(moment().format('DD MMM HH:mm:ss')
+  console.log(lcd.white(dayjs().format('DD MMM HH:mm:ss')
     + ' - [info] RedBot version:')
     + ' ' + lcd.green(pack.version) + lcd.grey(' (node-red-contrib-chatbot)'));
 } catch(e) {

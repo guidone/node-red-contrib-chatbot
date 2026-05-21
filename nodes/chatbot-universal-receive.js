@@ -1,5 +1,5 @@
 const _ = require('underscore');
-const moment = require('moment');
+const dayjs = require('dayjs');
 const { UniversalPlatform: UniversalServer, ContextProviders, ChatExpress } = require('chat-platform');
 const clc = require('cli-color');
 const prettyjson = require('prettyjson');
@@ -299,7 +299,7 @@ module.exports = function(RED) {
         stack = stack.then(function() {
           return when(context.set({
             currentConversationNode: node.id,
-            currentConversationNode_at: moment()
+            currentConversationNode_at: dayjs().toISOString()
           }));
         });
       }

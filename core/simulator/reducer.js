@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const handleMessages = (state, action) => {
 
@@ -16,9 +16,9 @@ const handleMessages = (state, action) => {
 
     let toAdd;
     if (!_.isArray(payload.payload)) {
-      toAdd = { ...payload, ts: moment() }
+      toAdd = { ...payload, ts: dayjs().toISOString() }
     } else {
-      toAdd = payload.payload.map(current => ({ ...payload, ...current, payload: undefined, ts: moment() }))
+      toAdd = payload.payload.map(current => ({ ...payload, ...current, payload: undefined, ts: dayjs().toISOString() }))
     }
 
     const messages = {

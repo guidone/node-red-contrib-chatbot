@@ -39,7 +39,6 @@ module.exports = (env = {}) => {
         'react-dom': 'amd react-dom',
         lodash: 'amd lodash',
         classnames: 'amd classnames',
-        moment: 'amd moment',
         'prop-types': 'amd prop-types',
         'code-plug': 'amd code-plug',
         'react-apollo': 'amd react-apollo',

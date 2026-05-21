@@ -5,7 +5,7 @@ import { Content, SmartDate, CopyAndPasteButton } from '../../src/components';
 
 
 import TokenEditor from './views/token-editor';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const { Contents } = Content;
 
@@ -80,10 +80,10 @@ plug('pages', Contents, {
   defaultContent: token => {
     return {
       ...token,
-      title: `Token created ${moment().format('DD/MM/YYYY')}`,
+      title: `Token created ${dayjs().format('DD/MM/YYYY')}`,
       payload: {
         token: createToken(),
-        expire_at: moment().add(1, 'y').toISOString()
+        expire_at: dayjs().add(1, 'y').toISOString()
       }
     };
   }

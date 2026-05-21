@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import _ from 'lodash';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Icon, IconButton, Tag, List, FlexboxGrid } from 'rsuite';
 
 import { plug } from 'code-plug';
@@ -16,7 +16,7 @@ const handleMessages = (state, action) => {
     case 'socket.message':
       if (action.topic === 'message.out') {
         const payload = _.isArray(action.payload) ? action.payload : [action.payload];
-        const messages = payload.map(message => ({ ...message, ts: moment() }));
+        const messages = payload.map(message => ({ ...message, ts: dayjs().toISOString() }));
         const messageOutLog = state.messageOutLog != null ? [...messages, ...state.messageOutLog] : messages;
         return {
           ...state,
@@ -24,7 +24,7 @@ const handleMessages = (state, action) => {
         };
       } else if (action.topic === 'message.in') {
         const payload = _.isArray(action.payload) ? action.payload : [action.payload];
-        const messages = payload.map(message => ({ ...message, ts: moment() }));
+        const messages = payload.map(message => ({ ...message, ts: dayjs().toISOString() }));
         const messageInLog = state.messageInLog != null ? [...messages, ...state.messageInLog] : messages;
         return {
           ...state,

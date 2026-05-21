@@ -10,7 +10,6 @@ import uniqueId from '../../helpers/unique-id';
 
 import Item from './views/item';
 import './style.scss';
-import { max } from 'moment';
 
 const SortableContainer = sortableContainer(({ children }) => {
   return <div>{children}</div>;

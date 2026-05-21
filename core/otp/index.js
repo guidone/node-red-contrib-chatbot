@@ -1,5 +1,5 @@
 import React from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { plug } from 'code-plug';
 
 import { Content, CopyAndPasteButton } from '../../src/components';
@@ -87,10 +87,10 @@ if (window.bootstrap?.settings?.enableOTP) {
     defaultContent: token => {
       return {
         ...token,
-        title: `Otp created ${moment().format('DD/MM/YYYY')}`,
+        title: `Otp created ${dayjs().format('DD/MM/YYYY')}`,
         payload: {
           otp: Math.random().toString().substr(2,6),
-          expire_at: moment().add(1, 'y').toISOString()
+          expire_at: dayjs().add(1, 'y').toISOString()
         }
       };
     }

@@ -47,3 +47,18 @@ const chatId = getChatId(msg);
 Do **not** read `msg.originalMessage?.chatId` directly: it skips the payload fallback and silently breaks for any flow that doesn't go through a platform receiver.
 
 The same module exposes sibling extractors that should be preferred over hand-rolled lookups: `getMessageId`, `getUserId`, `getTransport`, `getChatContext`.
+
+## Working with dates
+
+Use `dayjs` for all date handling. Moment was removed from the codebase — do not reintroduce it.
+
+```js
+const dayjs = require('dayjs');
+
+dayjs().toISOString();                  // current time as ISO string
+dayjs.unix(payload.timestamp).toISOString(); // platform unix seconds → ISO string
+dayjs(value).format('DD MMM HH:mm:ss');
+dayjs.isDayjs(value);                   // type check (replaces moment.isMoment)
+```
+
+Store timestamps as **ISO 8601 strings** in chat context, GraphQL inputs, Redux state, and the `ts` field on messages from any platform receiver. Do not pass dayjs (or any other date library) objects across module boundaries — keep dayjs instances local to the function that needs them.

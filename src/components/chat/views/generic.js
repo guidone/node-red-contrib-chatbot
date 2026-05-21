@@ -1,9 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import _ from 'lodash';
-import moment from 'moment';
-import momentPropTypes from 'react-moment-proptypes';
+import dayjs from 'dayjs';
 import { Icon } from 'rsuite';
 
 
@@ -66,8 +64,7 @@ Metadata.propTypes = {
 const MessageDate = ({ children, date }) => {
   return (
     <span className="ui-chat-message-date">
-      {moment.isMoment(date) && date.format('HH:mm')}
-      {_.isString(date) && moment(date).isValid() && moment(date).format('HH:mm')}
+      {date && dayjs(date).isValid() && dayjs(date).format('HH:mm')}
       {children}
     </span>
   );
@@ -77,7 +74,7 @@ MessageDate.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
   ]),
-  date: PropTypes.oneOfType([momentPropTypes.momentObj, PropTypes.func])
+  date: PropTypes.oneOfType([PropTypes.string, PropTypes.func])
 };
 
 const MessageUser = ({ children }) => {
