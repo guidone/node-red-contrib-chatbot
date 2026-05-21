@@ -1,12 +1,11 @@
-const request = require('request').defaults({ encoding: null });
 const RegisterType = require('../lib/node-installer');
 const { ChatExpress } = require('chat-platform');
-const { 
-  isValidMessage, 
-  getChatId, 
-  getMessageId, 
-  getTransport, 
-  extractValue 
+const {
+  isValidMessage,
+  getChatId,
+  getMessageId,
+  getTransport,
+  extractValue
 } = require('../lib/helpers/utils');
 const MessageTemplate = require('../lib/message-template-async');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
@@ -46,32 +45,31 @@ module.exports = function(RED) {
       let language = extractValue('string', 'language', node, msg)
 
       template(message)
-        .then(parsedMessage => {
+        .then(async parsedMessage => {
           const voiceUrl = 'http://www.voicerss.org/controls/speech.ashx?'
             + `hl=${language}&src=${encodeURI(parsedMessage)}&c=mp3&rnd=${Math.random()}`;
-          request.get({
-            url: voiceUrl,
-            headers: {
-              Referer: 'http://www.voicerss.org/api/demo.aspx'
-            }
-          }, (err, response, buffer) => {            
-            if (err) {
-              done('Error contacting VoiceRSS');
-            } else {
-              send({
-                ...msg,
-                payload: {
-                  type: 'audio',
-                  content: buffer,
-                  filename: 'audio.mp3',
-                  chatId: chatId,
-                  messageId: messageId,
-                  inbound: false
-                }
-              });
-              done();
+          let buffer;
+          try {
+            const response = await fetch(voiceUrl, {
+              headers: { Referer: 'http://www.voicerss.org/api/demo.aspx' }
+            });
+            buffer = Buffer.from(await response.arrayBuffer());
+          } catch (err) {
+            done('Error contacting VoiceRSS');
+            return;
+          }
+          send({
+            ...msg,
+            payload: {
+              type: 'audio',
+              content: buffer,
+              filename: 'audio.mp3',
+              chatId: chatId,
+              messageId: messageId,
+              inbound: false
             }
           });
+          done();
         });
     });
   }
