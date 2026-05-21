@@ -75,11 +75,6 @@ module.exports = [
     nodeType: 'chatbot-audio'
   },
   {
-    notionUrl: 'https://www.notion.so/redbot/Voice-node-dbd09f980ed5438e90eb8379ab15594c',
-    nodeFile: 'chatbot-voice.html',
-    nodeType: 'chatbot-voice'
-  },
-  {
     notionUrl: 'https://www.notion.so/redbot/Image-node-e4db571720f74584bfa97668c100db43',
     nodeFile: 'chatbot-image.html',
     nodeType: 'chatbot-image'
