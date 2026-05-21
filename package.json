@@ -29,8 +29,11 @@
     "type": "git",
     "url": "https://github.com/guidone/node-red-contrib-chatbot.git"
   },
+  "engines": {
+    "node": ">=18"
+  },
   "node-red": {
-    "version": ">=2.0.0",
+    "version": ">=4.0.0",
     "plugins": {
       "chatbot-launch-mission-control": "./plugins/chatbot-launch-mission-control.js"
     },
@@ -104,7 +107,7 @@
   "dependencies": {
     "@directus/sdk": "^9.9.0",
     "@notionhq/client": "^1.0.4",
-    "@slack/bolt": "^3.10.0",
+    "@slack/bolt": "^4.7.2",
     "apiai": "^3.0.0",
     "apollo-boost": "^0.4.9",
     "apollo-cache-inmemory": "^1.6.5",

@@ -363,12 +363,13 @@ settings:
       },
     },
     inputs: 0,
-    outputs: 1,
+    outputs: 2,
     icon: 'slack.svg',
     paletteLabel: 'Slack Receiver',
     label: function () {
       return "Slack Receiver";
-    }
+    },
+    outputLabels: ['Messages', 'Events']
   });
 </script>
 
@@ -388,6 +389,21 @@ settings:
 
 <script type="text/x-red" data-help-name="chatbot-slack-receive">
   <p>Input node for Slack.</p>
+  <h3>Outputs</h3>
+  <ol class="node-ports">
+    <li>Messages
+      <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>Inbound user messages (text, photo, audio, video, document, interactive responses, dialog submissions, block actions, etc.).</dd>
+      </dl>
+    </li>
+    <li>Events
+      <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>Slack Events API callbacks where <code>payload.type === 'event'</code> (e.g. channel and workspace events not tied to a user message).</dd>
+      </dl>
+    </li>
+  </ol>
 </script>
 
 <script type="text/javascript">

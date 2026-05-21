@@ -57,6 +57,6 @@ module.exports = function(RED) {
     }
   );
 
-  registerType('chatbot-slack-receive', GenericInNode('slack', RED));
+  registerType('chatbot-slack-receive', GenericInNode('slack', RED, { splitEvents: true }));
   registerType('chatbot-slack-send', GenericOutNode('slack', RED));
 };
