@@ -211,12 +211,13 @@
       }
     },
     inputs: 0,
-    outputs: 1,
+    outputs: 2,
     icon: 'whatsapp.svg',
     paletteLabel: 'Whatsapp Receiver',
     label: function () {
       return 'Whatsapp Receiver';
-    }
+    },
+    outputLabels: ['Messages', 'Events']
   });
 </script>
 
@@ -236,6 +237,21 @@
 
 <script type="text/x-red" data-help-name="chatbot-whatsapp-receive">
   <p>Input node for Whatsapp.</p>
+  <h3>Outputs</h3>
+  <ol class="node-ports">
+    <li>Messages
+      <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>Inbound user messages (text, location, image, interactive replies, etc.).</dd>
+      </dl>
+    </li>
+    <li>Events
+      <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>Message status callbacks from WhatsApp (<code>sent</code>, <code>delivered</code>, <code>read</code>, <code>failed</code>) where <code>payload.type === 'event'</code>.</dd>
+      </dl>
+    </li>
+  </ol>
 </script>
 
 <script type="text/javascript">

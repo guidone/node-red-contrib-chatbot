@@ -56,7 +56,7 @@ module.exports = function(RED) {
     }
   );
 
-  registerType('chatbot-whatsapp-receive', GenericInNode('whatsapp', RED));
+  registerType('chatbot-whatsapp-receive', GenericInNode('whatsapp', RED, { splitEvents: true }));
 
   registerType('chatbot-whatsapp-send', GenericOutNode('whatsapp', RED));
 

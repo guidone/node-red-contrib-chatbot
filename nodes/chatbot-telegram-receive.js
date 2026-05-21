@@ -52,7 +52,7 @@ module.exports = function(RED) {
     }
   );
 
-  registerType('chatbot-telegram-receive', GenericInNode('telegram', RED));
+  registerType('chatbot-telegram-receive', GenericInNode('telegram', RED, { splitEvents: true }));
 
   registerType('chatbot-telegram-send', GenericOutNode('telegram', RED));
 };

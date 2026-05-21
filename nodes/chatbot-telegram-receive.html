@@ -256,12 +256,13 @@
       }
     },
     inputs: 0,
-    outputs: 1,
+    outputs: 2,
     icon: 'telegram.svg',
     paletteLabel: 'Telegram Receiver',
     label: function () {
       return "Telegram Receiver";
-    }
+    },
+    outputLabels: ['Messages', 'Events']
   });
 </script>
 
@@ -281,6 +282,21 @@
 
 <script type="text/x-red" data-help-name="chatbot-telegram-receive">
   <p>Input node for Telegram.</p>
+  <h3>Outputs</h3>
+  <ol class="node-ports">
+    <li>Messages
+      <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>Inbound user messages (text, photo, document, location, inline query, callback query, etc.).</dd>
+      </dl>
+    </li>
+    <li>Events
+      <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>Telegram events where <code>payload.type === 'event'</code> (e.g. <code>new-user</code> when a user joins a group).</dd>
+      </dl>
+    </li>
+  </ol>
 </script>
 
 <script type="text/javascript">
