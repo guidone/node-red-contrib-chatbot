@@ -38,6 +38,7 @@
 - [chatbot-video](nodes/chatbot-video.md)
 - [chatbot-voice](nodes/chatbot-voice.md)
 - [chatbot-waiting](nodes/chatbot-waiting.md)
+- [chatbot-whatsapp-receive](nodes/chatbot-whatsapp-receive.md)
 - [chatbot-whatsapp-template](nodes/chatbot-whatsapp-template.md)
 - [mc-configuration](nodes/mc-configuration.md)
 - [mc-graphql](nodes/mc-graphql.md)

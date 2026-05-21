@@ -1,4 +1,9 @@
 module.exports = [
+    {
+    notionUrl: 'https://www.notion.so/redbot/Whatsapp-Receiver-node-47c201b9b9e945fb909580bab9c31b87?source=copy_link',
+    nodeFile: 'chatbot-whatsapp-receive.html',
+    nodeType: 'chatbot-whatsapp-receive'
+  },
   {
     nodeFile: 'chatbot-openai-responses/index.html',
     nodeType: 'chatbot-openai-responses',

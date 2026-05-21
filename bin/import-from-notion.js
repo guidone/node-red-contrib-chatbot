@@ -35,7 +35,8 @@ const notion = new Client({ auth: notionAuthToken });
 const n2m = new NotionToMarkdown({ notionClient: notion });
 
 const extractNotionId = url => {
-  const matched = url.match(/\-([a-z0-9]{32,32})$/);
+  const cleanUrl = url.split('?')[0].split('#')[0];
+  const matched = cleanUrl.match(/\-([a-z0-9]{32,32})$/);
   if (matched != null) {
     let notionId = String(matched[1]);
 
