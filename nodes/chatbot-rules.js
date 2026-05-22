@@ -56,58 +56,6 @@ const Types = {
     });
   },
 
-  isSlotConfirmationStatus(rule, message) {
-    return new Promise(function(resolve, reject) {
-      if (message.payload != null && message.payload.type === 'intent' && message.payload.slotConfirmationStatus != null
-        && message.payload.slotConfirmationStatus[rule.slot] === rule.confirmationStatus) {
-        resolve(rule);
-      } else {
-        reject();
-      }
-    });
-  },
-
-  isIntentConfirmationStatus(rule, message) {
-    return new Promise(function(resolve, reject) {
-      if (message.payload != null && message.payload.type === 'intent'
-        && message.payload.confirmationStatus === rule.confirmationStatus) {
-        resolve(rule);
-      } else {
-        reject();
-      }
-    });
-  },
-
-  isIntentName(rule, message) {
-    return new Promise(function(resolve, reject) {
-      if (message.payload != null && message.payload.type === 'intent' && message.payload.intent === rule.intent) {
-        resolve(rule);
-      } else {
-        reject();
-      }
-    });
-  },
-
-  isIntent(rule, message) {
-    return new Promise(function(resolve, reject) {
-      if (message.payload != null && message.payload.type === 'intent') {
-        resolve(rule);
-      } else {
-        reject();
-      }
-    });
-  },
-
-  dialogState(rule, message) {
-    return new Promise(function(resolve, reject) {
-      if (message.payload != null && message.payload.type === 'intent' && message.payload.dialogState === rule.state) {
-        resolve(rule);
-      } else {
-        reject();
-      }
-    });
-  },
-
   pending(rule, message) {
     return new Promise(function(resolve, reject) {
       var chatContext = message.chat();
