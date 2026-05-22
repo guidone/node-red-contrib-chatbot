@@ -1,4 +1,4 @@
-const _ = require('underscore');
+const _ = require('lodash');
 const utils = require('../lib/helpers/utils');
 const lcd = require('../lib/helpers/lcd');
 const when = utils.when;

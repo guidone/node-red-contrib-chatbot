@@ -1,9 +1,8 @@
 import PropTypes from 'prop-types';
-import momentPropTypes from 'react-moment-proptypes';
 
 export default PropTypes.shape({
   username: PropTypes.string,
-  ts: PropTypes.oneOfType([momentPropTypes.momentObj, PropTypes.func]),
+  ts: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
   content: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.object

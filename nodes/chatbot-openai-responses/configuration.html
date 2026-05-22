@@ -1,0 +1,28 @@
+<script type="text/javascript">
+  RED.nodes.registerType('chatbot-open-ai-key',{
+    category: 'config',
+    defaults: {
+      name: { value: '' }
+    },
+    label: function() {
+      return this.name;
+    },
+    credentials: {
+      apiKey: { type: 'password' }
+    }
+  });
+</script>
+
+<script type="text/html" data-template-name="chatbot-open-ai-key">
+  <div class="form-row">
+    <label for="node-config-input-name">Name</label>
+    <input type="text" id="node-config-input-name">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-apiKey">API Key</label>
+    <input type="password" id="node-config-input-apiKey">
+    <div style="font-size: 0.9em;line-height: normal;color: #999999;margin-top: 5px;">
+      Create a OpenAI API key <a href="https://platform.openai.com/api-keys" target="_blank">here</a>
+    </div>
+  </div>
+</script>

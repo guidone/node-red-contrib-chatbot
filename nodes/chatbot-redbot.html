@@ -309,28 +309,15 @@
         return false;
     }
   };
-  $.RedBot.validate.confirmationStatus = function(status) {
-    return ['none', 'confirmed', 'denied'].indexOf(status) !== -1;
-  };
   $.RedBot.validate.rule = function(rule) {
     if (rule == null) {
       return false;
     }
     switch(rule.type) {
-      case 'isSlotConfirmationStatus':
-        return $.RedBot.validate.notEmpty(rule.slot) && $.RedBot.validate.confirmationStatus(rule.confirmationStatus);
-      case 'isIntentConfirmationStatus':
-        return $.RedBot.validate.confirmationStatus(rule.confirmationStatus);
       case 'isLanguage':
         return $.RedBot.validate.notEmpty(rule.language);
-      case 'dialogState':
-        return $.RedBot.validate.notEmpty(rule.state);
       case 'environment':
         return $.RedBot.validate.notEmpty(rule.environment);
-      case 'topicIncludes':
-      case 'isNotTopic':
-      case 'isTopic':
-        return $.RedBot.validate.notEmpty(rule.topic);
       case 'isVariable':
         return $.RedBot.validate.notEmpty(rule.value) && $.RedBot.validate.notEmpty(rule.variable);
       case 'hasNotVariable':
@@ -348,12 +335,8 @@
         return $.RedBot.validate.notEmpty(rule.transport);
       case 'messageEvent':
         return $.RedBot.validate.notEmpty(rule.event);
-      case 'isIntentName':
-        return $.RedBot.validate.notEmpty(rule.intent);
-      case 'isIntent':
       case 'outbound':
       case 'inbound':
-      case 'isTopicEmpty':
       case 'catchAll':
       case 'pending':
       case 'notPending':
@@ -510,9 +493,6 @@
     }
     if (platforms.indexOf('alexa') !== -1) {
       platformClasses.push('alexa');
-    }
-    if (platforms.indexOf('twilio') !== -1) {
-      platformClasses.push('twilio');
     }
     if (platforms.indexOf('discord') !== -1) {
       platformClasses.push('discord');

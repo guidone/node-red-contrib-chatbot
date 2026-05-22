@@ -2,7 +2,6 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import _ from 'lodash';
-import moment from 'moment';
 import { IconButton, Icon } from 'rsuite';
 
 import { Message, Content, Metadata, MessageDate, MessageUser, UserStatus, Button, Buttons } from './generic';

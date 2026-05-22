@@ -1,13 +1,18 @@
 module.exports = [
+    {
+    notionUrl: 'https://www.notion.so/redbot/Whatsapp-Receiver-node-47c201b9b9e945fb909580bab9c31b87?source=copy_link',
+    nodeFile: 'chatbot-whatsapp-receive.html',
+    nodeType: 'chatbot-whatsapp-receive'
+  },
+  {
+    nodeFile: 'chatbot-openai-responses/index.html',
+    nodeType: 'chatbot-openai-responses',
+    notionUrl: 'https://redbot.notion.site/ChatGpt-Responses-35d499b2879a80269412ecf0425a71e1'
+  },
   {
     nodeFile: 'mc-configuration.html',
     nodeType: 'mc-configuration',
     notionUrl: 'https://www.notion.so/redbot/MC-Configuration-node-585cd33e293c40478a47635246742a27'
-  },
-  {
-    nodeFile: 'chatbot-alexa-card.html',
-    nodeType: 'chatbot-alexa-card',
-    notionUrl: 'https://redbot.notion.site/Alexa-Card-node-fc89c43d79324c8da2f251e26f638246'
   },
   {
     nodeFile: 'mc-graphql.html',
@@ -45,29 +50,14 @@ module.exports = [
     nodeType: 'chatbot-qrcode'
   },
   {
-    notionUrl: 'https://www.notion.so/redbot/Rivescript-node-db8481a702b6491093f7ea53d765129e',
-    nodeFile: 'chatbot-rivescript.html',
-    nodeType: 'chatbot-rivescript'
-  },
-  {
     notionUrl: 'https://www.notion.so/redbot/Conversation-node-1d90a6e8dfc448d6865c88358c459de2',
     nodeFile: 'chatbot-conversation.html',
     nodeType: 'chatbot-conversation'
   },
   {
-    notionUrl: 'https://www.notion.so/redbot/Analytics-node-58dbe17dd23144c6b3ec939a23676b27',
-    nodeFile: 'chatbot-analytics.html',
-    nodeType: 'chatbot-analytics'
-  },
-  {
     notionUrl: 'https://www.notion.so/redbot/Debug-node-d768699fac104d0580f14268afa1e53f',
     nodeFile: 'chatbot-debug.html',
     nodeType: 'chatbot-debug'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/Parse-node-face8e9f6efc4369a9ea8527ecd81b1b',
-    nodeFile: 'chatbot-parse.html',
-    nodeType: 'chatbot-parse'
   },
   {
     notionUrl: 'https://www.notion.so/redbot/Request-node-df78ffeae16d40238f672fbc447ba69e',
@@ -85,39 +75,14 @@ module.exports = [
     nodeType: 'chatbot-audio'
   },
   {
-    notionUrl: 'https://www.notion.so/redbot/Voice-node-dbd09f980ed5438e90eb8379ab15594c',
-    nodeFile: 'chatbot-voice.html',
-    nodeType: 'chatbot-voice'
-  },
-  {
     notionUrl: 'https://www.notion.so/redbot/Image-node-e4db571720f74584bfa97668c100db43',
     nodeFile: 'chatbot-image.html',
     nodeType: 'chatbot-image'
   },
   {
-    notionUrl: 'https://www.notion.so/redbot/Language-node-f5566a5158ad462186414d41766e7056',
-    nodeFile: 'chatbot-language.html',
-    nodeType: 'chatbot-language'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/Authorized-node-cc9655594def44648f6e02cbf17d9714',
-    nodeFile: 'chatbot-authorized.html',
-    nodeType: 'chatbot-authorized'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/Log-node-58087595acec4d0593dd7f1375b092d5',
-    nodeFile: 'chatbot-log.html',
-    nodeType: 'chatbot-log'
-  },
-  {
     notionUrl: 'https://www.notion.so/redbot/Location-node-60e07c48313c4d0690c0e2ff96fa941f',
     nodeFile: 'chatbot-location.html',
     nodeType: 'chatbot-location'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/Context-node-24a646bff58b4edfb249f1d27384230f',
-    nodeFile: 'chatbot-context.html',
-    nodeType: 'chatbot-context'
   },
   {
     notionUrl: 'https://www.notion.so/redbot/Telegram-Sticker-node-0e02d900e15e45b39eb4150941d7c9ea',
@@ -155,21 +120,6 @@ module.exports = [
     nodeType: 'chatbot-facebook-node'
   },
   {
-    notionUrl: 'https://www.notion.so/redbot/Alexa-Receiver-node-82b7744b70fa45e8b786fdd2feae1777',
-    nodeFile: 'chatbot-alexa-receive.html',
-    nodeType: 'chatbot-alexa-node'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/Twilio-Receiver-node-a0fb82e714fb4674b29e24fa984ca992',
-    nodeFile: 'chatbot-twilio-receive.html',
-    nodeType: 'chatbot-twilio-node'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/Microsoft-Teams-Receiver-node-7bc640d7770e4542a83de7c8ee0cc246',
-    nodeFile: 'chatbot-msteams-receive.html',
-    nodeType: 'chatbot-msteams-node'
-  },
-  {
     notionUrl: 'https://www.notion.so/redbot/Viber-Receiver-node-ae52e68a3aef4483b52b339caa08c62c',
     nodeFile: 'chatbot-viber-receive.html',
     nodeType: 'chatbot-viber-node'
@@ -193,16 +143,6 @@ module.exports = [
     notionUrl: 'https://www.notion.so/redbot/Rules-node-4113636f565d4ff4af08bc61a644206b',
     nodeFile: 'chatbot-rules.html',
     nodeType: 'chatbot-rules'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/Dialogflow-node-84b9ea66d20743fd9cf45d3de5f17693',
-    nodeFile: 'chatbot-dialogflow.html',
-    nodeType: 'chatbot-dialogflow'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/Dialogflow-token-node-3663be9a404e4e3a9f3022bb66fe8d1e',
-    nodeFile: 'chatbot-dialogflow.html',
-    nodeType: 'chatbot-dialogflow-token'
   },
   {
     notionUrl: 'https://www.notion.so/redbot/Invoice-node-15b9b0d320d04b55ad550610112f04dd',
@@ -240,16 +180,6 @@ module.exports = [
     nodeType: 'chatbot-support-table'
   },
   {
-    notionUrl: 'https://www.notion.so/redbot/Alexa-Receiver-node-82b7744b70fa45e8b786fdd2feae1777',
-    nodeFile: 'chatbot-alexa-speech.html',
-    nodeType: 'chatbot-alexa-speech'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/Alexa-Directive-node-e1e54a8f8c24404f8cd2b01e91b695cf',
-    nodeFile: 'chatbot-alexa-directive.html',
-    nodeType: 'chatbot-alexa-directive'
-  },
-  {
     notionUrl: 'https://www.notion.so/redbot/Universal-Connector-node-4c24b378e02c491a90240309b9f349c1',
     nodeFile: 'chatbot-universal-receive.html',
     nodeType: 'chatbot-universal-receive'
@@ -263,36 +193,6 @@ module.exports = [
     notionUrl: 'https://www.notion.so/redbot/Params-node-d8b27db3949c475184923af913563833',
     nodeFile: 'chatbot-params.html',
     nodeType: 'chatbot-params'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/NLPjs-Train-77f9e99250274f12b37b67fd3854f831',
-    nodeFile: 'chatbot-nlp-train.html',
-    nodeType: 'chatbot-nlpjs-train'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/NLPjs-Entity-f73d1e0200804467b8f03e077584fb16',
-    nodeFile: 'chatbot-nlp-entity.html',
-    nodeType: 'chatbot-nlpjs-entity'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/NLPjs-Intent-node-c91af0a6fde74dc5b575aa7230565ba8',
-    nodeFile: 'chatbot-nlp-intent.html',
-    nodeType: 'chatbot-nlpjs-intent'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/NLPjs-Save-4f99d9bfe1ee4683acbee70c02eb24d2',
-    nodeFile: 'chatbot-nlp-save.html',
-    nodeType: 'chatbot-nlpjs-save'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/NLPjs-Load-fc80ea9420fe492389109c610ee7f812',
-    nodeFile: 'chatbot-nlp-load.html',
-    nodeType: 'chatbot-nlpjs-load'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/NLPjs-Process-bbc3deb2d39a4b338fc6515eee337cd4',
-    nodeFile: 'chatbot-nlp.html',
-    nodeType: 'chatbot-nlpjs'
   },
   {
     notionUrl: 'https://www.notion.so/redbot/MC-User-Payload-dc8260a96abb430c856bfc2deb388238',

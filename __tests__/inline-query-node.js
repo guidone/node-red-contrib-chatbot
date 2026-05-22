@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var _ = require('lodash');
 var fs = require('fs');
 var assert = require('chai').assert;
 var RED = require('../lib/red-stub')();

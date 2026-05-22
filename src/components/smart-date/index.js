@@ -1,12 +1,12 @@
 import React from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import PropTypes from 'prop-types';
 
 import './smart-date.scss';
 
  const SmartDate = ({ date }) => {
-  const now = moment();
-  const m = moment(date);
+  const now = dayjs();
+  const m = dayjs(date);
 
   let day;
   if (m.year() === now.year() && m.month() === now.month() && m.date() === now.date()) {

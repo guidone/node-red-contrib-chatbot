@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const moment = require('moment');
+const dayjs = require('dayjs');
 
 const { when } = require('../lib/utils');
 
@@ -43,7 +43,7 @@ module.exports = function(RED) {
       if (context != null && node.track && !_.isEmpty(node.wires[0])) {
         await when(context.set({
           simulator_currentConversationNode: node.id,
-          simulator_currentConversationNode_at: moment()
+          simulator_currentConversationNode_at: dayjs().toISOString()
         }));
       }
 

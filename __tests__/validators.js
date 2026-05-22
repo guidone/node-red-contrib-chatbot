@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var _ = require('lodash');
 var assert = require('chai').assert;
 var validators = require('../lib/helpers/validators');
 
@@ -177,11 +177,9 @@ describe('Validators', function() {
 
   it('validates a Telegram configuration', function() {
     var base = {
-      usernames: '12213123',
       token: 'xxx:xxxxyyyyyyzzzz',
       polling: 1000,
       contextProvider: 'memory',
-      logfile: null,
       connectMode: 'polling'
     };
 
@@ -200,8 +198,6 @@ describe('Validators', function() {
     assert.isNotNull(validators.platform.telegram(_.extend({}, base, { token: null})));
     assert.isNotNull(validators.platform.telegram(_.extend({}, base, { token: ''})));
     assert.isNotNull(validators.platform.telegram(_.extend({}, base, { contextProvider: 'wrong_context'})));
-    assert.isNotNull(validators.platform.telegram(_.extend({}, base, { usernames: 42})));
-    assert.isNotNull(validators.platform.telegram(_.extend({}, base, { logfile: 42})));
   });
 
   it('validates a Slack configuration', function() {
@@ -210,9 +206,7 @@ describe('Validators', function() {
       token: 'xoxb-00000000-1111111111111',
       serverPort: '3001',
       signingSecret: 'mysecret',
-      usernames: null,
       contextProvider: 'memory',
-      logfile: null,
       oauthToken: '12345678901234567890'
     };
 
@@ -223,18 +217,14 @@ describe('Validators', function() {
     assert.isNotNull(validators.platform.slack(_.extend(base, { token: null })));
     assert.isNotNull(validators.platform.slack(_.extend(base, { token: '' })));
     assert.isNotNull(validators.platform.slack(_.extend(base, { contextProvider: 'wrong_context' })));
-    assert.isNotNull(validators.platform.slack(_.extend(base, { usernames: 42 })));
-    assert.isNotNull(validators.platform.slack(_.extend(base, { logfile: 42 })));
   });
 
   it('validates a Facebook configuration', function() {
     var base = {
-      usernames: null,
       token: 'xxxxyyyyzzzz',
       verifyToken: 'test',
       appSecret: 'xxxxyyyyyzzzz',
-      contextProvider: 'memory',
-      logfile: null
+      contextProvider: 'memory'
     };
 
     assert.isNull(validators.platform.facebook(base));
@@ -244,88 +234,7 @@ describe('Validators', function() {
     assert.isNotNull(validators.platform.facebook(_.extend({}, base, { token: null})));
     assert.isNotNull(validators.platform.facebook(_.extend({}, base, { token: ''})));
     assert.isNotNull(validators.platform.facebook(_.extend({}, base, { contextProvider: 'wrong_context'})));
-    assert.isNotNull(validators.platform.facebook(_.extend({}, base, { usernames: 42})));
-    assert.isNotNull(validators.platform.facebook(_.extend({}, base, { logfile: 42})));
     assert.isNotNull(validators.platform.facebook(_.extend({}, base, { profileFields: 42})));
-  });
-
-  it('validates a Twilio configuration', function() {
-    var base = {
-      usernames: null,
-      fromNumber: '+39123456',
-      accountSid: '236472347623462376',
-      authToken: 'aiqwgdkansljdeife',
-      contextProvider: 'memory',
-      logfile: null
-    };
-
-    assert.isNull(validators.platform.twilio(base));
-    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { fromNumber: null})));
-    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { fromNumber: ''})));
-    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { authToken: null})));
-    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { authToken: ''})));
-    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { accountSid: null})));
-    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { accountSid: ''})));
-    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { contextProvider: 'wrong_context'})));
-    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { usernames: 42})));
-    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { logfile: 42})));
-  });
-
-  it('validates a Routee configuration', function() {
-    var base = {
-      usernames: null,
-      fromNumber: '+39123456',
-      appSecret: '236472347623462376',
-      appId: '236472347623462376',
-      accessToken: 'aiqwgdkansljdeife',
-      contextProvider: 'memory',
-      logfile: null
-    };
-
-    assert.isNull(validators.platform.routee(base));
-    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { fromNumber: null})));
-    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { fromNumber: ''})));
-    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { accessToken: null})));
-    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { accessToken: ''})));
-    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { appId: null})));
-    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { appId: ''})));
-    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { appSecret: null})));
-    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { appSecret: ''})));
-    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { contextProvider: 'wrong_context'})));
-    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { usernames: 42})));
-    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { logfile: 42})));
-  });
-
-  it('validates a MSTeams configuration', function() {
-    var base = {
-      usernames: null,
-      appId: '123456',
-      appPassword: '236472347623462376',
-      contextProvider: 'memory',
-      logfile: null
-    };
-
-    assert.isNull(validators.platform.msteams(base));
-    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { appPassword: null})));
-    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { accessappPasswordToken: ''})));
-    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { appId: null})));
-    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { appId: ''})));
-    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { contextProvider: 'wrong_context'})));
-    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { usernames: 42})));
-    assert.isNotNull(validators.platform.twilio(_.extend({}, base, { logfile: 42})));
-  });
-
-  it('validates a Alexa configuration', function() {
-    var base = {
-      usernames: null,
-      contextProvider: 'memory',
-      logfile: null
-    };
-
-    assert.isNull(validators.platform.alexa(base));
-    assert.isNotNull(validators.platform.alexa(_.extend({}, base, { contextProvider: 'wrong_context'})));
-    assert.isNotNull(validators.platform.alexa(_.extend({}, base, { usernames: 42})));
-    assert.isNotNull(validators.platform.alexa(_.extend({}, base, { logfile: 42})));
   });
 
   it('validates an invoice', function() {

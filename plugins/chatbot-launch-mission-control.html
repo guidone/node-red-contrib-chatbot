@@ -1,0 +1,75 @@
+<script type="text/javascript">
+(function() {
+  const PLUGIN_ID = 'chatbot-launch-mission-control';
+  const BUTTON_ID = 'chatbot-launch-mission-control-button';
+  const TARGET_ID = 'red-ui-header-button-deploy';
+  const MC_PATH = '/mc';
+
+  RED.plugins.registerPlugin(PLUGIN_ID, {
+    type: 'editor',
+    onadd: function() {
+      injectButton();
+    }
+  });
+
+  function buildButton() {
+    const adminRoot = (RED.settings.httpAdminRoot || '/').replace(/\/$/, '');
+    const logoUrl = adminRoot + '/chatbot-launch-mission-control/redbot-logo.svg';
+
+    const button = document.createElement('a');
+    button.id = BUTTON_ID;
+    button.href = MC_PATH;
+    button.target = '_blank';
+    button.rel = 'noopener';
+    button.title = 'Launch Mission Control';
+    button.setAttribute('aria-label', 'Launch Mission Control');
+    button.style.cssText = [
+      'display: inline-flex',
+      'align-items: center',
+      'justify-content: center',
+      'height: 28px',
+      'margin-right: 8px',
+      'padding: 0 8px',
+      'border-radius: 4px',
+      'text-decoration: none',
+      'cursor: pointer'
+    ].join(';');
+
+    const img = document.createElement('img');
+    img.src = logoUrl;
+    img.alt = 'Mission Control';
+    img.style.cssText = 'height: 22px; width: auto; display: block; position: relative; top: 4px';
+    button.appendChild(img);
+
+    button.addEventListener('mouseenter', function() {
+      button.style.backgroundColor = 'rgba(255,255,255,0.1)';
+    });
+    button.addEventListener('mouseleave', function() {
+      button.style.backgroundColor = '';
+    });
+    return button;
+  }
+
+  function injectButton() {
+    if (document.getElementById(BUTTON_ID)) {
+      return;
+    }
+    const target = document.getElementById(TARGET_ID);
+    if (!target || !target.parentNode) {
+      return retryInjection();
+    }
+    target.parentNode.insertBefore(buildButton(), target);
+  }
+
+  function retryInjection() {
+    const observer = new MutationObserver(function() {
+      const target = document.getElementById(TARGET_ID);
+      if (target && target.parentNode && !document.getElementById(BUTTON_ID)) {
+        target.parentNode.insertBefore(buildButton(), target);
+        observer.disconnect();
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+})();
+</script>

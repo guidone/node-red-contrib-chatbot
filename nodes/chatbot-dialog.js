@@ -1,5 +1,5 @@
 const utils = require('../lib/helpers/utils');
-const _ = require('underscore');
+const _ = require('lodash');
 const RegisterType = require('../lib/node-installer');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 

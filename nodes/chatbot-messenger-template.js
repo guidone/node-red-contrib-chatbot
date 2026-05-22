@@ -1,4 +1,4 @@
-const _ = require('underscore');
+const _ = require('lodash');
 const MessageTemplate = require('../lib/message-template-async');
 const validators = require('../lib/helpers/validators');
 const RegisterType = require('../lib/node-installer');

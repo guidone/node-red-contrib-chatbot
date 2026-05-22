@@ -1,4 +1,4 @@
-const _ = require('underscore');
+const _ = require('lodash');
 const emoji = require('node-emoji');
 const { ChatExpress } = require('chat-platform');
 const RegisterType = require('../lib/node-installer');

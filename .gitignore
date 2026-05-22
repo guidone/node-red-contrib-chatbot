@@ -11,3 +11,5 @@ node_modules
 /.local-bots
 /.env
 .env-notion
+/.node-red-dev
+.claude/worktrees

@@ -1,5 +1,5 @@
-const _ = require('underscore');
-const moment = require('moment');
+const _ = require('lodash');
+const dayjs = require('dayjs');
 const { ContextProviders, ChatExpress } = require('chat-platform');
 const clc = require('cli-color');
 const prettyjson = require('prettyjson');
@@ -45,8 +45,6 @@ module.exports = function(RED) {
 
     this.botname = n.botname;
     this.store = n.store;
-    this.log = n.log;
-    this.usernames = n.usernames != null ? n.usernames.split(',') : [];
     this.webHook = n.webHook;
     this.debug = n.debug;
 
@@ -66,11 +64,9 @@ module.exports = function(RED) {
     var contextStorageNode = RED.nodes.getNode(this.store);
     // build the configuration object
     var botConfiguration = {
-      authorizedUsernames: node.usernames,
       token: node.credentials != null && node.credentials.token != null ? node.credentials.token.trim() : null,
       webHook: node.webHook,
       botname: node.botname,
-      logfile: node.log,
       contextProvider: contextStorageNode != null ? contextStorageNode.contextStorage : null,
       contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null,
       debug: node.debug
@@ -120,12 +116,10 @@ module.exports = function(RED) {
       try {
         node.contextProvider.start();
         node.chat = ViberServer.createServer({
-          authorizedUsernames: botConfiguration.authorizedUsernames,
           token: botConfiguration.token,
           webHook: botConfiguration.webHook,
           botname: botConfiguration.botname,
           contextProvider: node.contextProvider,
-          logfile: botConfiguration.logfile,
           debug: botConfiguration.debug,
           RED: RED
         });
@@ -285,7 +279,7 @@ module.exports = function(RED) {
         stack = stack.then(function() {
           return when(context.set({
             currentConversationNode: node.id,
-            currentConversationNode_at: moment()
+            currentConversationNode_at: dayjs().toISOString()
           }));
         });
       }

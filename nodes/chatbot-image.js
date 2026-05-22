@@ -1,4 +1,4 @@
-const _ = require('underscore');
+const _ = require('lodash');
 
 const MessageTemplate = require('../lib/message-template-async');
 const fetchers = require('../lib/helpers/fetchers-obj');
