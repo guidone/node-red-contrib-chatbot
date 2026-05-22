@@ -43,12 +43,6 @@
             + '  <option value="messageType">Message is type ...</option>'
             + '  <option value="notMessageType">Message is not type ...</option>'
             + '</optgroup>'
-            + '<optgroup label="Topic">'
-            + '  <option value="isTopicEmpty">Topic is not defined</option>'
-            + '  <option value="isNotTopic">Topic is not ...</option>'
-            + '  <option value="isTopic">Topic is ...</option>'
-            + '  <option value="topicIncludes">Topic includes ...</option>'
-            + '</optgroup>'
             + '<optgroup label="Chat context">'
             + '  <option value="hasNotVariable">Variable ... is not defined</option>'
             + '  <option value="hasVariable">Variable ... is defined</option>'
@@ -111,7 +105,6 @@
           .append('<span class="isVariable" style="display:none;">&nbsp;is&nbsp;</span>')
           .append('<input class="isVariable" style="display:none;width:25%;margin-left:0px;" type="text" name="variableValue" placeholder="Value"/>')
           .append('<input class="command commandStartsWith" style="display:none;width:50%;margin-left:10px;" type="text" name="command" placeholder="/command"/>')
-          .append('<input class="isNotTopic isTopic topicIncludes" style="display:none;width:40%;margin-left:10px;" type="text" name="topic" placeholder="Topic"/>')
           .append('<select class="environment" name="environment" style="display:none;width:40%;margin-left:10px;">'
             + '<option value="">Select environment</option>'
             + '<option value="production">production</option>'
@@ -204,9 +197,6 @@
         }
         if (rule.transport != null) {
           $('select[name=transport]', container).val(rule.transport);
-        }
-        if (rule.topic != null) {
-          $('input[name=topic]', container).val(rule.topic);
         }
         if (rule.command != null) {
           $('input[name=command]', container).val(rule.command);
@@ -303,9 +293,6 @@
             obj.variable = rule.find('input[name=variableName]').val();
             obj.value = rule.find('input[name=variableValue]').val();
           }
-          if (type === 'isNotTopic' || type === 'isTopic' || type === 'topicIncludes') {
-            obj.topic = rule.find('input[name=topic]').val();
-          }
           if (type === 'command' || type === 'commandStartsWith') {
             obj.command = rule.find('input[name=command]').val();
           }
@@ -375,8 +362,6 @@
         return 'Message is a command';
       } else if (rule.type === 'outbound') {
         return 'Message is outbound';
-      } else if (rule.type === 'isTopicEmpty') {
-        return 'Topic is not defined';
       } else if (rule.type === 'pending') {
         return 'Pending requests';
       } else if (rule.type === 'notPending') {
@@ -387,12 +372,6 @@
         return 'Trasport "' + ($.RedBot.validate.notEmpty(rule.transport) ? rule.transport : '...') + '" is available';
       } else if (rule.type === 'isTransportPreferred') {
         return 'Trasport "' + ($.RedBot.validate.notEmpty(rule.transport) ? rule.transport : '...') + '" is preferred';
-      } else if (rule.type === 'topicIncludes') {
-        return 'Topic includes "' + ($.RedBot.validate.notEmpty(rule.topic) ? rule.topic : '...') + '"';
-      } else if (rule.type === 'isNotTopic') {
-        return 'Topic is not "' + ($.RedBot.validate.notEmpty(rule.topic) ? rule.topic : '...') + '"';
-      } else if (rule.type === 'isTopic') {
-        return 'Topic is "' + ($.RedBot.validate.notEmpty(rule.topic) ? rule.topic : '...') + '"';
       } else if (rule.type === 'hasNotVariable') {
         return 'Variable "' + ($.RedBot.validate.notEmpty(rule.variable) ? rule.variable : '...') + '" is not defined';
       } else if (rule.type === 'isVariable') {
@@ -420,7 +399,7 @@
   </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-rules"><p><code>Rules node</code> is a multi-output node that allows to control the flow of the chatbot based on simple rules (for example <em>“The topic is myTopic”</em>, <em>“The context variable myVar is not defined”</em>). This node replace the <a href="https://www.notion.so/55036bad043447fd97b58f2a9e7365dd">Topic node</a>  that will deprecated soon.</p>
+<script type="text/x-red" data-help-name="chatbot-rules"><p><code>Rules node</code> is a multi-output node that allows to control the flow of the chatbot based on simple rules (for example <em>“The context variable myVar is not defined”</em>).</p>
 <p>The first rule that matches trigger the redirect of the incoming message to the related output and stops the chain of rules.</p>
 <p>This node is useful to create loops in the flow, for example to keep asking some questions to the user until a list of needed information (context variables) are filled.</p>
 <p>Rules can be created programmatically by an upstream <code>Function node</code> passing array of rules in the message payload:</p>
@@ -462,7 +441,7 @@ return msg;
 <tbody><tr>
 <td>type</td>
 <td>string</td>
-<td>Type of rule: <em>inbound</em>, <em>outbound</em>, <em>isTopicEmpty</em>, <em>catchAll</em>, <em>isNotTopic</em>, <em>isTopic</em>, <em>hasNotVariable</em>, <em>hasVariable</em>, <em>isVariable</em>, <em>command</em>, <em>messageType</em>, <em>notMessageType</em>, <em>transport</em>, <em>anyCommand</em>, <em>environment</em></td>
+<td>Type of rule: <em>inbound</em>, <em>outbound</em>, <em>catchAll</em>, <em>hasNotVariable</em>, <em>hasVariable</em>, <em>isVariable</em>, <em>command</em>, <em>messageType</em>, <em>notMessageType</em>, <em>transport</em>, <em>anyCommand</em>, <em>environment</em></td>
 </tr>
 <tr>
 <td>environment</td>
@@ -473,11 +452,6 @@ return msg;
 <td>transport</td>
 <td>string</td>
 <td>Match the transport type, can be <em>facebook</em>, <em>telegram</em>, <em>slack</em> or <em>smooch</em>. Required for type <em>transport</em></td>
-</tr>
-<tr>
-<td>topic</td>
-<td>string</td>
-<td>Match the rule if the flow topic matches/doesn’t match the specified topic. Required for <em>isNotTopic</em> and <em>isTopic</em></td>
 </tr>
 <tr>
 <td>variable</td>

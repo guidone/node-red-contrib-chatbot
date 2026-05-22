@@ -318,10 +318,6 @@
         return $.RedBot.validate.notEmpty(rule.language);
       case 'environment':
         return $.RedBot.validate.notEmpty(rule.environment);
-      case 'topicIncludes':
-      case 'isNotTopic':
-      case 'isTopic':
-        return $.RedBot.validate.notEmpty(rule.topic);
       case 'isVariable':
         return $.RedBot.validate.notEmpty(rule.value) && $.RedBot.validate.notEmpty(rule.variable);
       case 'hasNotVariable':
@@ -341,7 +337,6 @@
         return $.RedBot.validate.notEmpty(rule.event);
       case 'outbound':
       case 'inbound':
-      case 'isTopicEmpty':
       case 'catchAll':
       case 'pending':
       case 'notPending':

@@ -225,64 +225,9 @@ const Types = {
     });
   },
 
-  isTopicEmpty(rule, message) {
-    return new Promise(function(resolve, reject) {
-      var chatContext = message.chat();
-      when(chatContext.get('topic'))
-        .then(
-          function(topic) {
-            if (_.isEmpty(topic)) {
-              resolve(rule);
-            } else {
-              reject();
-            }
-          },
-          function() {
-            reject();
-          });
-    });
-
-  },
-
   catchAll(rule) {
     return new Promise(function (resolve) {
       resolve(rule);
-    });
-  },
-
-  isNotTopic(rule, message) {
-    return new Promise(function (resolve, reject) {
-      var chatContext = message.chat();
-      when(chatContext.get('topic'))
-        .then(
-          function (topic) {
-            if (topic !== rule.topic) {
-              resolve(rule);
-            } else {
-              reject();
-            }
-          },
-          function () {
-            reject();
-          });
-    });
-  },
-
-  isTopic(rule, message) {
-    return new Promise(function (resolve, reject) {
-      var chatContext = message.chat();
-      when(chatContext.get('topic'))
-        .then(
-          function (topic) {
-            if (topic === rule.topic) {
-              resolve(rule);
-            } else {
-              reject();
-            }
-          },
-          function () {
-            reject();
-          });
     });
   },
 
@@ -311,24 +256,6 @@ const Types = {
         .then(
           function (content) {
             if (content != null) {
-              resolve(rule);
-            } else {
-              reject();
-            }
-          },
-          function () {
-            reject();
-          });
-    });
-  },
-
-  topicIncludes(rule, message) {
-    return new Promise(function (resolve, reject) {
-      var chatContext = message.chat();
-      when(chatContext.get('topic'))
-        .then(
-          function (topic) {
-            if (topic.indexOf(rule.topic) !== -1 ) {
               resolve(rule);
             } else {
               reject();
