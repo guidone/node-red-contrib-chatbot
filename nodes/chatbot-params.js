@@ -1,4 +1,4 @@
-const _ = require('underscore');
+const _ = require('lodash');
 const RegisterType = require('../lib/node-installer');
 const {
   isValidMessage,

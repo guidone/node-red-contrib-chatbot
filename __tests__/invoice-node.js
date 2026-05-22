@@ -1,4 +1,4 @@
-const _ = require('underscore');
+const _ = require('lodash');
 const assert = require('chai').assert;
 const RED = require('../lib/red-stub')();
 const InvoiceBlock = require('../nodes/chatbot-invoice');

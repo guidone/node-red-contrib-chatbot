@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var _ = require('lodash');
 var assert = require('chai').assert;
 var RED = require('../lib/red-stub')();
 var ActionBlock = require('../nodes/chatbot-waiting');

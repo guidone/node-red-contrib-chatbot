@@ -1,4 +1,4 @@
-const _ = require('underscore');
+const _ = require('lodash');
 const { ChatExpress: ChatPlatform } = require('chat-platform');
 const RegisterType = require('../lib/node-installer');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
@@ -29,7 +29,7 @@ module.exports = function(RED) {
   // add an endpoint to get a list of context providers
   RED.httpNode.get('/redbot/context-providers', function(req, res) {
     var contextProviders = RED.settings.get('contextProviders');
-    res.send(_(contextProviders).map(function(obj, name) {
+    res.send(_.map(contextProviders, function(obj, name) {
       return {
         type: name,
         name: obj.prototype != null && !_.isEmpty(obj.prototype.name) ? obj.prototype.name : name,
@@ -62,9 +62,9 @@ module.exports = function(RED) {
       .filter(key => key.startsWith('chatbot_info_'))
       .map(key => globalContextHelper.get(key))
     // collect message types
-    result.messageTypes = _(ChatPlatform.getMessageTypes()).sortBy(type => type.label);
+    result.messageTypes = _.sortBy(ChatPlatform.getMessageTypes(), type => type.label);
     // collect events
-    result.eventTypes = _(ChatPlatform.getEvents()).sortBy(event => event.value);
+    result.eventTypes = _.sortBy(ChatPlatform.getEvents(), event => event.value);
     // collect params
     result.params = ChatPlatform.getParams();
     // add port
@@ -84,7 +84,7 @@ module.exports = function(RED) {
   RED.httpNode.get('/redbot/platforms/classes', function(req, res) {
     var platforms = ChatPlatform.getPlatforms();
     res.send({
-      platforms: _(platforms).filter(function(platform) {
+      platforms: _.filter(platforms, function(platform) {
         return !platform.universal;
       })
     });

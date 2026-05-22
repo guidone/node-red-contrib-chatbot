@@ -1,4 +1,4 @@
-const _ = require('underscore');
+const _ = require('lodash');
 
 const utils = require('../lib/helpers/utils');
 const helpers = require('../lib/helpers/regexps');
@@ -415,7 +415,7 @@ function executeRules(rules, message, global, current) {
     });
   }
 
-  var first = _(rules).first();
+  var first = _.first(rules);
   return new Promise(function(resolve, reject) {
     // rules doesn't exist
     if (!_.isFunction(Types[first.type])) {
@@ -430,7 +430,7 @@ function executeRules(rules, message, global, current) {
           resolve(rule);
         },
         function () {
-          var nextRules = _.rest(rules);
+          var nextRules = _.tail(rules);
           if (_.isEmpty(nextRules)) {
             reject();
           } else {
@@ -469,7 +469,7 @@ module.exports = function(RED) {
         .then(
           function(rule) {
             var result = new Array(rules.length);
-            result = _(result).map(function(value, idx) {
+            result = _.map(result, function(value, idx) {
               return idx === (rule.index - 1) ? msg : null
             });
             node.send(result);

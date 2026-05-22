@@ -1,4 +1,4 @@
-const _ = require('underscore');
+const _ = require('lodash');
 const Queue = require('better-queue');
 
 const RegisterType = require('../lib/node-installer');

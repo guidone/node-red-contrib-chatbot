@@ -1,4 +1,4 @@
-const _ = require('underscore');
+const _ = require('lodash');
 const dayjs = require('dayjs');
 const { UniversalPlatform: UniversalServer, ContextProviders, ChatExpress } = require('chat-platform');
 const clc = require('cli-color');
