@@ -48,6 +48,7 @@
       "chatbot-whatsapp-receive": "./nodes/chatbot-whatsapp-receive.js",
       "chatbot-whatsapp-template": "./nodes/chatbot-whatsapp-template.js",
       "chatbot-viber-receive": "./nodes/chatbot-viber-receive.js",
+      "chatbot-sinch-receive": "./nodes/chatbot-sinch-receive.js",
       "chatbot-message": "./nodes/chatbot-message.js",
       "chatbot-document": "./nodes/chatbot-document.js",
       "chatbot-video": "./nodes/chatbot-video.js",

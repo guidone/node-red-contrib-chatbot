@@ -1,0 +1,330 @@
+<script type="text/javascript">
+  $.RedBot.registerType('chatbot-sinch-node', {
+    category: 'config',
+    defaults: {
+      botname: {
+        value: '',
+        required: true
+      },
+      projectId: {
+        value: '',
+        required: true
+      },
+      appId: {
+        value: '',
+        required: true
+      },
+      region: {
+        value: 'us'
+      },
+      store: {
+        value: '',
+        type: 'chatbot-context-store',
+        required: false
+      },
+      debug: {
+        value: false
+      },
+      storeMessages: {
+        value: true
+      },
+      enableMissionControl: {
+        value: false
+      },
+      inspectMessages: {
+        value: true
+      },
+      chatbotId: {
+        value: ''
+      }
+    },
+    oneditprepare: function() {
+      var node = this;
+      var nodeRedUrl = $.RedBot.getNodeRedUrl();
+
+      $.get(nodeRedUrl + 'redbot/globals')
+        .done(function(response) {
+          if (response != null && response.sinch != null && response.sinch[node.botname] != null) {
+            $('#node-config-input-botname').prop('readonly', true);
+            $('.form-editable').hide();
+            $('.form-warning').show();
+            $('.form-warning .bot-name').html('"' + node.botname + '"');
+          }
+          if (!response.missionControl) {
+            $('.form-row-not-mission-control').show();
+            $('.form-row-mission-control').hide();
+            $('#node-config-input-enableMissionControl')
+              .prop('disabled', true)
+              .prop('checked', false);
+          }
+        });
+      $('#node-config-input-enableMissionControl')
+        .change(function() {
+          if ($(this).is(':checked')) {
+            $('.form-row-not-mission-control').hide();
+            $('.form-row-mission-control').show();
+          } else {
+            $('.form-row-not-mission-control').show();
+            $('.form-row-mission-control').hide();
+          }
+        });
+      $('#node-config-input-enableMissionControl')
+        .change(function() {
+          if ($(this).is(':checked')) {
+            var chatbotId = $('#node-config-input-chatbotId').val();
+            if (chatbotId == null || chatbotId === '') {
+              $.ajax({ url: '/mc/chatbotIdGenerator' })
+                .then(function(res) {
+                  $('#node-config-input-chatbotId').val(res);
+                });
+            }
+          }
+        });
+    },
+    paletteName: 'Sinch Bot',
+    credentials: {
+      keyId: {
+        type: 'text'
+      },
+      keySecret: {
+        type: 'password'
+      }
+    },
+    label: function () {
+      return this.botname;
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-sinch-node">
+  <div class="form-row">
+    <label for="node-config-input-botname"><i class="icon-bookmark"></i> Bot Name</label>
+    <input type="text" id="node-config-input-botname">
+  </div>
+  <div class="form-editable">
+    <div class="form-row">
+      <label for="node-config-input-projectId">Project ID</label>
+      <input type="text" id="node-config-input-projectId" placeholder="Sinch project id">
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-appId">App ID</label>
+      <input type="text" id="node-config-input-appId" placeholder="Conversation API app id">
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-keyId">Key ID</label>
+      <input type="text" id="node-config-input-keyId" placeholder="Access key client id">
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-keySecret">Key Secret</label>
+      <input type="password" id="node-config-input-keySecret" placeholder="Access key secret">
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-region">Region</label>
+      <select id="node-config-input-region" style="width:200px;">
+        <option value="us">United States (us)</option>
+        <option value="eu">Europe (eu)</option>
+        <option value="br">Brazil (br)</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-store">Context</label>
+      <input type="text" id="node-config-input-store" placeholder="Select storage for chat context">
+      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+        Select the chat context provider to use with this bot, if none is selected then non-persistent "memory" will be used.
+      </div>
+    </div>
+    <div class="form-row form-row-not-mission-control">
+      <label for="node-config-input-debug">Debug</label>
+      <input type="checkbox" value="true" id="node-config-input-debug">
+      <span class="redbot-form-hint">Show debug information on send/receive</span>
+    </div>
+    <div class="form-row form-row-mission-control" style="display:none;">
+      <label for="node-config-input-storeMessages">Store messages</label>
+      <input type="checkbox" value="true" id="node-config-input-storeMessages">
+      <span class="redbot-form-hint">Store inbound and outbound messages in Mission Control</span>
+    </div>
+    <div class="form-row form-row-mission-control" style="display:none;">
+      <label for="node-config-input-inspectMessages">Inspect messages</label>
+      <input type="checkbox" value="true" id="node-config-input-inspectMessages">
+      <span class="redbot-form-hint">Publish messages to the Mission Control inspector</span>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-enableMissionControl">Mission Control</label>
+      <input type="checkbox" value="true" id="node-config-input-enableMissionControl">
+      <span class="redbot-form-hint">Use Mission Control as the context provider</span>
+    </div>
+    <div class="form-row" style="display:none;">
+      <label for="node-config-input-chatbotId">Chatbot ID</label>
+      <input type="text" id="node-config-input-chatbotId">
+    </div>
+  </div>
+  <div class="form-warning" style="display:none;">
+    This bot configuration is stored in <b>Node-RED</b> <em>settings.js</em> and cannot be modified from the UI, check
+    the section <code>functionGlobalContext</code> near the key <em class="bot-name">""</em>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-sinch-node">
+  <p>Configuration node for a <strong>Sinch</strong> chatbot, using the Sinch Conversation API.</p>
+  <p>Required parameters:</p>
+  <ul>
+    <li><strong>Project ID</strong> — the Sinch project that owns the Conversation app.</li>
+    <li><strong>App ID</strong> — the Conversation API app id.</li>
+    <li><strong>Key ID</strong> / <strong>Key Secret</strong> — access key credentials used to obtain an OAuth2 token.</li>
+  </ul>
+  <p>Inbound messages are delivered to the route <code>/redbot/sinch</code> on this Node-RED instance. Configure that URL as the webhook for the Conversation API app in the Sinch dashboard.</p>
+</script>
+
+<script type="text/javascript">
+  $.RedBot.registerType('chatbot-sinch-receive', {
+    category: $.RedBot.config.name + ' Platforms',
+    color: '#FFCC66',
+    defaults: {
+      bot: {
+        value: '',
+        type: 'chatbot-sinch-node',
+        required: true
+      },
+      botProduction: {
+        value: '',
+        type: 'chatbot-sinch-node',
+        required: false
+      }
+    },
+    inputs: 0,
+    outputs: 1,
+    icon: 'sinch.svg',
+    paletteLabel: 'Sinch Receiver',
+    label: function () {
+      return 'Sinch Receiver';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-sinch-receive">
+  <div class="form-row">
+    <label for="node-input-bot" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(development)</span></label>
+    <input type="text" id="node-input-bot" placeholder="Bot">
+  </div>
+  <div class="form-row" style="margin-top:25px;">
+    <label for="node-input-botProduction" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(production)</span></label>
+    <input type="text" id="node-input-botProduction" placeholder="Bot">
+  </div>
+  <div class="redbot-form-hint">
+    Bot for <strong>production</strong> will be launched only if the global variable <em>"environment"</em> in <em>settings.js</em> is set to <em>"production"</em>, otherwise will be used the configuration for <strong>development</strong>.
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-sinch-receive">
+  <p>Input node for Sinch Conversation API. Emits inbound messages received on the configured webhook.</p>
+</script>
+
+<script type="text/javascript">
+  $.RedBot.registerType('chatbot-sinch-send', {
+    category: $.RedBot.config.name + ' Platforms',
+    color: '#FFCC66',
+    defaults: {
+      bot: {
+        value: '',
+        type: 'chatbot-sinch-node',
+        required: true
+      },
+      botProduction: {
+        value: '',
+        type: 'chatbot-sinch-node',
+        required: false
+      },
+      track: {
+        value: false
+      },
+      passThrough: {
+        value: false
+      },
+      errorOutput: {
+        value: false
+      },
+      outputs: {
+        value: 0
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'sinch.svg',
+    paletteLabel: 'Sinch Sender',
+    label: function () {
+      return 'Sinch Sender';
+    },
+    inputLabels: 'Chat flow',
+    outputLabels: function(idx) {
+      if (idx === 0 && this.track) {
+        return 'Track';
+      } else if (idx === 0 && this.passThrough) {
+        return 'Pass through';
+      } else if (idx === 1) {
+        return 'Error';
+      }
+    },
+    oneditprepare: function() {
+      $('#node-input-passThrough')
+        .click(function() {
+          if ($(this).is(':checked')) {
+            $('#node-input-track').prop('checked', false);
+          }
+        });
+      $('#node-input-track')
+        .click(function() {
+          if ($(this).is(':checked')) {
+            $('#node-input-passThrough').prop('checked', false);
+          }
+        });
+    },
+    oneditsave: function() {
+      var count = 0;
+      var track = $('#node-input-track').is(':checked');
+      var passThrough = $('#node-input-passThrough').is(':checked');
+      var errorOutput = $('#node-input-errorOutput').is(':checked');
+      if (track || passThrough) {
+        count = 1;
+      }
+      if (errorOutput) {
+        count += 1;
+      }
+      this.outputs = count;
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-sinch-send">
+  <div class="form-row">
+    <label for="node-input-bot" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(development)</span></label>
+    <input type="text" id="node-input-bot" placeholder="Bot">
+  </div>
+  <div class="form-row" style="margin-top:25px;">
+    <label for="node-input-botProduction" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(production)</span></label>
+    <input type="text" id="node-input-botProduction" placeholder="Bot">
+  </div>
+  <div class="redbot-form-hint">
+    Bot for <strong>production</strong> will be launched only if the global variable <em>"environment"</em> in <em>settings.js</em> is set to <em>"production"</em>, otherwise will be used the configuration for <strong>development</strong>.
+  </div>
+  <div class="form-row" style="margin-top:25px;">
+    <label for="node-input-track" style="margin-bottom:0px;">Track</label>
+    <input type="checkbox" value="true" id="node-input-track" style="margin-top:0px;width:auto;">
+    <div class="redbot-form-hint">
+      Track response of the user for this message: any further answer will be redirect to the output pin.
+    </div>
+    <label for="node-input-passThrough" style="margin-bottom:0px;margin-top:15px;">Pass Through</label>
+    <input type="checkbox" value="true" id="node-input-passThrough" style="margin-top:0px;width:auto;">
+    <div class="redbot-form-hint">
+      Forward the message to the output pin after sending (useful to chain messages and keep the right order)
+    </div>
+    <label for="node-input-errorOutput" style="margin-bottom:0px;margin-top:15px;">Error Output</label>
+    <input type="checkbox" value="true" id="node-input-errorOutput" style="margin-top:0px;width:auto;">
+    <div class="redbot-form-hint">
+      Redirect the flow to the error pin in case of platform specific error on sending the message
+    </div>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-sinch-send">
+  <p>Output node for Sinch Conversation API.</p>
+</script>
