@@ -27,6 +27,7 @@
 - [chatbot-request](nodes/chatbot-request.md)
 - [chatbot-rules](nodes/chatbot-rules.md)
 - [chatbot-rules](nodes/chatbot-rules.md)
+- [chatbot-sinch-node](nodes/chatbot-sinch-node.md)
 - [chatbot-slack-blocks](nodes/chatbot-slack-blocks.md)
 - [chatbot-slack-node](nodes/chatbot-slack-node.md)
 - [chatbot-sticker](nodes/chatbot-sticker.md)

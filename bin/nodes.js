@@ -1,5 +1,10 @@
 module.exports = [
     {
+    notionUrl: 'https://www.notion.so/redbot/Sinch-Receiver-node-36b499b2879a80e4a798c4963f388b66',
+    nodeFile: 'chatbot-sinch-receive.html',
+    nodeType: 'chatbot-sinch-node'
+  },
+  {
     notionUrl: 'https://www.notion.so/redbot/Whatsapp-Receiver-node-47c201b9b9e945fb909580bab9c31b87?source=copy_link',
     nodeFile: 'chatbot-whatsapp-receive.html',
     nodeType: 'chatbot-whatsapp-receive'
