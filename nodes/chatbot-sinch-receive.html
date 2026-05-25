@@ -326,5 +326,27 @@
 </script>
 
 <script type="text/x-red" data-help-name="chatbot-sinch-send">
-  <p>Output node for Sinch Conversation API.</p>
+  <p>Output node for Sinch Conversation API. Sends text, location and media (photo, video, document, audio via public URL) messages.</p>
+  <h4>Parameters</h4>
+  <ul>
+    <li><strong>Channel priority order</strong> (<code>channelPriorityOrder</code>) — comma-separated list of channels in priority order (e.g. <code>TELEGRAM,SMS</code>). Sinch attempts delivery on the first channel; if that channel is unavailable for the contact, it falls back to the next. Maps to the Conversation API field <code>channel_priority_order</code>.</li>
+  </ul>
+  <h4>Available channels</h4>
+  <p>From the Sinch <a href="https://developers.sinch.com/docs/conversation/channel-support/">Conversation API channel support</a> documentation:</p>
+  <ul>
+    <li><code>WHATSAPP</code> — WhatsApp Business</li>
+    <li><code>RCS</code> — Rich Communication Services</li>
+    <li><code>SMS</code></li>
+    <li><code>MMS</code></li>
+    <li><code>MESSENGER</code> — Facebook Messenger</li>
+    <li><code>VIBER</code> — Viber consumer</li>
+    <li><code>VIBERBM</code> — Viber Business Messages</li>
+    <li><code>KAKAOTALK</code> — KakaoTalk Notification Talk / Friend Talk</li>
+    <li><code>KAKAOTALKCHAT</code> — KakaoTalk Chat</li>
+    <li><code>LINE</code></li>
+    <li><code>WECHAT</code></li>
+    <li><code>TELEGRAM</code></li>
+    <li><code>INSTAGRAM</code></li>
+    <li><code>APPLEBC</code> — Apple Messages for Business</li>
+  </ul>
 </script>
