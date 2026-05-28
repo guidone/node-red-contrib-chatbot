@@ -63,7 +63,6 @@
       "chatbot-request": "./nodes/chatbot-request.js",
       "chatbot-qrcode": "./nodes/chatbot-qrcode.js",
       "chatbot-conversation": "./nodes/chatbot-conversation.js",
-      "chatbot-debug": "./nodes/chatbot-debug.js",
       "chatbot-waiting": "./nodes/chatbot-waiting.js",
       "chatbot-messenger-menu": "./nodes/chatbot-messenger-menu.js",
       "chatbot-messenger-template": "./nodes/chatbot-messenger-template.js",
