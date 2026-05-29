@@ -1,0 +1,427 @@
+<script type="text/javascript">
+  $.RedBot.registerType('chatbot-sinch-node', {
+    category: 'config',
+    defaults: {
+      botname: {
+        value: '',
+        required: true
+      },
+      projectId: {
+        value: '',
+        required: true
+      },
+      appId: {
+        value: '',
+        required: true
+      },
+      region: {
+        value: 'us'
+      },
+      store: {
+        value: '',
+        type: 'chatbot-context-store',
+        required: false
+      },
+      debug: {
+        value: false
+      },
+      storeMessages: {
+        value: true
+      },
+      enableMissionControl: {
+        value: false
+      },
+      inspectMessages: {
+        value: true
+      },
+      chatbotId: {
+        value: ''
+      }
+    },
+    oneditprepare: function() {
+      var node = this;
+      var nodeRedUrl = $.RedBot.getNodeRedUrl();
+
+      $.get(nodeRedUrl + 'redbot/globals')
+        .done(function(response) {
+          if (response != null && response.sinch != null && response.sinch[node.botname] != null) {
+            $('#node-config-input-botname').prop('readonly', true);
+            $('.form-editable').hide();
+            $('.form-warning').show();
+            $('.form-warning .bot-name').html('"' + node.botname + '"');
+          }
+          if (!response.missionControl) {
+            $('.form-row-not-mission-control').show();
+            $('.form-row-mission-control').hide();
+            $('#node-config-input-enableMissionControl')
+              .prop('disabled', true)
+              .prop('checked', false);
+          }
+        });
+      $('#node-config-input-enableMissionControl')
+        .change(function() {
+          if ($(this).is(':checked')) {
+            $('.form-row-not-mission-control').hide();
+            $('.form-row-mission-control').show();
+          } else {
+            $('.form-row-not-mission-control').show();
+            $('.form-row-mission-control').hide();
+          }
+        });
+      $('#node-config-input-enableMissionControl')
+        .change(function() {
+          if ($(this).is(':checked')) {
+            var chatbotId = $('#node-config-input-chatbotId').val();
+            if (chatbotId == null || chatbotId === '') {
+              $.ajax({ url: '/mc/chatbotIdGenerator' })
+                .then(function(res) {
+                  $('#node-config-input-chatbotId').val(res);
+                });
+            }
+          }
+        });
+    },
+    paletteName: 'Sinch Bot',
+    credentials: {
+      keyId: {
+        type: 'text'
+      },
+      keySecret: {
+        type: 'password'
+      }
+    },
+    label: function () {
+      return this.botname;
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-sinch-node">
+  <div class="form-row">
+    <label for="node-config-input-botname"><i class="icon-bookmark"></i> Bot Name</label>
+    <input type="text" id="node-config-input-botname">
+  </div>
+  <div class="form-editable">
+    <div class="form-row">
+      <label for="node-config-input-projectId">Project ID</label>
+      <input type="text" id="node-config-input-projectId" placeholder="Sinch project id">
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-appId">App ID</label>
+      <input type="text" id="node-config-input-appId" placeholder="Conversation API app id">
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-keyId">Key ID</label>
+      <input type="text" id="node-config-input-keyId" placeholder="Access key client id">
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-keySecret">Key Secret</label>
+      <input type="password" id="node-config-input-keySecret" placeholder="Access key secret">
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-region">Region</label>
+      <select id="node-config-input-region" style="width:200px;">
+        <option value="us">United States (us)</option>
+        <option value="eu">Europe (eu)</option>
+        <option value="br">Brazil (br)</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-store">Context</label>
+      <input type="text" id="node-config-input-store" placeholder="Select storage for chat context">
+      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+        Select the chat context provider to use with this bot, if none is selected then non-persistent "memory" will be used.
+      </div>
+    </div>
+    <div class="form-row form-row-not-mission-control">
+      <label for="node-config-input-debug">Debug</label>
+      <input type="checkbox" value="true" id="node-config-input-debug">
+      <span class="redbot-form-hint">Show debug information on send/receive</span>
+    </div>
+    <div class="form-row form-row-mission-control" style="display:none;">
+      <label for="node-config-input-storeMessages">Store messages</label>
+      <input type="checkbox" value="true" id="node-config-input-storeMessages">
+      <span class="redbot-form-hint">Store inbound and outbound messages in Mission Control</span>
+    </div>
+    <div class="form-row form-row-mission-control" style="display:none;">
+      <label for="node-config-input-inspectMessages">Inspect messages</label>
+      <input type="checkbox" value="true" id="node-config-input-inspectMessages">
+      <span class="redbot-form-hint">Publish messages to the Mission Control inspector</span>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-enableMissionControl">Mission Control</label>
+      <input type="checkbox" value="true" id="node-config-input-enableMissionControl">
+      <span class="redbot-form-hint">Use Mission Control as the context provider</span>
+    </div>
+    <div class="form-row" style="display:none;">
+      <label for="node-config-input-chatbotId">Chatbot ID</label>
+      <input type="text" id="node-config-input-chatbotId">
+    </div>
+  </div>
+  <div class="form-warning" style="display:none;">
+    This bot configuration is stored in <b>Node-RED</b> <em>settings.js</em> and cannot be modified from the UI, check
+    the section <code>functionGlobalContext</code> near the key <em class="bot-name">""</em>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-sinch-node"><p><strong>Sinch Conversation API</strong> talks to <strong>RedBot</strong> via an HTTPS callback (a self-signed certificate is not enough). We&#39;ll use <a href="https://ngrok.com/">ngrok</a> to create an HTTPS tunnel for our local <strong>Node-RED</strong> instance. Install it, then open a shell window and run</p>
+<pre><code class="language-bash">ngrok http 127.0.0.1:1880
+</code></pre>
+<p>You should get an HTTPS address like <a href="https://123123.ngrok.io/"><em>https://123123.ngrok.io</em></a> — this is the base URL that points back to your <strong>Node-RED</strong> instance.</p>
+<p>The callback is</p>
+<pre><code class="language-plain">&lt;https://youraddress.ngrok.io/redbot/sinch&gt;
+</code></pre>
+<p>You can verify your <strong>Node-RED</strong> instance is reachable by opening</p>
+<pre><code class="language-plain">&lt;https://youraddress.ngrok.io/redbot/sinch/test&gt;
+</code></pre>
+<p>If you get an <em>&quot;ok&quot;</em> then <strong>Node-RED</strong> is up and running and Sinch can reach it.</p>
+<h2 id="create-a-sinch-conversation-api-app">Create a Sinch Conversation API app</h2>
+<p>Sign in (or sign up) at the <a href="https://dashboard.sinch.com/">Sinch Customer Dashboard</a>. Once inside the dashboard:</p>
+<ol>
+<li><p>Pick the project you want to use (or create a new one). Open the project <em>Overview</em> and copy the <strong>Project ID</strong> — it&#39;s a UUID like <code>abc12345-6789-...</code>. You&#39;ll need it later in the <code>Sinch Receiver</code> configuration.</p>
+</li>
+<li><p>From the left sidebar go to <strong>Conversation API → Apps</strong> and click <strong>New app</strong>. Give the app a name, choose the region you want to deploy in (United States, Europe or Brazil — pick the one closest to your users) and create it. Open the newly created app and copy the <strong>App ID</strong>.</p>
+</li>
+<li><p>Still inside the app, go to the <strong>Channels</strong> (or <em>Integrations</em>) tab and connect every channel you want to use (SMS, WhatsApp, Telegram, Messenger, RCS, Viber, …). Each channel has its own onboarding flow — follow the instructions in the Sinch documentation for the channel you need.</p>
+</li>
+</ol>
+<h2 id="create-the-access-key-key-id--key-secret">Create the Access Key (Key ID / Key Secret)</h2>
+<p>The Conversation API uses OAuth2 <em>client credentials</em>. You generate a key pair from your Sinch account, not from the app itself.</p>
+<ol start="4">
+<li><p>In the dashboard, open <strong>Settings → Access keys</strong> (top-right user menu, or the project <em>Settings</em> section).</p>
+</li>
+<li><p>Click <strong>Create new key</strong>. Give it a label (e.g. <em>&quot;RedBot dev&quot;</em>) and confirm.</p>
+</li>
+<li><p>Sinch will show you the <strong>Key ID</strong> and the <strong>Key Secret</strong> <em>only once</em> — copy both immediately and store them somewhere safe. If you lose the secret you&#39;ll have to generate a new key.</p>
+</li>
+</ol>
+<blockquote>
+<p>The Key ID and Key Secret are credentials at the <em>project</em> level: a single key pair can be used by multiple Conversation API apps inside the same project.</p>
+</blockquote>
+<h2 id="configure-the-webhook">Configure the webhook</h2>
+<p>Back in the Conversation API app (<strong>Conversation API → Apps →</strong> <em><strong>your app</strong></em>):</p>
+<ol start="7">
+<li><p>Open the <strong>Webhooks</strong> section and click <strong>New webhook</strong> (or <em>Add webhook</em>).</p>
+</li>
+<li><p>Set the <strong>Target URL</strong> to the ngrok address you grabbed earlier, ending with <code>/redbot/sinch</code>, e.g.</p>
+<pre><code class="language-plain">&lt;https://123123.ngrok.io/redbot/sinch&gt;
+</code></pre>
+</li>
+<li><p>Under <strong>Triggers</strong>, enable at least <code>MESSAGE_INBOUND</code> so that messages coming from end users are delivered to RedBot. You can also enable <code>MESSAGE_DELIVERY</code>, <code>EVENT_INBOUND</code>, <code>EVENT_DELIVERY</code>, <code>CONVERSATION_START</code> and <code>CONVERSATION_STOP</code> if your flow needs them.</p>
+</li>
+<li><p>Save the webhook.</p>
+</li>
+</ol>
+<blockquote>
+<p>If you change the ngrok address (which happens every time you restart ngrok on the free plan), remember to update the webhook target URL accordingly.</p>
+</blockquote>
+<h2 id="configure-the-node-in-node-red">Configure the node in Node-RED</h2>
+<p>Open <strong>Node-RED</strong>, drop and connect a <code>Sinch Receiver</code> node, a <code>Text</code> node and a <code>Sinch Sender</code> node:</p>
+<pre><code class="language-plain">[ Sinch Receiver ] → [ Text ] → [ Sinch Sender ]
+</code></pre>
+<p>Configure the <code>Text</code> node with something like <em>&quot;Hello world!&quot;</em>, then double-click the <code>Sinch Receiver</code> and create a new bot configuration using the values you saved earlier:</p>
+<ul>
+<li><p><strong>Project ID</strong> — the Sinch project that owns the Conversation API app.</p>
+</li>
+<li><p><strong>App ID</strong> — the Conversation API app id.</p>
+</li>
+<li><p><strong>Key ID</strong> / <strong>Key Secret</strong> — the access key pair you generated.</p>
+</li>
+<li><p><strong>Region</strong> — must match the region of the Conversation API app (<code>us</code>, <code>eu</code> or <code>br</code>).</p>
+</li>
+</ul>
+<p>Select the same bot configuration in the <code>Sinch Sender</code> node, then deploy.</p>
+<p>Send a message from any connected channel to your Sinch app — you should get <em>&quot;Hello world!&quot;</em> back on the same channel.</p>
+<h2 id="channel-priority-order">Channel priority order</h2>
+<p>The <code>Sinch Sender</code> node exposes the <code>channelPriorityOrder</code> parameter, which maps to the Conversation API field <code>channel_priority_order</code>. It&#39;s a comma-separated list of channels the platform should try, in order, when delivering an outbound message (e.g. <em>&quot;try Telegram first, fall back to SMS&quot;</em>).</p>
+<pre><code class="language-plain">TELEGRAM,SMS
+</code></pre>
+<p>Valid channel codes: <code>WHATSAPP</code>, <code>RCS</code>, <code>SMS</code>, <code>MMS</code>, <code>MESSENGER</code>, <code>VIBER</code>, <code>VIBERBM</code>, <code>KAKAOTALK</code>, <code>KAKAOTALKCHAT</code>, <code>LINE</code>, <code>WECHAT</code>, <code>TELEGRAM</code>, <code>INSTAGRAM</code>, <code>APPLEBC</code>. See the <a href="https://developers.sinch.com/docs/conversation/channel-support/">Sinch channel support</a> docs for the full list.</p>
+<h2 id="development-vs-production">Development vs Production</h2>
+<p><code>Sinch Receiver</code> and <code>Sinch Sender</code> nodes have a double bot configuration for <em>development</em> and <em>production</em>. By default the <em>development</em> configuration is used. To switch to <em>production</em>, edit the <strong>Node-RED</strong> settings file (<code>settings.js</code>) and set the <code>environment</code> global variable to <code>&quot;production&quot;</code>. See <a href="https://www.notion.so/c0c2de46b48a4def837753c7e284b356">Deploying RedBot</a> for more details.</p>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<ul>
+<li><p><strong>No inbound messages reach Node-RED</strong> — open <code>https://youraddress.ngrok.io/redbot/sinch/test</code> in a browser. If you don&#39;t get <code>ok</code>, ngrok or Node-RED isn&#39;t reachable. If you do get <code>ok</code> but messages still don&#39;t arrive, double-check that the webhook in the Sinch dashboard points to <code>/redbot/sinch</code> (not <code>/redbot/sinch/test</code>) and that the <code>MESSAGE_INBOUND</code> trigger is enabled.</p>
+</li>
+<li><p><strong>Sinch auth failed (401)</strong> — the Key ID / Key Secret are wrong or have been revoked. Generate a new access key and update the node configuration.</p>
+</li>
+<li><p><strong>Sinch API /messages:send failed (403 / 404)</strong> — the App ID doesn&#39;t belong to the project (Project ID) you configured, or the region of the app doesn&#39;t match the region selected in the node.</p>
+</li>
+</ul>
+</script>
+
+<script type="text/javascript">
+  $.RedBot.registerType('chatbot-sinch-receive', {
+    category: $.RedBot.config.name + ' Platforms',
+    color: '#FFCC66',
+    defaults: {
+      bot: {
+        value: '',
+        type: 'chatbot-sinch-node',
+        required: true
+      },
+      botProduction: {
+        value: '',
+        type: 'chatbot-sinch-node',
+        required: false
+      }
+    },
+    inputs: 0,
+    outputs: 1,
+    icon: 'sinch.svg',
+    paletteLabel: 'Sinch Receiver',
+    label: function () {
+      return 'Sinch Receiver';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-sinch-receive">
+  <div class="form-row">
+    <label for="node-input-bot" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(development)</span></label>
+    <input type="text" id="node-input-bot" placeholder="Bot">
+  </div>
+  <div class="form-row" style="margin-top:25px;">
+    <label for="node-input-botProduction" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(production)</span></label>
+    <input type="text" id="node-input-botProduction" placeholder="Bot">
+  </div>
+  <div class="redbot-form-hint">
+    Bot for <strong>production</strong> will be launched only if the global variable <em>"environment"</em> in <em>settings.js</em> is set to <em>"production"</em>, otherwise will be used the configuration for <strong>development</strong>.
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-sinch-receive">
+  <p>Input node for Sinch Conversation API. Emits inbound messages received on the configured webhook.</p>
+</script>
+
+<script type="text/javascript">
+  $.RedBot.registerType('chatbot-sinch-send', {
+    category: $.RedBot.config.name + ' Platforms',
+    color: '#FFCC66',
+    defaults: {
+      bot: {
+        value: '',
+        type: 'chatbot-sinch-node',
+        required: true
+      },
+      botProduction: {
+        value: '',
+        type: 'chatbot-sinch-node',
+        required: false
+      },
+      track: {
+        value: false
+      },
+      passThrough: {
+        value: false
+      },
+      errorOutput: {
+        value: false
+      },
+      outputs: {
+        value: 0
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'sinch.svg',
+    paletteLabel: 'Sinch Sender',
+    label: function () {
+      return 'Sinch Sender';
+    },
+    inputLabels: 'Chat flow',
+    outputLabels: function(idx) {
+      if (idx === 0 && this.track) {
+        return 'Track';
+      } else if (idx === 0 && this.passThrough) {
+        return 'Pass through';
+      } else if (idx === 1) {
+        return 'Error';
+      }
+    },
+    oneditprepare: function() {
+      $('#node-input-passThrough')
+        .click(function() {
+          if ($(this).is(':checked')) {
+            $('#node-input-track').prop('checked', false);
+          }
+        });
+      $('#node-input-track')
+        .click(function() {
+          if ($(this).is(':checked')) {
+            $('#node-input-passThrough').prop('checked', false);
+          }
+        });
+    },
+    oneditsave: function() {
+      var count = 0;
+      var track = $('#node-input-track').is(':checked');
+      var passThrough = $('#node-input-passThrough').is(':checked');
+      var errorOutput = $('#node-input-errorOutput').is(':checked');
+      if (track || passThrough) {
+        count = 1;
+      }
+      if (errorOutput) {
+        count += 1;
+      }
+      this.outputs = count;
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-sinch-send">
+  <div class="form-row">
+    <label for="node-input-bot" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(development)</span></label>
+    <input type="text" id="node-input-bot" placeholder="Bot">
+  </div>
+  <div class="form-row" style="margin-top:25px;">
+    <label for="node-input-botProduction" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(production)</span></label>
+    <input type="text" id="node-input-botProduction" placeholder="Bot">
+  </div>
+  <div class="redbot-form-hint">
+    Bot for <strong>production</strong> will be launched only if the global variable <em>"environment"</em> in <em>settings.js</em> is set to <em>"production"</em>, otherwise will be used the configuration for <strong>development</strong>.
+  </div>
+  <div class="form-row" style="margin-top:25px;">
+    <label for="node-input-track" style="margin-bottom:0px;">Track</label>
+    <input type="checkbox" value="true" id="node-input-track" style="margin-top:0px;width:auto;">
+    <div class="redbot-form-hint">
+      Track response of the user for this message: any further answer will be redirect to the output pin.
+    </div>
+    <label for="node-input-passThrough" style="margin-bottom:0px;margin-top:15px;">Pass Through</label>
+    <input type="checkbox" value="true" id="node-input-passThrough" style="margin-top:0px;width:auto;">
+    <div class="redbot-form-hint">
+      Forward the message to the output pin after sending (useful to chain messages and keep the right order)
+    </div>
+    <label for="node-input-errorOutput" style="margin-bottom:0px;margin-top:15px;">Error Output</label>
+    <input type="checkbox" value="true" id="node-input-errorOutput" style="margin-top:0px;width:auto;">
+    <div class="redbot-form-hint">
+      Redirect the flow to the error pin in case of platform specific error on sending the message
+    </div>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-sinch-send">
+  <p>Output node for Sinch Conversation API. Sends text, location and media (photo, video, document, audio via public URL) messages.</p>
+  <h4>Parameters</h4>
+  <ul>
+    <li><strong>Channel priority order</strong> (<code>channelPriorityOrder</code>) — comma-separated list of channels in priority order (e.g. <code>TELEGRAM,SMS</code>). Sinch attempts delivery on the first channel; if that channel is unavailable for the contact, it falls back to the next. Maps to the Conversation API field <code>channel_priority_order</code>.</li>
+  </ul>
+  <h4>Available channels</h4>
+  <p>From the Sinch <a href="https://developers.sinch.com/docs/conversation/channel-support/">Conversation API channel support</a> documentation:</p>
+  <ul>
+    <li><code>WHATSAPP</code> — WhatsApp Business</li>
+    <li><code>RCS</code> — Rich Communication Services</li>
+    <li><code>SMS</code></li>
+    <li><code>MMS</code></li>
+    <li><code>MESSENGER</code> — Facebook Messenger</li>
+    <li><code>VIBER</code> — Viber consumer</li>
+    <li><code>VIBERBM</code> — Viber Business Messages</li>
+    <li><code>KAKAOTALK</code> — KakaoTalk Notification Talk / Friend Talk</li>
+    <li><code>KAKAOTALKCHAT</code> — KakaoTalk Chat</li>
+    <li><code>LINE</code></li>
+    <li><code>WECHAT</code></li>
+    <li><code>TELEGRAM</code></li>
+    <li><code>INSTAGRAM</code></li>
+    <li><code>APPLEBC</code> — Apple Messages for Business</li>
+  </ul>
+</script>

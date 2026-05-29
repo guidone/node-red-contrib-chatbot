@@ -1,5 +1,10 @@
 module.exports = [
     {
+    notionUrl: 'https://www.notion.so/redbot/Sinch-Receiver-node-36b499b2879a80e4a798c4963f388b66',
+    nodeFile: 'chatbot-sinch-receive.html',
+    nodeType: 'chatbot-sinch-node'
+  },
+  {
     notionUrl: 'https://www.notion.so/redbot/Whatsapp-Receiver-node-47c201b9b9e945fb909580bab9c31b87?source=copy_link',
     nodeFile: 'chatbot-whatsapp-receive.html',
     nodeType: 'chatbot-whatsapp-receive'
@@ -53,11 +58,6 @@ module.exports = [
     notionUrl: 'https://www.notion.so/redbot/Conversation-node-1d90a6e8dfc448d6865c88358c459de2',
     nodeFile: 'chatbot-conversation.html',
     nodeType: 'chatbot-conversation'
-  },
-  {
-    notionUrl: 'https://www.notion.so/redbot/Debug-node-d768699fac104d0580f14268afa1e53f',
-    nodeFile: 'chatbot-debug.html',
-    nodeType: 'chatbot-debug'
   },
   {
     notionUrl: 'https://www.notion.so/redbot/Request-node-df78ffeae16d40238f672fbc447ba69e',
