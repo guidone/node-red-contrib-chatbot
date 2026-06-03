@@ -4,6 +4,11 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g. 1.2.5, patch, minor, major)'
+        required: true
+        default: 'patch'
 
 permissions:
   id-token: write  # Required for OIDC
@@ -32,7 +37,7 @@ jobs:
           git config --global user.name "Guido Bellomo"
           git add .
           git commit -m "build"
-          npm version ${{ github.ref_name }} 
+          npm version ${{ github.event.inputs.version || github.ref_name }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Push changes to repository
