@@ -17,7 +17,7 @@ For the last two templates it’s not available an advanced UI, just a JSON edit
 
 Two _generic templates_ can be combined together in a carousel by simply chaining `Messenger Template node` (to maximum of 10). Each template can have a maximum of 3 buttons, `title` and `subtitle` are limited to 80 chars.
 
-_Generic templates_ and _button template_ can have up to 3 buttons, see [Buttons node](https://www.notion.so/b8f3ea33948049cca7b94491061183f4)  for a complete list of available buttons (only `quick-reply` and `location` are not available here).
+_Generic templates_ and _button template_ can have up to 3 buttons, see [Buttons node](https://app.notion.com/p/b8f3ea33948049cca7b94491061183f4)  for a complete list of available buttons (only `quick-reply` and `location` are not available here).
 
 In order to create a generic template in a upstream `Function node`
 
@@ -72,27 +72,27 @@ msg.payload = {
 }
 ```
 
-Some additional parameters can like _shareable_ or _aspectRatio_ can be defined using the [Params node](https://www.notion.so/d8b27db3949c475184923af913563833) .
+Some additional parameters can like _shareable_ or _aspectRatio_ can be defined using the [Params node](https://app.notion.com/p/d8b27db3949c475184923af913563833) .
 
 Available parameters for the `msg.payload`
 
-| Name         | Type              | Description                                                                                                                                      |
-| ------------ | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| templateType | string            | Could be: _generic_, _button_, _customer_feedback_, _media_ or _product_                                                                         |
-| title        | string            | Title of the list element (for _generic_ templates)                                                                                              |
-| subtitle     | string            | Sub title of the list element (for _generic_ templates)                                                                                          |
-| imageUrl     | string            | Url of the image element (for _generic_ templates)                                                                                               |
-| buttons      | array of [button] | Array of buttons, see [Untitled](https://www.notion.so/b8f3ea33948049cca7b94491061183f4)  for more details (for _generic_ or _button_ templates) |
-| mediaUrl     | string            | Url of the media element (for _media_ templates)                                                                                                 |
-| mediaType    | string            | Type of media element, can be _video_ or _image_ (for _media_ templates)                                                                         |
-| attachmentId | string            | Facebook attachment id (for _media_ templates)                                                                                                   |
-| productId    | stgring           | Facebook product id (for _product_ templates)                                                                                                    |
+| Name         | Type              | Description                                                                                                                                         |
+| ------------ | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| templateType | string            | Could be: _generic_, _button_, _customer_feedback_, _media_ or _product_                                                                            |
+| title        | string            | Title of the list element (for _generic_ templates)                                                                                                 |
+| subtitle     | string            | Sub title of the list element (for _generic_ templates)                                                                                             |
+| imageUrl     | string            | Url of the image element (for _generic_ templates)                                                                                                  |
+| buttons      | array of [button] | Array of buttons, see [Untitled](https://app.notion.com/p/b8f3ea33948049cca7b94491061183f4)  for more details (for _generic_ or _button_ templates) |
+| mediaUrl     | string            | Url of the media element (for _media_ templates)                                                                                                    |
+| mediaType    | string            | Type of media element, can be _video_ or _image_ (for _media_ templates)                                                                            |
+| attachmentId | string            | Facebook attachment id (for _media_ templates)                                                                                                      |
+| productId    | stgring           | Facebook product id (for _product_ templates)                                                                                                       |
 
 The `[element]` object|
 
-| Name     | Type              | Description                                                                                                |
-| -------- | ----------------- | ---------------------------------------------------------------------------------------------------------- |
-| title    | string            | Title of the generic template element                                                                      |
-| subtitle | string            | Sub title of the generic template element                                                                  |
-| imageUrl | string            | Url of the generic template image                                                                          |
-| buttons  | array of [button] | Array of buttons, see [Untitled](https://www.notion.so/b8f3ea33948049cca7b94491061183f4)  for more details |
+| Name     | Type              | Description                                                                                                   |
+| -------- | ----------------- | ------------------------------------------------------------------------------------------------------------- |
+| title    | string            | Title of the generic template element                                                                         |
+| subtitle | string            | Sub title of the generic template element                                                                     |
+| imageUrl | string            | Url of the generic template image                                                                             |
+| buttons  | array of [button] | Array of buttons, see [Untitled](https://app.notion.com/p/b8f3ea33948049cca7b94491061183f4)  for more details |

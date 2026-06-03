@@ -1,7 +1,7 @@
 
 Inline mode allows the user to query a chatbot from a different chat, it’s a powerful tool to make your chatbot go viral, read more [here](https://core.telegram.org/bots/inline).
 
-Every query invoked with a line like `@mychatbot how are you?` are routed through the [Telegram Receiver node](https://www.notion.so/4132ce6c78dc4dbbab0fe9eb7e1c3c9b)  as a message of type `inline-query`, it will look like
+Every query invoked with a line like `@mychatbot how are you?` are routed through the [Telegram Receiver node](https://app.notion.com/p/4132ce6c78dc4dbbab0fe9eb7e1c3c9b)  as a message of type `inline-query`, it will look like
 
 ```javascript
 {

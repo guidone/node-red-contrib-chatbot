@@ -1,7 +1,7 @@
 
 Trigger a special request button in _Facebook Messenger_ or _Telegram_ client, like current position or phone number (only for _Telegram_).
 
-With _Facebook Messenger_ it’s also possible to use [Quick Replies node](https://www.notion.so/200e9ae1a1fd459baa29c76d6a4025e2)  to ask the current position of the user.
+With _Facebook Messenger_ it’s also possible to use [Quick Replies node](https://app.notion.com/p/200e9ae1a1fd459baa29c76d6a4025e2)  to ask the current position of the user.
 
 The parameters for the `Request node` can be defined in a upstream `Function node`, for example
 

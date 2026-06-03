@@ -21,13 +21,13 @@ Platform exceptions:
 
 - **Facebook** supports some extra parameters in the `URL` button, like the size of the web view and [messenger extensions](https://developers.facebook.com/docs/messenger-platform/webview) and a maximum od three buttons.
 
-The tipical use of the buttons node is with the _Track_ option of a `Sender node` and [Rules node](https://www.notion.so/4113636f565d4ff4af08bc61a644206b) to capture the aswer
+The tipical use of the buttons node is with the _Track_ option of a `Sender node` and [Rules node](https://app.notion.com/p/4113636f565d4ff4af08bc61a644206b) to capture the aswer
 
 ![Track answer in the Sender node](./docs/assets/fe9082ffcef93ddf.png)
 
  
 
-In this example the `Buttons node` includes two postback buttons wiht a _label_ (it’s the label of the button) and a _value_ (it’s what will be sent back to the chatbot if clicked). The values can be anything but it’s a good habit to use Telegram-like commands, i.e. `/option1` and `/option2`, the reason for this is that they don’t interfere with user-generated sentences and can be easily filtered by a [Rules node](https://www.notion.so/4113636f565d4ff4af08bc61a644206b).
+In this example the `Buttons node` includes two postback buttons wiht a _label_ (it’s the label of the button) and a _value_ (it’s what will be sent back to the chatbot if clicked). The values can be anything but it’s a good habit to use Telegram-like commands, i.e. `/option1` and `/option2`, the reason for this is that they don’t interfere with user-generated sentences and can be easily filtered by a [Rules node](https://app.notion.com/p/4113636f565d4ff4af08bc61a644206b).
 The `Sender node` uses the Track option, the answer will be captured and sent to the Rules node which can capture one of the possible answers with a rule _“Message is command …”._
 
 The _“Track message”_ option enables a more readable layout to handle user’s answers:

@@ -35,7 +35,7 @@ When the _Block_ is ready, just copy and paste the JSON in the `Slack Blocks nod
 
 In any part of the JSON is also possible to use the chat context variables.
 
-For interactive _Blocks_ the result of the user interactions is sent to the chatbot as a `response` type message (like [Slack Dialog node](https://www.notion.so/e620ae50b7ed44c2a24d6876534b3637) ), the payload is an hash object that contains the _block_id_ of the UI element (a button, a dropdown, etc) and related _value_. If the _block_id_ is not specified in the JSON, it will be auto-generated one.
+For interactive _Blocks_ the result of the user interactions is sent to the chatbot as a `response` type message (like [Slack Dialog node](https://app.notion.com/p/e620ae50b7ed44c2a24d6876534b3637) ), the payload is an hash object that contains the _block_id_ of the UI element (a button, a dropdown, etc) and related _value_. If the _block_id_ is not specified in the JSON, it will be auto-generated one.
 
 For example clicking the button in the example above will send the following message to the chatbot
 

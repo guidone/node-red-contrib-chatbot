@@ -3,7 +3,7 @@ The `Invoice Shipping node` is required when an invoice is sent to the Telegram 
 
 When this happens a message type _invoice-shipping_ is received from the chatbot, at this point is mandatory to answer with a `Invoice Shipping node` with the proposed shipping options and related prices. The total amount charged to the user’s credit card will depend on the selected shipping option.
 
-Use a [Rules node](https://www.notion.so/4113636f565d4ff4af08bc61a644206b)  to redirect the incoming messages with type _invoice-shipping_ to the subflow that handles the aswer. It’s also a common use case to calculate dinamically the shipping options in a `Function node`
+Use a [Rules node](https://app.notion.com/p/4113636f565d4ff4af08bc61a644206b)  to redirect the incoming messages with type _invoice-shipping_ to the subflow that handles the aswer. It’s also a common use case to calculate dinamically the shipping options in a `Function node`
 
 ![Shipping Options](./docs/assets/19ef373dfbca9416.png)
 

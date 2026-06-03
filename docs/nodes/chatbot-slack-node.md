@@ -119,6 +119,6 @@ Replace the _123456.ngrok.io_ domain with the one got in _step 1_
 
 13. In order to support _Slack Commands_, use as _Request URL_ the same callback (i.e. https://123456.ngrok.io/slack/events, be sure to replace the url got in _step 1_)
 
-`Slack Receiver` and `Slack Sender` have a double bot configuration for _development_ and _production_. By default is used the _development_ configuration. To use _production_ configuration, edit **Node-RED** settings file (_settings.js_) and set the _environment_ global variable to _“production”_. See [Deploying RedBot](https://www.notion.so/c0c2de46b48a4def837753c7e284b356)  for more details.
+`Slack Receiver` and `Slack Sender` have a double bot configuration for _development_ and _production_. By default is used the _development_ configuration. To use _production_ configuration, edit **Node-RED** settings file (_settings.js_) and set the _environment_ global variable to _“production”_. See [Deploying RedBot](https://app.notion.com/p/c0c2de46b48a4def837753c7e284b356)  for more details.
 
-**RedBot** also supports **Slack** events, in the chatbot use the [Rules node](https://www.notion.so/4113636f565d4ff4af08bc61a644206b)  to control the flow based on incoming events (the payload of the event will be in `msg.payload`) and use the [Support table](https://www.notion.so/6cfd957b91f642b5894a76e2b15feb05)  to see the list of supported events.
+**RedBot** also supports **Slack** events, in the chatbot use the [Rules node](https://app.notion.com/p/4113636f565d4ff4af08bc61a644206b)  to control the flow based on incoming events (the payload of the event will be in `msg.payload`) and use the [Support table](https://app.notion.com/p/6cfd957b91f642b5894a76e2b15feb05)  to see the list of supported events.

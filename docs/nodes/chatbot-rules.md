@@ -1,5 +1,5 @@
 
-`Rules node` is a multi-output node that allows to control the flow of the chatbot based on simple rules (for example _“The topic is myTopic”_, _“The context variable myVar is not defined”_). This node replace the [Topic node](https://www.notion.so/55036bad043447fd97b58f2a9e7365dd)  that will deprecated soon.
+`Rules node` is a multi-output node that allows to control the flow of the chatbot based on simple rules (for example _“The topic is myTopic”_, _“The context variable myVar is not defined”_). This node replace the [Topic node](https://app.notion.com/p/55036bad043447fd97b58f2a9e7365dd)  that will deprecated soon.
 
 The first rule that matches trigger the redirect of the incoming message to the related output and stops the chain of rules.
 

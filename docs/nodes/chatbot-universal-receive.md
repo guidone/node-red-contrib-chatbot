@@ -1,7 +1,7 @@
 
 The `Universal Connector node` allows to connect the the **RedBot** ecosystem any kind of messaging service (like email, an SMS gateway, a testing stub, etc). It’s an advanced component, a good kwowledge of **JavaScript** and _Promises_ is required in order to use it.
 
-Unlike other receiver nodes the `Universal Connector node` has an input pin, this is where the external service will send the payload in order to be translated and injected in the **RedBot** flow. The `Universal Connector node` takes care of providing the chat context, the _pass thru_ and _track_ features, the _production_/_development_ configuration, etc; while the implementation detail about **how** the incoming message is implemented is left to the user and must be implemented with an [Extend node](https://www.notion.so/04668c7a415547bc9f34be57dd063db2) .
+Unlike other receiver nodes the `Universal Connector node` has an input pin, this is where the external service will send the payload in order to be translated and injected in the **RedBot** flow. The `Universal Connector node` takes care of providing the chat context, the _pass thru_ and _track_ features, the _production_/_development_ configuration, etc; while the implementation detail about **how** the incoming message is implemented is left to the user and must be implemented with an [Extend node](https://app.notion.com/p/04668c7a415547bc9f34be57dd063db2) .
 
 In order to properly _translate_ an incoming message the implementation in the `Universal Connector node` must:
 
@@ -15,7 +15,7 @@ In order to properly _translate_ an incoming message the implementation in the `
 
 5. Extract a _messageId_ to properly reference inbound and outbound messages in the external service timeline
 
-Like explained in [Extend node](https://www.notion.so/04668c7a415547bc9f34be57dd063db2)  a connector handles inbound messages with a chain of middlewares: chunk of codes executed sequentially in order to accomplish steps 1 to 3. In order to keep the code simple and maintainable is a good practice to let middleware takes care of detecting and translating one kind of message in each middleware, as soon as a message has been _resolved_ (means that a message _type_ is assigned to the incoming message), the rest of middlewares chain is skipped and the message is injected in the **RedBot**’s flow.
+Like explained in [Extend node](https://app.notion.com/p/04668c7a415547bc9f34be57dd063db2)  a connector handles inbound messages with a chain of middlewares: chunk of codes executed sequentially in order to accomplish steps 1 to 3. In order to keep the code simple and maintainable is a good practice to let middleware takes care of detecting and translating one kind of message in each middleware, as soon as a message has been _resolved_ (means that a message _type_ is assigned to the incoming message), the rest of middlewares chain is skipped and the message is injected in the **RedBot**’s flow.
 
 For example suppose that a SMS gateway calls the **Node-RED** instance web-hook with this payload
 
@@ -103,4 +103,4 @@ Like all other sender nodes there are two options:
 
 - **Pass through** option: it will forward the **RedBot message** to the output pin. The Red message is the object that passes through the RedBot’s nodes, it contains helpers and data like _originalMessage_, _.api()_, _.chat()_. The main purpose of this is to send multiple messages to the user in a specific order. If the **Pass through** option is not checked the output pin is still present and it’s used to forward the final result of the chain of promises of an output middleware (stripped out of all helpers and data like _originalMessage_, _.api()_, _.chat()_). In the example above it’s used to forward to a downstream node the result of the call to an external custom API.
 
-For a list of all methods available in the _msg.chat_ object see the [Extend node](https://www.notion.so/04668c7a415547bc9f34be57dd063db2) .
+For a list of all methods available in the _msg.chat_ object see the [Extend node](https://app.notion.com/p/04668c7a415547bc9f34be57dd063db2) .

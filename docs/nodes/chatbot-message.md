@@ -23,7 +23,7 @@ can be used in the text message in this way
 Your order of {{payload.total}} will be shipped to {{payload.shipping.address}}, {{payload.shipping.city}}
 ```
 
-For more information read the [Chat Context](https://www.notion.so/3460c588cf234344974936acd05f8c16) .
+For more information read the [Chat Context](https://app.notion.com/p/3460c588cf234344974936acd05f8c16) .
 
 It’s possible to specify more content versions for the same message, one will we randomly chosen with an even distribution.
 

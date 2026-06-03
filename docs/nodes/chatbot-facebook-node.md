@@ -57,4 +57,4 @@ http://youraddress.ngrok.io/redbot/facebook/test
 
 If you get an _“ok”_ then **Node-RED** is up and running. 
 
-`Messenger Receiver` and `Messenger Sender` nodes have a double bot configuration for _development_ and _production_. By default is used the _development_ configuration. To use _production_ configuration, edit **Node-RED** settings file (_settings.js_) and set the _environment_ global variable to _“production”_. See [Deploying RedBot](https://www.notion.so/c0c2de46b48a4def837753c7e284b356) for more details.
+`Messenger Receiver` and `Messenger Sender` nodes have a double bot configuration for _development_ and _production_. By default is used the _development_ configuration. To use _production_ configuration, edit **Node-RED** settings file (_settings.js_) and set the _environment_ global variable to _“production”_. See [Deploying RedBot](https://app.notion.com/p/c0c2de46b48a4def837753c7e284b356) for more details.

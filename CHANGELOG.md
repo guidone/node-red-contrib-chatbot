@@ -1,27 +1,28 @@
+- **2.0.0** - Major release with huge simplifications: removed all old AI platform nodes (i.e. Dialogflow), old parsing nodes (Rivescript, etc) and some support nodes now out of scope. Simplified list of supported platform (i.e. removed Alexa) and added node to support ChatGPT.
 - **1.2.4** - Include mime type in Telegram sendVideo
-- **1.2.2** - Fixed crash in [Untitled](https://www.notion.so/d8b27db3949c475184923af913563833), plugins list in Mission Control is not cached anymore
-- **1.2.1** - [Untitled](https://www.notion.so/f73d1e0200804467b8f03e077584fb16) now supports regular expressions, [Untitled](https://www.notion.so/0085af98bd2c4c169d4c7e579c7db316)  and [Untitled](https://www.notion.so/d8b27db3949c475184923af913563833)  now implements alla flags for keyboards (persistant, one time only, etc)
+- **1.2.2** - Fixed crash in [Untitled](https://app.notion.com/p/d8b27db3949c475184923af913563833), plugins list in Mission Control is not cached anymore
+- **1.2.1** - [Untitled](https://app.notion.com/p/f73d1e0200804467b8f03e077584fb16) now supports regular expressions, [Untitled](https://app.notion.com/p/0085af98bd2c4c169d4c7e579c7db316)  and [Untitled](https://app.notion.com/p/d8b27db3949c475184923af913563833)  now implements alla flags for keyboards (persistant, one time only, etc)
 - **1.2.0** - Support for **Whatsapp Cloud API, i**mproved events in `Rules` node, updated Facebook Messenger API to _v15.0, r_emoved deprecated node `Generic Template` node in Facebook Messenger and `Location` node support, added _read, delivery_ and _reactions_ event for Facebook Messenger, refactored Facebook, Messenger events names (now matches the [events](https://developers.facebook.com/docs/messenger-platform/reference/webhook-events)), refactored `Messenger Menu` node (doesn't require to be connected to `Messenger Sender` node), added support in Facebook Messenger for notification types, message types and message tags
 - **1.1.6** - Add support for spoiler images, video and text in Telegram
 - **1.1.5** - Fixed global imports in **Mission Control** for **Mass Contact** plugin
 - **1.1.4** - Fix templates with non latin chars, fix missing queue error
 - **1.1.3** - Added sortable option to `contents` table, added migrations
-- **1.1.2** - Improved templating in [Untitled](https://www.notion.so/4ae98c5959704cd993a0cc602a17d68b) (i.e., use of `{{msg.myVariable}}`
+- **1.1.2** - Improved templating in [Untitled](https://app.notion.com/p/4ae98c5959704cd993a0cc602a17d68b) (i.e., use of `{{msg.myVariable}}`
 - **1.1.1** - Improved Queue node, fixed error missing `chatbotId` in SQLite context
-- **1.1.0** - Added output pins for [Untitled](https://www.notion.so/b8f3ea33948049cca7b94491061183f4) and [Untitled](https://www.notion.so/200e9ae1a1fd459baa29c76d6a4025e2) for better readability, fixed tracking of sender nodes in subflows, fix [Untitled](https://www.notion.so/fab15f139525400f8719ff182238eb4c)
-- **1.0.9** - [Untitled](https://www.notion.so/d7159ae828804a8784a639e6cdbdb95d) accepts parametrized bot node, [Untitled](https://www.notion.so/bbc3deb2d39a4b338fc6515eee337cd4) now accepts plain strings
-- **1.0.8** - Fixed [Untitled](https://www.notion.so/d8b27db3949c475184923af913563833) with props set in upstream node, added variables `{{inboundMessageId}}` and `{{outboundMessageId}}`, fixed edit message use case in **Telegram**, added delete message in **Slack**, fixed once for all the expired token in **Facebook Messenger**
-- **1.0.7** - Fix fallback text for [Untitled](https://www.notion.so/deb80b7ba4584671abf117b8772a694a)
-- **1.0.6** - Added [Untitled](https://www.notion.so/2ac745c9314f4f17b61f31b6a517586f) node
+- **1.1.0** - Added output pins for [Untitled](https://app.notion.com/p/b8f3ea33948049cca7b94491061183f4) and [Untitled](https://app.notion.com/p/200e9ae1a1fd459baa29c76d6a4025e2) for better readability, fixed tracking of sender nodes in subflows, fix [Untitled](https://app.notion.com/p/fab15f139525400f8719ff182238eb4c)
+- **1.0.9** - [Untitled](https://app.notion.com/p/d7159ae828804a8784a639e6cdbdb95d) accepts parametrized bot node, [Untitled](https://app.notion.com/p/bbc3deb2d39a4b338fc6515eee337cd4) now accepts plain strings
+- **1.0.8** - Fixed [Untitled](https://app.notion.com/p/d8b27db3949c475184923af913563833) with props set in upstream node, added variables `{{inboundMessageId}}` and `{{outboundMessageId}}`, fixed edit message use case in **Telegram**, added delete message in **Slack**, fixed once for all the expired token in **Facebook Messenger**
+- **1.0.7** - Fix fallback text for [Untitled](https://app.notion.com/p/deb80b7ba4584671abf117b8772a694a)
+- **1.0.6** - Added [Untitled](https://app.notion.com/p/2ac745c9314f4f17b61f31b6a517586f) node
 - **1.0.5** - Fix auth in MC when Node-RED admin is not `/`
 - **1.0.4** - Fix web socket in MC
-- **1.0.3** - Fix [Untitled](https://www.notion.so/d7159ae828804a8784a639e6cdbdb95d) empty description, expand tokens in [Untitled](https://www.notion.so/1d90a6e8dfc448d6865c88358c459de2)
+- **1.0.3** - Fix [Untitled](https://app.notion.com/p/d7159ae828804a8784a639e6cdbdb95d) empty description, expand tokens in [Untitled](https://app.notion.com/p/1d90a6e8dfc448d6865c88358c459de2)
 - **1.0.2** - Fix Telegram palette, tokenize Conversation node params, upgrade to Node-RED 3.0.1
-- **1.0.1** - Updated Telegram library, fixed editor in [Untitled](https://www.notion.so/0dc75116dee9458486e1a4f09fc3f44b)
+- **1.0.1** - Updated Telegram library, fixed editor in [Untitled](https://app.notion.com/p/0dc75116dee9458486e1a4f09fc3f44b)
 - **1.0.0** - Mission Control (control panel + nodes), removed deprecated nodes, added Google Analytics. See changes [here](https://www.javascript-jedi.com/redbot-1-0/)
 - **0.19.20** - Fix waiting acknowledgement in Slack API
 - **0.19.19** - Fix .keys() error in Rules node, added Push and Pop message nodes
-- ****0.19.18**** - Added skipMediaFiles for Telegram bot, fixed default valut in [Untitled](https://www.notion.so/d8b27db3949c475184923af913563833)
+- ****0.19.18**** - Added skipMediaFiles for Telegram bot, fixed default valut in [Untitled](https://app.notion.com/p/d8b27db3949c475184923af913563833)
 - **0.19.16** - Fixed tokens not encrypted in Telegram, fixed reply in threads for Slack, added support for markdown in Slack
 - **0.19.15** - Fixed bug in modify message text for inline buttons in Telegram, fixed Slack connector, added support for web sockets
 - **0.19.11** - Added and fixed Facebook Messenger templates, remove deprecated templates in Facebook Messenger, expose message id in Telegram, delete a message in Telegram
@@ -31,17 +32,17 @@
 - **0.19.7** - Bumped NLP.js
 - **0.19.6** - Add formatting for captions in Telegram
 - **0.19.5** - Fix Slack cleanup on closing connection
-- **0.19.4** - Update Slack to new API [Untitled](https://www.notion.so/61dfd724103b4008836c15ea87461678)
+- **0.19.4** - Update Slack to new API [Untitled](https://app.notion.com/p/61dfd724103b4008836c15ea87461678)
 - **0.19.3** - Added error pin to sender nodes for Telegram, Slack, Facebook, Twilio
 - **0.19.2** - Reverted previous, fixed param in settings.js config for authorized users `usernames`
 - **0.19.1** - Fixed param in settings.js config for authorized users `authorizedUsernames` (previously `usernames`)
-- **0.19.0** - [Untitled](https://www.notion.so/90be2580b04c49ef9080367b3fee3dea)
+- **0.19.0** - [Untitled](https://app.notion.com/p/90be2580b04c49ef9080367b3fee3dea)
 - **0.18.15** - Fix Slack events
 - **0.18.14** - Fixed bug with base url on callbacks
 - **0.18.13** - Fixed a bug with multi endpoints chatbots (picking the wrong one)
-- **0.18.12** - Moved _parseMode_ from Telegram config to [Untitled](https://www.notion.so/d8b27db3949c475184923af913563833) , added language drop down to [Untitled](https://www.notion.so/4ae98c5959704cd993a0cc602a17d68b)  for multi-language support
+- **0.18.12** - Moved _parseMode_ from Telegram config to [Untitled](https://app.notion.com/p/d8b27db3949c475184923af913563833) , added language drop down to [Untitled](https://app.notion.com/p/4ae98c5959704cd993a0cc602a17d68b)  for multi-language support
 - **0.18.11** - Enable MS Teams nodes
-- **0.18.10** - Added nodes for NLP.js, deprecated [Untitled](https://www.notion.so/b75d87f7f3814ff08813aae9193ebf90) , breaking changes for [Untitled](https://www.notion.so/f5566a5158ad462186414d41766e7056) , added “_Is Language …”_ rule to [Untitled](https://www.notion.so/4113636f565d4ff4af08bc61a644206b)
+- **0.18.10** - Added nodes for NLP.js, deprecated [Untitled](https://app.notion.com/p/b75d87f7f3814ff08813aae9193ebf90) , breaking changes for [Untitled](https://app.notion.com/p/f5566a5158ad462186414d41766e7056) , added “_Is Language …”_ rule to [Untitled](https://app.notion.com/p/4113636f565d4ff4af08bc61a644206b)
 - **0.18.9** - Support for multiple webhook for Routee
 - **0.18.8** - Fix refresh of access token in Routee
 - **0.18.7** - Fixed Alexa nodes not properly working with the multi transport framework
@@ -51,12 +52,12 @@
 - **0.18.3** - Fix sticker node in Telegram, fix Conversation node and chatId in payload
 - **0.18.2** - Fix again hass.io
 - **0.18.1** - Fix hass.io empty dropdown in conversation node
-- **0.18.0** - Moved all platform-specific flags to [Untitled](https://www.notion.so/d8b27db3949c475184923af913563833) , improved compatibility UI. Some [Untitled](https://www.notion.so/8e5d2a9eee114b4f8a60526f21079afe) in **Telegram** flags (silent messages and reply to)
+- **0.18.0** - Moved all platform-specific flags to [Untitled](https://app.notion.com/p/d8b27db3949c475184923af913563833) , improved compatibility UI. Some [Untitled](https://app.notion.com/p/8e5d2a9eee114b4f8a60526f21079afe) in **Telegram** flags (silent messages and reply to)
 - **0.17.10** - Added support for Microsoft Teams
 - **0.17.9** - Move Discord platform to a separate package [node-red-contrib-chatbot-discord](https://github.com/guidone/node-red-contrib-chatbot-discord)
 - **0.17.8** - Routee support, fixed reply to message in Telegram
 - **0.17.6** - Improved Dialogflow, removed static configuration from Conversation node
-- **0.17.5** - Added animation node, improved runtime validation of [Untitled](https://www.notion.so/1d90a6e8dfc448d6865c88358c459de2)
+- **0.17.5** - Added animation node, improved runtime validation of [Untitled](https://app.notion.com/p/1d90a6e8dfc448d6865c88358c459de2)
 - **0.17.4** - Fix Voice node
 - **0.17.3** - Added Slack Block Kit
 - **0.17.2** - Fix conversation node chatId/userId switch
@@ -73,7 +74,7 @@
 - **0.16.3** - Fixed un-needed token in Alexa
 - **0.16.2** - Added Slack extensions (username, icon_emoji)
 - **0.16.1** - Fixed “+” for Twilio numbers
-- **0.16.0** - Alexa support, refactored [Untitled](https://www.notion.so/b4bd4f8db5d243d487430d073c35992b) , changed format of event message, message chaining. See [Untitled](https://www.notion.so/42b617d395a248b99d06e3bf5094b105)
+- **0.16.0** - Alexa support, refactored [Untitled](https://app.notion.com/p/b4bd4f8db5d243d487430d073c35992b) , changed format of event message, message chaining. See [Untitled](https://app.notion.com/p/42b617d395a248b99d06e3bf5094b105)
 - **0.15.13** - Support for Slack commands
 - **0.15.12** - Broadcast API support for Facebook Messenger
 - **0.15.11** - Upgrade Facebook API to 3.*, enable long messages (> 4096) for Telegram
@@ -83,26 +84,26 @@
 - **0.15.7** - Silent messages for Telegram
 - **0.15.6** - Upgraded Slack lib, removed restriction of configuration name === bot name
 - **0.15.5** - Fix issue with send picture in Facebook
-- **0.15.4** - Fixed some issues with the [Untitled](https://www.notion.so/04668c7a415547bc9f34be57dd063db2) , added support for platform with different names, added [Untitled](https://www.notion.so/6cfd957b91f642b5894a76e2b15feb05)  node
+- **0.15.4** - Fixed some issues with the [Untitled](https://app.notion.com/p/04668c7a415547bc9f34be57dd063db2) , added support for platform with different names, added [Untitled](https://app.notion.com/p/6cfd957b91f642b5894a76e2b15feb05)  node
 - **0.15.3** - Fixed Facebook permission “locale”
 - **0.15.2** - Better support of message types registration
 - **0.15.1** - Support for _optin.ref_ in Facebook Messenger
 - **0.15.0** - Twilio connector
-- **0.14.6** - Added `pending` variable to chat context (supported by [Untitled](https://www.notion.so/84b9ea66d20743fd9cf45d3de5f17693)  and `Recast.ai node`)
+- **0.14.6** - Added `pending` variable to chat context (supported by [Untitled](https://app.notion.com/p/84b9ea66d20743fd9cf45d3de5f17693)  and `Recast.ai node`)
 - **0.14.5** - Removed unused fields from Facebook Profile that were causing permissions problem
 - **0.14.4** - `Universal Receiver node` now receives thw whole message, not just the payload
-- **0.14.3** - Fixed bug with params resolving in [Untitled](https://www.notion.so/4ae98c5959704cd993a0cc602a17d68b)
+- **0.14.3** - Fixed bug with params resolving in [Untitled](https://app.notion.com/p/4ae98c5959704cd993a0cc602a17d68b)
 - **0.14.2** - Fix message for inline buttons in **Viber**
-- **0.14.0** - Added [Untitled](https://www.notion.so/4c24b378e02c491a90240309b9f349c1)
-- **0.13.6** - Added support for nested menu in [Untitled](https://www.notion.so/c5140a0ab4ae4345a2731f67b92c3e53)  via `Function node`
+- **0.14.0** - Added [Untitled](https://app.notion.com/p/4c24b378e02c491a90240309b9f349c1)
+- **0.13.6** - Added support for nested menu in [Untitled](https://app.notion.com/p/c5140a0ab4ae4345a2731f67b92c3e53)  via `Function node`
 - **0.13.5** - Some cleanup
-- **0.13.4** - Added [Untitled](https://www.notion.so/04668c7a415547bc9f34be57dd063db2)
+- **0.13.4** - Added [Untitled](https://app.notion.com/p/04668c7a415547bc9f34be57dd063db2)
 - **0.13.3** - Fixed a bug with _track_ option and plain file context, added pass through option to `Sender node` to make the outpin pin optional
-- **0.13.1** - All sender nodes have output pin enabled (w/o track option), in order to chain more messages and keep the order. Fixed parsing of numeric _chatId_ in [Untitled](https://www.notion.so/1d90a6e8dfc448d6865c88358c459de2) , fixed filename in [Untitled](https://www.notion.so/c36fbd8a58574fd0bbf8b0eb04a7d4ae)  for **Telegram**
+- **0.13.1** - All sender nodes have output pin enabled (w/o track option), in order to chain more messages and keep the order. Fixed parsing of numeric _chatId_ in [Untitled](https://app.notion.com/p/1d90a6e8dfc448d6865c88358c459de2) , fixed filename in [Untitled](https://app.notion.com/p/c36fbd8a58574fd0bbf8b0eb04a7d4ae)  for **Telegram**
 - **0.13.0** - Viber support
-- **0.12.8** - Improve url regular expression, detect mistaken buffer in [Untitled](https://www.notion.so/e4db571720f74584bfa97668c100db43)
+- **0.12.8** - Improve url regular expression, detect mistaken buffer in [Untitled](https://app.notion.com/p/e4db571720f74584bfa97668c100db43)
 - **0.12.7** - Fixed upload image in Slack with missing _filename_ param
-- **0.12.6** - Fix incorrect payload for [Untitled](https://www.notion.so/4ae98c5959704cd993a0cc602a17d68b)
+- **0.12.6** - Fix incorrect payload for [Untitled](https://app.notion.com/p/4ae98c5959704cd993a0cc602a17d68b)
 - **0.12.5** - Added events **new-user**, **referral**, filter by event in `Rules node`, now `Dialogflow node` and `Recast node` can be connected directly to a `Message node` if they provide and `answer`
 - **0.12.4** - Fix docs for `Keyboard Buttons node`
 - **0.12.3** - Added support for Facebook _messaging_referrals_
@@ -112,7 +113,7 @@
 - **0.10.3** - Fixed concurrency in plain file context provider, improved error logging
 - **0.10.2** - Improved detect command and fixed error in Telegram postback
 - **0.10.1** - Dialogflow and React can store the intent in any variable, `Rules node` can now check the value of a variable
-- **0.10.0** - [Untitled](https://www.notion.so/32ee21e577b04b67864c3638b1c622e0)
+- **0.10.0** - [Untitled](https://app.notion.com/p/32ee21e577b04b67864c3638b1c622e0)
 - **0.9.29** - Fixed a bug where unused chatbots where launched even if not used (causing some polling error in Telegram)
 - **0.9.28** - Deprecated `Transport node` in favour of `Rules node`, fixed blank context dropdown, Facebook upload doesn’t use temporary file anymore, fixed Dialogflow.com/Recast.ai second output
 - **0.9.27** - …and another deprecation in Telegram lib
@@ -121,7 +122,7 @@
 - **0.9.24** - Fixed button labels for `Request node`
 - **0.9.23** - Added nodes for Recast.ai and Dialogflow.com, improved debugging in system console
 - **0.9.22** - Now `Node keyboard` can remove a previously sent keyboard
-- **0.9.21** - **[breaking changes]** Refactored `Node keyboard`, aligned the payload to other buttons ([Untitled](https://www.notion.so/0085af98bd2c4c169d4c7e579c7db316) )
+- **0.9.21** - **[breaking changes]** Refactored `Node keyboard`, aligned the payload to other buttons ([Untitled](https://app.notion.com/p/0085af98bd2c4c169d4c7e579c7db316) )
 - **0.9.20** - Fixed `Log node` payload, fixed second pin output of `Rivescript node`
 - **0.9.19** - Added rule ‘environment’ to `Rules node`
 - **0.9.18** - Added rule ‘any command’ to `Rules node`
@@ -149,7 +150,7 @@
 - ****0.8.3**** - Added `Sticker node` for Telegram
 - ****0.8.2**** - Fixed API.ai node
 - ****0.8.1**** - Added delete and disable input box in `Messenger menu node`
-- ****0.8.0**** - [Untitled](https://www.notion.so/952dcc515a7e42f68225d5d884207b78)  completely redesigned `Button node`, `Messenger Menu node` configuration, support for url, post-back, login, logout, call button, added support for Generic Template (with carousel), Inline Template in Facebook and Quick Replies, deprecated `Account Link node`, improved documentation and parameters passed with `msg.payload`
+- ****0.8.0**** - [Untitled](https://app.notion.com/p/952dcc515a7e42f68225d5d884207b78)  completely redesigned `Button node`, `Messenger Menu node` configuration, support for url, post-back, login, logout, call button, added support for Generic Template (with carousel), Inline Template in Facebook and Quick Replies, deprecated `Account Link node`, improved documentation and parameters passed with `msg.payload`
 - **0.7.5** - Fix inbound audio files in Facebook Messenger
 - **0.7.4** - Rivescript node and Listen node no longer tries to parse command-like messages, Rivescript editor now resizes correctly, debug flag in Rivescript node
 - **0.7.3** - Video node for Telegram and Facebook

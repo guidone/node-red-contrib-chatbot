@@ -1,56 +1,174 @@
 
-**Whatsapp Cloud API**  talks to **RedBot** via a https callback (a self signed certificate is not enough). We’ll use [ngrok](https://ngrok.com/) to create a https tunnel for our local **Node-RED** instance. Install it, then open a shell window and run
+WhatsApp Cloud API talks to RedBot through an HTTPS callback (a self-signed certificate is **not** accepted). For local development we expose Node-RED through an [ngrok](https://ngrok.com/) tunnel; for production you'll point Meta at your real HTTPS hostname.
+
+## 1. Expose Node-RED over HTTPS with ngrok
+
+Install ngrok and sign in (`ngrok config add-authtoken …`), then open a shell and run:
 
 ```bash
 ngrok http 127.0.0.1:1880
 ```
 
-You should get something like
-
-![ngrok](./docs/assets/254e9a9714ed9308.png)
-
-Grab the https address you get, something like _https://123123.ngrok.io_, this is the base url that points back to your **Node-RED** instance.
-
-The callback is
+ngrok prints a forwarding URL such as `https://abcd-1234.ngrok-free.app`. The full webhook RedBot listens on is:
 
 ```plain text
-http://youraddress.ngrok.io/redbot/whatsapp
+https://<your-tunnel>.ngrok-free.app/redbot/whatsapp
 ```
 
-Create new **Facebook** app [https://developers.facebook.com/apps/create/](https://developers.facebook.com/apps/create/), pick up **Business**
+Keep this terminal open while testing — every time you restart ngrok the URL changes (unless you have a reserved domain), and you'll have to update the webhook in Meta.
 
-In the app _Dashboard_ go to the _“Add products to your app”_ and add Whatsapp (it only appears for **Business** applications).
+> Tip: a paid ngrok plan gives you a static domain (`--domain my-bot.ngrok.app`) so you don't have to reconfigure the webhook on every restart.
 
-![](./docs/assets/177c3bbce10a5d64.png)
+## 2. Create the Meta app and WhatsApp Business Account (WABA)
 
-Switch to the “_Getting started”_ section
+The Meta flow has been reorganised since the original guide. Two things must exist:
 
-![](./docs/assets/81390d53bd6b16f6.png)
+1. A **Meta Business Portfolio** (formerly "Business Manager") at [https://business.facebook.com/](https://business.facebook.com/). Create one if you don't have it — this is what owns the WABA, the app, and billing.
 
-Grab _Temporary access token_, _Phone number ID_, _Business Account ID_ and copy them into the configuration panel of `Whatsapp Receiver` node.
+2. A **Meta for Developers app** at [https://developers.facebook.com/apps/create/](https://developers.facebook.com/apps/create/).
 
-Also get the test number, that’s the number you can use to test your chatbot.
+### 2.1 Create the app
 
-Switch to the “Configuration” section, click on _“Edit”_ and add the webhook created with **ngrok** (should be something like _http://123456abc.ngrok.io/redbot/whatsapp_)
+- Go to [https://developers.facebook.com/apps/](https://developers.facebook.com/apps/) → **Create app**.
 
-![](./docs/assets/e843b71ee12a9c79.png)
+- Use case: **Other** → app type: **Business**.
 
-Set something in the _“Verify token”_ field (i.e., _“test”_) and click on _“Verify and save”_. 
+- Give it a name, attach the **Business Portfolio** from step 1.
 
-Finally click on _“Manage”_ and then _“Subscribe”_ to _Message_ entities
+### 2.2 Add the WhatsApp product
 
-![](./docs/assets/0fda8a462f4562c5.png)
+In the app dashboard sidebar choose **Add product → WhatsApp → Set up**.
 
-Now switch to **Node-RED,** drop and connect a `Whatsapp Receiver` node, `Text` node and `Whatsapp Sender` node and connect like below
+This automatically provisions:
 
-![](./docs/assets/cee87a297687e5bf.png)
+- A test **WhatsApp Business Account** (WABA)
 
-Don’t forget to configure the `Text` node (i.e., set the text _“Hello world!”_).
+- A **test phone number** (Meta-owned, you can use it free of charge to send messages to up to 5 verified recipients)
 
-Double click on the `Whatsapp Receiver` node and create a new configuration, use the values saved before: _Temporary access token_, _Phone number ID_, _Business Account ID._
+- A **temporary access token** valid for 24 hours
 
-![Create a new Whatsapp configuration](./docs/assets/e48d5ed2a75d726c.png)
+These three things are enough to get a "hello world" working. Production setup (real phone number + permanent token) is in [§6](https://www.notion.so/redbot/Whatsapp-Receiver-node-47c201b9b9e945fb909580bab9c31b87#6-going-to-production).
 
-Select also the newly created configuration in the `Whatsapp Sender` node.
+### 2.3 Collect the IDs
 
-Now send a simple message to the _Whatsapp Test Number_ and you should receive, as response, _“Hello world!”_.
+Open **WhatsApp → API setup** in the app dashboard and copy:
+
+| Field in Meta UI             | Field in RedBot          |
+| ---------------------------- | ------------------------ |
+| Temporary access token       | **Token** (Access Token) |
+| Phone number ID              | **Phone Number ID**      |
+| WhatsApp Business Account ID | **Business Account ID**  |
+
+Also add your personal phone number to **To → Manage phone number list** so you can receive test messages.
+
+## 3. Configure the webhook in Meta
+
+In **WhatsApp → Configuration**:
+
+3. Click **Edit** next to _Webhook_.
+
+4. **Callback URL**: `https://<your-tunnel>.ngrok-free.app/redbot/whatsapp`
+
+5. **Verify token**: any arbitrary string, e.g. `redbot-test`. Remember it — you'll paste the same string into the RedBot config.
+
+6. Click **Verify and save**. Meta hits your callback with a `GET` to confirm the verify token; if ngrok is up and Node-RED is running, the check passes.
+
+7. Click **Manage** under _Webhook fields_ and **Subscribe** to at least the `messages` field. (You can add `message_template_status_update` later if you use templates.)
+
+## 4. Configure the RedBot nodes
+
+In Node-RED drop three nodes and wire them:
+
+```plain text
+Whatsapp Receiver  →  Text  →  Whatsapp Sender
+```
+
+Set the **Text** node to something like `Hello world!`.
+
+### 4.1 Whatsapp Receiver
+
+Double-click and create a new configuration:
+
+- **Bot Name**: any label
+
+- **Token**: temporary access token from §2.3
+
+- **Phone Number ID**: from §2.3
+
+- **Business Account ID**: from §2.3
+
+- **Verify token**: the exact string you typed in §3 step 3
+
+### 4.2 Whatsapp Sender
+
+Select the same bot configuration you just created.
+
+Deploy the flow.
+
+---
+
+## 5. Test it
+
+From the phone number you whitelisted in §2.3, send any text to the **test phone number** shown in the Meta dashboard. You should get `Hello world!` back, and the Receiver node should light up in the Node-RED debug panel.
+
+If nothing happens:
+
+- ngrok dashboard at [http://127.0.0.1:4040](http://127.0.0.1:4040/) shows incoming requests — useful to confirm Meta is calling you.
+
+- `/redbot/whatsapp/test` returns `ok` if the route is mounted. Visit `https://<your-tunnel>.ngrok-free.app/redbot/whatsapp/test` in a browser.
+
+- Check that your number is on the recipient allow-list — Meta silently drops messages to non-whitelisted numbers when using the test phone.
+
+---
+
+## 6. Going to production
+
+The 24-hour temporary token and the Meta test phone number are fine for development, but for production you need:
+
+### 6.1 A real phone number on the WABA
+
+In the WhatsApp dashboard (or directly in Business Portfolio → **WhatsApp Accounts → Phone numbers**):
+
+8. **Add phone number**. Use a number that is **not currently active on a personal/Business WhatsApp app** — if it is, fully delete the WhatsApp account on the device first.
+
+9. Verify by SMS or voice.
+
+10. Set the display name. The first display name goes through a Meta review (usually a few minutes to a day).
+
+### 6.2 Business verification
+
+For anything beyond the test sandbox (sending to numbers that aren't on your allow-list, increasing tier limits, using templates with media) the owning Business Portfolio must complete **Business Verification** under **Business Portfolio → Security Center**. Plan for a few business days; you'll need a company registration document.
+
+### 6.3 A permanent access token via a System User
+
+Temporary tokens expire after 24 hours and are not suitable for production. Generate a permanent one:
+
+11. **Business Portfolio → Settings → Users → System users → Add**. Create a **System user** with role **Admin**.
+
+12. **Assign assets**: add the WhatsApp app and the WABA, granting _Full control_.
+
+13. Click **Generate new token**, pick the app, and select scopes **`whatsapp_business_messaging`** and **`whatsapp_business_management`**.
+
+14. Copy the token (you won't see it again) and paste it into the **Token** field of the Whatsapp Receiver config in place of the temporary one.
+
+### 6.4 Production webhook
+
+Replace the ngrok URL with your real HTTPS endpoint in **WhatsApp → Configuration → Webhook**. The verify token can stay the same. Don't forget the path is still `/redbot/whatsapp`.
+
+> If you run RedBot behind a reverse proxy, make sure the proxy forwards the raw request body — the receiver validates Meta's payload format before processing it.
+
+### 6.5 App review (only if you let third parties install your bot)
+
+If your app stays internal (one Business Portfolio, one WABA), you don't need App Review. If you're building a product that other businesses connect to via Embedded Signup, submit the `whatsapp_business_messaging` and `whatsapp_business_management` permissions for review.
+
+---
+
+## 7. Reference
+
+- WhatsApp Cloud API version used by RedBot: `v22.0` (see [`lib/platforms/whatsapp/index.js`](https://www.notion.so/lib/platforms/whatsapp/index.js)).
+
+- Callback path: `/redbot/whatsapp`
+
+- Health check: `/redbot/whatsapp/test` returns `ok`
+
+- Meta docs: [https://developers.facebook.com/docs/whatsapp/cloud-api](https://developers.facebook.com/docs/whatsapp/cloud-api)
