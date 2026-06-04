@@ -1,12 +1,10 @@
 const WhatsappServer = require('../lib/platforms/whatsapp/index');
-const RegisterType = require('../lib/node-installer');
 
 const { GenericOutNode, GenericInNode, GenericBotNode } = require('../lib/sender-factory/index');
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
 
-  registerType(
+  RED.nodes.registerType(
     'chatbot-whatsapp-node',
     GenericBotNode(
       'whatsapp',
@@ -56,8 +54,8 @@ module.exports = function(RED) {
     }
   );
 
-  registerType('chatbot-whatsapp-receive', GenericInNode('whatsapp', RED, { splitEvents: true }));
+  RED.nodes.registerType('chatbot-whatsapp-receive', GenericInNode('whatsapp', RED, { splitEvents: true }));
 
-  registerType('chatbot-whatsapp-send', GenericOutNode('whatsapp', RED));
+  RED.nodes.registerType('chatbot-whatsapp-send', GenericOutNode('whatsapp', RED));
 
 };

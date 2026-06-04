@@ -1,11 +1,9 @@
 const MessageTemplate = require('../lib/message-template-async');
 const emoji = require('node-emoji');
 const utils = require('../lib/helpers/utils');
-const RegisterType = require('../lib/node-installer');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotRequest(config) {
@@ -47,5 +45,5 @@ module.exports = function(RED) {
     });
   }
 
-  registerType('chatbot-request', ChatBotRequest);
+  RED.nodes.registerType('chatbot-request', ChatBotRequest);
 };

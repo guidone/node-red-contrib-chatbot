@@ -8,7 +8,6 @@ const ViberServer = require('../lib/platforms/viber');
 const utils = require('../lib/helpers/utils');
 const lcd = require('../lib/helpers/lcd');
 const validators = require('../lib/helpers/validators');
-const RegisterType = require('../lib/node-installer');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 const GetEnvironment = require('../lib/helpers/get-environment');
 
@@ -18,7 +17,6 @@ const green = clc.green;
 
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
   const getEnvironment = GetEnvironment(RED);
 
@@ -166,7 +164,7 @@ module.exports = function(RED) {
         });
     });
   }
-  registerType('chatbot-viber-node', ViberBotNode, {
+  RED.nodes.registerType('chatbot-viber-node', ViberBotNode, {
     credentials: {
       token: {
         type: 'text'
@@ -232,7 +230,7 @@ module.exports = function(RED) {
       done();
     });
   }
-  registerType('chatbot-viber-receive', ViberInNode);
+  RED.nodes.registerType('chatbot-viber-receive', ViberInNode);
 
   function ViberOutNode(config) {
     RED.nodes.createNode(this, config);
@@ -294,6 +292,6 @@ module.exports = function(RED) {
       });
     });
   }
-  registerType('chatbot-viber-send', ViberOutNode);
+  RED.nodes.registerType('chatbot-viber-send', ViberOutNode);
 
 };

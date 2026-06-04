@@ -3,7 +3,6 @@ const _ = require('lodash');
 const { ChatExpress } = require('chat-platform');
 
 const MessageTemplate = require('../lib/message-template-async');
-const RegisterType = require('../lib/node-installer');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 const {
@@ -16,7 +15,6 @@ const {
 } = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotAsk(config) {
@@ -72,5 +70,5 @@ module.exports = function(RED) {
     });
   }
 
-  registerType('chatbot-ask', ChatBotAsk);
+  RED.nodes.registerType('chatbot-ask', ChatBotAsk);
 };

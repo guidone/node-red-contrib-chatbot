@@ -1,12 +1,10 @@
 const FacebookServer = require('../lib/platforms/facebook/facebook');
-const RegisterType = require('../lib/node-installer');
 
 const { GenericOutNode, GenericInNode, GenericBotNode } = require('../lib/sender-factory/index');
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
 
-  registerType(
+  RED.nodes.registerType(
     'chatbot-facebook-node',
     GenericBotNode(
       'facebook',
@@ -52,8 +50,8 @@ module.exports = function(RED) {
     }
   );
 
-  registerType('chatbot-facebook-receive', GenericInNode('facebook', RED));
+  RED.nodes.registerType('chatbot-facebook-receive', GenericInNode('facebook', RED));
 
-  registerType('chatbot-facebook-send', GenericOutNode('facebook', RED));
+  RED.nodes.registerType('chatbot-facebook-send', GenericOutNode('facebook', RED));
 
 };

@@ -1,9 +1,7 @@
 const utils = require('../lib/helpers/utils');
-const RegisterType = require('../lib/node-installer');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotInlineQuery(config) {
@@ -43,6 +41,6 @@ module.exports = function(RED) {
       node.send(msg);
     });
   }
-  registerType('chatbot-inline-query', ChatBotInlineQuery);
+  RED.nodes.registerType('chatbot-inline-query', ChatBotInlineQuery);
 
 };

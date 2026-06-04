@@ -1,8 +1,6 @@
-const RegisterType = require('../lib/node-installer');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotPushMessage(config) {
@@ -23,5 +21,5 @@ module.exports = function(RED) {
     });
   }
 
-  registerType('chatbot-push-message', ChatBotPushMessage);
+  RED.nodes.registerType('chatbot-push-message', ChatBotPushMessage);
 };

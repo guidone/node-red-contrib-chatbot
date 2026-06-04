@@ -1,4 +1,3 @@
-const RegisterType = require('../lib/node-installer');
 const _ = require('lodash');
 const { ChatExpress } = require('chat-platform');
 const {
@@ -15,7 +14,6 @@ require('../lib/platforms/telegram');
 require('../lib/platforms/slack/index');
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotSlackBlocks(config) {
@@ -69,5 +67,5 @@ module.exports = function(RED) {
     });
   }
 
-  registerType('chatbot-slack-blocks', ChatBotSlackBlocks);
+  RED.nodes.registerType('chatbot-slack-blocks', ChatBotSlackBlocks);
 };

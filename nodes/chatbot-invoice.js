@@ -3,12 +3,10 @@ const { flattenValidationErrors, extractValue, getChatId, matchTransport, getTra
 const { ChatExpress } = require('chat-platform');
 const _ = require('lodash');
 const validators = require('../lib/helpers/validators');
-const RegisterType = require('../lib/node-installer');
 const lcd = require('../lib/helpers/lcd');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotInvoice(config) {
@@ -99,5 +97,5 @@ module.exports = function(RED) {
     });
   }
 
-  registerType('chatbot-invoice', ChatBotInvoice);
+  RED.nodes.registerType('chatbot-invoice', ChatBotInvoice);
 };

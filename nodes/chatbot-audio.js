@@ -2,7 +2,6 @@ const _ = require('lodash');
 const { ChatExpress } = require('chat-platform');
 
 const MessageTemplate = require('../lib/message-template-async');
-const RegisterType = require('../lib/node-installer');
 const validators = require('../lib/helpers/validators');
 const fetchers = require('../lib/helpers/fetchers-obj');
 const {
@@ -17,7 +16,6 @@ const {
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotAudio(config) {
@@ -107,5 +105,5 @@ module.exports = function(RED) {
     });
   }
 
-  registerType('chatbot-audio', ChatBotAudio);
+  RED.nodes.registerType('chatbot-audio', ChatBotAudio);
 };

@@ -7,7 +7,6 @@ const prettyjson = require('prettyjson');
 const utils = require('../lib/helpers/utils');
 const lcd = require('../lib/helpers/lcd');
 const validators = require('../lib/helpers/validators');
-const RegisterType = require('../lib/node-installer');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 const GetEnvironment = require('../lib/helpers/get-environment');
 
@@ -18,7 +17,6 @@ const green = clc.green;
 
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
   const getEnvironment = GetEnvironment(RED);
 
@@ -180,7 +178,7 @@ module.exports = function(RED) {
         });
     });
   }
-  registerType('chatbot-universal-node', UniversalBotNode, {
+  RED.nodes.registerType('chatbot-universal-node', UniversalBotNode, {
     credentials: {
       token: {
         type: 'text'
@@ -252,7 +250,7 @@ module.exports = function(RED) {
       }
     });
   }
-  registerType('chatbot-universal-receive', UniversalInNode);
+  RED.nodes.registerType('chatbot-universal-receive', UniversalInNode);
 
   function UniversalOutNode(config) {
     RED.nodes.createNode(this, config);
@@ -321,6 +319,6 @@ module.exports = function(RED) {
       });
     });
   }
-  registerType('chatbot-universal-send', UniversalOutNode);
+  RED.nodes.registerType('chatbot-universal-send', UniversalOutNode);
 
 };

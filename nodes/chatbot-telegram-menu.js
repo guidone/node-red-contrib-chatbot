@@ -1,9 +1,7 @@
 const _ = require('lodash');
-const RegisterType = require('../lib/node-installer');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotTelegramrMenu(config) {
@@ -58,5 +56,5 @@ module.exports = function(RED) {
     });
   }
 
-  registerType('chatbot-telegram-menu', ChatBotTelegramrMenu);
+  RED.nodes.registerType('chatbot-telegram-menu', ChatBotTelegramrMenu);
 };

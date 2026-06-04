@@ -4,7 +4,6 @@ const MessageTemplate = require('../lib/message-template-async');
 const fetchers = require('../lib/helpers/fetchers-obj');
 const validators = require('../lib/helpers/validators');
 const { ChatExpress } = require('chat-platform');
-const RegisterType = require('../lib/node-installer');
 const { 
   enrichFilePayload, 
   isValidMessage, 
@@ -16,7 +15,6 @@ const {
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotAnimation(config) {
@@ -101,5 +99,5 @@ module.exports = function(RED) {
     });
   }
 
-  registerType('chatbot-animation', ChatBotAnimation);
+  RED.nodes.registerType('chatbot-animation', ChatBotAnimation);
 };

@@ -2,7 +2,6 @@ const MessageTemplate = require('../lib/message-template-async');
 const emoji = require('node-emoji');
 const { ChatExpress } = require('chat-platform');
 
-const RegisterType = require('../lib/node-installer');
 const {
   isValidMessage,
   getChatId,
@@ -17,7 +16,6 @@ require('../lib/platforms/telegram');
 require('../lib/platforms/facebook/facebook');
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotInlineButtons(config) {
@@ -78,5 +76,5 @@ module.exports = function(RED) {
     });
   }
 
-  registerType('chatbot-inline-buttons', ChatBotInlineButtons);
+  RED.nodes.registerType('chatbot-inline-buttons', ChatBotInlineButtons);
 };

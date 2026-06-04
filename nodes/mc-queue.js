@@ -1,13 +1,11 @@
 const _ = require('lodash');
 const Queue = require('better-queue');
 
-const RegisterType = require('../lib/node-installer');
 const { SQLiteStore } = require('../lib/queues-store/index');
 const Evaluate = require('../lib/evaluate');
 const validators = require('../lib/helpers/validators');
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
   const { getMissionControlConfiguration } = require('./mc')(RED);
 
   function QueueNode(config) {
@@ -119,5 +117,5 @@ module.exports = function(RED) {
     });
   }
 
-  registerType('mc-queue', QueueNode);
+  RED.nodes.registerType('mc-queue', QueueNode);
 };

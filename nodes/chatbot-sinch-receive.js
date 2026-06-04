@@ -1,11 +1,9 @@
 const SinchServer = require('../lib/platforms/sinch');
-const RegisterType = require('../lib/node-installer');
 const { GenericOutNode, GenericInNode, GenericBotNode } = require('../lib/sender-factory/index');
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
 
-  registerType(
+  RED.nodes.registerType(
     'chatbot-sinch-node',
     GenericBotNode(
       'sinch',
@@ -54,7 +52,7 @@ module.exports = function(RED) {
     }
   );
 
-  registerType('chatbot-sinch-receive', GenericInNode('sinch', RED));
+  RED.nodes.registerType('chatbot-sinch-receive', GenericInNode('sinch', RED));
 
-  registerType('chatbot-sinch-send', GenericOutNode('sinch', RED));
+  RED.nodes.registerType('chatbot-sinch-send', GenericOutNode('sinch', RED));
 };

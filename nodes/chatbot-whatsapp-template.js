@@ -1,4 +1,3 @@
-const RegisterType = require('../lib/node-installer');
 const { ChatExpress } = require('chat-platform');
 const {
   isValidMessage,
@@ -14,7 +13,6 @@ const MessageTemplate = require('../lib/message-template-async');
 // Supported language: https://developers.facebook.com/docs/whatsapp/api/messages/message-templates#supported-languages
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
 
   function ChatBotWhatsappTemplate(config) {
     RED.nodes.createNode(this, config);
@@ -68,5 +66,5 @@ module.exports = function(RED) {
     });
   }
 
-  registerType('chatbot-whatsapp-template', ChatBotWhatsappTemplate);
+  RED.nodes.registerType('chatbot-whatsapp-template', ChatBotWhatsappTemplate);
 };
