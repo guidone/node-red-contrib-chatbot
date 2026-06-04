@@ -1,10 +1,8 @@
 const _ = require('lodash');
 const { ChatExpress: ChatPlatform } = require('chat-platform');
-const RegisterType = require('../lib/node-installer');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
   const isMissionControlEnabled = require('../lib/helpers/is-mc-enabled')(RED);
 
@@ -24,7 +22,7 @@ module.exports = function(RED) {
       console.log('Invalid JSON in context storage params (' + this.name + ')');
     }
   }
-  registerType('chatbot-context-store', ChatBotContextStore);
+  RED.nodes.registerType('chatbot-context-store', ChatBotContextStore);
 
   // add an endpoint to get a list of context providers
   RED.httpNode.get('/redbot/context-providers', function(req, res) {

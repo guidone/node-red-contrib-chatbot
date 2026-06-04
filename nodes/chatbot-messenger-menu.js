@@ -1,11 +1,9 @@
 const _ = require('lodash');
-const RegisterType = require('../lib/node-installer');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 const parseButtons = require('../lib/platforms/facebook/parse-buttons');
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotMessengerMenu(config) {
@@ -53,5 +51,5 @@ module.exports = function(RED) {
     });
   }
 
-  registerType('chatbot-messenger-menu', ChatBotMessengerMenu);
+  RED.nodes.registerType('chatbot-messenger-menu', ChatBotMessengerMenu);
 };

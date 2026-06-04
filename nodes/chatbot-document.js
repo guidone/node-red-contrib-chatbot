@@ -3,7 +3,6 @@ const { ChatExpress } = require('chat-platform');
 
 const MessageTemplate = require('../lib/message-template-async');
 const BufferTransformers = require('../lib/buffer-transformers');
-const RegisterType = require('../lib/node-installer');
 const validators = require('../lib/helpers/validators');
 const fetchers = require('../lib/helpers/fetchers-obj');
 const {
@@ -19,7 +18,6 @@ const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotDocument(config) {
@@ -110,5 +108,5 @@ module.exports = function(RED) {
     });
   }
 
-  registerType('chatbot-document', ChatBotDocument);
+  RED.nodes.registerType('chatbot-document', ChatBotDocument);
 };

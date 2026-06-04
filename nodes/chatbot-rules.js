@@ -2,7 +2,6 @@ const _ = require('lodash');
 
 const utils = require('../lib/helpers/utils');
 const helpers = require('../lib/helpers/regexps');
-const RegisterType = require('../lib/node-installer');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 const GetEnvironment = require('../lib/helpers/get-environment');
 
@@ -325,7 +324,6 @@ function executeRules(rules, message, global, current) {
 }
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
   const getEnvironment = GetEnvironment(RED);
 
@@ -356,5 +354,5 @@ module.exports = function(RED) {
     });
   }
 
-  registerType('chatbot-rules', ChatBotRules);
+  RED.nodes.registerType('chatbot-rules', ChatBotRules);
 };

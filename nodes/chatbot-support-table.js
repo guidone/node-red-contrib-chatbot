@@ -1,9 +1,7 @@
 const { ChatExpress } = require('chat-platform');
-const RegisterType = require('../lib/node-installer');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotSupportTable(config) {
@@ -14,5 +12,5 @@ module.exports = function(RED) {
     });
   }
 
-  registerType('chatbot-support-table', ChatBotSupportTable);
+  RED.nodes.registerType('chatbot-support-table', ChatBotSupportTable);
 };

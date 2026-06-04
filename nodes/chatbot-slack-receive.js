@@ -1,12 +1,10 @@
 
 const SlackServer = require('../lib/platforms/slack/index');
-const RegisterType = require('../lib/node-installer');
 const { GenericOutNode, GenericInNode, GenericBotNode } = require('../lib/sender-factory/index');
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
 
-  registerType(
+  RED.nodes.registerType(
     'chatbot-slack-node',
     GenericBotNode(
       'slack',
@@ -57,6 +55,6 @@ module.exports = function(RED) {
     }
   );
 
-  registerType('chatbot-slack-receive', GenericInNode('slack', RED, { splitEvents: true }));
-  registerType('chatbot-slack-send', GenericOutNode('slack', RED));
+  RED.nodes.registerType('chatbot-slack-receive', GenericInNode('slack', RED, { splitEvents: true }));
+  RED.nodes.registerType('chatbot-slack-send', GenericOutNode('slack', RED));
 };

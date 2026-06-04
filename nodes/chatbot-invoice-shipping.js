@@ -1,11 +1,9 @@
 const MessageTemplate = require('../lib/message-template-async');
 const utils = require('../lib/helpers/utils');
 const _ = require('lodash');
-const RegisterType = require('../lib/node-installer');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotInvoiceShipping(config) {
@@ -42,5 +40,5 @@ module.exports = function(RED) {
     });
   }
 
-  registerType('chatbot-invoice-shipping', ChatBotInvoiceShipping);
+  RED.nodes.registerType('chatbot-invoice-shipping', ChatBotInvoiceShipping);
 };

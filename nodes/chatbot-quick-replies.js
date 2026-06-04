@@ -1,6 +1,5 @@
 const MessageTemplate = require('../lib/message-template-async');
 const emoji = require('node-emoji');
-const RegisterType = require('../lib/node-installer');
 const { ChatExpress } = require('chat-platform');
 const {
   isValidMessage,
@@ -12,7 +11,6 @@ const {
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotQuickReplies(config) {
@@ -73,5 +71,5 @@ module.exports = function(RED) {
     });
   }
 
-  registerType('chatbot-quick-replies', ChatBotQuickReplies);
+  RED.nodes.registerType('chatbot-quick-replies', ChatBotQuickReplies);
 };

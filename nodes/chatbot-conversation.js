@@ -1,6 +1,5 @@
 const _ = require('lodash');
 
-const RegisterType = require('../lib/node-installer');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 const GetEnvironment = require('../lib/helpers/get-environment');
 const GetNode = require('../lib/helpers/get-node');
@@ -13,7 +12,6 @@ const {
 } = require('../lib/helpers/utils');
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
   const getEnvironment = GetEnvironment(RED);
   const getNode = GetNode(RED);
@@ -85,5 +83,5 @@ module.exports = function(RED) {
     });
   }
 
-  registerType('chatbot-conversation', ChatBotConversation);
+  RED.nodes.registerType('chatbot-conversation', ChatBotConversation);
 };

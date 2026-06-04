@@ -1,11 +1,9 @@
 const TelegramServer = require('../lib/platforms/telegram');
-const RegisterType = require('../lib/node-installer');
 const { GenericOutNode, GenericInNode, GenericBotNode } = require('../lib/sender-factory/index');
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
 
-  registerType(
+  RED.nodes.registerType(
     'chatbot-telegram-node',
     GenericBotNode(
       'telegram',
@@ -52,7 +50,7 @@ module.exports = function(RED) {
     }
   );
 
-  registerType('chatbot-telegram-receive', GenericInNode('telegram', RED, { splitEvents: true }));
+  RED.nodes.registerType('chatbot-telegram-receive', GenericInNode('telegram', RED, { splitEvents: true }));
 
-  registerType('chatbot-telegram-send', GenericOutNode('telegram', RED));
+  RED.nodes.registerType('chatbot-telegram-send', GenericOutNode('telegram', RED));
 };

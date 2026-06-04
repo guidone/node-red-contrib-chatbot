@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const emoji = require('node-emoji');
 const { ChatExpress } = require('chat-platform');
-const RegisterType = require('../lib/node-installer');
 const {
   isValidMessage,
   getChatId,
@@ -15,7 +14,6 @@ const MessageTemplate = require('../lib/message-template-async');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotMessage(config) {
@@ -96,5 +94,5 @@ module.exports = function(RED) {
     });
   }
 
-  registerType('chatbot-message', ChatBotMessage);
+  RED.nodes.registerType('chatbot-message', ChatBotMessage);
 };

@@ -1,10 +1,8 @@
 const _ = require('lodash');
 const utils = require('../lib/helpers/utils');
-const RegisterType = require('../lib/node-installer');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotWaiting(config) {
@@ -40,6 +38,6 @@ module.exports = function(RED) {
       node.send(msg);
     });
   }
-  registerType('chatbot-waiting', ChatBotWaiting);
+  RED.nodes.registerType('chatbot-waiting', ChatBotWaiting);
 
 };

@@ -1,5 +1,4 @@
 const _ = require('lodash');
-const RegisterType = require('../lib/node-installer');
 const {
   isValidMessage,
   getTransport,
@@ -9,7 +8,6 @@ const MessageTemplate = require('../lib/message-template-async');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotParams(config) {
@@ -51,5 +49,5 @@ module.exports = function(RED) {
     });
   }
 
-  registerType('chatbot-params', ChatBotParams);
+  RED.nodes.registerType('chatbot-params', ChatBotParams);
 };

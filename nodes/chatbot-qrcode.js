@@ -1,11 +1,9 @@
 const qr = require('qr-image');
 const MessageTemplate = require('../lib/message-template-async');
 const utils = require('../lib/helpers/utils');
-const RegisterType = require('../lib/node-installer');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotQRCode(config) {
@@ -36,6 +34,6 @@ module.exports = function(RED) {
         });
     });
   }
-  registerType('chatbot-qrcode', ChatBotQRCode);
+  RED.nodes.registerType('chatbot-qrcode', ChatBotQRCode);
 
 };

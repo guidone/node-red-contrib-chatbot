@@ -3,7 +3,6 @@ const { ChatExpress } = require('chat-platform');
 
 const MessageTemplate = require('../lib/message-template-async');
 const validators = require('../lib/helpers/validators');
-const RegisterType = require('../lib/node-installer');
 const fetchers = require('../lib/helpers/fetchers-obj');
 const {
   enrichFilePayload,
@@ -16,7 +15,6 @@ const {
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
 
 module.exports = function(RED) {
-  const registerType = RegisterType(RED);
   const globalContextHelper = GlobalContextHelper(RED);
 
   function ChatBotVideo(config) {
@@ -107,5 +105,5 @@ module.exports = function(RED) {
     });
   }
 
-  registerType('chatbot-video', ChatBotVideo);
+  RED.nodes.registerType('chatbot-video', ChatBotVideo);
 };
