@@ -119,7 +119,7 @@
     "better-queue": "^3.8.10",
     "better-queue-sql": "^1.0.5",
     "body-parser": "^1.19.0",
-    "chat-platform": "2.1.4",
+    "chat-platform": "3.0.0",
     "cli-color": "^1.4.0",
     "cli-table": "^0.3.1",
     "cloudinary": "^1.27.1",
