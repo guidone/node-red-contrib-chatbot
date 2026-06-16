@@ -1,4 +1,5 @@
-- **2.0.0** - Major release with huge simplifications: removed all old AI platform nodes (i.e. Dialogflow), old parsing nodes (Rivescript, etc) and some support nodes now out of scope. Simplified list of supported platform (i.e. removed Alexa) and added node to support ChatGPT.
+- **2.0.2** - Upgraded library `node-telegram-bot-api`
+- **2.0.1** - Major release with huge simplifications: removed all old AI platform nodes (i.e. Dialogflow), old parsing nodes (Rivescript, etc) and some support nodes now out of scope. Simplified list of supported platform (i.e. removed Alexa) and added node to support ChatGPT.
 - **1.2.4** - Include mime type in Telegram sendVideo
 - **1.2.2** - Fixed crash in [Untitled](https://app.notion.com/p/d8b27db3949c475184923af913563833), plugins list in Mission Control is not cached anymore
 - **1.2.1** - [Untitled](https://app.notion.com/p/f73d1e0200804467b8f03e077584fb16) now supports regular expressions, [Untitled](https://app.notion.com/p/0085af98bd2c4c169d4c7e579c7db316)  and [Untitled](https://app.notion.com/p/d8b27db3949c475184923af913563833)  now implements alla flags for keyboards (persistant, one time only, etc)
