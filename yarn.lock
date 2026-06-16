@@ -4572,10 +4572,9 @@ charenc@0.0.2:
   resolved "https://registry.npmjs.org/charenc/-/charenc-0.0.2.tgz"
   integrity sha512-yrLQ/yVUFXkzg7EDQsPieE/53+0RlaWTs+wBrvW36cyilJ2SaDWfl4Yj7MtLTXleV9uEKefbAGUPv2/iWSooRA==
 
-chat-platform@2.1.4:
+"chat-platform@file:../chat-platform":
   version "2.1.4"
-  resolved "https://registry.npmjs.org/chat-platform/-/chat-platform-2.1.4.tgz"
-  integrity sha512-CRJmlfXPyj0IdyZTZQAJgDxryzQm9KzzRpJ5CrZHEe8Psu9WjaCBoBNum3N0ousOcEVu9TqtzIgLKDccy9epbA==
+  resolved "file:../chat-platform"
   dependencies:
     cli-color "^1.4.0"
     cli-table "^0.3.1"
@@ -12352,7 +12351,7 @@ request-promise-native@^1.0.5:
     stealthy-require "^1.1.1"
     tough-cookie "^2.3.3"
 
-request@^2.87.0, request@^2.88.0:
+request@^2.87.0:
   version "2.88.2"
   resolved "https://registry.npmjs.org/request/-/request-2.88.2.tgz"
   integrity sha512-MsvtOrfG9ZcrOwAW+Qi+F6HbD0CWXEh9ou77uOb7FM2WPhwT7smM833PzanhJLsgXjN89Ir6V2PczXNnMpwKhw==
@@ -12892,7 +12891,7 @@ sequelize-pool@^2.3.0:
   resolved "https://registry.npmjs.org/sequelize-pool/-/sequelize-pool-2.3.0.tgz"
   integrity sha512-Ibz08vnXvkZ8LJTiUOxRcj1Ckdn7qafNZ2t59jYHMX1VIebTAOYefWdRYFt6z6+hy52WGthAHAoLc9hvk3onqA==
 
-sequelize@^5.21.3, sequelize@^5.21.6:
+sequelize@^5.21.3:
   version "5.22.2"
   resolved "https://registry.npmjs.org/sequelize/-/sequelize-5.22.2.tgz"
   integrity sha512-mJQnrnGppq9VkOXaf6Zq1K/5604+gkAfrDdHyobfnxpRcLazVGipvt110huGGMLI2MUXzHILYA2OqHlr3bFRyA==
@@ -13371,7 +13370,7 @@ sprintf-js@^1.0.3, sprintf-js@~1.0.2:
   resolved "https://registry.npmjs.org/sprintf-js/-/sprintf-js-1.0.3.tgz"
   integrity sha1-BOaSb2YolTVPPdAVIDYzuFcpfiw= sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==
 
-sqlite3@^5.0.0, sqlite3@^5.0.8:
+sqlite3@^5.0.8:
   version "5.0.8"
   resolved "https://registry.npmjs.org/sqlite3/-/sqlite3-5.0.8.tgz"
   integrity sha512-f2ACsbSyb2D1qFFcqIXPfFscLtPVOWJr5GmUzYxf4W+0qelu5MWrR+FAQE1d5IUArEltBrzSDxDORG8P/IkqyQ==
@@ -14220,7 +14219,7 @@ unc-path-regex@^0.1.2:
   resolved "https://registry.npmjs.org/unc-path-regex/-/unc-path-regex-0.1.2.tgz"
   integrity sha512-eXL4nmJT7oCpkZsHZUOJo8hcX3GbsiDOa0Qu9F646fi8dT3XuSVopVqAcEiVzSKKH7UoDti23wNX3qGFxcW5Qg==
 
-underscore.string@^3.3.4, underscore.string@^3.3.5:
+underscore.string@^3.3.4:
   version "3.3.5"
   resolved "https://registry.npmjs.org/underscore.string/-/underscore.string-3.3.5.tgz"
   integrity sha512-g+dpmgn+XBneLmXXo+sGlW5xQEt4ErkS3mgeN2GFbremYeMBSJKr9Wf2KJplQVaiPY/f7FN6atosWYNm9ovrYg==
@@ -14228,7 +14227,7 @@ underscore.string@^3.3.4, underscore.string@^3.3.5:
     sprintf-js "^1.0.3"
     util-deprecate "^1.0.2"
 
-underscore@^1.8.3, underscore@^1.9.1:
+underscore@^1.8.3:
   version "1.13.8"
   resolved "https://registry.npmjs.org/underscore/-/underscore-1.13.8.tgz"
   integrity sha512-DXtD3ZtEQzc7M8m4cXotyHR+FAS18C64asBYY5vqZexfYryNNnDc02W4hKg3rdQuqOYas1jkseX0+nZXjTXnvQ==
