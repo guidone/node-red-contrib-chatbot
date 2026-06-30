@@ -1,3 +1,4 @@
+- **2.0.4** - Added MIT license
 - **2.0.3** - Updated node-telegram-bot-api, added support for Telegram Rich Messages
 - **2.0.2** - Upgraded library `node-telegram-bot-api`
 - **2.0.1** - Major release with huge simplifications: removed all old AI platform nodes (i.e. Dialogflow), old parsing nodes (Rivescript, etc) and some support nodes now out of scope. Simplified list of supported platform (i.e. removed Alexa) and added node to support ChatGPT.
