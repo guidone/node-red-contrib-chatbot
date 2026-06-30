@@ -29,6 +29,7 @@
     "type": "git",
     "url": "https://github.com/guidone/node-red-contrib-chatbot.git"
   },
+  "license": "MIT",
   "engines": {
     "node": ">=18"
   },
