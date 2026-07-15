@@ -35,23 +35,21 @@ Each node lives in `nodes/<name>/` with:
 - `index.js` — node logic registered with Node-RED
 - `index.html` — editor UI definition
 
-## Platform Parameters (lib/platforms/<platform>.js)
+## Architecture decision records (ADRs)
 
-Each platform (e.g. `telegram.js`, `facebook.js`) exposes platform-specific send options as **params**. The pattern:
+Architectural decisions are recorded in
+[`docs/architecture/decisions/`](docs/architecture/decisions/README.md), one
+file per decision, named `ADR NNN – Title.md`. Check the
+[ADR index](docs/architecture/decisions/README.md) before making an
+architectural change; add a new ADR when a change introduces one.
 
-1. **Read a param** inside an `out` handler: `const param = params(message);` then `param('camelCaseName', defaultValue)`.
-2. **Pass to API**: map camelCase param names to snake_case API fields (e.g. `allowPaidBroadcast` → `allow_paid_broadcast: param('allowPaidBroadcast', false)`).
-3. **Register** at the bottom of the file so the UI (Mission Control) can expose it as a node option:
-   ```js
-   Telegram.registerParam('camelCaseName', 'boolean'|'string'|'select', {
-     label: 'Human label',
-     default: false,
-     description: 'Shown in UI',
-     // for 'select': options: [{ value, label }, ...]
-     // for 'string': placeholder, suggestions: ['{{token}}', ...]
-   });
-   ```
-   Registered params appear as configurable fields on nodes in the Node-RED editor.
+Key patterns are documented as ADRs:
+
+- Platform integrations run on the **ChatExpress middleware engine** —
+  [ADR 001](<docs/architecture/decisions/ADR 001 – ChatExpress Middleware Engine for Platform Integrations.md>).
+- Platform send options (`lib/platforms/<platform>.js`) follow the **platform
+  parameter registration pattern** —
+  [ADR 002](<docs/architecture/decisions/ADR 002 – Platform Parameter Registration Pattern.md>).
 
 ## Documentation
 
@@ -66,6 +64,6 @@ When a node is deprecated update the documentation:
 
 - Recent commits removed: authorized node, msteams, nlp old nodes, twilio, alexa
 - Version: 1.2.4
-- ChatExpress middleware system: [docs/chatexpress.md](docs/chatexpress.md)
+- ChatExpress middleware system: [ADR 001](<docs/architecture/decisions/ADR 001 – ChatExpress Middleware Engine for Platform Integrations.md>)
 - Best practises (canonical helpers, conventions): [docs/best-practise.md](docs/best-practise.md)
 - Per-node documentation index: [docs/nodes.md](docs/nodes.md)
