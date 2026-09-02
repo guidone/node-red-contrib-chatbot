@@ -49,7 +49,7 @@ return msg;
 ```
 
 
-Check the [Params node](https://app.notion.com/p/d8b27db3949c475184923af913563833) for extra parameters and options related to message sending (i.e. the _RichMessage_ support for Telegram).
+Check the [Params node](https://app.notion.com/p/d8b27db3949c475184923af913563833) for extra parameters and options related to message sending (i.e. the [_RichMessage_](https://core.telegram.org/bots/api#rich-messages) support for Telegram).
 
 Available parameters for the `msg.payload`
 

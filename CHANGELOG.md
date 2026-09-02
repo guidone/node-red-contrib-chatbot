@@ -1,3 +1,4 @@
+- **2.0.5** - Use `NODE_ENV` var for production mode
 - **2.0.4** - Added MIT license
 - **2.0.3** - Updated node-telegram-bot-api, added support for Telegram Rich Messages
 - **2.0.2** - Upgraded library `node-telegram-bot-api`
