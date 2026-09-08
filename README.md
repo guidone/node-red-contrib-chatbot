@@ -2,15 +2,18 @@
 <p align="center">
   <img src="https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/logo/redbot-logo.svg">
   <br/>
-  :heavy_exclamation_mark: <strong>New!</strong> RedBot 1.0 is out, <a href="https://www.javascript-jedi.com/redbot-1-0/" target="_blank">read here</a>
+  :heavy_exclamation_mark: <strong>New!</strong> RedBot 2.0 is out, see the <a href="CHANGELOG.md">changelog</a>
   <br />
 </p>
-  <p align="center"><a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/7b55ded1cc8c5f0f120d24efa9b63a2af6e182b01a3205c675676debe9021910/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f762f6e6f64652d7265642d636f6e747269622d63686174626f742e737667"><img src="https://camo.githubusercontent.com/7b55ded1cc8c5f0f120d24efa9b63a2af6e182b01a3205c675676debe9021910/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f762f6e6f64652d7265642d636f6e747269622d63686174626f742e737667" alt="Release" data-canonical-src="https://img.shields.io/npm/v/node-red-contrib-chatbot.svg" style="max-width: 100%;"></a>
-<a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/0a0eea53878861bf9655046c32079772ece8512daaa2a7571ac4149a79bc70d5/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f646d2f6e6f64652d7265642d636f6e747269622d63686174626f742e737667"><img src="https://camo.githubusercontent.com/0a0eea53878861bf9655046c32079772ece8512daaa2a7571ac4149a79bc70d5/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f646d2f6e6f64652d7265642d636f6e747269622d63686174626f742e737667" alt="npm" data-canonical-src="https://img.shields.io/npm/dm/node-red-contrib-chatbot.svg" style="max-width: 100%;"></a>
-<a href="https://redbot.discourse.group/" rel="nofollow"><img src="https://camo.githubusercontent.com/761ee21c0df85699bf7ce436206eb7d403d7109b014e8ab859a03597e19169af/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f466f72756d2d526564426f742d6f72616e6765" alt="RedBot Forum" data-canonical-src="https://img.shields.io/badge/Forum-RedBot-orange" style="max-width: 100%;"></a></p>
+<p align="center">
+  <a href="https://www.npmjs.com/package/node-red-contrib-chatbot"><img src="https://img.shields.io/npm/v/node-red-contrib-chatbot.svg" alt="Release"></a>
+  <a href="https://www.npmjs.com/package/node-red-contrib-chatbot"><img src="https://img.shields.io/npm/dm/node-red-contrib-chatbot.svg" alt="Downloads"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
+  <a href="https://github.com/guidone/node-red-contrib-chatbot/issues"><img src="https://img.shields.io/github/issues/guidone/node-red-contrib-chatbot" alt="Issues"></a>
+</p>
 <br />
 
-With **RedBot** you can visually build a full featured chat bot for **Telegram**, **Facebook Messenger**, **Viber** and **Slack** with Node-RED. ~~Almost~~ no coding skills required.
+With **RedBot** you can visually build a full featured chat bot for **Telegram**, **Facebook Messenger**, **WhatsApp**, **Viber** and **Slack** with Node-RED. ~~Almost~~ no coding skills required.
 
 > Node-RED is a tool for wiring together hardware devices, APIs and online services in new and interesting ways.
 
@@ -18,45 +21,48 @@ Maintaining **RedBot** is very time-consuming, if you like it, please consider:
 
 <a target="blank" href="https://www.paypal.me/guidone"><img src="https://img.shields.io/badge/Donate-PayPal-blue.svg"/></a>
 
-![RedBot](https://github.com/guidone/node-red-contrib-chatbot/blob/master/docs/images/node-red-screenshot.png)
+![RedBot](https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/images/node-red-screenshot.png)
 
 ## Documentation
 
-1. [RedBot nodes](https://github.com/guidone/node-red-contrib-chatbot/wiki/RedBot-nodes)
-2. [Examples](https://www.notion.so/redbot/Examples-5c2c1d6bd49641499c97b65d9f46d4ba)
-3. [Advanced examples](https://www.notion.so/redbot/Advanced-Topics-18a43568eaf14ee4a442ea4cf2f44068)
-4. [Chat context](https://www.notion.so/redbot/Chat-Context-3460c588cf234344974936acd05f8c16)
-5. [Changelog](https://www.notion.so/redbot/Change-log-b46a94ab6bbc4c7d8a586cbc21af7d78)
+1. [RedBot documentation](https://redbot.notion.site/RedBot-Documentation-1de27db692114f4db163f10e1586dc71)
+2. [Nodes index](docs/nodes.md)
+3. [Examples](https://www.notion.so/redbot/Examples-5c2c1d6bd49641499c97b65d9f46d4ba)
+4. [Advanced examples](https://www.notion.so/redbot/Advanced-Topics-18a43568eaf14ee4a442ea4cf2f44068)
+5. [Chat context](https://www.notion.so/redbot/Chat-Context-3460c588cf234344974936acd05f8c16)
+6. [Changelog](CHANGELOG.md)
 
 ## Getting started
 
+RedBot requires **Node.js >= 18** and **Node-RED >= 2.0**.
+
 First of all install [Node-RED](http://nodered.org/docs/getting-started/installation)
 
-```
-$ sudo npm install -g node-red
+```bash
+sudo npm install -g node-red
 ```
 
-Then open  the user data directory  `~/.node-red`  and install the package
+Then open the user data directory `~/.node-red` and install the package
 
-```
-$ cd ~/.node-red
-$ npm install node-red-contrib-chatbot
+```bash
+cd ~/.node-red
+npm install node-red-contrib-chatbot
 ```
 
 Then run
 
-```
+```bash
 node-red
 ```
 
-The next step is to create a chat bot, I recommend to use **Telegram** since the setup is easier ( **Telegram** allows polling to receive messages, so it's not necessary to create a https certificate).
-Use **@BotFather** to create a chat bot, [follow instructions here](https://core.telegram.org/bots#botfather) then copy you access **token**.
+The next step is to create a chat bot, I recommend to use **Telegram** since the setup is easier (**Telegram** allows polling to receive messages, so it's not necessary to create a https certificate).
+Use **@BotFather** to create a chat bot, [follow instructions here](https://core.telegram.org/bots#botfather) then copy your access **token**.
 
 Then open your **Node-RED** and add a `Telegram Receiver`, in the configuration panel, add a new bot and paste the **token**
 
 ![Telegram Receiver](https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/images/example-telegram-receiver.png)
 
-Now add a  `Message`  node and connect to the  `Telegram Receiver`
+Now add a `Message` node and connect it to the `Telegram Receiver`
 
 ![Simple Message](https://github.com/guidone/node-red-contrib-chatbot/raw/master/docs/images/example-simple-message.png)
 
@@ -66,13 +72,14 @@ Finally add a `Telegram Sender` node, don't forget to select in the configuratio
 
 Now you have a useful bot that answers *"Hi there!"* to any received message. We can do a lot better.
 
-
 ## Credits
 * Inspired by the Karl-Heinz Wind work [node-red-contrib-telegram](https://github.com/windkh/node-red-contrib-telegrambot)
 * [Telegram Bot API for NodeJS](https://github.com/yagop/node-telegram-bot-api)
-* [NLP.js](https://github.com/axa-group/nlp.js)
 
 ## The MIT License
+
+Copyright (c) 2026 Guidone
+
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -83,4 +90,3 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 Coded with :heart: in :it:
-
