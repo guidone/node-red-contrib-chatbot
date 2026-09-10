@@ -10,7 +10,7 @@ module.exports = function(RED) {
     globalContextHelper.init(this.context().global);
 
     this.waitingType = config.waitingType;
-    this.transports = ['telegram', 'slack', 'facebook'];
+    this.transports = ['telegram', 'slack', 'facebook', 'deepchat'];
 
     this.on('input', function(msg) {
 
