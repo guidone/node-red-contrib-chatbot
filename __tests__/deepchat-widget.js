@@ -14,15 +14,18 @@ const runPage = (options, context = {}) => {
   const source = html.split('<script type="module">\n')[1].split('</script>')[0];
 
   const nodes = {};
+  const submitted = [];
   const makeNode = id => ({
     id,
     textContent: '',
     style: {},
     open: false,
     listeners: {},
-    appendChild() {},
+    children: [],
+    appendChild(child) { this.children.push(child); },
     setAttribute() {},
     select() {},
+    submit() { submitted.push(this); },
     closest() { return makeNode('details'); },
     addEventListener(name, callback) { this.listeners[name] = callback; }
   });
@@ -36,6 +39,14 @@ const runPage = (options, context = {}) => {
     createElement: tag => makeNode(tag),
     createRange: () => ({ selectNodeContents() {} }),
     body: { appendChild() {}, removeChild() {} }
+  };
+  // the pen is prefilled by POSTing a form, there's no url to inspect
+  const openedPen = () => {
+    const form = submitted[submitted.length - 1];
+    if (form == null) {
+      return null;
+    }
+    return { form, data: JSON.parse(form.children[0].value) };
   };
   const store = {};
   const localStorage = {
@@ -57,7 +68,7 @@ const runPage = (options, context = {}) => {
   new Function('document', 'window', 'navigator', 'localStorage', source)(
     document, window, { clipboard: null }, localStorage
   );
-  return { html, nodes, snippet: nodes['embed-code'].textContent };
+  return { html, nodes, openedPen, snippet: nodes['embed-code'].textContent };
 };
 
 const httpBot = {
@@ -118,6 +129,49 @@ describe('Deep Chat test page', function() {
   it('carries the intro message over to the snippet, escaped', function() {
     const { snippet } = runPage({ ...httpBot, introMessage: 'Hi! I\'m "the" bot' });
     assert.include(snippet, 'chat.introMessage = { text: "Hi! I\'m \\"the\\" bot" };');
+  });
+
+  it('wires the CodePen button', function() {
+    const { nodes } = runPage(httpBot);
+    assert.isFunction(nodes['open-codepen'].listeners.click);
+  });
+
+  it('prefills a pen that POSTs to CodePen and opens in a new tab', function() {
+    const page = runPage(httpBot);
+    page.nodes['open-codepen'].listeners.click();
+    const { form, data } = page.openedPen();
+
+    assert.equal(form.method, 'POST');
+    assert.equal(form.action, 'https://codepen.io/pen/define');
+    assert.equal(form.target, '_blank');
+    assert.equal(form.children[0].name, 'data');
+    assert.include(data.title, 'My Bot');
+    assert.include(data.description, 'my-bot');
+    // one digit per editor, html/css/js
+    assert.equal(data.editors, '110');
+  });
+
+  it('puts the whole widget in the HTML panel of the pen', function() {
+    const page = runPage(socketBot);
+    page.nodes['open-codepen'].listeners.click();
+    const { data } = page.openedPen();
+
+    // the JS panel of a pen runs as a classic script: it would set the properties of <deep-chat>
+    // before the element upgrades and lose them, so the module script has to live in the HTML
+    assert.include(data.html, '<script type="module"');
+    assert.include(data.html, '<deep-chat id="redbot-chat"');
+    assert.include(data.html, 'websocket: true');
+    assert.isUndefined(data.js);
+
+    // what a visitor has to know for the pen to reach the bot
+    assert.include(data.html, 'https://cdpn.io');
+    assert.include(data.html, 'Allowed origins');
+  });
+
+  it('sends the same markup to the pen that the copy button gives', function() {
+    const page = runPage(httpBot);
+    page.nodes['open-codepen'].listeners.click();
+    assert.include(page.openedPen().data.html, page.snippet);
   });
 
   it('prefers the public url of the bot over the host of the page', function() {
