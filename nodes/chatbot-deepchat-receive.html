@@ -279,9 +279,12 @@
       <em>WebSocket</em> mode.</li>
     <li><code>GET /redbot/deepchat/&lt;botId&gt;/widget</code> &mdash; a ready made test page with a widget already
       wired to the bot in the mode it is configured with. Open it in a browser to try the flow. The page also
-      hands out the markup to embed the same widget anywhere: <em>Copy embed markup</em> puts it in the
-      clipboard, <em>Open in CodePen</em> opens a pen with it (a pen runs on <code>https://cdpn.io</code>, so
-      it needs a reachable <strong>Public URL</strong> and that origin in <strong>Allowed origins</strong>).</li>
+      hands out the markup to embed the same widget anywhere, in two variants: <strong>inline</strong>, where
+      the widget sits wherever the tag is, and <strong>floating</strong>, a round launcher pinned to the bottom
+      right corner that opens a 350px chat panel (closed by default, and reopened on the next page load if the
+      visitor left it open). Each variant can be copied to the clipboard or opened in a CodePen (a pen runs on
+      <code>https://cdpn.io</code>, so it needs a reachable <strong>Public URL</strong> and that origin in
+      <strong>Allowed origins</strong>).</li>
   </ul>
   <p>Media sent by the flow is served from <code>/redbot/deepchat/&lt;botId&gt;/files/&lt;id&gt;</code> and expires
   after one hour.</p>

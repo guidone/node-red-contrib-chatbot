@@ -14,6 +14,7 @@ const runPage = (options, context = {}) => {
   const source = html.split('<script type="module">\n')[1].split('</script>')[0];
 
   const nodes = {};
+  const created = [];
   const submitted = [];
   const makeNode = id => ({
     id,
@@ -36,7 +37,11 @@ const runPage = (options, context = {}) => {
       }
       return nodes[id];
     },
-    createElement: tag => makeNode(tag),
+    createElement: tag => {
+      const node = makeNode(tag);
+      created.push(node);
+      return node;
+    },
     createRange: () => ({ selectNodeContents() {} }),
     body: { appendChild() {}, removeChild() {} }
   };
@@ -68,7 +73,30 @@ const runPage = (options, context = {}) => {
   new Function('document', 'window', 'navigator', 'localStorage', source)(
     document, window, { clipboard: null }, localStorage
   );
-  return { html, nodes, openedPen, snippet: nodes['embed-code'].textContent };
+  return {
+    html,
+    nodes,
+    openedPen,
+    // the <deep-chat> the page built for itself, with everything it applied to it
+    pageChat: created.find(node => node.id === 'deep-chat'),
+    snippet: nodes['embed-code'].textContent
+  };
+};
+
+/**
+ * Evaluate one `chat.<name> = { ... };` of a snippet back into an object, to compare it with what the
+ * page applied to its own widget
+ */
+const literalOf = (markup, name) => {
+  const prefix = 'chat.' + name + ' = ';
+  const start = markup.indexOf(prefix);
+  if (start === -1) {
+    return null;
+  }
+  const end = markup.indexOf('\n  };', start);
+  const text = markup.slice(start + prefix.length, end + 4);
+  // eslint-disable-next-line no-new-func
+  return new Function('return ' + text)();
 };
 
 const httpBot = {
@@ -172,6 +200,120 @@ describe('Deep Chat test page', function() {
     const page = runPage(httpBot);
     page.nodes['open-codepen'].listeners.click();
     assert.include(page.openedPen().data.html, page.snippet);
+  });
+
+  it('wires a copy button for each variant', function() {
+    const { nodes } = runPage(httpBot);
+    assert.isFunction(nodes['copy-embed'].listeners.click);
+    assert.isFunction(nodes['copy-floating'].listeners.click);
+  });
+
+  it('builds the floating variant closed, with the launcher in the corner', function() {
+    const { nodes } = runPage(socketBot);
+    const floating = nodes['floating-code'].textContent;
+
+    // the panel is closed until the visitor asks for it
+    assert.include(floating, '#redbot-panel {');
+    assert.include(floating, '  visibility: hidden;');
+    assert.include(floating, '#redbot-panel.redbot-open {');
+
+    // pinned bottom right, with room from the edges, and 350px wide
+    assert.include(floating, '  width: 350px;');
+    assert.include(floating, '  right: 20px;\n    bottom: 96px;');
+    assert.include(floating, '  right: 20px;\n    bottom: 24px;');
+
+    // a circular indigo launcher wearing the icon of the Deep Chat node
+    assert.include(floating, '  background: #4f46e5;');
+    assert.include(floating, '  border-radius: 50%;');
+    assert.include(floating, '  width: 56px;');
+    assert.include(floating, 'viewBox="0 0 90 90"');
+    assert.include(floating, 'fill="#FFFFFF"');
+
+    // and it animates
+    assert.include(floating, 'transition: opacity 0.24s ease, transform 0.28s cubic-bezier');
+    assert.include(floating, 'prefers-reduced-motion');
+  });
+
+  it('remembers whether the floating chat was left open', function() {
+    const floating = runPage(socketBot).nodes['floating-code'].textContent;
+
+    assert.include(floating, "const openKey = key + '-open';");
+    assert.include(floating, "localStorage.setItem(openKey, open ? '1' : '0');");
+    assert.include(floating, "wasOpen = localStorage.getItem(openKey) === '1';");
+    assert.include(floating, '  setOpen(wasOpen);');
+    // the launcher toggles, so it has to be able to close too
+    assert.include(floating, "setOpen(!panel.classList.contains('redbot-open'));");
+  });
+
+  it('gives the floating variant the same connection as the inline one', function() {
+    ['http', 'websocket'].forEach(connectMode => {
+      const page = runPage({ ...httpBot, connectMode });
+      const inline = page.nodes['embed-code'].textContent;
+      const floating = page.nodes['floating-code'].textContent;
+      const connectOf = markup => markup.slice(markup.indexOf('chat.connect'), markup.indexOf('requestBodyLimits'));
+
+      assert.equal(connectOf(floating), connectOf(inline), `${connectMode} mode`);
+      // the same conversation, whichever variant the page embeds
+      assert.include(floating, "const key = 'redbot-deepchat-my-bot';");
+    });
+  });
+
+  it('survives a browser with no storage in both variants', function() {
+    const { nodes } = runPage(socketBot);
+    // localStorage throws in private mode, it must not take the widget down
+    [nodes['embed-code'].textContent, nodes['floating-code'].textContent].forEach(markup => {
+      assert.include(markup, '  try {\n    chatId = localStorage.getItem(key);');
+      assert.include(markup, '    chatId = newId();');
+    });
+  });
+
+  it('opens a pen of either variant', function() {
+    const page = runPage(socketBot);
+
+    page.nodes['open-codepen'].listeners.click();
+    const inlinePen = page.openedPen().data;
+    assert.include(inlinePen.html, '<deep-chat id="redbot-chat"');
+    assert.notInclude(inlinePen.html, 'redbot-launcher');
+
+    page.nodes['open-codepen-floating'].listeners.click();
+    const floatingPen = page.openedPen().data;
+    assert.include(floatingPen.title, '(floating)');
+    assert.include(floatingPen.html, 'redbot-launcher');
+    assert.include(floatingPen.css, 'Your page content');
+  });
+
+  it('gives both variants the same chat design as the test page', function() {
+    const page = runPage(httpBot);
+    const inline = page.nodes['embed-code'].textContent;
+    const floating = page.nodes['floating-code'].textContent;
+
+    ['textInput', 'submitButtonStyles'].forEach(name => {
+      // what the page applied to its own widget, and what it hands out, have to be the same thing
+      assert.deepEqual(literalOf(inline, name), page.pageChat[name], `inline ${name}`);
+      assert.deepEqual(literalOf(floating, name), page.pageChat[name], `floating ${name}`);
+    });
+
+    // the visible bits of that design
+    [inline, floating].forEach(markup => {
+      assert.include(markup, "text: 'Type a message...'");
+      assert.include(markup, "color: '#bcbcbc'");
+      assert.include(markup, "borderTop: '1px solid #d5d5d5'");
+      assert.include(markup, "transform: 'scale(1.21)'");
+    });
+  });
+
+  it('writes the design as readable javascript, not as JSON', function() {
+    const inline = runPage(httpBot).nodes['embed-code'].textContent;
+    assert.include(inline, '    styles: {');
+    assert.notInclude(inline, '"styles"');
+  });
+
+  it('rounds the inline widget like the page, and lets the panel round the floating one', function() {
+    const { nodes } = runPage(socketBot);
+    assert.include(nodes['embed-code'].textContent, 'border-radius: 10px;"');
+    // the panel clips the widget, a radius on both would fight
+    assert.include(nodes['floating-code'].textContent, '  border-radius: 12px;');
+    assert.notInclude(nodes['floating-code'].textContent, 'height: 480px; border: none; border-radius');
   });
 
   it('prefers the public url of the bot over the host of the page', function() {
