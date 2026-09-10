@@ -1,0 +1,440 @@
+<script type="text/javascript">
+  $.RedBot.registerType('chatbot-deepchat-node', {
+    category: 'config',
+    defaults: {
+      botname: {
+        value: '',
+        required: true
+      },
+      botId: {
+        value: '',
+        required: true,
+        validate: function(value) {
+          return /^[A-Za-z0-9_-]+$/.test(value);
+        }
+      },
+      publicUrl: {
+        value: ''
+      },
+      allowedOrigins: {
+        value: ''
+      },
+      introMessage: {
+        value: ''
+      },
+      acceptFiles: {
+        value: true
+      },
+      cdn: {
+        value: ''
+      },
+      timeout: {
+        value: 20000
+      },
+      collectWindow: {
+        value: 400
+      },
+      store: {
+        value: '',
+        type: 'chatbot-context-store',
+        required: false
+      },
+      debug: {
+        value: false
+      },
+      storeMessages: {
+        value: true
+      },
+      enableMissionControl: {
+        value: false
+      },
+      inspectMessages: {
+        value: true
+      },
+      chatbotId: {
+        value: ''
+      }
+    },
+    oneditprepare: function() {
+      var node = this;
+      var nodeRedUrl = $.RedBot.getNodeRedUrl();
+
+      var updateWidgetLink = function() {
+        var botId = $('#node-config-input-botId').val();
+        if (botId != null && botId !== '') {
+          $('.deepchat-widget-link')
+            .attr('href', nodeRedUrl + 'redbot/deepchat/' + encodeURIComponent(botId) + '/widget')
+            .text('/redbot/deepchat/' + botId + '/widget')
+            .show();
+        } else {
+          $('.deepchat-widget-link').hide();
+        }
+      };
+      $('#node-config-input-botId').on('change keyup', updateWidgetLink);
+      updateWidgetLink();
+
+      $.get(nodeRedUrl + 'redbot/globals')
+        .done(function(response) {
+          if (response != null && response.deepchat != null && response.deepchat[node.botname] != null) {
+            $('#node-config-input-botname').prop('readonly', true);
+            $('.form-editable').hide();
+            $('.form-warning').show();
+            $('.form-warning .bot-name').html('"' + node.botname + '"');
+          }
+          if (!response.missionControl) {
+            $('.form-row-not-mission-control').show();
+            $('.form-row-mission-control').hide();
+            $('#node-config-input-enableMissionControl')
+              .prop('disabled', true)
+              .prop('checked', false);
+          }
+        });
+      $('#node-config-input-enableMissionControl')
+        .change(function() {
+          if ($(this).is(':checked')) {
+            $('.form-row-not-mission-control').hide();
+            $('.form-row-mission-control').show();
+          } else {
+            $('.form-row-not-mission-control').show();
+            $('.form-row-mission-control').hide();
+          }
+        });
+      $('#node-config-input-enableMissionControl')
+        .change(function() {
+          if ($(this).is(':checked')) {
+            var chatbotId = $('#node-config-input-chatbotId').val();
+            if (chatbotId == null || chatbotId === '') {
+              $.ajax({ url: '/mc/chatbotIdGenerator' })
+                .then(function(res) {
+                  $('#node-config-input-chatbotId').val(res);
+                });
+            }
+          }
+        });
+    },
+    paletteName: 'Deep Chat Bot',
+    label: function () {
+      return this.botname;
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-deepchat-node">
+  <div class="form-row">
+    <label for="node-config-input-botname"><i class="icon-bookmark"></i> Bot Name</label>
+    <input type="text" id="node-config-input-botname">
+  </div>
+  <div class="form-editable">
+    <div class="form-row">
+      <label for="node-config-input-botId">Bot ID</label>
+      <input type="text" id="node-config-input-botId" placeholder="my-bot">
+      <div class="redbot-form-hint">
+        Identifier of this chatbot in the endpoint the widget connects to: <code>/redbot/deepchat/&lt;botId&gt;</code>.
+        Only letters, digits, <code>-</code> and <code>_</code>. Test page:
+        <a class="deepchat-widget-link" href="#" target="_blank" style="display:none;"></a>
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-introMessage">Intro message</label>
+      <input type="text" id="node-config-input-introMessage" placeholder="Hi! How can I help you?">
+      <div class="redbot-form-hint">
+        Message shown by the widget in the test page before the conversation starts.
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-acceptFiles">Accept files</label>
+      <input type="checkbox" value="true" id="node-config-input-acceptFiles" style="width:auto;">
+      <span class="redbot-form-hint">Let the user attach files to the messages</span>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-timeout">Timeout</label>
+      <input type="text" id="node-config-input-timeout" placeholder="20000">
+      <div class="redbot-form-hint">
+        Milliseconds the widget request is held open waiting for the flow to answer. Messages produced after
+        the timeout are delivered with the next message of the user.
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-collectWindow">Collect window</label>
+      <input type="text" id="node-config-input-collectWindow" placeholder="400">
+      <div class="redbot-form-hint">
+        Milliseconds to wait for further messages after the flow sent one, all messages collected in this
+        window are delivered to the widget in the same response.
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-publicUrl">Public URL</label>
+      <input type="text" id="node-config-input-publicUrl" placeholder="https://mybot.example.com">
+      <div class="redbot-form-hint">
+        Base URL used to build the links of the media sent by the flow. Leave empty to use relative URLs
+        (works when the widget is hosted on the same host of Node-RED).
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-allowedOrigins">Allowed origins</label>
+      <input type="text" id="node-config-input-allowedOrigins" placeholder="https://www.example.com">
+      <div class="redbot-form-hint">
+        Comma separated list of origins allowed to call the endpoint (CORS), use <code>*</code> for any.
+        Leave empty to only allow the widget hosted on the same host of Node-RED.
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-cdn">Deep Chat bundle</label>
+      <input type="text" id="node-config-input-cdn" placeholder="https://cdn.jsdelivr.net/npm/deep-chat@2.5.1/dist/deepChat.bundle.js">
+      <div class="redbot-form-hint">
+        URL of the Deep Chat script used by the test page, leave empty for the default CDN.
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-store">Context</label>
+      <input type="text" id="node-config-input-store" placeholder="Select storage for chat context">
+      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+        Select the chat context provider to use with this bot, if none is selected then non-persistent "memory" will be used.
+      </div>
+    </div>
+    <div class="form-row form-row-not-mission-control">
+      <label for="node-config-input-debug">Debug</label>
+      <input type="checkbox" value="true" id="node-config-input-debug">
+      <span class="redbot-form-hint">Show debug information on send/receive</span>
+    </div>
+    <div class="form-row form-row-mission-control" style="display:none;">
+      <label for="node-config-input-storeMessages">Store messages</label>
+      <input type="checkbox" value="true" id="node-config-input-storeMessages">
+      <span class="redbot-form-hint">Store inbound and outbound messages in Mission Control</span>
+    </div>
+    <div class="form-row form-row-mission-control" style="display:none;">
+      <label for="node-config-input-inspectMessages">Inspect messages</label>
+      <input type="checkbox" value="true" id="node-config-input-inspectMessages">
+      <span class="redbot-form-hint">Publish messages to the Mission Control inspector</span>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-enableMissionControl">Mission Control</label>
+      <input type="checkbox" value="true" id="node-config-input-enableMissionControl">
+      <span class="redbot-form-hint">Use Mission Control as the context provider</span>
+    </div>
+    <div class="form-row" style="display:none;">
+      <label for="node-config-input-chatbotId">Chatbot ID</label>
+      <input type="text" id="node-config-input-chatbotId">
+    </div>
+  </div>
+  <div class="form-warning" style="display:none;">
+    This bot configuration is stored in <b>Node-RED</b> <em>settings.js</em> and cannot be modified from the UI, check
+    the section <code>functionGlobalContext</code> near the key <em class="bot-name">""</em>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-deepchat-node">
+  <p><a href="https://deepchat.dev/">Deep Chat</a> is a web component that embeds a chat widget in any web page.
+  The <strong>Deep Chat</strong> connector turns a RedBot flow into the backend of that widget: no external service,
+  no webhook to register, no token &mdash; the widget talks straight to <strong>Node-RED</strong>.</p>
+
+  <h4>Endpoints</h4>
+  <p>Each bot configuration declares a <strong>Bot ID</strong> which becomes part of two endpoints:</p>
+  <ul>
+    <li><code>POST /redbot/deepchat/&lt;botId&gt;</code> &mdash; the endpoint the widget connects to.</li>
+    <li><code>GET /redbot/deepchat/&lt;botId&gt;/widget</code> &mdash; a ready made test page with a widget already
+      wired to the endpoint above. Open it in a browser to try the flow.</li>
+  </ul>
+  <p>Media sent by the flow is served from <code>/redbot/deepchat/&lt;botId&gt;/files/&lt;id&gt;</code> and expires
+  after one hour.</p>
+
+  <h4>Embedding the widget</h4>
+  <p>Add the Deep Chat script to your page and point it at the endpoint. The <code>chatId</code> identifies the
+  conversation and must be stable for the same user (generate it once and keep it in <em>localStorage</em>):</p>
+  <pre><code class="language-html">&lt;script type="module" src="https://cdn.jsdelivr.net/npm/deep-chat@2.5.1/dist/deepChat.bundle.js"&gt;&lt;/script&gt;
+&lt;deep-chat id="chat"&gt;&lt;/deep-chat&gt;
+&lt;script type="module"&gt;
+  const chat = document.getElementById('chat');
+  chat.connect = {
+    url: 'https://mybot.example.com/redbot/deepchat/my-bot',
+    method: 'POST',
+    additionalBodyProps: { chatId: 'a-stable-id', userId: 'a-stable-id' }
+  };
+  chat.requestBodyLimits = { maxMessages: 1 };
+&lt;/script&gt;</code></pre>
+  <p>If the page is served by a different host, list its origin in <strong>Allowed origins</strong> and set
+  <strong>Public URL</strong> so that media links are absolute.</p>
+
+  <h4>Request and response</h4>
+  <p>The widget POSTs <code>{ "messages": [{ "role": "user", "text": "..." }], "chatId": "..." }</code>. The
+  connector holds the response open while the flow answers and replies with the array of messages the flow
+  produced. Anything sent after the timeout (for instance by a <em>Push Message</em> node) is buffered and
+  delivered with the next message of the user.</p>
+
+  <h4>Supported messages</h4>
+  <ul>
+    <li><strong>Message</strong> &mdash; plain text.</li>
+    <li><strong>Inline buttons</strong> / <strong>Quick Replies</strong> &mdash; rendered as Deep Chat suggestion
+      buttons, clicking one sends back the <em>value</em> of the button.</li>
+    <li><strong>Photo</strong>, <strong>Video</strong>, <strong>Audio</strong>, <strong>Document</strong> &mdash;
+      served from the bot files endpoint.</li>
+    <li><strong>Location</strong> &mdash; rendered as a link to OpenStreetMap.</li>
+  </ul>
+  <p>Files attached by the user are forwarded to the flow as <em>photo</em>, <em>audio</em>, <em>video</em> or
+  <em>document</em> messages (up to 20MB), the text typed along with them becomes the caption.</p>
+
+  <h4>Development vs Production</h4>
+  <p><code>Deep Chat Receiver</code> and <code>Deep Chat Sender</code> nodes have a double bot configuration for
+  <em>development</em> and <em>production</em>. By default the <em>development</em> configuration is used, to switch
+  to <em>production</em> set the <code>environment</code> global variable to <code>"production"</code> in
+  <em>settings.js</em>.</p>
+</script>
+
+<script type="text/javascript">
+  $.RedBot.registerType('chatbot-deepchat-receive', {
+    category: $.RedBot.config.name + ' Platforms',
+    color: '#FFCC66',
+    defaults: {
+      bot: {
+        value: '',
+        type: 'chatbot-deepchat-node',
+        required: true
+      },
+      botProduction: {
+        value: '',
+        type: 'chatbot-deepchat-node',
+        required: false
+      }
+    },
+    inputs: 0,
+    outputs: 1,
+    icon: 'deepchat.svg',
+    paletteLabel: 'Deep Chat Receiver',
+    label: function () {
+      return 'Deep Chat Receiver';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-deepchat-receive">
+  <div class="form-row">
+    <label for="node-input-bot" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(development)</span></label>
+    <input type="text" id="node-input-bot" placeholder="Bot">
+  </div>
+  <div class="form-row" style="margin-top:25px;">
+    <label for="node-input-botProduction" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(production)</span></label>
+    <input type="text" id="node-input-botProduction" placeholder="Bot">
+  </div>
+  <div class="redbot-form-hint">
+    Bot for <strong>production</strong> will be launched only if the global variable <em>"environment"</em> in <em>settings.js</em> is set to <em>"production"</em>, otherwise will be used the configuration for <strong>development</strong>.
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-deepchat-receive">
+  <p>Input node for the <a href="https://deepchat.dev/">Deep Chat</a> widget. Emits the messages sent by the
+  visitors of the page hosting the widget.</p>
+  <p>Open <code>/redbot/deepchat/&lt;botId&gt;/widget</code> in a browser for a ready made test page.</p>
+</script>
+
+<script type="text/javascript">
+  $.RedBot.registerType('chatbot-deepchat-send', {
+    category: $.RedBot.config.name + ' Platforms',
+    color: '#FFCC66',
+    defaults: {
+      bot: {
+        value: '',
+        type: 'chatbot-deepchat-node',
+        required: true
+      },
+      botProduction: {
+        value: '',
+        type: 'chatbot-deepchat-node',
+        required: false
+      },
+      track: {
+        value: false
+      },
+      passThrough: {
+        value: false
+      },
+      errorOutput: {
+        value: false
+      },
+      outputs: {
+        value: 0
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'deepchat.svg',
+    paletteLabel: 'Deep Chat Sender',
+    label: function () {
+      return 'Deep Chat Sender';
+    },
+    inputLabels: 'Chat flow',
+    outputLabels: function(idx) {
+      if (idx === 0 && this.track) {
+        return 'Track';
+      } else if (idx === 0 && this.passThrough) {
+        return 'Pass through';
+      } else if (idx === 1) {
+        return 'Error';
+      }
+    },
+    oneditprepare: function() {
+      $('#node-input-passThrough')
+        .click(function() {
+          if ($(this).is(':checked')) {
+            $('#node-input-track').prop('checked', false);
+          }
+        });
+      $('#node-input-track')
+        .click(function() {
+          if ($(this).is(':checked')) {
+            $('#node-input-passThrough').prop('checked', false);
+          }
+        });
+    },
+    oneditsave: function() {
+      var count = 0;
+      var track = $('#node-input-track').is(':checked');
+      var passThrough = $('#node-input-passThrough').is(':checked');
+      var errorOutput = $('#node-input-errorOutput').is(':checked');
+      if (track || passThrough) {
+        count = 1;
+      }
+      if (errorOutput) {
+        count += 1;
+      }
+      this.outputs = count;
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="chatbot-deepchat-send">
+  <div class="form-row">
+    <label for="node-input-bot" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(development)</span></label>
+    <input type="text" id="node-input-bot" placeholder="Bot">
+  </div>
+  <div class="form-row" style="margin-top:25px;">
+    <label for="node-input-botProduction" style="display:block;width:100%;">Bot configuration <span class="redbot-environment">(production)</span></label>
+    <input type="text" id="node-input-botProduction" placeholder="Bot">
+  </div>
+  <div class="redbot-form-hint">
+    Bot for <strong>production</strong> will be launched only if the global variable <em>"environment"</em> in <em>settings.js</em> is set to <em>"production"</em>, otherwise will be used the configuration for <strong>development</strong>.
+  </div>
+  <div class="form-row" style="margin-top:25px;">
+    <label for="node-input-track" style="margin-bottom:0px;">Track</label>
+    <input type="checkbox" value="true" id="node-input-track" style="margin-top:0px;width:auto;">
+    <div class="redbot-form-hint">
+      Track response of the user for this message: any further answer will be redirect to the output pin.
+    </div>
+    <label for="node-input-passThrough" style="margin-bottom:0px;margin-top:15px;">Pass Through</label>
+    <input type="checkbox" value="true" id="node-input-passThrough" style="margin-top:0px;width:auto;">
+    <div class="redbot-form-hint">
+      Forward the message to the output pin after sending (useful to chain messages and keep the right order)
+    </div>
+    <label for="node-input-errorOutput" style="margin-bottom:0px;margin-top:15px;">Error Output</label>
+    <input type="checkbox" value="true" id="node-input-errorOutput" style="margin-top:0px;width:auto;">
+    <div class="redbot-form-hint">
+      Redirect the flow to the error pin in case of platform specific error on sending the message
+    </div>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="chatbot-deepchat-send">
+  <p>Output node for the <a href="https://deepchat.dev/">Deep Chat</a> widget. Sends text, inline buttons, quick
+  replies, media and locations back to the browser.</p>
+  <p>Messages sent while the widget is not waiting for an answer (for instance from a <em>Push Message</em> node)
+  are buffered and delivered with the next message of the user.</p>
+</script>
