@@ -193,6 +193,12 @@ Send options follow the registration pattern of
 * Unlike a webhook platform, delivery is not acknowledged by anyone: if the
   browser navigates away mid-request the response is dropped and, unlike the
   out-of-band case, not buffered.
+* Nothing can be shown to the visitor *between* the request and its response, so
+  the *Waiting* node (`action`) is a no-op in this mode — Deep Chat is already
+  showing the loading bubble of the request in flight, and a wait pushed into the
+  bridge would either close the collecting window before the answer is ready or
+  surface on the next round trip. It does work over the WebSocket of ADR 004,
+  where the flow can push whenever it wants.
 
 ## **Alternatives Considered**
 

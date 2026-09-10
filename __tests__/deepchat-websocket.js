@@ -181,6 +181,36 @@ describe('Deep Chat platform, WebSocket mode', function() {
     assert.deepEqual(socket.frames.map(frame => frame.text), ['first', 'second', 'third']);
   });
 
+  it('sends the waiting status of the flow as a temporary message', async function() {
+    chatServer.on('message', async message => {
+      await reply(message, { type: 'action', waitingType: 'upload_photo' });
+      await reply(message, { type: 'message', content: 'here it is' });
+    });
+
+    const socket = await open('/redbot/deepchat/test-ws-bot/ws?chatId=chat-ws-waiting');
+    send(socket, 'send me a photo');
+
+    await socket.waitFor(2);
+    const [waiting, answer] = socket.frames;
+    // Deep Chat drops a temporary message as soon as the next one arrives, the lifetime of a typing dots
+    assert.include(waiting.html, 'deep-chat-temporary-message');
+    assert.include(waiting.html, 'Uploading a photo');
+    assert.include(waiting.html, 'redbot-waiting-dots');
+    assert.deepEqual(answer, { text: 'here it is', role: 'ai' });
+  });
+
+  it('defaults the waiting status to plain typing, with no label', async function() {
+    chatServer.on('message', message => reply(message, { type: 'action' }));
+
+    const socket = await open('/redbot/deepchat/test-ws-bot/ws?chatId=chat-ws-typing');
+    send(socket, 'hello');
+
+    await socket.waitFor(1);
+    const [waiting] = socket.frames;
+    assert.include(waiting.html, 'deep-chat-temporary-message');
+    assert.notInclude(waiting.html, 'redbot-waiting-label');
+  });
+
   it('buffers what the flow sends out of band and delivers it on reconnection', async function() {
     let inbound = null;
     chatServer.on('message', message => { inbound = message; });

@@ -138,6 +138,22 @@ describe('Deep Chat platform', function() {
     ]);
   });
 
+  it('leaves the waiting status of the flow out of the response', async function() {
+    chatServer.on('message', message => {
+      reply(message, { type: 'action', waitingType: 'typing' })
+        // the wait must not arm the collecting window, or the answer would miss this response
+        .then(() => new Promise(resolve => setTimeout(resolve, 150)))
+        .then(() => reply(message, { type: 'message', content: 'answer' }));
+    });
+
+    const response = await call(port, '/redbot/deepchat/test-bot', {
+      method: 'POST',
+      body: { messages: [{ role: 'user', text: 'hello' }], chatId: 'chat-waiting' }
+    });
+
+    assert.deepEqual(JSON.parse(response.body), [{ text: 'answer', role: 'ai' }]);
+  });
+
   it('renders inline buttons as Deep Chat suggestion buttons', async function() {
     chatServer.on('message', message => {
       reply(message, {
