@@ -25,3 +25,4 @@ marked **Accepted (documented retroactively)**.
 | 002 | [Platform Parameter Registration Pattern](ADR%20002%20%E2%80%93%20Platform%20Parameter%20Registration%20Pattern.md) | Accepted (documented retroactively) |
 | 003 | [Response Bridge for Browser Widget Platforms](ADR%20003%20%E2%80%93%20Response%20Bridge%20for%20Browser%20Widget%20Platforms.md) | Accepted |
 | 004 | [WebSocket Endpoints in ChatExpress](ADR%20004%20%E2%80%93%20WebSocket%20Endpoints%20in%20ChatExpress.md) | Accepted |
+| 005 | [Node Documentation Is Generated from Notion](ADR%20005%20%E2%80%93%20Node%20Documentation%20Is%20Generated%20from%20Notion.md) | Accepted (documented retroactively) |

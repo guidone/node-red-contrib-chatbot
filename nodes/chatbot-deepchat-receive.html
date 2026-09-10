@@ -391,10 +391,384 @@
   </div>
 </script>
 
-<script type="text/x-red" data-help-name="chatbot-deepchat-receive">
-  <p>Input node for the <a href="https://deepchat.dev/">Deep Chat</a> widget. Emits the messages sent by the
-  visitors of the page hosting the widget.</p>
-  <p>Open <code>/redbot/deepchat/&lt;botId&gt;/widget</code> in a browser for a ready made test page.</p>
+<script type="text/x-red" data-help-name="chatbot-deepchat-receive"><p><a href="https://deepchat.dev/">Deep Chat</a> is a open source web component that drops a chat widget into any web page. The <strong>Deep Chat</strong> connector turns a <strong>RedBot</strong> flow into the backend of that widget.</p>
+<p>Unlike every other platform in RedBot, there is <strong>nothing to sign up for</strong>: no external service, no web-hook to register with a third party, no access token, no public HTTPS address. The widget talks straight to Node-RED. That makes it the fastest way to get a working chatbot — and the only platform you can develop entirely offline.</p>
+<h2 id="1-what-you-need"><strong>1. What you need</strong></h2>
+<p>That&#39;s it. You can skip ngrok, tunnels and certificates — they are needed by the web-hook platforms (WhatsApp, Facebook, Telegram web-hook mode), not by this one.</p>
+<h2 id="2-drop-the-nodes-in-a-flow"><strong>2. Drop the nodes in a flow</strong></h2>
+<p>Three nodes, wired left to right:</p>
+<pre><code class="language-plain">[Deep Chat Receiver] → [Message] → [Deep Chat Sender]
+</code></pre>
+<ul>
+<li><p><strong>Deep Chat Receiver</strong> — the inbound node, has no input and one output. Every message a visitor types enters the flow here.</p>
+</li>
+<li><p><strong>Message</strong> — any RedBot node producing an answer. Start with a plain text message.</p>
+</li>
+<li><p><strong>Deep Chat Sender</strong> — the outbound node, sends whatever reaches it back to the widget.</p>
+</li>
+</ul>
+<p>All three are in the <strong>RedBot Platforms</strong> palette category.</p>
+<h2 id="3-create-the-bot-configuration"><strong>3. Create the bot configuration</strong></h2>
+<p>Double-click the <strong>Deep Chat Receiver</strong> node, then click the pencil next to <em>Bot configuration (development)</em> to create a new configuration node.</p>
+<p><strong>The only field you must fill in</strong></p>
+<table>
+<thead>
+<tr>
+<th><strong>Field</strong></th>
+<th><strong>Value</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Bot ID</strong></td>
+<td>a slug identifying this bot, e.g. <code>my-bot</code></td>
+</tr>
+</tbody></table>
+<p>The <strong>Bot ID</strong> becomes part of every endpoint the connector mounts, so it must be unique across the Node-RED instance and URL-safe (letters, digits, dashes).</p>
+<p><strong>Everything else, and when to touch it</strong></p>
+<table>
+<thead>
+<tr>
+<th><strong>Field</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>What it does</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Bot Name</strong></td>
+<td>—</td>
+<td>label shown in the Node-RED editor and the startup banner</td>
+</tr>
+<tr>
+<td><strong>Connect mode</strong></td>
+<td><code>http</code></td>
+<td><code>http</code> (request/response) or <code>websocket</code> (the server pushes at any time) — see <a href="https://claude.ai/epitaxy/local_ab742e55-e3e8-44a9-9753-8564eb2646a2#6-http-or-websocket">§6</a></td>
+</tr>
+<tr>
+<td><strong>Intro message</strong></td>
+<td>—</td>
+<td>first bubble the widget shows before the visitor types anything (client side only, the flow never sees it)</td>
+</tr>
+<tr>
+<td><strong>Accept files</strong></td>
+<td>on</td>
+<td>let the visitor attach files (HTTP mode only)</td>
+</tr>
+<tr>
+<td><strong>Heartbeat</strong></td>
+<td><code>30000</code></td>
+<td>ms between ping/pong sweeps on a socket, <code>0</code> disables — WebSocket mode only</td>
+</tr>
+<tr>
+<td><strong>Timeout</strong></td>
+<td><code>20000</code></td>
+<td>ms an inbound request is held open waiting for the flow — HTTP mode only</td>
+</tr>
+<tr>
+<td><strong>Collect window</strong></td>
+<td><code>400</code></td>
+<td>ms to wait for further flow messages after the last one — HTTP mode only</td>
+</tr>
+<tr>
+<td><strong>Public URL</strong></td>
+<td>—</td>
+<td>absolute base of your Node-RED, needed so media links work when the widget lives on another host</td>
+</tr>
+<tr>
+<td><strong>Allowed origins</strong></td>
+<td>—</td>
+<td>comma-separated origins allowed to talk to the bot; empty means same origin only</td>
+</tr>
+<tr>
+<td><strong>Deep Chat bundle</strong></td>
+<td>jsDelivr <code>deep-chat@2.5.1</code></td>
+<td>override to self-host the widget script</td>
+</tr>
+<tr>
+<td><strong>Context</strong></td>
+<td>—</td>
+<td>context provider for the conversation (as in every other platform)</td>
+</tr>
+<tr>
+<td><strong>Debug</strong></td>
+<td>off</td>
+<td>log inbound/outbound messages</td>
+</tr>
+<tr>
+<td><strong>Store messages</strong> / <strong>Inspect messages</strong> / <strong>Mission Control</strong> / <strong>Chatbot ID</strong></td>
+<td>—</td>
+<td>standard RedBot/Mission Control options, identical to the other platforms</td>
+</tr>
+</tbody></table>
+<p>Deploy. The startup banner in the Node-RED log lists the endpoints the bot mounted.</p>
+<h2 id="4-try-it-the-built-in-test-page"><strong>4. Try it: the built-in test page</strong></h2>
+<p>Open in a browser:</p>
+<pre><code class="language-plain">http://localhost:1880/redbot/deepchat/&lt;botId&gt;/widget
+</code></pre>
+<p>This is a ready-made page with a widget already wired to the bot <strong>in the mode it is configured with</strong>. Type something and the flow answers.</p>
+<p>The page also hands out the markup to embed the same widget anywhere, in two variants:</p>
+<ul>
+<li><p><strong>inline</strong> — the widget sits wherever the tag is placed;</p>
+</li>
+<li><p><strong>floating</strong> — a round launcher pinned to the bottom-right corner that opens a 350px chat panel (closed by default, reopened on the next page load if the visitor left it open).</p>
+</li>
+</ul>
+<p>Each variant can be copied to the clipboard or opened directly in a CodePen.</p>
+<blockquote>
+<p>A CodePen pen runs on <code>https://cdpn.io</code>, so for the CodePen buttons to work the bot needs a reachable <strong>Public URL</strong> and <code>https://cdpn.io</code> listed in <strong>Allowed origins</strong>.</p>
+</blockquote>
+<hr>
+<h2 id="5-embed-the-widget-in-your-own-page"><strong>5. Embed the widget in your own page</strong></h2>
+<h3 id="http-mode"><strong>HTTP mode</strong></h3>
+<pre><code class="language-plain">&lt;script type=&quot;module&quot; src=&quot;https://cdn.jsdelivr.net/npm/deep-chat@2.5.1/dist/deepChat.bundle.js&quot;&gt;&lt;/script&gt;
+&lt;deep-chat id=&quot;chat&quot;&gt;&lt;/deep-chat&gt;
+&lt;script type=&quot;module&quot;&gt;
+  const chat= document.getElementById(&#39;chat&#39;);
+  chat.connect= {
+    url: &#39;https://mybot.example.com/redbot/deepchat/my-bot&#39;,
+    method: &#39;POST&#39;,
+    additionalBodyProps: { chatId: &#39;a-stable-id&#39;, userId: &#39;a-stable-id&#39; }
+  };
+  chat.requestBodyLimits= { maxMessages: 1 };
+&lt;/script&gt;
+</code></pre>
+<h3 id="websocket-mode"><strong>WebSocket mode</strong></h3>
+<p>Deep Chat does not add <code>additionalBodyProps</code> to a socket frame, so the conversation is identified by the <strong>query string of the upgrade request</strong>:</p>
+<pre><code class="language-plain">&lt;script type=&quot;module&quot;&gt;
+  const chatId= &#39;a-stable-id&#39;;
+  chat.connect= {
+    url: &#39;wss://mybot.example.com/redbot/deepchat/my-bot/ws?chatId=&#39; + chatId+ &#39;&amp;userId=&#39; + chatId,
+    websocket: true
+  };
+&lt;/script&gt;
+</code></pre>
+<h3 id="about-chatid"><strong>About</strong> <strong><code>chatId</code></strong></h3>
+<p><code>chatId</code> identifies the conversation and <strong>must be stable for the same visitor</strong> — generate it once and keep it in <code>localStorage</code>, the way the test page does. If you omit it, the connector falls back to the <code>x-redbot-chatid</code> header and then to a cookie it sets itself (<code>redbot-deepchat-&lt;botId&gt;</code>), so a bare <code>&lt;deep-chat&gt;</code> tag still gets a stable conversation instead of a new one per message. Both transports agree on the cookie name, so a visitor switching mode keeps the same conversation.</p>
+<p><code>userId</code> defaults to the <code>chatId</code> when not sent.</p>
+<h3 id="cross-origin"><strong>Cross-origin</strong></h3>
+<p>If the page is served by a different host than Node-RED:</p>
+<ol>
+<li><p>list its origin in <strong>Allowed origins</strong>;</p>
+</li>
+<li><p>set <strong>Public URL</strong> so media links are absolute.</p>
+</li>
+</ol>
+<p>CORS does not apply to WebSockets — the browser opens the socket whatever the origin is, with no preflight — so in WebSocket mode the same list is enforced by hand on the handshake, and a connection from a disallowed origin is refused with a <code>401</code>.</p>
+<h2 id="6-http-or-websocket"><strong>6. HTTP or WebSocket?</strong></h2>
+<p>Both modes speak the same wire format and support the same message types. Pick with this table:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>HTTP (default)</strong></th>
+<th><strong>WebSocket</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Transport</td>
+<td>one <code>POST</code> per message, response held open</td>
+<td>persistent socket</td>
+</tr>
+<tr>
+<td>Latency</td>
+<td>pays the collect window (400ms) on every answer</td>
+<td>none</td>
+</tr>
+<tr>
+<td>Multi-message answers</td>
+<td>gathered into one response</td>
+<td>pushed one by one, as the flow produces them</td>
+</tr>
+<tr>
+<td><strong>Push Message</strong> to an idle visitor</td>
+<td>buffered, delivered on the visitor&#39;s <em>next</em> message</td>
+<td>delivered immediately</td>
+</tr>
+<tr>
+<td>Late answer (after the timeout)</td>
+<td>surfaces on the visitor&#39;s next message, possibly out of order</td>
+<td>not applicable</td>
+</tr>
+<tr>
+<td><strong>Waiting</strong> node</td>
+<td>no-op (the widget is already showing its own loading bubble)</td>
+<td>works</td>
+</tr>
+<tr>
+<td>File uploads from the visitor</td>
+<td>✅</td>
+<td>❌ (hidden in the widget)</td>
+</tr>
+<tr>
+<td>Media sent by the flow</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Reverse proxy</td>
+<td>works through anything</td>
+<td>must forward <code>Upgrade</code> and <code>Connection</code></td>
+</tr>
+<tr>
+<td><code>httpNodeAuth</code></td>
+<td>applies</td>
+<td><strong>does not apply</strong> — an upgrade request never enters the Express stack</td>
+</tr>
+</tbody></table>
+<p>Rules of thumb:</p>
+<ul>
+<li><p><strong>Start with HTTP.</strong> It is the default, it works through every proxy, and it is the only mode that can receive attachments.</p>
+</li>
+<li><p><strong>Switch to WebSocket</strong> when the flow needs to talk to the visitor unprompted (<em>Push Message</em>, a <em>Waiting</em> indicator, a long-running job reporting progress), and you control the proxy in front of Node-RED.</p>
+</li>
+<li><p><strong>Do not expose a WebSocket bot that relies on</strong> <strong><code>httpNodeAuth</code></strong> — the origin check is the only gate on that endpoint.</p>
+</li>
+</ul>
+<p>The mechanics behind both modes are recorded in ADR 003 – Response Bridge for Browser Widget Platforms and ADR 004 – WebSocket Endpoints in ChatExpress.</p>
+<h2 id="7-endpoints"><strong>7. Endpoints</strong></h2>
+<p>Every bot configuration mounts these, all prefixed by <code>httpNodeRoot</code> if you set one:</p>
+<table>
+<thead>
+<tr>
+<th><strong>Endpoint</strong></th>
+<th><strong>Mode</strong></th>
+<th><strong>Purpose</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>POST /redbot/deepchat/&lt;botId&gt;</code></td>
+<td>both</td>
+<td>the endpoint the widget posts to. Stays mounted in WebSocket mode (it is the only way to upload a file) but answers with an empty array — the flow replies over the socket</td>
+</tr>
+<tr>
+<td><code>GET /redbot/deepchat/&lt;botId&gt;/ws</code></td>
+<td>web-socket</td>
+<td>the socket endpoint</td>
+</tr>
+<tr>
+<td><code>GET /redbot/deepchat/&lt;botId&gt;/widget</code></td>
+<td>both</td>
+<td>the test page of <a href="https://claude.ai/epitaxy/local_ab742e55-e3e8-44a9-9753-8564eb2646a2#4-try-it-the-built-in-test-page">§4</a></td>
+</tr>
+<tr>
+<td><code>GET /redbot/deepchat/&lt;botId&gt;/files/&lt;id&gt;</code></td>
+<td>both</td>
+<td>media produced by the flow, <strong>expires after one hour</strong></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="8-what-the-flow-can-send"><strong>8. What the flow can send</strong></h2>
+<table>
+<thead>
+<tr>
+<th><strong>RedBot node</strong></th>
+<th><strong>Rendered as</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Message</strong></td>
+<td>plain text bubble</td>
+</tr>
+<tr>
+<td><strong>Inline Buttons</strong> / <strong>Quick Replies</strong></td>
+<td>Deep Chat suggestion buttons</td>
+</tr>
+<tr>
+<td><strong>Photo</strong>, <strong>Video</strong>, <strong>Audio</strong>, <strong>Document</strong></td>
+<td>media, served from the bot&#39;s files endpoint</td>
+</tr>
+<tr>
+<td><strong>Location</strong></td>
+<td>a link to OpenStreetMap</td>
+</tr>
+<tr>
+<td><strong>Waiting</strong></td>
+<td>a temporary message the widget drops when the answer arrives — <strong>WebSocket mode only</strong></td>
+</tr>
+</tbody></table>
+<h3 id="buttons-keep-their-post-back-semantics"><strong>Buttons keep their post-back semantics</strong></h3>
+<p>Deep Chat&#39;s suggestion buttons submit the button&#39;s <strong>text content</strong> as an ordinary user message — there is no payload channel like Telegram&#39;s <code>callback_data</code>. The connector works around it: it remembers the buttons it just sent, and translates a text matching a button label back into that button&#39;s <strong>value</strong> before the flow sees it.</p>
+<p>So you author button flows exactly as on any other platform: match on the <code>value</code>, not on the label.</p>
+<h2 id="9-what-the-visitor-can-send"><strong>9. What the visitor can send</strong></h2>
+<ul>
+<li><p><strong>Text</strong> — arrives as a normal <code>message</code>.</p>
+</li>
+<li><p><strong>Attachments</strong> — forwarded to the flow as <code>photo</code>, <code>audio</code>, <code>video</code> or <code>document</code> messages, up to <strong>20MB</strong>, with the text typed alongside them becoming the <code>caption</code> of the first file. The payload content is the file <strong>buffer</strong>, as in every other platform.</p>
+</li>
+</ul>
+<p>Attachments are <strong>HTTP mode only</strong>: Deep Chat uploads files as <code>multipart/form-data</code>, which has no equivalent on a socket, so the attachment button is hidden in WebSocket mode. Set <strong>Accept files</strong> off to refuse uploads entirely (the endpoint then answers <code>415</code>).</p>
+<h2 id="10-development-vs-production"><strong>10. Development vs production</strong></h2>
+<p><code>Deep Chat Receiver</code> and <code>Deep Chat Sender</code> carry a double bot configuration, <em>development</em> and <em>production</em>, like the other platform nodes. The <em>development</em> one is used by default; to switch, set the <code>environment</code> global variable to <code>&quot;production&quot;</code> in <code>settings.js</code>.</p>
+<p>A practical split: development points at <code>http://localhost:1880</code> with no <strong>Public URL</strong> and no <strong>Allowed origins</strong>; production carries the real <strong>Public URL</strong>, the origins of the pages that embed the widget, and possibly <code>websocket</code> as the connect mode.</p>
+<h2 id="11-troubleshooting"><strong>11. Troubleshooting</strong></h2>
+<table>
+<thead>
+<tr>
+<th><strong>Symptom</strong></th>
+<th><strong>Cause</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Widget shows an error, nothing in the flow</td>
+<td>wrong <strong>Bot ID</strong> in the URL, or the flow is not deployed</td>
+</tr>
+<tr>
+<td><code>503 Chatbot is not running</code></td>
+<td>the request landed while the bot was shutting down — redeploy</td>
+</tr>
+<tr>
+<td><code>405</code></td>
+<td>the widget is doing a <code>GET</code>; the message endpoint is <code>POST</code> only</td>
+</tr>
+<tr>
+<td><code>415</code></td>
+<td><strong>Accept files</strong> is off and the widget tried to upload</td>
+</tr>
+<tr>
+<td><code>400 Empty message</code></td>
+<td>neither text nor files in the request</td>
+</tr>
+<tr>
+<td>Answers arrive one message late</td>
+<td>HTTP mode, and the flow answered after the <strong>Timeout</strong> — raise it, or switch to WebSocket</td>
+</tr>
+<tr>
+<td>Every answer feels sluggish</td>
+<td>the <strong>Collect window</strong> (400ms); lower it, down to <code>0</code>, if the flow only ever sends one message</td>
+</tr>
+<tr>
+<td>Browser blocks the request</td>
+<td>the page&#39;s origin is not in <strong>Allowed origins</strong></td>
+</tr>
+<tr>
+<td>Images/documents 404</td>
+<td>they expired (one hour), or <strong>Public URL</strong> is missing on a cross-host page</td>
+</tr>
+<tr>
+<td>Socket never connects</td>
+<td>a reverse proxy is not forwarding <code>Upgrade</code>/<code>Connection</code>, or the origin is not allowed (<code>401</code>)</td>
+</tr>
+<tr>
+<td>Two bots answering the same message</td>
+<td>two configurations share the same <strong>Bot ID</strong> — the HTTP endpoints are wildcard routes, only the Bot ID keeps them apart</td>
+</tr>
+<tr>
+<td>Every visitor lands in the same conversation</td>
+<td>the embedding page sends a constant <code>chatId</code> — generate one per visitor and store it</td>
+</tr>
+<tr>
+<td>A <strong>Waiting</strong> node does nothing</td>
+<td>expected in HTTP mode</td>
+</tr>
+</tbody></table>
+<h2 id="12-known-limits"><strong>12. Known limits</strong></h2>
+<ul>
+<li><p><strong>Buffers live in memory.</strong> Messages for a conversation with nobody listening are kept per conversation (capped at 100 in WebSocket mode, uncapped in HTTP mode) and only drained when the visitor comes back.</p>
+</li>
+<li><p><strong>One socket per conversation.</strong> A second connection — another tab, or a reconnection the old socket never noticed — replaces the previous one, which is closed with code <code>4000</code>. Several tabs do not stay in sync.</p>
+</li>
+<li><p><strong>No delivery acknowledgement.</strong> If the browser navigates away mid-request in HTTP mode, the response is dropped and — unlike an out-of-band message — not buffered.</p>
+</li>
+</ul>
 </script>
 
 <script type="text/javascript">

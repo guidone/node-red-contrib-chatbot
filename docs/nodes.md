@@ -5,6 +5,7 @@
 - [chatbot-audio](nodes/chatbot-audio.md)
 - [chatbot-context-store](nodes/chatbot-context-store.md)
 - [chatbot-conversation](nodes/chatbot-conversation.md)
+- [chatbot-deepchat-receive](nodes/chatbot-deepchat-receive.md)
 - [chatbot-dialog](nodes/chatbot-dialog.md)
 - [chatbot-document](nodes/chatbot-document.md)
 - [chatbot-extend](nodes/chatbot-extend.md)

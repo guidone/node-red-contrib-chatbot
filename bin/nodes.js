@@ -213,5 +213,10 @@ module.exports = [
     notionUrl: 'https://www.notion.so/redbot/Whatsapp-Template-2cf0f96ed14b4f72b3d4a8cee58bc2b0',
     nodeFile: 'chatbot-whatsapp-template.html',
     nodeType: 'chatbot-whatsapp-template'
+  },
+  {
+    notionUrl: 'https://app.notion.com/p/redbot/DeepChat-Receiver-node-3d7499b2879a804cad1ff5c97fd7595a',
+    nodeFile: 'chatbot-deepchat-receive.html',
+    nodeType: 'chatbot-deepchat-receive'
   }
 ];
