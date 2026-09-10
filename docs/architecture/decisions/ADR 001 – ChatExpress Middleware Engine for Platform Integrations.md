@@ -107,6 +107,9 @@ const MyPlatform = new ChatExpress({
 | `onStop` | `fn()` | Called when bot stops |
 | `onCreateMessage` | `fn(obj)` | Transform the raw message object before middleware runs |
 | `routes` | object | Express route handlers keyed by path |
+| `wsRoutes` | object \| `fn()` | WebSocket connection handlers keyed by path (exact match, relative to `httpNodeRoot`), or a function bound to the chat server returning them — see [ADR 004](ADR%20004%20%E2%80%93%20WebSocket%20Endpoints%20in%20ChatExpress.md) |
+| `wsRoutesDescription` | object \| `fn()` | Descriptions of the WebSocket endpoints for the startup banner |
+| `wsVerifyClient` | `fn(info)` | `ws`'s `verifyClient` hook, bound to the chat server: return `false` to refuse a handshake |
 | `multiWebHook` | boolean | Support multiple webhook subpaths |
 | `relaxChatId` | boolean | Allow null chatId (for events like inline queries) |
 | `events` | object | Handlers for platform-specific event types |

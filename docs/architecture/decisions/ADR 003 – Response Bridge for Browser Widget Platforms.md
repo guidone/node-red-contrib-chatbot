@@ -30,6 +30,13 @@ completely out of band (the *Push Message* node). Folding that onto a single HTT
 response — without asking flow authors to write Deep Chat flows differently from
 every other platform — is the problem this ADR settles.
 
+> **Superseded in part by
+> [ADR 004 – WebSocket Endpoints in ChatExpress](ADR%20004%20%E2%80%93%20WebSocket%20Endpoints%20in%20ChatExpress.md).**
+> The response bridge described here is still the default (`connectMode: http`)
+> and the only mode that can receive file uploads, but a Deep Chat bot can now
+> run on a WebSocket instead, where the bridge is replaced by a connection hub
+> and most of the trade-offs listed below do not apply.
+
 ## **Decision**
 
 Implement Deep Chat as a **regular ChatExpress platform** under
@@ -191,7 +198,7 @@ Send options follow the registration pattern of
 
 | Option | Pros | Cons | Reason Not Chosen |
 | --- | --- | --- | --- |
-| WebSocket transport (Deep Chat supports `connect.websocket`) | Natural fit: the server pushes any number of messages at any time, no collecting window, no buffers | Needs an upgrade handler on `RED.server`, outside the ChatExpress route mechanism; `httpNodeRoot`, proxies and reconnection all become the connector's problem | Recorded as the likely next step; the HTTP endpoint is simpler and works through any proxy |
+| WebSocket transport (Deep Chat supports `connect.websocket`) | Natural fit: the server pushes any number of messages at any time, no collecting window, no buffers | Needs an upgrade handler on `RED.server`, outside the ChatExpress route mechanism; `httpNodeRoot`, proxies and reconnection all become the connector's problem | The HTTP endpoint is simpler and works through any proxy, so it shipped first — and it is still the only mode that can receive file uploads. Implemented as a second connect mode in [ADR 004 – WebSocket Endpoints in ChatExpress](ADR%20004%20%E2%80%93%20WebSocket%20Endpoints%20in%20ChatExpress.md), which added `wsRoutes` to the engine |
 | SSE streaming (`connect.stream`) | Server keeps pushing on a single open request | Deep Chat streams *chunks of one message*, not a sequence of distinct messages | Cannot express the multi-message model |
 | Ack immediately, drop whatever the flow produces later | Trivial to implement | The flow's actual answer never reaches the user | Defeats the purpose of the connector |
 | Respond as soon as the first message arrives | Lowest possible latency | Splits a multi-message answer; every message but the first slips to the next round trip | The collecting window is a better default, and it is configurable down to `0` |

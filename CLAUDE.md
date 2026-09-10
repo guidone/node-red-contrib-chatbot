@@ -53,6 +53,10 @@ Key patterns are documented as ADRs:
 - Browser-widget platforms (Deep Chat) reconcile the request/response widget
   with RedBot's asynchronous multi-message model through a **response bridge** —
   [ADR 003](<docs/architecture/decisions/ADR 003 – Response Bridge for Browser Widget Platforms.md>).
+- Platforms accept WebSocket connections by declaring **`wsRoutes`**, served by a
+  single shared upgrade dispatcher, with a `chatId -> socket` hub in
+  `lib/socket-server/` —
+  [ADR 004](<docs/architecture/decisions/ADR 004 – WebSocket Endpoints in ChatExpress.md>).
 
 ## Documentation
 

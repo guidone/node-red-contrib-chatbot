@@ -13,6 +13,12 @@
           return /^[A-Za-z0-9_-]+$/.test(value);
         }
       },
+      connectMode: {
+        value: 'http'
+      },
+      heartbeat: {
+        value: 30000
+      },
       publicUrl: {
         value: ''
       },
@@ -72,6 +78,18 @@
       };
       $('#node-config-input-botId').on('change keyup', updateWidgetLink);
       updateWidgetLink();
+
+      var updateConnectMode = function() {
+        if ($('#node-config-input-connectMode').val() === 'websocket') {
+          $('.form-row-http-mode').hide();
+          $('.form-row-websocket-mode').show();
+        } else {
+          $('.form-row-http-mode').show();
+          $('.form-row-websocket-mode').hide();
+        }
+      };
+      $('#node-config-input-connectMode').on('change', updateConnectMode);
+      updateConnectMode();
 
       $.get(nodeRedUrl + 'redbot/globals')
         .done(function(response) {
@@ -135,6 +153,20 @@
       </div>
     </div>
     <div class="form-row">
+      <label for="node-config-input-connectMode">Connect mode</label>
+      <select id="node-config-input-connectMode" style="width:70%;">
+        <option value="http">HTTP (request/response)</option>
+        <option value="websocket">WebSocket (server push)</option>
+      </select>
+      <div class="redbot-form-hint">
+        In <strong>HTTP</strong> mode the widget POSTs a message and the connector holds the response open while
+        the flow answers. In <strong>WebSocket</strong> mode the widget keeps a socket open on
+        <code>/redbot/deepchat/&lt;botId&gt;/ws</code> and the flow pushes messages at any time, with no delay and
+        no waiting window: pick it for flows that answer late or out of band (<em>Push Message</em>). Over a
+        socket the user cannot attach files, Deep Chat sends attachments as a multipart request.
+      </div>
+    </div>
+    <div class="form-row">
       <label for="node-config-input-introMessage">Intro message</label>
       <input type="text" id="node-config-input-introMessage" placeholder="Hi! How can I help you?">
       <div class="redbot-form-hint">
@@ -146,7 +178,16 @@
       <input type="checkbox" value="true" id="node-config-input-acceptFiles" style="width:auto;">
       <span class="redbot-form-hint">Let the user attach files to the messages</span>
     </div>
-    <div class="form-row">
+    <div class="form-row form-row-websocket-mode">
+      <label for="node-config-input-heartbeat">Heartbeat</label>
+      <input type="text" id="node-config-input-heartbeat" placeholder="30000">
+      <div class="redbot-form-hint">
+        Milliseconds between two ping frames sent to the connected widgets. Reverse proxies drop an idle
+        upgraded connection, the heartbeat keeps it open and detects the sockets that died without closing.
+        Use <code>0</code> to disable it.
+      </div>
+    </div>
+    <div class="form-row form-row-http-mode">
       <label for="node-config-input-timeout">Timeout</label>
       <input type="text" id="node-config-input-timeout" placeholder="20000">
       <div class="redbot-form-hint">
@@ -154,7 +195,7 @@
         the timeout are delivered with the next message of the user.
       </div>
     </div>
-    <div class="form-row">
+    <div class="form-row form-row-http-mode">
       <label for="node-config-input-collectWindow">Collect window</label>
       <input type="text" id="node-config-input-collectWindow" placeholder="400">
       <div class="redbot-form-hint">
@@ -229,11 +270,15 @@
   no webhook to register, no token &mdash; the widget talks straight to <strong>Node-RED</strong>.</p>
 
   <h4>Endpoints</h4>
-  <p>Each bot configuration declares a <strong>Bot ID</strong> which becomes part of two endpoints:</p>
+  <p>Each bot configuration declares a <strong>Bot ID</strong> which becomes part of these endpoints:</p>
   <ul>
-    <li><code>POST /redbot/deepchat/&lt;botId&gt;</code> &mdash; the endpoint the widget connects to.</li>
+    <li><code>POST /redbot/deepchat/&lt;botId&gt;</code> &mdash; the endpoint the widget connects to in
+      <em>HTTP</em> mode. It stays available in <em>WebSocket</em> mode (it's the only way to upload a file) but
+      it answers with an empty array, the flow replies over the socket.</li>
+    <li><code>GET /redbot/deepchat/&lt;botId&gt;/ws</code> &mdash; the socket endpoint, mounted only in
+      <em>WebSocket</em> mode.</li>
     <li><code>GET /redbot/deepchat/&lt;botId&gt;/widget</code> &mdash; a ready made test page with a widget already
-      wired to the endpoint above. Open it in a browser to try the flow.</li>
+      wired to the bot in the mode it is configured with. Open it in a browser to try the flow.</li>
   </ul>
   <p>Media sent by the flow is served from <code>/redbot/deepchat/&lt;botId&gt;/files/&lt;id&gt;</code> and expires
   after one hour.</p>
@@ -252,14 +297,32 @@
   };
   chat.requestBodyLimits = { maxMessages: 1 };
 &lt;/script&gt;</code></pre>
+  <p>In <em>WebSocket</em> mode the same page connects to the socket endpoint instead. The conversation is
+  identified by the query string of the upgrade request, Deep Chat doesn't add
+  <code>additionalBodyProps</code> to a socket frame:</p>
+  <pre><code class="language-html">&lt;script type="module"&gt;
+  const chatId = 'a-stable-id';
+  chat.connect = {
+    url: 'wss://mybot.example.com/redbot/deepchat/my-bot/ws?chatId=' + chatId + '&amp;userId=' + chatId,
+    websocket: true
+  };
+&lt;/script&gt;</code></pre>
   <p>If the page is served by a different host, list its origin in <strong>Allowed origins</strong> and set
-  <strong>Public URL</strong> so that media links are absolute.</p>
+  <strong>Public URL</strong> so that media links are absolute. CORS doesn't apply to WebSockets: the same list
+  is checked on the handshake and a connection from an origin that is not allowed is refused with a
+  <code>401</code>.</p>
+  <p>A reverse proxy in front of Node-RED must be configured to forward the <code>Upgrade</code> and
+  <code>Connection</code> headers, otherwise the handshake never reaches the bot.</p>
 
   <h4>Request and response</h4>
   <p>The widget POSTs <code>{ "messages": [{ "role": "user", "text": "..." }], "chatId": "..." }</code>. The
   connector holds the response open while the flow answers and replies with the array of messages the flow
   produced. Anything sent after the timeout (for instance by a <em>Push Message</em> node) is buffered and
   delivered with the next message of the user.</p>
+  <p>Over a WebSocket the widget sends the same body as a stringified frame and the flow answers with one frame
+  per message, whenever it wants: there is no timeout and no collecting window. Messages produced while nobody
+  is connected are buffered per conversation and delivered right after the next handshake. Only one socket per
+  conversation is kept: a second one (another tab, or a reconnection) replaces the previous.</p>
 
   <h4>Supported messages</h4>
   <ul>
@@ -271,7 +334,9 @@
     <li><strong>Location</strong> &mdash; rendered as a link to OpenStreetMap.</li>
   </ul>
   <p>Files attached by the user are forwarded to the flow as <em>photo</em>, <em>audio</em>, <em>video</em> or
-  <em>document</em> messages (up to 20MB), the text typed along with them becomes the caption.</p>
+  <em>document</em> messages (up to 20MB), the text typed along with them becomes the caption. This works in
+  <em>HTTP</em> mode only: Deep Chat uploads files as a multipart request, which has no equivalent on a socket,
+  so the attachment button is hidden in <em>WebSocket</em> mode. Media sent by the flow works in both modes.</p>
 
   <h4>Development vs Production</h4>
   <p><code>Deep Chat Receiver</code> and <code>Deep Chat Sender</code> nodes have a double bot configuration for

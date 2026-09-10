@@ -20,6 +20,8 @@ module.exports = function(RED) {
         return DeepChatServer.createServer({
           botId: botConfiguration.botId,
           botname: botConfiguration.botname,
+          connectMode: botConfiguration.connectMode,
+          heartbeat: botConfiguration.heartbeat,
           publicUrl: botConfiguration.publicUrl,
           allowedOrigins: botConfiguration.allowedOrigins,
           introMessage: botConfiguration.introMessage,
@@ -36,6 +38,9 @@ module.exports = function(RED) {
       (config, node) => ({
         botId: !_.isEmpty(config.botId) ? config.botId.trim() : null,
         botname: node.botname,
+        // "http" (request/response, the default) or "websocket" (the server pushes at any time)
+        connectMode: config.connectMode === 'websocket' ? 'websocket' : 'http',
+        heartbeat: toInt(config.heartbeat, undefined),
         publicUrl: config.publicUrl,
         allowedOrigins: config.allowedOrigins,
         introMessage: config.introMessage,
