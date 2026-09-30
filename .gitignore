@@ -13,3 +13,4 @@ node_modules
 .env-notion
 /.node-red-dev
 .claude/worktrees
+.claude/launch.json
