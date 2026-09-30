@@ -23,6 +23,24 @@ describe('Chat request node', function() {
       });
   });
 
+  it('should be a request location without message', function() {
+    var msg = RED.createMessage({ type: 'message', content: 'where is the shop?' });
+    RED.node.config({
+      message: '',
+      requestType: 'location',
+      buttonLabel: 'your position'
+    });
+    RequestBlock(RED);
+    RED.node.get().emit('input', msg);
+    return RED.node.get().await()
+      .then(function () {
+        assert.isEmpty(RED.node.message().payload.content);
+        assert.equal(RED.node.message().payload.type, 'request');
+        assert.equal(RED.node.message().payload.requestType, 'location');
+        assert.equal(RED.node.message().payload.label, 'your position');
+      });
+  });
+
   it('should be a request phone', function() {
     var msg = RED.createMessage();
     RED.node.config({
