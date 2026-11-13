@@ -32,12 +32,23 @@ jobs:
         env:
           NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
       - name: Bump version
+        env:
+          # release tag (e.g. "v2.0.6" or "2.0.6") or manual input (e.g. "patch")
+          TARGET_VERSION: ${{ github.event.inputs.version || github.ref_name }}
         run: |
           git config --global user.email "guido.bellomo@gmail.com"
           git config --global user.name "Guido Bellomo"
           git add .
-          git commit -m "build"
-          npm version ${{ github.event.inputs.version || github.ref_name }}
+          # commit build output only if the build actually changed something
+          git diff --cached --quiet || git commit -m "build"
+          TARGET="${TARGET_VERSION#v}"
+          CURRENT="$(node -p "require('./package.json').version")"
+          if [ "$TARGET" = "$CURRENT" ]; then
+            # version already bumped locally (e.g. `npm version patch` + release from its tag)
+            echo "package.json is already at $CURRENT, skipping npm version"
+          else
+            npm version "$TARGET"
+          fi
       - name: Push changes to repository
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
