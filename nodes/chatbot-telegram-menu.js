@@ -1,5 +1,11 @@
 const _ = require('lodash');
 const GlobalContextHelper = require('../lib/helpers/global-context-helper');
+const { extractValue } = require('../lib/helpers/utils');
+
+// Telegram only accepts two-letter ISO 639-1 codes for localized bot commands, strip the region
+// subtag (i.e. "pt-BR" or "en_US") which is usually present in the user's language from chat context
+const normalizeLanguage = language => language.trim().toLowerCase().split(/[-_]/)[0];
+const isValidLanguage = language => /^[a-z]{2}$/.test(language);
 
 module.exports = function(RED) {
   const globalContextHelper = GlobalContextHelper(RED);
@@ -10,6 +16,7 @@ module.exports = function(RED) {
     globalContextHelper.init(this.context().global);
     this.bot = config.bot;
     this.items = config.items;
+    this.language = config.language;
 
     const validCommands = items => {
       return _.isArray(items) && !_.isEmpty(items) && items.every(item => _.isObject(item) && !_.isEmpty(item.command));
@@ -46,12 +53,23 @@ module.exports = function(RED) {
         done('Invalid commands, "command" parameter is required');
         return;
       }
+      // get the language (config first, then msg.language), if empty the commands are the default
+      // ones, shown to all users whose language has no dedicated commands
+      const form = {};
+      const language = extractValue('string', 'language', node, msg, false, true);
+      if (language != null) {
+        form.language_code = normalizeLanguage(language);
+        if (!isValidLanguage(form.language_code)) {
+          done(`Invalid language "${language}", must be a two-letter ISO 639-1 code (i.e. "en", "it")`);
+          return;
+        }
+      }
       // finally set the commands
       try {
-        await connector.setMyCommands(items);
+        await connector.setMyCommands(items, form);
         done();
       } catch(e) {
-        done('Error setting commands in Telegram bot');
+        done(`Error setting commands in Telegram bot: ${e != null && e.message != null ? e.message : e}`);
       }
     });
   }
