@@ -14,6 +14,7 @@ const lcd = require('../lib/lcd/index');
 const DatabaseSchema = require('../database/index');
 const validators = require('../lib/helpers/validators');
 const uploadFromBuffer = require('../lib/helpers/upload-from-buffer');
+const { isValidAccessToken } = require('../lib/helpers/access-token');
 const chatbotIdGenerator = require('../lib/utils/chatbot-id-generator');
 const GetEnvironment = require('../lib/helpers/get-environment');
 const { getMigrations } = require('../lib/utils/migration');
@@ -283,15 +284,7 @@ Some **formatting** is _allowed_!`
         if (!_.isEmpty(authHeader) && authHeader.includes(' ')) {
           const authToken = authHeader.split(' ')[1];
           const contents = await Content.findAll({ where: { namespace: 'tokens' }});
-          const authorized = contents.some(content => {
-            let json;
-            try {
-              json = JSON.parse(content.payload);
-            } catch(e) {
-              return false;
-            }
-            return authToken === json.token;
-          });
+          const authorized = isValidAccessToken(authToken, contents);
           if (!authorized) {
             res
               .status(401)
